@@ -706,16 +706,18 @@ function ContactSection() {
           <div className="lg:col-span-3">
             <form
               className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF]"
-              action="mailto:thenomadsco@gmail.com"
+              action="https://formsubmit.co/thenomadsco@gmail.com"
               method="post"
-              encType="text/plain"
             >
+              <input type="hidden" name="_subject" value="New Nomads Co. inquiry" />
+              <input type="hidden" name="_captcha" value="false" />
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
                   <input
                     type="text"
                     required
+                    name="name"
                     className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
                     placeholder="Your full name"
                   />
@@ -729,6 +731,7 @@ function ContactSection() {
                     <input
                       type="email"
                       required
+                      name="email"
                       className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
                       placeholder="your@email.com"
                     />
@@ -738,6 +741,7 @@ function ContactSection() {
                     <label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label>
                     <input
                       type="tel"
+                      name="phone"
                       className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
                       placeholder="+91 XXX XXX XXXX"
                     />
@@ -751,6 +755,7 @@ function ContactSection() {
                     </label>
                     <input
                       type="text"
+                      name="destination"
                       className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
                       placeholder="e.g., Santorini"
                     />
@@ -762,6 +767,7 @@ function ContactSection() {
                     </label>
                     <input
                       type="text"
+                      name="travel_month"
                       className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
                       placeholder="e.g., June 2026"
                     />
@@ -770,7 +776,10 @@ function ContactSection() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#1F2328] mb-2">Budget range</label>
-                  <select className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent">
+                  <select
+                    name="budget"
+                    className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
+                  >
                     <option value="">Select your budget</option>
                     <option value="under-2lakh">Under ₹2 Lakh</option>
                     <option value="2-5lakh">₹2-5 Lakh</option>
@@ -783,6 +792,7 @@ function ContactSection() {
                   <label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label>
                   <textarea
                     rows={5}
+                    name="notes"
                     className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent resize-none"
                     placeholder="Tell us about your ideal trip..."
                   />

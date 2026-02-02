@@ -143,16 +143,7 @@ function Star(props: IconProps) {
   );
 }
 
-function Twitter(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M20 6.2c-.7.4-1.4.6-2.2.8a3.6 3.6 0 0 0-6.1 3.2A10.1 10.1 0 0 1 4 6.5a3.6 3.6 0 0 0 1.1 4.8c-.6 0-1.1-.2-1.6-.4v.1a3.6 3.6 0 0 0 2.9 3.5c-.6.2-1.2.2-1.8.1a3.6 3.6 0 0 0 3.4 2.5A7.2 7.2 0 0 1 4 18.5a10.1 10.1 0 0 0 5.5 1.6c6.6 0 10.2-5.6 10.2-10.4v-.5c.7-.5 1.3-1.1 1.8-1.8z" />
-    </IconBase>
-  );
-}
-
-const logoImage =
-  "data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='80'%20height='80'%20viewBox='0%200%2080%2080'%3E%3Crect%20width='80'%20height='80'%20rx='20'%20fill='%232D3191'/%3E%3Cpath%20d='M20%2046V28h10l10%2024%2010-24h10v18c0%209-7%2016-16%2016H36c-9%200-16-7-16-16Z'%20fill='%23FFFFFF'/%3E%3C/svg%3E";
+const logoImage = "/nomads-logo.png";
 
 const destinations = [
   {
@@ -223,7 +214,7 @@ const experiences = [
     description:
       "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMGJlYWNoJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "primary",
   },
 ];
@@ -292,7 +283,7 @@ export default function Home() {
 
 function Navigation() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -679,23 +670,23 @@ function ContactSection() {
               </div>
 
               <div className="space-y-6">
-                <a href="mailto:hello@thenomadsco.travel" className="flex items-start gap-4 group">
+                <a href="mailto:thenomadsco@gmail.com" className="flex items-start gap-4 group">
                   <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#2D3191]">
                     <Mail size={20} className="text-[#2D3191] group-hover:text-white" strokeWidth={2} />
                   </div>
                   <div>
                     <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div>
-                    <div className="text-base text-[#1F2328] font-medium">hello@thenomadsco.travel</div>
+                    <div className="text-base text-[#1F2328] font-medium">thenomadsco@gmail.com</div>
                   </div>
                 </a>
 
-                <a href="tel:+915551234567" className="flex items-start gap-4 group">
+                <a href="tel:+919924399335" className="flex items-start gap-4 group">
                   <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#2D3191]">
                     <Phone size={20} className="text-[#2D3191] group-hover:text-white" strokeWidth={2} />
                   </div>
                   <div>
                     <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div>
-                    <div className="text-base text-[#1F2328] font-medium">+91 (555) 123-4567</div>
+                    <div className="text-base text-[#1F2328] font-medium">+91 9924399335</div>
                   </div>
                 </a>
 
@@ -705,7 +696,7 @@ function ContactSection() {
                   </div>
                   <div>
                     <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
-                    <div className="text-base text-[#1F2328] font-medium">Mumbai, India</div>
+                    <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
                   </div>
                 </div>
               </div>
@@ -713,7 +704,12 @@ function ContactSection() {
           </div>
 
           <div className="lg:col-span-3">
-            <form className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF]">
+            <form
+              className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF]"
+              action="mailto:thenomadsco@gmail.com"
+              method="post"
+              encType="text/plain"
+            >
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
@@ -834,9 +830,7 @@ function Footer() {
               {[
                 { icon: Instagram, label: "Instagram" },
                 { icon: Facebook, label: "Facebook" },
-                { icon: Twitter, label: "Twitter" },
                 { icon: Linkedin, label: "LinkedIn" },
-                { icon: Mail, label: "Email" },
               ].map(({ icon: Icon, label }) => (
                 <a
                   key={label}

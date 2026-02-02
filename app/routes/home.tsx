@@ -1,19 +1,155 @@
 import type { Route } from "./+types/home";
-import {
-  ArrowRight,
-  BadgeCheck,
-  CheckCircle2,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  MapPin,
-  Menu,
-  Phone,
-  Sparkles,
-  Star,
-  Twitter,
-} from "lucide-react";
+
+type IconProps = {
+  size?: number;
+  className?: string;
+  strokeWidth?: number;
+  fill?: string;
+};
+
+const iconDefaults = { size: 24, strokeWidth: 2 };
+
+function IconBase({
+  size = iconDefaults.size,
+  className,
+  strokeWidth = iconDefaults.strokeWidth,
+  fill = "none",
+  children,
+}: IconProps & { children: React.ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      className={className}
+      fill={fill}
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  );
+}
+
+function ArrowRight(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 12h14" />
+      <path d="m13 5 7 7-7 7" />
+    </IconBase>
+  );
+}
+
+function BadgeCheck(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12 2.5 2.5L16 9" />
+    </IconBase>
+  );
+}
+
+function CheckCircle2(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8.5 12 2.5 2.5 4.5-5" />
+    </IconBase>
+  );
+}
+
+function Facebook(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" />
+    </IconBase>
+  );
+}
+
+function Instagram(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="4" y="4" width="16" height="16" rx="4" />
+      <circle cx="12" cy="12" r="3.5" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </IconBase>
+  );
+}
+
+function Linkedin(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M8 10v6" />
+      <circle cx="8" cy="7" r="1" fill="currentColor" stroke="none" />
+      <path d="M12 16v-3.5c0-1.7 2-1.8 2-0.1V16" />
+    </IconBase>
+  );
+}
+
+function Mail(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="m4 7 8 6 8-6" />
+    </IconBase>
+  );
+}
+
+function MapPin(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </IconBase>
+  );
+}
+
+function Menu(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </IconBase>
+  );
+}
+
+function Phone(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M6.5 4.5h2l1.2 3-2 1.2c.9 2 2.5 3.6 4.5 4.5l1.2-2 3 1.2v2c0 .9-.7 1.6-1.6 1.6-6.3-.5-11.4-5.6-11.8-11.8 0-.9.7-1.6 1.5-1.6z" />
+    </IconBase>
+  );
+}
+
+function Sparkles(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" />
+      <path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" />
+    </IconBase>
+  );
+}
+
+function Star(props: IconProps) {
+  return (
+    <IconBase {...props} fill={props.fill ?? "currentColor"}>
+      <path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" />
+    </IconBase>
+  );
+}
+
+function Twitter(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M20 6.2c-.7.4-1.4.6-2.2.8a3.6 3.6 0 0 0-6.1 3.2A10.1 10.1 0 0 1 4 6.5a3.6 3.6 0 0 0 1.1 4.8c-.6 0-1.1-.2-1.6-.4v.1a3.6 3.6 0 0 0 2.9 3.5c-.6.2-1.2.2-1.8.1a3.6 3.6 0 0 0 3.4 2.5A7.2 7.2 0 0 1 4 18.5a10.1 10.1 0 0 0 5.5 1.6c6.6 0 10.2-5.6 10.2-10.4v-.5c.7-.5 1.3-1.1 1.8-1.8z" />
+    </IconBase>
+  );
+}
 
 const logoImage =
   "data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='80'%20height='80'%20viewBox='0%200%2080%2080'%3E%3Crect%20width='80'%20height='80'%20rx='20'%20fill='%232D3191'/%3E%3Cpath%20d='M20%2046V28h10l10%2024%2010-24h10v18c0%209-7%2016-16%2016H36c-9%200-16-7-16-16Z'%20fill='%23FFFFFF'/%3E%3C/svg%3E";
@@ -695,9 +831,15 @@ function Footer() {
               Crafting extraordinary journeys for extraordinary people since 2015.
             </p>
             <div className="flex gap-3">
-              {[Instagram, Facebook, Twitter, Linkedin, Mail].map((Icon, index) => (
+              {[
+                { icon: Instagram, label: "Instagram" },
+                { icon: Facebook, label: "Facebook" },
+                { icon: Twitter, label: "Twitter" },
+                { icon: Linkedin, label: "LinkedIn" },
+                { icon: Mail, label: "Email" },
+              ].map(({ icon: Icon, label }) => (
                 <a
-                  key={`${Icon.displayName ?? "social"}-${index}`}
+                  key={label}
                   href="#"
                   className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group"
                 >

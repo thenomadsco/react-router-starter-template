@@ -30,7 +30,7 @@ const destinations = [
     name: "Maldives",
     descriptor: "Overwater paradise",
     image:
-      "https://images.unsplash.com/photo-1643856554673-5c34857c8231?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWxkaXZlcyUyMGJlYWNoJTIwdHJvcGljYWwlMjB3YXJtfGVufDF8fHx8MTc2OTg1ODYxOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1643856554673-5c34857c8231?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtYWxkaXZlcyUyMGJlYWNoJTIwdHJvcGljYWwlMjB3YXJtfGVufDF8fHx8MTc2OTg1ODYxOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     category: "honeymoon",
   },
   {
@@ -44,21 +44,21 @@ const destinations = [
     name: "Bali",
     descriptor: "Spiritual serenity",
     image:
-      "https://images.unsplash.com/photo-1591326272816-0bd479a5cb20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYWxpJTIwaW5kb25lc2lhJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1591326272816-0bd479a5cb20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiYWxpJTIwaW5kb25lc2lhJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     category: "adventure",
   },
   {
     name: "Swiss Alps",
     descriptor: "Mountain majesty",
     image:
-      "https://images.unsplash.com/photo-1612638945907-1cb1d758f2d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzd2lzcyUyMGFscHMlMjBtb3VudGFpbnMlMjBzbm93fGVufDF8fHx8MTc2OTg1ODYyN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1612638945907-1cb1d758f2d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzd2lzcyUyMGFscHMlMjBtb3VudGFpbnMlMjBzbm93fGVufDF8fHx8MTc2OTg1ODYyN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     category: "adventure",
   },
   {
     name: "Tokyo",
     descriptor: "Modern tradition",
     image:
-      "https://images.unsplash.com/photo-1629020770453-d3d15182474c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0b2t5byUyMGphcGFuJTIwY2l0eSUyMHN0cmVldHxlbnwxfHx8fDE3Njk4NTg2Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1629020770453-d3d15182474c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx0b2t5byUyMGphcGFuJTIwY2l0eSUyMHN0cmVldHxlbnwxfHx8fDE3Njk4NTg2Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     category: "cities",
   },
 ];
@@ -79,7 +79,7 @@ const experiences = [
     description:
       "Sail the azure waters of the Mediterranean with personalized itineraries and world-class service.",
     image:
-      "https://images.unsplash.com/photo-1648997934392-7213a9ce50b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5YWNodCUyMGNydWlzZSUyMGx1eHVyeSUyMG9jZWFufGVufDF8fHx8MTc2OTg1ODY1NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1648997934392-7213a9ce50b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx5YWNodCUyMGNydWlzZSUyMGx1eHVyeSUyMG9jZWFufGVufDF8fHx8MTc2OTg1ODY1NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "secondary",
   },
   {
@@ -106,7 +106,7 @@ const testimonials = [
     name: "Vikram Patel",
     city: "Bangalore, India",
     image:
-      "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
       "Seamless planning from start to finish. Worth every rupee and more.",
     rating: 5,
@@ -115,7 +115,7 @@ const testimonials = [
     name: "Ananya & Rahul",
     city: "Delhi, India",
     image:
-      "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
       "The Nomads Co. turned our anniversary into an unforgettable journey.",
     rating: 5,

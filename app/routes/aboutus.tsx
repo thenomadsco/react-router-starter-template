@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/aboutus";
 
 type IconProps = {
   size?: number;
@@ -304,33 +304,28 @@ function Navigation() {
           </div>
 
           <div className="hidden lg:flex items-center justify-center gap-10">
+            <Link
+              to="/aboutus"
+              className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              About
+            </Link>
             {[
-              { label: "About", href: "/aboutus" },
               { label: "Destinations", href: "#destinations" },
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
               { label: "Contact", href: "#contact" },
-            ].map((link) =>
-              link.href.startsWith("#") ? (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </Link>
-              ),
-            )}
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                style={{ letterSpacing: "-0.01em" }}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
           <div className="flex items-center justify-end gap-4">

@@ -286,7 +286,7 @@ function Navigation() {
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
-        <div className="flex items-center justify-between">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
           <div className="flex items-center gap-3">
             <img
               src={logoImage}
@@ -301,7 +301,7 @@ function Navigation() {
             </span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
+          <div className="hidden lg:flex items-center justify-center gap-10">
             {[
               { label: "About", href: "/aboutus" },
               { label: "Destinations", href: "#destinations" },
@@ -320,16 +320,18 @@ function Navigation() {
             ))}
           </div>
 
-          <a
-            href="#contact"
-            className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
-          >
-            Plan My Trip
-          </a>
+          <div className="flex items-center justify-end gap-4">
+            <a
+              href="#contact"
+              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Plan My Trip
+            </a>
 
-          <button className="lg-hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
-            <Menu size={24} />
-          </button>
+            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
       </div>
     </nav>

@@ -214,7 +214,7 @@ const experiences = [
     description:
       "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMGJlYWNoJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "primary",
   },
 ];
@@ -694,7 +694,12 @@ function ContactSection() {
                   </div>
                 </a>
 
-                <div className="flex items-start gap-4">
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India"
+                  className="flex items-start gap-4 group"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0">
                     <MapPin size={20} className="text-[#2D3191]" strokeWidth={2} />
                   </div>
@@ -702,7 +707,7 @@ function ContactSection() {
                     <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
                     <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </div>
@@ -842,14 +847,16 @@ function Footer() {
             </p>
             <div className="flex gap-3">
               {[
-                { icon: Instagram, label: "Instagram" },
-                { icon: Facebook, label: "Facebook" },
-                { icon: Linkedin, label: "LinkedIn" },
-              ].map(({ icon: Icon, label }) => (
+                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/thenomadsco/" },
+                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/Thenomadsco/" },
+                { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" },
+              ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
-                  href="#"
+                  href={href}
                   className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5"
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
                 >
                   <Icon size={18} className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out" />
                 </a>

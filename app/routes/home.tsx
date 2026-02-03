@@ -214,7 +214,7 @@ const experiences = [
     description:
       "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMGJlYWNoJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "primary",
   },
 ];
@@ -271,6 +271,7 @@ export default function Home() {
     <div className="min-h-screen bg-white antialiased">
       <Navigation />
       <Hero />
+      <AboutSection />
       <TrustStrip />
       <DiagonalDestinations />
       <ExperienceSection />
@@ -301,18 +302,22 @@ function Navigation() {
           </div>
 
           <div className="hidden lg:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
-            {["Destinations", "Experiences", "Testimonials", "Contact"].map(
-              (label) => (
-                <a
-                  key={label}
-                  href={`#${label.toLowerCase()}`}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {label}
-                </a>
-              )
-            )}
+            {[
+              { label: "About", href: "/aboutus" },
+              { label: "Destinations", href: "#destinations" },
+              { label: "Experiences", href: "#experiences" },
+              { label: "Testimonials", href: "#testimonials" },
+              { label: "Contact", href: "#contact" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                style={{ letterSpacing: "-0.01em" }}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
           <a
@@ -322,7 +327,7 @@ function Navigation() {
             Plan My Trip
           </a>
 
-          <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
+          <button className="lg-hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
             <Menu size={24} />
           </button>
         </div>
@@ -448,6 +453,67 @@ function TrustStrip() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutSection() {
+  return (
+    <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center mb-14">
+          <h2
+            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+          >
+            About The Nomads Co.
+          </h2>
+          <p className="text-lg sm:text-xl text-[#1F2328]/70 max-w-3xl mx-auto">
+            The Nomads Travel believes in living life out loud — Live. Laugh. Travel. We craft
+            bespoke journeys that feel personal, effortless, and unforgettable, combining thoughtful
+            planning with a sense of wonder in every detail. Established in 2015, we&apos;ve helped
+            travelers turn dream itineraries into stories they&apos;ll share for years.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
+          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm">
+            <h3
+              className="text-2xl font-semibold text-[#1F2328] mb-4"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Meet the Founder
+            </h3>
+            <p className="text-[#1F2328]/70 leading-relaxed mb-4">
+              Mrs. Kirti Shah brings a warm, detail-first approach to every itinerary. Known for her
+              calm guidance and intuitive understanding of traveler needs, she curates journeys that
+              feel both luxurious and deeply personal.
+            </p>
+            <p className="text-[#1F2328]/70 leading-relaxed">
+              From family escapes to once-in-a-lifetime celebrations, Kirti ensures every step feels
+              seamless — so clients can focus on the joy of the journey.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
+              alt="Portrait of Mrs. Kirti Shah"
+              className="w-40 h-40 rounded-2xl object-cover"
+            />
+            <div>
+              <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-2">
+                Founder
+              </div>
+              <h4 className="text-2xl font-semibold text-[#1F2328] mb-2">Mrs. Kirti Shah</h4>
+              <p className="text-[#1F2328]/70 leading-relaxed">
+                Passionate about handcrafted travel and authentic experiences, Kirti leads The
+                Nomads Co. with empathy, precision, and a love for exploring the world.
+              </p>
+            </div>
           </div>
         </div>
       </div>

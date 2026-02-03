@@ -214,7 +214,7 @@ const experiences = [
     description:
       "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMGJlYWNoJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "primary",
   },
 ];
@@ -287,7 +287,11 @@ function Navigation() {
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logoImage} alt="The Nomads Co." className="h-10 w-auto" />
+            <img
+              src={logoImage}
+              alt="The Nomads Co."
+              className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5"
+            />
             <span
               className="text-lg font-semibold text-[#1F2328] tracking-tight"
               style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
@@ -302,7 +306,7 @@ function Navigation() {
                 <a
                   key={label}
                   href={`#${label.toLowerCase()}`}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191]"
+                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
                   style={{ letterSpacing: "-0.01em" }}
                 >
                   {label}
@@ -313,12 +317,12 @@ function Navigation() {
 
           <a
             href="#contact"
-            className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875]"
+            className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
           >
             Plan My Trip
           </a>
 
-          <button className="lg:hidden text-[#1F2328]">
+          <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
             <Menu size={24} />
           </button>
         </div>
@@ -371,7 +375,7 @@ function Hero() {
             <div className="flex flex-col sm:flex-row gap-5">
               <a
                 href="#contact"
-                className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-sm"
+                className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Get a custom itinerary
                 <ArrowRight size={18} />
@@ -379,7 +383,7 @@ function Hero() {
 
               <a
                 href="#destinations"
-                className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF]"
+                className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5"
               >
                 Explore destinations
               </a>
@@ -392,20 +396,20 @@ function Hero() {
                 <img
                   src={heroImage}
                   alt="Beautiful travel destination"
-                  className="w-full h-[300px] sm:h-[400px] object-cover rounded-2xl shadow-lg"
+                  className="w-full h-[300px] sm:h-[400px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
                 />
               </div>
 
               <img
                 src={image1}
                 alt="Luxury hotel pool"
-                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg"
+                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
               />
 
               <img
                 src={image2}
                 alt="Beautiful cityscape"
-                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg"
+                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
               />
             </div>
           </div>
@@ -475,7 +479,7 @@ function DiagonalDestinations() {
             <button
               key={category}
               type="button"
-              className="px-6 py-2.5 text-sm font-medium rounded-full border-2 bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191]"
+              className="px-6 py-2.5 text-sm font-medium rounded-full border-2 bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] transition-all duration-300 ease-out hover:-translate-y-0.5"
             >
               {category}
             </button>
@@ -485,11 +489,11 @@ function DiagonalDestinations() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {destinations.map((destination) => (
             <div key={destination.name} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl">
+              <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl">
                 <img
                   src={destination.image}
                   alt={destination.name}
-                  className="w-full h-[320px] object-cover"
+                  className="w-full h-[320px] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
@@ -503,7 +507,7 @@ function DiagonalDestinations() {
                   <p className="text-white/90 text-sm mb-3">
                     {destination.descriptor}
                   </p>
-                  <div className="flex items-center text-[#2D3191] bg-white px-3 py-1.5 rounded-lg inline-flex gap-1 text-sm font-medium">
+                  <div className="flex items-center text-[#2D3191] bg-white px-3 py-1.5 rounded-lg inline-flex gap-1 text-sm font-medium transition-all duration-300 ease-out group-hover:translate-x-1">
                     Explore
                     <ArrowRight size={16} />
                   </div>
@@ -539,11 +543,11 @@ function ExperienceSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
           {experiences.map((experience) => (
             <div key={experience.title} className="group">
-              <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md">
+              <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl">
                 <img
                   src={experience.image}
                   alt={experience.title}
-                  className="w-full h-[300px] object-cover"
+                  className="w-full h-[300px] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 />
               </div>
 
@@ -558,12 +562,12 @@ function ExperienceSection() {
               </p>
 
               {experience.ctaType === "primary" ? (
-                <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875]">
+                <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg">
                   Learn more
                   <ArrowRight size={16} />
                 </button>
               ) : (
-                <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-2xl hover:bg-[#E7F7EF]">
+                <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-2xl hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5">
                   Learn more
                   <ArrowRight size={16} />
                 </button>
@@ -593,7 +597,7 @@ function StatsSection() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.name}
-              className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-md"
+              className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-1"
             >
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
@@ -801,7 +805,7 @@ function ContactSection() {
                 <div className="pt-4">
                   <button
                     type="submit"
-                    className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875]"
+                    className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     Send inquiry
                   </button>
@@ -845,9 +849,9 @@ function Footer() {
                 <a
                   key={label}
                   href="#"
-                  className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group"
+                  className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5"
                 >
-                  <Icon size={18} className="text-[#2D3191] group-hover:text-white" />
+                  <Icon size={18} className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out" />
                 </a>
               ))}
             </div>

@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import type { Route } from "./+types/home";
 
 type IconProps = {
@@ -308,16 +310,27 @@ function Navigation() {
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
               { label: "Contact", href: "#contact" },
-            ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                style={{ letterSpacing: "-0.01em" }}
-              >
-                {link.label}
-              </a>
-            ))}
+            ].map((link) =>
+              link.href.startsWith("#") ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                  style={{ letterSpacing: "-0.01em" }}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                  style={{ letterSpacing: "-0.01em" }}
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
           </div>
 
           <div className="flex items-center justify-end gap-4">

@@ -510,20 +510,15 @@ function AboutSection() {
               />
             </button>
             
-            {/* COMPANY TAB - With Logo */}
+            {/* COMPANY TAB - Text only now */}
             <button
               onClick={() => setActiveTab('company')}
-              className={`group relative pb-4 flex items-center gap-2 transition-all duration-300 ${
+              className={`group relative pb-4 transition-all duration-300 ${
                 activeTab === 'company'
                   ? 'text-[#2D3191]'
                   : 'text-[#1F2328]/60 hover:text-[#2D3191]'
               }`}
             >
-              <img 
-                src={logoImage} 
-                alt="The Nomads Co." 
-                className="h-6 w-auto opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-              />
               <span className="text-2xl font-semibold pb-2">Company</span>
               <div 
                 className={`absolute bottom-0 left-0 w-full h-1 transition-all duration-300 origin-left ${
@@ -559,18 +554,30 @@ function AboutSection() {
             </div>
           </div>
         ) : (
-          /* COMPANY PANEL */
+          /* COMPANY PANEL - Logo at top center */}
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
+              {/* 👈 LOGO CENTERED AT TOP */}
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={logoImage} 
+                  alt="The Nomads Co." 
+                  className="h-16 w-auto"
+                />
+              </div>
+              
+              {/* TITLE */}
               <div className="text-center mb-8">
                 <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                   The Nomads Co.
                 </h3>
               </div>
+              
+              {/* DESCRIPTION */}
               <div className="grid md:grid-cols-2 gap-8 text-lg">
                 <div>
                   <p className="text-[#1F2328]/80 leading-relaxed mb-6">
-                    Ready for a holiday that feels effortless and totally yours?
+                    Ready for a holiday that feels effortlessly and totally yours?
                   </p>
                   <p className="text-[#1F2328]/70 leading-relaxed mb-6">
                     Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
@@ -598,6 +605,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 
 

@@ -290,36 +290,49 @@ function Navigation() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+          {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            <img src={logoImage} alt="The Nomads Co." className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5" />
-            <span className="text-lg font-semibold text-[#1F2328] tracking-tight" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>
+            <img
+              src={logoImage}
+              alt="The Nomads Co."
+              className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5"
+            />
+            <span
+              className="text-lg font-semibold text-[#1F2328] tracking-tight"
+              style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
+            >
               The Nomads Co.
             </span>
           </div>
 
-          {/* ✅ PERFECT ROUTING FOR CLOUDFLARE */}
+          {/* Navigation Links - NO "About Us" */}
           <div className="hidden lg:flex items-center justify-center gap-10">
-            <Link to="/aboutus" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
-              About Us
-            </Link>
-            <a href="#destinations" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
-              Destinations
-            </a>
-            <a href="#experiences" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
-              Experiences
-            </a>
-            <a href="#testimonials" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
-              Testimonials
-            </a>
-            <a href="#contact" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
-              Contact
-            </a>
+            {[
+              { label: "Destinations", href: "#destinations" },
+              { label: "Experiences", href: "#experiences" },
+              { label: "Testimonials", href: "#testimonials" },
+              { label: "Contact", href: "#contact" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                style={{ letterSpacing: "-0.01em" }}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
+          {/* CTA & Mobile Menu */}
           <div className="flex items-center justify-end gap-4">
-            <a href="#contact" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg">
+            <a
+              href="#contact"
+              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+            >
               Plan My Trip
             </a>
+
             <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
               <Menu size={24} />
             </button>
@@ -329,6 +342,7 @@ function Navigation() {
     </nav>
   );
 }
+
 
 
 
@@ -460,6 +474,7 @@ function AboutSection() {
   return (
     <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
       <div className="max-w-[1200px] mx-auto">
+        {/* Title & Description */}
         <div className="text-center mb-14">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
@@ -484,16 +499,14 @@ function AboutSection() {
           </p>
         </div>
 
-        {/* NEW FOUNDER TABS - HIGHLIGHTED */}
+        {/* ✅ ONLY FOUNDER TAB - HIGHLIGHTED */}
         <div className="flex justify-center mb-16">
           <div className="flex gap-8 items-center">
             <button className="group relative pb-4">
               <span className="text-2xl font-semibold text-[#2D3191] pb-2">Founder</span>
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-[#2D3191] scale-x-100 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-[#2D3191] scale-x-100 transition-transform duration-300 origin-left"></div>
             </button>
-            <button className="text-2xl font-semibold text-[#1F2328]/60 pb-2 hover:text-[#2D3191] hover:border-b-2 hover:border-[#2D3191] transition-all duration-300">
-              Company
-            </button>
+            {/* ✅ NO Company tab */}
           </div>
         </div>
 
@@ -521,6 +534,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 
 function DiagonalDestinations() {

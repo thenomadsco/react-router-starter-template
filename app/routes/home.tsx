@@ -305,7 +305,6 @@ function Navigation() {
 
           <div className="hidden lg:flex items-center justify-center gap-10">
             {[
-              { label: "About", href: "/aboutus" },
               { label: "Destinations", href: "#destinations" },
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
@@ -487,10 +486,13 @@ function AboutSection() {
             About The Nomads Co.
           </h2>
           <p className="text-lg sm:text-xl text-[#1F2328]/70 max-w-3xl mx-auto">
-            The Nomads Travel believes in living life out loud — Live. Laugh. Travel. We craft
-            bespoke journeys that feel personal, effortless, and unforgettable, combining thoughtful
-            planning with a sense of wonder in every detail. Established in 2015, we&apos;ve helped
-            travelers turn dream itineraries into stories they&apos;ll share for years.
+            Ladies, ready to treat yourself to a holiday that&apos;s all about you? Meet Kirti Shah
+            from The NomadsCo.—your personal travel consultant who crafts every itinerary with
+            love, luxury, and attention to detail. From girls&apos; getaways to solo adventures,
+            Kirti personally tailors your experience and stays with you every step of the journey.
+            Set up a one-on-one with Kirti today and let her handle the planning, so you just show
+            up and shine! For a trip as fabulous as you are, make your next destination
+            unforgettable—connect now!
           </p>
         </div>
 

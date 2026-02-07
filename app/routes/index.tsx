@@ -290,60 +290,34 @@ function Navigation() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          {/* Logo */}
           <div className="flex items-center gap-3">
-            <img
-              src={logoImage}
-              alt="The Nomads Co."
-              className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5"
-            />
-            <span
-              className="text-lg font-semibold text-[#1F2328] tracking-tight"
-              style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
-            >
+            <img src={logoImage} alt="The Nomads Co." className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5" />
+            <span className="text-lg font-semibold text-[#1F2328] tracking-tight" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>
               The Nomads Co.
             </span>
           </div>
 
-          {/* ✅ FIXED NAVIGATION - Works on Cloudflare Pages */}
+          {/* ✅ PERFECT ROUTING FOR CLOUDFLARE */}
           <div className="hidden lg:flex items-center justify-center gap-10">
-            {[
-              { label: "About Us", to: "/aboutus" },           // 👈 ROUTER LINK
-              { label: "Destinations", href: "#destinations" },
-              { label: "Experiences", href: "#experiences" },
-              { label: "Testimonials", href: "#testimonials" },
-              { label: "Contact", href: "#contact" },
-            ].map((link) =>
-              link.to ? (
-                // Router Link for /aboutus
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                // Anchor link for sections
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            <Link to="/aboutus" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
+              About Us
+            </Link>
+            <a href="#destinations" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
+              Destinations
+            </a>
+            <a href="#experiences" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
+              Experiences
+            </a>
+            <a href="#testimonials" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
+              Testimonials
+            </a>
+            <a href="#contact" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out" style={{ letterSpacing: "-0.01em" }}>
+              Contact
+            </a>
           </div>
 
-          {/* CTA + Mobile */}
           <div className="flex items-center justify-end gap-4">
-            <a
-              href="#contact"
-              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
-            >
+            <a href="#contact" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg">
               Plan My Trip
             </a>
             <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">

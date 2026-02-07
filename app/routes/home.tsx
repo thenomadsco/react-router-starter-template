@@ -490,8 +490,8 @@ function AboutSection() {
             Ready for a holiday that feels effortless and totally yours?
             <br /><br />
             Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
-            itinerary with care, comfort, and serious attention to detail. Whether it&apos;s a
-            romantic escape, a friends&apos; trip, a family vacation, or a solo adventure, Kirti
+            itinerary with care, comfort, and serious attention to detail. Whether it's a
+            romantic escape, a friends' trip, a family vacation, or a solo adventure, Kirti
             tailors everything to your vibe—stays on top of the planning, and supports you
             throughout the journey.
             <br /><br />
@@ -503,30 +503,26 @@ function AboutSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
-          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm">
-            <h3
-              className="text-2xl font-semibold text-[#1F2328] mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Meet the Founder
-            </h3>
-            <p className="text-[#1F2328]/70 leading-relaxed mb-4">
-              Mrs. Kirti Shah brings a warm, detail-first approach to every itinerary. Known for her
-              calm guidance and intuitive understanding of traveler needs, she curates journeys that
-              feel both luxurious and deeply personal.
-            </p>
-            <p className="text-[#1F2328]/70 leading-relaxed">
-              From family escapes to once-in-a-lifetime celebrations, Kirti ensures every step feels
-              seamless — so clients can focus on the joy of the journey.
-            </p>
+        {/* NEW FOUNDER TABS - HIGHLIGHTED */}
+        <div className="flex justify-center mb-16">
+          <div className="flex gap-8 items-center">
+            <button className="group relative pb-4">
+              <span className="text-2xl font-semibold text-[#2D3191] pb-2">Founder</span>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-[#2D3191] scale-x-100 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+            </button>
+            <button className="text-2xl font-semibold text-[#1F2328]/60 pb-2 hover:text-[#2D3191] hover:border-b-2 hover:border-[#2D3191] transition-all duration-300">
+              Company
+            </button>
           </div>
+        </div>
 
-          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center">
+        {/* CENTERED FOUNDER PROFILE CARD */}
+        <div className="flex justify-center">
+          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center max-w-md w-full">
             <img
               src={kirtiProfile}
               alt="Portrait of Mrs. Kirti Shah"
-              className="w-40 h-40 rounded-2xl object-cover"
+              className="w-40 h-40 rounded-2xl object-cover flex-shrink-0"
             />
             <div>
               <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-2">
@@ -544,6 +540,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 function DiagonalDestinations() {
   return (

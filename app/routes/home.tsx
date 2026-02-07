@@ -1,7 +1,8 @@
 import { Link } from "react-router";
-import kirtiProfile from './kirti-shah-profile.jpeg';  
-import nomadsLogo from './the nomads logo.jpeg';
+import kirtiProfile from "./kirti-shah-profile.jpeg";
+import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
+import { useState } from "react";
 
 type IconProps = {
   size?: number;
@@ -237,8 +238,7 @@ const testimonials = [
     city: "Bangalore, India",
     image:
       "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    quote:
-      "Seamless planning from start to finish. Worth every rupee and more.",
+    quote: "Seamless planning from start to finish. Worth every rupee and more.",
     rating: 5,
   },
   {
@@ -299,19 +299,21 @@ function Navigation() {
             />
             <span
               className="text-lg font-semibold text-[#1F2328] tracking-tight"
-              style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "-0.02em",
+              }}
             >
               The Nomads Co.
             </span>
           </div>
 
-          {/* Navigation Links - NO "About Us" */}
+          {/* Navigation Links - Contact now routes to /contactus */}
           <div className="hidden lg:flex items-center justify-center gap-10">
             {[
               { label: "Destinations", href: "#destinations" },
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
-              { label: "Contact", href: "#contact" },
             ].map((link) => (
               <a
                 key={link.label}
@@ -322,16 +324,24 @@ function Navigation() {
                 {link.label}
               </a>
             ))}
+
+            <Link
+              to="/contactus"
+              className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Contact
+            </Link>
           </div>
 
           {/* CTA & Mobile Menu */}
           <div className="flex items-center justify-end gap-4">
-            <a
-              href="#contact"
+            <Link
+              to="/contactus"
               className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
             >
               Plan My Trip
-            </a>
+            </Link>
 
             <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
               <Menu size={24} />
@@ -379,19 +389,19 @@ function Hero() {
               className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
               style={{ letterSpacing: "-0.01em" }}
             >
-              Personalized premium travel with seamless planning. We design extraordinary
-              experiences tailored to your dreams, handling every detail from start to
-              finish.
+              Personalized premium travel with seamless planning. We design
+              extraordinary experiences tailored to your dreams, handling every
+              detail from start to finish.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5">
-              <a
-                href="#contact"
+              <Link
+                to="/contactus"
                 className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Get a custom itinerary
                 <ArrowRight size={18} />
-              </a>
+              </Link>
 
               <a
                 href="#destinations"
@@ -439,7 +449,10 @@ function TrustStrip() {
           <div>
             <h3
               className="text-xl sm:text-2xl text-[#1F2328]"
-              style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                letterSpacing: "-0.02em",
+              }}
             >
               Curated since 2015
             </h3>
@@ -467,19 +480,24 @@ function TrustStrip() {
   );
 }
 
-import { useState } from 'react';
-
 function AboutSection() {
-  const [activeTab, setActiveTab] = useState('founder');
+  const [activeTab, setActiveTab] = useState("founder");
 
   return (
-    <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
+    <section
+      id="about"
+      className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]"
+    >
       <div className="max-w-[1200px] mx-auto">
         {/* Title Only */}
         <div className="text-center mb-14">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
           >
             About The Nomads Co.
           </h2>
@@ -490,38 +508,38 @@ function AboutSection() {
           <div className="flex gap-8 items-center">
             {/* FOUNDER TAB */}
             <button
-              onClick={() => setActiveTab('founder')}
+              onClick={() => setActiveTab("founder")}
               className={`group relative pb-4 transition-all duration-300 ${
-                activeTab === 'founder'
-                  ? 'text-[#2D3191]'
-                  : 'text-[#1F2328]/60 hover:text-[#2D3191]'
+                activeTab === "founder"
+                  ? "text-[#2D3191]"
+                  : "text-[#1F2328]/60 hover:text-[#2D3191]"
               }`}
             >
               <span className="text-2xl font-semibold pb-2">Founder</span>
-              <div 
+              <div
                 className={`absolute bottom-0 left-0 w-full h-1 transition-all duration-300 origin-left ${
-                  activeTab === 'founder'
-                    ? 'bg-[#2D3191] scale-x-100'
-                    : 'bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]'
+                  activeTab === "founder"
+                    ? "bg-[#2D3191] scale-x-100"
+                    : "bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]"
                 }`}
               />
             </button>
-            
+
             {/* COMPANY TAB */}
             <button
-              onClick={() => setActiveTab('company')}
+              onClick={() => setActiveTab("company")}
               className={`group relative pb-4 transition-all duration-300 ${
-                activeTab === 'company'
-                  ? 'text-[#2D3191]'
-                  : 'text-[#1F2328]/60 hover:text-[#2D3191]'
+                activeTab === "company"
+                  ? "text-[#2D3191]"
+                  : "text-[#1F2328]/60 hover:text-[#2D3191]"
               }`}
             >
               <span className="text-2xl font-semibold pb-2">Company</span>
-              <div 
+              <div
                 className={`absolute bottom-0 left-0 w-full h-1 transition-all duration-300 origin-left ${
-                  activeTab === 'company'
-                    ? 'bg-[#2D3191] scale-x-100'
-                    : 'bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]'
+                  activeTab === "company"
+                    ? "bg-[#2D3191] scale-x-100"
+                    : "bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]"
                 }`}
               />
             </button>
@@ -529,27 +547,26 @@ function AboutSection() {
         </div>
 
         {/* TAB CONTENT */}
-        {activeTab === 'founder' ? (
-          // FOUNDER PANEL - SMALLER SIZE
+        {activeTab === "founder" ? (
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
-              {/* 👇 PERFECTLY SIZED IMAGE for Founder content */}
               <div className="flex justify-center mb-6">
-                <img 
-                  src={kirtiProfile} 
-                  alt="Mrs. Kirti Shah" 
+                <img
+                  src={kirtiProfile}
+                  alt="Mrs. Kirti Shah"
                   className="w-32 h-32 rounded-xl object-cover shadow-md"
                 />
               </div>
-              
-              {/* 👇 CLEAN TITLE - NO GREEN BADGE */}
+
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-semibold text-[#1F2328] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3
+                  className="text-2xl font-semibold text-[#1F2328] mb-2"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
                   Mrs. Kirti Shah
                 </h3>
               </div>
-              
-              {/* 👇 SHORT, CLEAN TEXT */}
+
               <div className="text-center">
                 <p className="text-lg text-[#1F2328]/80 leading-relaxed mb-2">
                   Passionate about handcrafted travel
@@ -561,32 +578,29 @@ function AboutSection() {
             </div>
           </div>
         ) : (
-          // COMPANY PANEL - SMALLER SIZE
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
-              {/* 👇 PERFECTLY SIZED LOGO for Company content */}
               <div className="flex justify-center mb-6">
-                <img 
-                  src={logoImage} 
-                  alt="The Nomads Co." 
-                  className="h-12 w-auto"
-                />
+                <img src={logoImage} alt="The Nomads Co." className="h-12 w-auto" />
               </div>
-              
-              {/* TITLE */}
+
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-semibold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3
+                  className="text-2xl font-semibold text-[#1F2328]"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
                   The Nomads Co.
                 </h3>
               </div>
-              
-              {/* 👇 CONDENSED DESCRIPTION */}
+
               <div className="text-center space-y-3">
                 <p className="text-lg text-[#1F2328]/80 leading-relaxed">
-                  Ready for a holiday that feels effortless? Meet Kirti Shah, your personal travel consultant who crafts every itinerary with care.
+                  Ready for a holiday that feels effortless? Meet Kirti Shah, your
+                  personal travel consultant who crafts every itinerary with care.
                 </p>
                 <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-                  From romantic escapes to family adventures, we handle every detail so you can just pack and enjoy.
+                  From romantic escapes to family adventures, we handle every detail so
+                  you can just pack and enjoy.
                 </p>
                 <p className="text-lg text-[#1F2328]/70 font-semibold">
                   Your next destination awaits. Connect now.
@@ -600,8 +614,6 @@ function AboutSection() {
   );
 }
 
-
-
 function DiagonalDestinations() {
   return (
     <section id="destinations" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-white">
@@ -609,7 +621,11 @@ function DiagonalDestinations() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
           >
             Featured Destinations
           </h2>
@@ -675,7 +691,11 @@ function ExperienceSection() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
           >
             Signature Experiences
           </h2>
@@ -734,7 +754,11 @@ function StatsSection() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
           >
             Loved by travellers who want it effortless
           </h2>
@@ -748,7 +772,12 @@ function StatsSection() {
             >
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={`${testimonial.name}-${i}`} size={16} fill="#02A551" className="text-[#02A551]" />
+                  <Star
+                    key={`${testimonial.name}-${i}`}
+                    size={16}
+                    fill="#02A551"
+                    className="text-[#02A551]"
+                  />
                 ))}
               </div>
 
@@ -764,10 +793,14 @@ function StatsSection() {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-semibold text-[#1F2328]">{testimonial.name}</h4>
+                    <h4 className="font-semibold text-[#1F2328]">
+                      {testimonial.name}
+                    </h4>
                     <BadgeCheck size={16} className="text-[#02A551]" />
                   </div>
-                  <p className="text-sm text-[#1F2328]/60">{testimonial.city}</p>
+                  <p className="text-sm text-[#1F2328]/60">
+                    {testimonial.city}
+                  </p>
                 </div>
               </div>
 
@@ -792,7 +825,11 @@ function ContactSection() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
           >
             Plan your trip
           </h2>
@@ -800,7 +837,8 @@ function ContactSection() {
             className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
             style={{ letterSpacing: "-0.01em" }}
           >
-            Share your travel dreams with us and let our experts craft your perfect journey
+            Share your travel dreams with us and let our experts craft your perfect
+            journey
           </p>
         </div>
 
@@ -815,8 +853,8 @@ function ContactSection() {
                   Get in touch
                 </h3>
                 <p className="text-[#1F2328]/70 leading-relaxed">
-                  Our team is ready to help you create the journey of a lifetime. Reach out
-                  through any channel below.
+                  Our team is ready to help you create the journey of a lifetime.
+                  Reach out through any channel below.
                 </p>
               </div>
 
@@ -961,7 +999,9 @@ function ContactSection() {
                   >
                     Send inquiry
                   </button>
-                  <p className="text-sm text-[#1F2328]/60 text-center mt-4">We reply within 24 hours</p>
+                  <p className="text-sm text-[#1F2328]/60 text-center mt-4">
+                    We reply within 24 hours
+                  </p>
                 </div>
               </div>
             </form>
@@ -982,7 +1022,10 @@ function Footer() {
           <div>
             <h3
               className="text-2xl font-semibold mb-5 text-[#1F2328]"
-              style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                letterSpacing: "-0.02em",
+              }}
             >
               The Nomads Co.
             </h3>
@@ -994,8 +1037,16 @@ function Footer() {
             </p>
             <div className="flex gap-3">
               {[
-                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/thenomadsco/" },
-                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/Thenomadsco/" },
+                {
+                  icon: Instagram,
+                  label: "Instagram",
+                  href: "https://www.instagram.com/thenomadsco/",
+                },
+                {
+                  icon: Facebook,
+                  label: "Facebook",
+                  href: "https://www.facebook.com/Thenomadsco/",
+                },
                 { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" },
               ].map(({ icon: Icon, label, href }) => (
                 <a
@@ -1005,7 +1056,10 @@ function Footer() {
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noreferrer" : undefined}
                 >
-                  <Icon size={18} className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out" />
+                  <Icon
+                    size={18}
+                    className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out"
+                  />
                 </a>
               ))}
             </div>
@@ -1031,7 +1085,13 @@ function Footer() {
               Support
             </h4>
             <ul className="space-y-3 text-sm">
-              {["Contact Us", "FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
+              {/* Optional: make Contact Us in footer route too */}
+              <li>
+                <Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191]">
+                  Contact Us
+                </Link>
+              </li>
+              {["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
                 <li key={link}>
                   <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191]">
                     {link}
@@ -1045,7 +1105,9 @@ function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
               Newsletter
             </h4>
-            <p className="text-sm text-[#1F2328]/70 mb-4">Get travel inspiration and exclusive deals</p>
+            <p className="text-sm text-[#1F2328]/70 mb-4">
+              Get travel inspiration and exclusive deals
+            </p>
             <div className="flex gap-2">
               <input
                 type="email"
@@ -1062,9 +1124,15 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
           <div>© {currentYear} The Nomads Co. All rights reserved.</div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#2D3191]">Privacy Policy</a>
-            <a href="#" className="hover:text-[#2D3191]">Terms of Service</a>
-            <a href="#" className="hover:text-[#2D3191]">Cookie Policy</a>
+            <a href="#" className="hover:text-[#2D3191]">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-[#2D3191]">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-[#2D3191]">
+              Cookie Policy
+            </a>
           </div>
         </div>
       </div>

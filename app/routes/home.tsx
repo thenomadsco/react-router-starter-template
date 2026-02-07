@@ -1,5 +1,3 @@
-import { Link } from "react-router";
-
 import type { Route } from "./+types/home";
 
 type IconProps = {
@@ -216,7 +214,7 @@ const experiences = [
     description:
       "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMGJlYWNoJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     ctaType: "primary",
   },
 ];
@@ -273,7 +271,6 @@ export default function Home() {
     <div className="min-h-screen bg-white antialiased">
       <Navigation />
       <Hero />
-      <AboutSection />
       <TrustStrip />
       <DiagonalDestinations />
       <ExperienceSection />
@@ -288,7 +285,7 @@ function Navigation() {
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src={logoImage}
@@ -303,47 +300,31 @@ function Navigation() {
             </span>
           </div>
 
-          <div className="hidden lg:flex items-center justify-center gap-10">
-            {[
-              { label: "Destinations", href: "#destinations" },
-              { label: "Experiences", href: "#experiences" },
-              { label: "Testimonials", href: "#testimonials" },
-              { label: "Contact", href: "#contact" },
-            ].map((link) =>
-              link.href.startsWith("#") ? (
+          <div className="hidden lg:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
+            {["Destinations", "Experiences", "Testimonials", "Contact"].map(
+              (label) => (
                 <a
-                  key={link.label}
-                  href={link.href}
+                  key={label}
+                  href={`#${label.toLowerCase()}`}
                   className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
                   style={{ letterSpacing: "-0.01em" }}
                 >
-                  {link.label}
+                  {label}
                 </a>
-              ) : (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </Link>
-              ),
+              )
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-4">
-            <a
-              href="#contact"
-              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              Plan My Trip
-            </a>
+          <a
+            href="#contact"
+            className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            Plan My Trip
+          </a>
 
-            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
-              <Menu size={24} />
-            </button>
-          </div>
+          <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
+            <Menu size={24} />
+          </button>
         </div>
       </div>
     </nav>
@@ -467,70 +448,6 @@ function TrustStrip() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function AboutSection() {
-  return (
-    <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
-      <div className="max-w-[1200px] mx-auto">
-        <div className="text-center mb-14">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}
-          >
-            About The Nomads Co.
-          </h2>
-          <p className="text-lg sm:text-xl text-[#1F2328]/70 max-w-3xl mx-auto">
-            Ladies, ready to treat yourself to a holiday that&apos;s all about you? Meet Kirti Shah
-            from The NomadsCo.—your personal travel consultant who crafts every itinerary with
-            love, luxury, and attention to detail. From girls&apos; getaways to solo adventures,
-            Kirti personally tailors your experience and stays with you every step of the journey.
-            Set up a one-on-one with Kirti today and let her handle the planning, so you just show
-            up and shine! For a trip as fabulous as you are, make your next destination
-            unforgettable—connect now!
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
-          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm">
-            <h3
-              className="text-2xl font-semibold text-[#1F2328] mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Meet the Founder
-            </h3>
-            <p className="text-[#1F2328]/70 leading-relaxed mb-4">
-              Mrs. Kirti Shah brings a warm, detail-first approach to every itinerary. Known for her
-              calm guidance and intuitive understanding of traveler needs, she curates journeys that
-              feel both luxurious and deeply personal.
-            </p>
-            <p className="text-[#1F2328]/70 leading-relaxed">
-              From family escapes to once-in-a-lifetime celebrations, Kirti ensures every step feels
-              seamless — so clients can focus on the joy of the journey.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center">
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
-              alt="Portrait of Mrs. Kirti Shah"
-              className="w-40 h-40 rounded-2xl object-cover"
-            />
-            <div>
-              <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-2">
-                Founder
-              </div>
-              <h4 className="text-2xl font-semibold text-[#1F2328] mb-2">Mrs. Kirti Shah</h4>
-              <p className="text-[#1F2328]/70 leading-relaxed">
-                Passionate about handcrafted travel and authentic experiences, Kirti leads The
-                Nomads Co. with empathy, precision, and a love for exploring the world.
-              </p>
-            </div>
           </div>
         </div>
       </div>

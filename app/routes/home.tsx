@@ -290,7 +290,7 @@ function Navigation() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          {/* Logo & Brand */}
+          {/* Logo */}
           <div className="flex items-center gap-3">
             <img
               src={logoImage}
@@ -305,16 +305,27 @@ function Navigation() {
             </span>
           </div>
 
-          {/* Navigation Links - UPDATED WITH "About Us" */}
+          {/* ✅ FIXED NAVIGATION - Works on Cloudflare Pages */}
           <div className="hidden lg:flex items-center justify-center gap-10">
             {[
-              { label: "About Us", href: "/aboutus" },        // 👈 NEW BUTTON
+              { label: "About Us", to: "/aboutus" },           // 👈 ROUTER LINK
               { label: "Destinations", href: "#destinations" },
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
               { label: "Contact", href: "#contact" },
             ].map((link) =>
-              link.href.startsWith("#") ? (
+              link.to ? (
+                // Router Link for /aboutus
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                  style={{ letterSpacing: "-0.01em" }}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                // Anchor link for sections
                 <a
                   key={link.label}
                   href={link.href}
@@ -323,20 +334,11 @@ function Navigation() {
                 >
                   {link.label}
                 </a>
-              ) : (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  {link.label}
-                </Link>
               )
             )}
           </div>
 
-          {/* CTA & Mobile Menu */}
+          {/* CTA + Mobile */}
           <div className="flex items-center justify-end gap-4">
             <a
               href="#contact"
@@ -344,7 +346,6 @@ function Navigation() {
             >
               Plan My Trip
             </a>
-
             <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
               <Menu size={24} />
             </button>
@@ -354,6 +355,7 @@ function Navigation() {
     </nav>
   );
 }
+
 
 
 function Hero() {

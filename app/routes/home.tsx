@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import kirtiProfile from './kirti-shah-profile.jpeg';  
-
+import nomadsLogo from './the nomads logo.jpeg';
 import type { Route } from "./+types/home";
 
 type IconProps = {
@@ -146,7 +146,7 @@ function Star(props: IconProps) {
   );
 }
 
-const logoImage = "/nomads-logo.png";
+const logoImage = nomadsLogo;
 
 const destinations = [
   {

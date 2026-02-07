@@ -470,7 +470,7 @@ function TrustStrip() {
 import { useState } from 'react';
 
 function AboutSection() {
-  const [activeTab, setActiveTab] = useState('founder'); // Founder active by default
+  const [activeTab, setActiveTab] = useState('founder');
 
   return (
     <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
@@ -488,7 +488,7 @@ function AboutSection() {
         {/* CLICKABLE TABS */}
         <div className="flex justify-center mb-16">
           <div className="flex gap-8 items-center">
-            {/* FOUNDER TAB - ACTIVE */}
+            {/* FOUNDER TAB */}
             <button
               onClick={() => setActiveTab('founder')}
               className={`group relative pb-4 transition-all duration-300 ${
@@ -507,7 +507,7 @@ function AboutSection() {
               />
             </button>
             
-            {/* COMPANY TAB - Text only */}
+            {/* COMPANY TAB */}
             <button
               onClick={() => setActiveTab('company')}
               className={`group relative pb-4 transition-all duration-300 ${
@@ -530,64 +530,52 @@ function AboutSection() {
 
         {/* TAB CONTENT */}
         {activeTab === 'founder' ? (
-          // FOUNDER PANEL - SAME SIZE AS COMPANY
+          // FOUNDER PANEL - Same size, optimized for less content
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
-              {/* LOGO - CENTERED ABOVE TITLE (matching Company panel) */}
-              <div className="flex justify-center mb-6">
+              {/* 👇 LARGER PROFILE IMAGE - Perfectly centered */}
+              <div className="flex justify-center mb-8">
                 <img 
                   src={kirtiProfile} 
                   alt="Mrs. Kirti Shah" 
-                  className="h-16 w-auto rounded-xl"
+                  className="w-48 h-48 rounded-2xl object-cover shadow-lg ring-4 ring-white"
                 />
               </div>
               
-              {/* TITLE */}
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              {/* 👇 CLEAN TITLE + BADGE */}
+              <div className="text-center mb-12">
+                <h3 className="text-4xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                   Mrs. Kirti Shah
                 </h3>
-                <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-6">
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-[#02A551]/10 text-[#02A551] text-sm font-semibold rounded-full">
+                  <div className="w-2 h-2 bg-[#02A551] rounded-full" />
                   Founder
                 </div>
               </div>
               
-              {/* DESCRIPTION - Same layout as Company */}
-              <div className="grid md:grid-cols-2 gap-8 text-lg">
-                <div>
-                  <p className="text-[#1F2328]/80 leading-relaxed mb-6">
-                    Passionate about handcrafted travel and authentic experiences.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[#1F2328]/70 leading-relaxed font-semibold text-xl">
-                    Kirti leads The Nomads Co. with empathy, precision, and a love for exploring the world.
-                  </p>
-                </div>
+              {/* 👇 CLEANLY FORMATTED TEXT - Perfect alignment */}
+              <div className="text-center max-w-2xl mx-auto">
+                <p className="text-xl text-[#1F2328]/80 leading-relaxed mb-6">
+                  Passionate about handcrafted travel and authentic experiences.
+                </p>
+                <p className="text-xl text-[#1F2328]/70 leading-relaxed font-semibold">
+                  Kirti leads The Nomads Co. with empathy, precision, and a love for exploring the world.
+                </p>
               </div>
             </div>
           </div>
         ) : (
-          // COMPANY PANEL
+          // COMPANY PANEL - Unchanged
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
-              {/* LOGO - CENTERED ABOVE TITLE */}
               <div className="flex justify-center mb-6">
-                <img 
-                  src={logoImage} 
-                  alt="The Nomads Co." 
-                  className="h-16 w-auto"
-                />
+                <img src={logoImage} alt="The Nomads Co." className="h-16 w-auto" />
               </div>
-              
-              {/* TITLE */}
               <div className="text-center mb-8">
                 <h3 className="text-3xl font-semibold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
                   The Nomads Co.
                 </h3>
               </div>
-              
-              {/* DESCRIPTION */}
               <div className="grid md:grid-cols-2 gap-8 text-lg">
                 <div>
                   <p className="text-[#1F2328]/80 leading-relaxed mb-6">
@@ -619,7 +607,6 @@ function AboutSection() {
     </section>
   );
 }
-
 
 
 function DiagonalDestinations() {

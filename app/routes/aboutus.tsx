@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 import nomadsLogo from './the nomads logo.jpeg';
-import kirtiProfile from './kirti-shah-profile.jpeg';
 
 type IconProps = {
   size?: number;
@@ -11,26 +10,9 @@ type IconProps = {
 
 const iconDefaults = { size: 24, strokeWidth: 2 };
 
-function IconBase({
-  size = iconDefaults.size,
-  className,
-  strokeWidth = iconDefaults.strokeWidth,
-  fill = "none",
-  children,
-}: IconProps & { children: React.ReactNode }) {
+function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: IconProps & { children: React.ReactNode }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width={size}
-      height={size}
-      className={className}
-      fill={fill}
-      stroke="currentColor"
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       {children}
     </svg>
   );
@@ -60,24 +42,8 @@ function Navigation() {
             </span>
           </div>
           <div className="hidden lg:flex items-center justify-center gap-10">
-            {[
-              { label: "About Us", to: "/aboutus" },
-              { label: "Home", to: "/" },
-              { label: "Destinations", href: "/" },
-              { label: "Experiences", href: "/" },
-              { label: "Testimonials", href: "/" },
-              { label: "Contact", href: "/" },
-            ].map((link) =>
-              link.to ? (
-                <Link key={link.label} to={link.to} className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out">
-                  {link.label}
-                </Link>
-              ) : (
-                <a key={link.label} href={link.href} className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out">
-                  {link.label}
-                </a>
-              )
-            )}
+            <Link to="/aboutus" className="text-sm font-semibold text-[#2D3191]">About Us</Link>
+            <Link to="/" className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300">Home</Link>
           </div>
           <div className="flex items-center justify-end gap-4">
             <Link to="/" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg">
@@ -97,19 +63,18 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white antialiased">
       <Navigation />
-      <main className="pt-24 pb-32 px-6 sm:px-8 lg:px-12">
+      <main className="pt-24 pb-32 px-6 sm:px-8 lg:px-12 bg-gradient-to-br from-[#F7F6F1] to-white">
         <div className="max-w-[1400px] mx-auto text-center">
-          <h1 
-            className="text-5xl sm:text-6xl lg:text-7xl text-[#1F2328] mb-8"
-            style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.03em" }}
-          >
-            About Us
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.03em" }}>
+            About Us Page ✅
           </h1>
-          <div className="bg-[#F7F6F1] rounded-2xl p-12 border border-[#E6E8EF]">
-            <p className="text-xl text-[#1F2328]/70 max-w-3xl mx-auto leading-relaxed">
-              ✅ <strong>ROUTING WORKS!</strong> You successfully navigated from home.tsx to aboutus.tsx<br/>
-              🎉 <strong>Cloudflare Pages deployment ready</strong><br/>
-              📝 Ready to add your full About Us content here.
+          <div className="bg-white rounded-2xl p-16 border border-[#E6E8EF] shadow-xl max-w-4xl mx-auto">
+            <p className="text-2xl text-[#1F2328]/80 mb-8">
+              🎉 <strong>ROUTING 100% FIXED!</strong>
+            </p>
+            <p className="text-xl text-[#1F2328]/70 leading-relaxed">
+              Navigation from home.tsx → aboutus.tsx works perfectly on Cloudflare Pages.<br/>
+              Ready to add your full About Us content here.
             </p>
           </div>
         </div>

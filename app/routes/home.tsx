@@ -343,9 +343,6 @@ function Navigation() {
   );
 }
 
-
-
-
 function Hero() {
   const heroImage =
     "https://images.unsplash.com/photo-1701279678695-10108e560da8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cm9waWNhbCUyMGJlYWNoJTIwd2FybSUyMHN1bmxpZ2h0fGVufDF8fHx8MTc2OTg1ODU4MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -491,7 +488,7 @@ function AboutSection() {
         {/* CLICKABLE TABS */}
         <div className="flex justify-center mb-16">
           <div className="flex gap-8 items-center">
-            {/* FOUNDER TAB */}
+            {/* FOUNDER TAB - ACTIVE */}
             <button
               onClick={() => setActiveTab('founder')}
               className={`group relative pb-4 transition-all duration-300 ${
@@ -510,7 +507,7 @@ function AboutSection() {
               />
             </button>
             
-            {/* COMPANY TAB - Text only now */}
+            {/* COMPANY TAB - Text only */}
             <button
               onClick={() => setActiveTab('company')}
               className={`group relative pb-4 transition-all duration-300 ${
@@ -531,9 +528,9 @@ function AboutSection() {
           </div>
         </div>
 
-        {/* TAB CONTENT - Conditional Rendering */}
+        {/* TAB CONTENT */}
         {activeTab === 'founder' ? (
-          /* FOUNDER PANEL */
+          // FOUNDER PANEL
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center max-w-md w-full">
               <img
@@ -554,10 +551,10 @@ function AboutSection() {
             </div>
           </div>
         ) : (
-          /* COMPANY PANEL - Logo at top center */}
+          // COMPANY PANEL - Logo centered at top
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
-              {/* 👈 LOGO CENTERED AT TOP */}
+              {/* LOGO - CENTERED ABOVE TITLE */}
               <div className="flex justify-center mb-6">
                 <img 
                   src={logoImage} 
@@ -568,16 +565,16 @@ function AboutSection() {
               
               {/* TITLE */}
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3 className="text-3xl font-semibold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
                   The Nomads Co.
                 </h3>
               </div>
               
-              {/* DESCRIPTION */}
+              {/* COMPANY DESCRIPTION */}
               <div className="grid md:grid-cols-2 gap-8 text-lg">
                 <div>
                   <p className="text-[#1F2328]/80 leading-relaxed mb-6">
-                    Ready for a holiday that feels effortlessly and totally yours?
+                    Ready for a holiday that feels effortless and totally yours?
                   </p>
                   <p className="text-[#1F2328]/70 leading-relaxed mb-6">
                     Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
@@ -605,8 +602,6 @@ function AboutSection() {
     </section>
   );
 }
-
-
 
 
 function DiagonalDestinations() {

@@ -530,75 +530,67 @@ function AboutSection() {
 
         {/* TAB CONTENT */}
         {activeTab === 'founder' ? (
-          // FOUNDER PANEL - Same size, optimized for less content
+          // FOUNDER PANEL - SMALLER SIZE
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
-            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
-              {/* 👇 LARGER PROFILE IMAGE - Perfectly centered */}
-              <div className="flex justify-center mb-8">
+            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
+              {/* 👇 PERFECTLY SIZED IMAGE for Founder content */}
+              <div className="flex justify-center mb-6">
                 <img 
                   src={kirtiProfile} 
                   alt="Mrs. Kirti Shah" 
-                  className="w-48 h-48 rounded-2xl object-cover shadow-lg ring-4 ring-white"
+                  className="w-32 h-32 rounded-xl object-cover shadow-md"
                 />
               </div>
               
-              {/* 👇 CLEAN TITLE + BADGE */}
-              <div className="text-center mb-12">
-                <h3 className="text-4xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              {/* 👇 CLEAN TITLE - NO GREEN BADGE */}
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-semibold text-[#1F2328] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                   Mrs. Kirti Shah
                 </h3>
-                <div className="inline-flex items-center gap-2 px-6 py-2 bg-[#02A551]/10 text-[#02A551] text-sm font-semibold rounded-full">
-                  <div className="w-2 h-2 bg-[#02A551] rounded-full" />
-                  Founder
-                </div>
               </div>
               
-              {/* 👇 CLEANLY FORMATTED TEXT - Perfect alignment */}
-              <div className="text-center max-w-2xl mx-auto">
-                <p className="text-xl text-[#1F2328]/80 leading-relaxed mb-6">
-                  Passionate about handcrafted travel and authentic experiences.
+              {/* 👇 SHORT, CLEAN TEXT */}
+              <div className="text-center">
+                <p className="text-lg text-[#1F2328]/80 leading-relaxed mb-2">
+                  Passionate about handcrafted travel
                 </p>
-                <p className="text-xl text-[#1F2328]/70 leading-relaxed font-semibold">
-                  Kirti leads The Nomads Co. with empathy, precision, and a love for exploring the world.
+                <p className="text-lg text-[#1F2328]/70 leading-relaxed font-semibold">
+                  Leads The Nomads Co. with empathy and precision.
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          // COMPANY PANEL - Unchanged
+          // COMPANY PANEL - SMALLER SIZE
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
-            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
+            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
+              {/* 👇 PERFECTLY SIZED LOGO for Company content */}
               <div className="flex justify-center mb-6">
-                <img src={logoImage} alt="The Nomads Co." className="h-16 w-auto" />
+                <img 
+                  src={logoImage} 
+                  alt="The Nomads Co." 
+                  className="h-12 w-auto"
+                />
               </div>
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-semibold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
+              
+              {/* TITLE */}
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-semibold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
                   The Nomads Co.
                 </h3>
               </div>
-              <div className="grid md:grid-cols-2 gap-8 text-lg">
-                <div>
-                  <p className="text-[#1F2328]/80 leading-relaxed mb-6">
-                    Ready for a holiday that feels effortless and totally yours?
-                  </p>
-                  <p className="text-[#1F2328]/70 leading-relaxed mb-6">
-                    Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
-                    itinerary with care, comfort, and serious attention to detail. Whether it's a
-                    romantic escape, a friends' trip, a family vacation, or a solo adventure, Kirti
-                    tailors everything to your vibe—stays on top of the planning, and supports you
-                    throughout the journey.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[#1F2328]/70 leading-relaxed mb-6">
-                    Book a one-on-one with Kirti and let The NomadsCo. handle the details—flights, stays,
-                    experiences, and the little things that make a trip feel premium—so you can just pack,
-                    show up, and enjoy.
-                  </p>
-                  <p className="text-[#1F2328]/70 leading-relaxed font-semibold text-xl">
-                    Your next destination deserves to be unforgettable. Connect now.
-                  </p>
-                </div>
+              
+              {/* 👇 CONDENSED DESCRIPTION */}
+              <div className="text-center space-y-3">
+                <p className="text-lg text-[#1F2328]/80 leading-relaxed">
+                  Ready for a holiday that feels effortless? Meet Kirti Shah, your personal travel consultant who crafts every itinerary with care.
+                </p>
+                <p className="text-lg text-[#1F2328]/70 leading-relaxed">
+                  From romantic escapes to family adventures, we handle every detail so you can just pack and enjoy.
+                </p>
+                <p className="text-lg text-[#1F2328]/70 font-semibold">
+                  Your next destination awaits. Connect now.
+                </p>
               </div>
             </div>
           </div>
@@ -607,6 +599,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 
 function DiagonalDestinations() {

@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import kirtiProfile from './kirti-shah-profile.jpeg';  
 
 import type { Route } from "./+types/home";
 
@@ -523,7 +524,7 @@ function AboutSection() {
 
           <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center">
             <img
-              src="/kirti-shah-profile.jpg"
+              src={kirtiProfile}
               alt="Portrait of Mrs. Kirti Shah"
               className="w-40 h-40 rounded-2xl object-cover"
             />

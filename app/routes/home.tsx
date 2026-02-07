@@ -530,28 +530,45 @@ function AboutSection() {
 
         {/* TAB CONTENT */}
         {activeTab === 'founder' ? (
-          // FOUNDER PANEL
+          // FOUNDER PANEL - SAME SIZE AS COMPANY
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
-            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center max-w-md w-full">
-              <img
-                src={kirtiProfile}
-                alt="Portrait of Mrs. Kirti Shah"
-                className="w-40 h-40 rounded-2xl object-cover flex-shrink-0"
-              />
-              <div>
-                <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-2">
+            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
+              {/* LOGO - CENTERED ABOVE TITLE (matching Company panel) */}
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={kirtiProfile} 
+                  alt="Mrs. Kirti Shah" 
+                  className="h-16 w-auto rounded-xl"
+                />
+              </div>
+              
+              {/* TITLE */}
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Mrs. Kirti Shah
+                </h3>
+                <div className="text-sm uppercase tracking-[0.2em] text-[#02A551] font-semibold mb-6">
                   Founder
                 </div>
-                <h4 className="text-2xl font-semibold text-[#1F2328] mb-2">Mrs. Kirti Shah</h4>
-                <p className="text-[#1F2328]/70 leading-relaxed">
-                  Passionate about handcrafted travel and authentic experiences, Kirti leads The
-                  Nomads Co. with empathy, precision, and a love for exploring the world.
-                </p>
+              </div>
+              
+              {/* DESCRIPTION - Same layout as Company */}
+              <div className="grid md:grid-cols-2 gap-8 text-lg">
+                <div>
+                  <p className="text-[#1F2328]/80 leading-relaxed mb-6">
+                    Passionate about handcrafted travel and authentic experiences.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[#1F2328]/70 leading-relaxed font-semibold text-xl">
+                    Kirti leads The Nomads Co. with empathy, precision, and a love for exploring the world.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          // COMPANY PANEL - Logo centered at top
+          // COMPANY PANEL
           <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
             <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
               {/* LOGO - CENTERED ABOVE TITLE */}
@@ -570,7 +587,7 @@ function AboutSection() {
                 </h3>
               </div>
               
-              {/* COMPANY DESCRIPTION */}
+              {/* DESCRIPTION */}
               <div className="grid md:grid-cols-2 gap-8 text-lg">
                 <div>
                   <p className="text-[#1F2328]/80 leading-relaxed mb-6">
@@ -602,6 +619,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 
 function DiagonalDestinations() {

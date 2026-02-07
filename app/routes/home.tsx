@@ -290,6 +290,7 @@ function Navigation() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+          {/* Logo & Brand */}
           <div className="flex items-center gap-3">
             <img
               src={logoImage}
@@ -304,8 +305,10 @@ function Navigation() {
             </span>
           </div>
 
+          {/* Navigation Links - UPDATED WITH "About Us" */}
           <div className="hidden lg:flex items-center justify-center gap-10">
             {[
+              { label: "About Us", href: "/aboutus" },        // 👈 NEW BUTTON
               { label: "Destinations", href: "#destinations" },
               { label: "Experiences", href: "#experiences" },
               { label: "Testimonials", href: "#testimonials" },
@@ -329,10 +332,11 @@ function Navigation() {
                 >
                   {link.label}
                 </Link>
-              ),
+              )
             )}
           </div>
 
+          {/* CTA & Mobile Menu */}
           <div className="flex items-center justify-end gap-4">
             <a
               href="#contact"
@@ -350,6 +354,7 @@ function Navigation() {
     </nav>
   );
 }
+
 
 function Hero() {
   const heroImage =

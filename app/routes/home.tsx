@@ -474,7 +474,7 @@ function AboutSection() {
   return (
     <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]">
       <div className="max-w-[1200px] mx-auto">
-        {/* Title & Description */}
+        {/* Title Only - No description here */}
         <div className="text-center mb-14">
           <h2
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
@@ -482,36 +482,34 @@ function AboutSection() {
           >
             About The Nomads Co.
           </h2>
-          <p className="text-lg sm:text-xl text-[#1F2328]/70 max-w-3xl mx-auto">
-            Ready for a holiday that feels effortless and totally yours?
-            <br /><br />
-            Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
-            itinerary with care, comfort, and serious attention to detail. Whether it's a
-            romantic escape, a friends' trip, a family vacation, or a solo adventure, Kirti
-            tailors everything to your vibe—stays on top of the planning, and supports you
-            throughout the journey.
-            <br /><br />
-            Book a one-on-one with Kirti and let The NomadsCo. handle the details—flights, stays,
-            experiences, and the little things that make a trip feel premium—so you can just pack,
-            show up, and enjoy.
-            <br /><br />
-            Your next destination deserves to be unforgettable. Connect now.
-          </p>
         </div>
 
-        {/* ✅ ONLY FOUNDER TAB - HIGHLIGHTED */}
+        {/* TWO TABS: Founder (active) + Company (with logo) */}
         <div className="flex justify-center mb-16">
           <div className="flex gap-8 items-center">
+            {/* FOUNDER TAB - ACTIVE */}
             <button className="group relative pb-4">
               <span className="text-2xl font-semibold text-[#2D3191] pb-2">Founder</span>
               <div className="absolute bottom-0 left-0 w-full h-1 bg-[#2D3191] scale-x-100 transition-transform duration-300 origin-left"></div>
             </button>
-            {/* ✅ NO Company tab */}
+            
+            {/* COMPANY TAB - With Nomads Logo */}
+            <button className="group relative pb-4 flex items-center gap-2">
+              <img 
+                src={logoImage} 
+                alt="The Nomads Co." 
+                className="h-6 w-auto opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+              />
+              <span className="text-2xl font-semibold text-[#1F2328]/60 pb-2 hover:text-[#2D3191] transition-colors duration-300">
+                Company
+              </span>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-transparent hover:bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-all duration-300 origin-left"></div>
+            </button>
           </div>
         </div>
 
-        {/* CENTERED FOUNDER PROFILE CARD */}
-        <div className="flex justify-center">
+        {/* FOUNDER CONTENT - Active tab shows this */}
+        <div className="flex justify-center mb-12">
           <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center max-w-md w-full">
             <img
               src={kirtiProfile}
@@ -530,11 +528,45 @@ function AboutSection() {
             </div>
           </div>
         </div>
+
+        {/* COMPANY CONTENT - Hidden by default, shows on tab click */}
+        <div className="flex justify-center opacity-0 invisible max-h-0 transition-all duration-500">
+          <div className="bg-white rounded-2xl border border-[#E6E8EF] p-8 shadow-sm max-w-4xl w-full">
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                The Nomads Co.
+              </h3>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <p className="text-lg text-[#1F2328]/80 leading-relaxed mb-6">
+                  Ready for a holiday that feels effortless and totally yours?
+                </p>
+                <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
+                  Meet Kirti Shah from The NomadsCo.—your personal travel consultant who designs every
+                  itinerary with care, comfort, and serious attention to detail. Whether it's a
+                  romantic escape, a friends' trip, a family vacation, or a solo adventure, Kirti
+                  tailors everything to your vibe—stays on top of the planning, and supports you
+                  throughout the journey.
+                </p>
+              </div>
+              <div>
+                <p className="text-lg text-[#1F2328]/70 leading-relaxed">
+                  Book a one-on-one with Kirti and let The NomadsCo. handle the details—flights, stays,
+                  experiences, and the little things that make a trip feel premium—so you can just pack,
+                  show up, and enjoy.
+                </p>
+                <p className="text-lg text-[#1F2328]/70 leading-relaxed mt-4 font-semibold">
+                  Your next destination deserves to be unforgettable. Connect now.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-
 
 
 function DiagonalDestinations() {

@@ -1,8 +1,6 @@
 import { Link } from "react-router";
-import kirtiProfile from "./kirti-shah-profile.jpeg";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
-import { useState } from "react";
 
 type IconProps = {
   size?: number;
@@ -274,7 +272,7 @@ export default function Home() {
     <div className="min-h-screen bg-white antialiased">
       <Navigation />
       <Hero />
-      <AboutSection />
+      {/* AboutSection removed */}
       <TrustStrip />
       <DiagonalDestinations />
       <ExperienceSection />
@@ -308,7 +306,7 @@ function Navigation() {
             </span>
           </div>
 
-          {/* Navigation Links - Contact now routes to /contactus */}
+          {/* Navigation Links */}
           <div className="hidden lg:flex items-center justify-center gap-10">
             {[
               { label: "Destinations", href: "#destinations" },
@@ -354,12 +352,15 @@ function Navigation() {
 }
 
 function Hero() {
+  // St. Moritz (Bright, Winter)
   const heroImage =
-    "https://images.unsplash.com/photo-1701279678695-10108e560da8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cm9waWNhbCUyMGJlYWNoJTIwd2FybSUyMHN1bmxpZ2h0fGVufDF8fHx8MTc2OTg1ODU4MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+    "https://images.unsplash.com/photo-1520190282873-1c9808f1f512?q=80&w=1080&auto=format&fit=crop";
+  // Monaco (Bright, Harbor)
   const image1 =
-    "https://images.unsplash.com/photo-1547064663-a07e03f25fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBob3RlbCUyMHBvb2wlMjB2aWV3fGVufDF8fHx8MTc2OTg1ODU4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+    "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=1080&auto=format&fit=crop";
+  // Playa Juanillo / Cap Cana (Bright, Beach)
   const image2 =
-    "https://images.unsplash.com/photo-1760344477133-9f62fc52be22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiZWF1dGlmdWwlMjB0cmF2ZWwlMjBkZXN0aW5hdGlvbiUyMGNpdHlzY2FwZXxlbnwxfHx8fDE3Njk4NTg1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+    "https://images.unsplash.com/photo-1589979481223-deb89306920f?q=80&w=1080&auto=format&fit=crop";
 
   return (
     <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12">
@@ -417,20 +418,20 @@ function Hero() {
               <div className="col-span-2">
                 <img
                   src={heroImage}
-                  alt="Beautiful travel destination"
+                  alt="St. Moritz, Switzerland"
                   className="w-full h-[300px] sm:h-[400px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
                 />
               </div>
 
               <img
                 src={image1}
-                alt="Luxury hotel pool"
+                alt="Monaco Harbor"
                 className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
               />
 
               <img
                 src={image2}
-                alt="Beautiful cityscape"
+                alt="Playa Juanillo, Cap Cana"
                 className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
               />
             </div>
@@ -475,140 +476,6 @@ function TrustStrip() {
             })}
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function AboutSection() {
-  const [activeTab, setActiveTab] = useState("founder");
-
-  return (
-    <section
-      id="about"
-      className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-[#F7F6F1]"
-    >
-      <div className="max-w-[1200px] mx-auto">
-        {/* Title Only */}
-        <div className="text-center mb-14">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            About The Nomads Co.
-          </h2>
-        </div>
-
-        {/* CLICKABLE TABS */}
-        <div className="flex justify-center mb-16">
-          <div className="flex gap-8 items-center">
-            {/* FOUNDER TAB */}
-            <button
-              onClick={() => setActiveTab("founder")}
-              className={`group relative pb-4 transition-all duration-300 ${
-                activeTab === "founder"
-                  ? "text-[#2D3191]"
-                  : "text-[#1F2328]/60 hover:text-[#2D3191]"
-              }`}
-            >
-              <span className="text-2xl font-semibold pb-2">Founder</span>
-              <div
-                className={`absolute bottom-0 left-0 w-full h-1 transition-all duration-300 origin-left ${
-                  activeTab === "founder"
-                    ? "bg-[#2D3191] scale-x-100"
-                    : "bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]"
-                }`}
-              />
-            </button>
-
-            {/* COMPANY TAB */}
-            <button
-              onClick={() => setActiveTab("company")}
-              className={`group relative pb-4 transition-all duration-300 ${
-                activeTab === "company"
-                  ? "text-[#2D3191]"
-                  : "text-[#1F2328]/60 hover:text-[#2D3191]"
-              }`}
-            >
-              <span className="text-2xl font-semibold pb-2">Company</span>
-              <div
-                className={`absolute bottom-0 left-0 w-full h-1 transition-all duration-300 origin-left ${
-                  activeTab === "company"
-                    ? "bg-[#2D3191] scale-x-100"
-                    : "bg-transparent scale-x-0 group-hover:scale-x-100 bg-[#2D3191]"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* TAB CONTENT */}
-        {activeTab === "founder" ? (
-          <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
-            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
-              <div className="flex justify-center mb-6">
-                <img
-                  src={kirtiProfile}
-                  alt="Mrs. Kirti Shah"
-                  className="w-32 h-32 rounded-xl object-cover shadow-md"
-                />
-              </div>
-
-              <div className="text-center mb-6">
-                <h3
-                  className="text-2xl font-semibold text-[#1F2328] mb-2"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  Mrs. Kirti Shah
-                </h3>
-              </div>
-
-              <div className="text-center">
-                <p className="text-lg text-[#1F2328]/80 leading-relaxed mb-2">
-                  Passionate about handcrafted travel
-                </p>
-                <p className="text-lg text-[#1F2328]/70 leading-relaxed font-semibold">
-                  Leads The Nomads Co. with empathy and precision.
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-center animate-in fade-in duration-500 slide-in-from-bottom-4">
-            <div className="bg-white rounded-2xl border border-[#E6E8EF] p-6 shadow-sm max-w-2xl w-full">
-              <div className="flex justify-center mb-6">
-                <img src={logoImage} alt="The Nomads Co." className="h-12 w-auto" />
-              </div>
-
-              <div className="text-center mb-6">
-                <h3
-                  className="text-2xl font-semibold text-[#1F2328]"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  The Nomads Co.
-                </h3>
-              </div>
-
-              <div className="text-center space-y-3">
-                <p className="text-lg text-[#1F2328]/80 leading-relaxed">
-                  Ready for a holiday that feels effortless? Meet Kirti Shah, your
-                  personal travel consultant who crafts every itinerary with care.
-                </p>
-                <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-                  From romantic escapes to family adventures, we handle every detail so
-                  you can just pack and enjoy.
-                </p>
-                <p className="text-lg text-[#1F2328]/70 font-semibold">
-                  Your next destination awaits. Connect now.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

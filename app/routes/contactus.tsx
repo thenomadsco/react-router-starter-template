@@ -149,12 +149,11 @@ function Header() {
         className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#1F2328] mb-6 tracking-tight animate-fade-in opacity-0"
         style={{ fontFamily: "'Playfair Display', serif" }}
       >
-        Let's plan your <br className="hidden sm:block" />
-        <span className="text-[#2D3191]">next escape.</span>
+        Your next great adventure <br className="hidden sm:block" />
+        <span className="text-[#2D3191]">starts here.</span>
       </h1>
       <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto leading-relaxed animate-fade-in delay-100 opacity-0">
-        Whether you have a destination in mind or need inspiration, 
-        our team in Vadodara is ready to craft your perfect itinerary.
+        Whether it's a family vacation, a honeymoon, or a friends' trip, our team in Vadodara is ready to make it happen.
       </p>
     </section>
   );
@@ -181,10 +180,10 @@ function AboutSection() {
             Meet Kirti Shah
           </h2>
           <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
-            Kirti doesn't just book hotels; she calls the General Manager personally. With over a decade of building relationships globally, she ensures her clients are treated as VIPs, not just guests.
+            Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.
           </p>
           <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-            Based in Vadodara, she brings a personal touch to travel planning that algorithms simply cannot match. Every trip is not just a vacation, but a curated experience tailored to your unique story.
+            With over 10 years of experience, she knows how to get the best deals and the warmest hospitality for her clients.
           </p>
         </div>
       </div>
@@ -199,20 +198,20 @@ function AboutSection() {
             The Nomads Co.
           </h2>
           <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
-            We are more than just a travel agency; we are your partners in discovery. Specializing in premium international and domestic packages, we handle the complexities of travel so you can focus on the memories.
+            We are Vadodara's premium travel experts. We specialize in international packages that feel like home, no matter where you go.
           </p>
           <ul className="space-y-4 text-[#1F2328]/80 font-medium">
             <li className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
-              End-to-end itinerary planning
+              We handle visas, flights, and bookings
             </li>
             <li className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
-              Luxury & 5-Star hotel partnerships
+              Luxury stays at best-value prices
             </li>
             <li className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
-              24/7 support during your trip
+              24/7 support (we are always a call away)
             </li>
           </ul>
         </div>
@@ -240,8 +239,8 @@ function FormSection() {
           {/* Contact Info */}
           <div className="lg:col-span-4 space-y-10 animate-fade-in delay-200 opacity-0">
             <div>
-              <h3 className="text-2xl font-semibold text-[#1F2328] mb-2">Get in touch</h3>
-              <p className="text-[#1F2328]/60">We'd love to hear from you. Our team is always here to chat.</p>
+              <h3 className="text-2xl font-semibold text-[#1F2328] mb-2">Visit Us</h3>
+              <p className="text-[#1F2328]/60">Drop by our office or give us a call. We love to chat about travel!</p>
             </div>
 
             <div className="space-y-8">
@@ -298,7 +297,7 @@ function FormSection() {
                     type="text" 
                     name="name"
                     required
-                    placeholder="Jane Doe"
+                    placeholder="Your Name"
                     className="w-full px-6 py-4 bg-white border border-[#E6E8EF] rounded-2xl text-[#1F2328] placeholder:text-[#1F2328]/30 focus:outline-none focus:ring-2 focus:ring-[#2D3191]/20 focus:border-[#2D3191] transition-all duration-300"
                   />
                 </div>
@@ -308,7 +307,7 @@ function FormSection() {
                     type="email" 
                     name="email"
                     required
-                    placeholder="jane@example.com"
+                    placeholder="your@email.com"
                     className="w-full px-6 py-4 bg-white border border-[#E6E8EF] rounded-2xl text-[#1F2328] placeholder:text-[#1F2328]/30 focus:outline-none focus:ring-2 focus:ring-[#2D3191]/20 focus:border-[#2D3191] transition-all duration-300"
                   />
                 </div>
@@ -327,7 +326,6 @@ function FormSection() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                  <div className="text-sm text-[#1F2328]/50 text-center sm:text-left">
                   <p>We typically reply within 24 hours.</p>
-                  <p className="text-[#2D3191] font-medium mt-1">Limited client slots available.</p>
                 </div>
                 <button 
                   type="submit"

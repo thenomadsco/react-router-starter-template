@@ -138,47 +138,48 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
+// Updated with "Golden Hour" / Warm Textures
 const destinations = [
   {
-    name: "Santorini",
-    descriptor: "Iconic white cliffs",
+    name: "The Aegean Escape",
+    descriptor: "Private sunsets away from the crowds",
     image:
-      "https://images.unsplash.com/photo-1655304672403-dd84529b4735?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50b3JpbmklMjBncmVlY2UlMjBzdW5ueXxlbnwxfHx8fDE3Njk4NTg2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1080&auto=format&fit=crop", // Warm Santorini Sunset
     category: "beaches",
   },
   {
-    name: "Maldives",
-    descriptor: "Overwater paradise",
+    name: "Maldives Atolls",
+    descriptor: "Barefoot luxury on private islands",
     image:
-      "https://images.unsplash.com/photo-1643856554673-5c34857c8231?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtYWxkaXZlcyUyMGJlYWNoJTIwdHJvcGljYWwlMjB3YXJtfGVufDF8fHx8MTc2OTg1ODYxOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop", // Warm Maldives Sunset
     category: "honeymoon",
   },
   {
-    name: "Paris",
-    descriptor: "Timeless elegance",
+    name: "Parisian Art de Vivre",
+    descriptor: "Behind-the-scenes access to the City of Light",
     image:
-      "https://images.unsplash.com/photo-1637050087981-13fcadf46d8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJpcyUyMGNpdHklMjB0cmF2ZWwlMjBkYXlsaWdodHxlbnwxfHx8fDE3Njk4NTg2MjF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop", // Warm Paris
     category: "cities",
   },
   {
-    name: "Bali",
-    descriptor: "Spiritual serenity",
+    name: "Spiritual Bali",
+    descriptor: "Ancient temples and jungle sanctuaries",
     image:
-      "https://images.unsplash.com/photo-1591326272816-0bd479a5cb20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiYWxpJTIwaW5kb25lc2lhJTIwdGVtcGxlJTIwc3Vubnl8ZW58MXx8fHwxNzY5ODU4NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop", // Warm Bali
     category: "adventure",
   },
   {
-    name: "Swiss Alps",
-    descriptor: "Mountain majesty",
+    name: "Alpine Heights",
+    descriptor: "First tracks and fireside chalets",
     image:
-      "https://images.unsplash.com/photo-1612638945907-1cb1d758f2d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzd2lzcyUyMGFscHMlMjBtb3VudGFpbnMlMjBzbm93fGVufDF8fHx8MTc2OTg1ODYyN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1080&auto=format&fit=crop", // Alpenglow Alps
     category: "adventure",
   },
   {
-    name: "Tokyo",
-    descriptor: "Modern tradition",
+    name: "Neon & Tradition",
+    descriptor: "The hidden side of Tokyo",
     image:
-      "https://images.unsplash.com/photo-1629020770453-d3d15182474c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx0b2t5byUyMGphcGFuJTIwY2l0eSUyMHN0cmVldHxlbnwxfHx8fDE3Njk4NTg2Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1080&auto=format&fit=crop", // Warm Tokyo Night
     category: "cities",
   },
 ];
@@ -187,39 +188,39 @@ const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
 
 const experiences = [
   {
-    title: "Wildlife Safari",
+    title: "The Untamed Wild",
     description:
-      "Witness Africa's majestic creatures in their natural habitat with expert guides and luxury lodges.",
+      "Front-row seats to the Great Migration. We secure the lodges that others can't.",
     image:
-      "https://images.unsplash.com/photo-1673667617327-325f96464955?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBzYWZhcmklMjBhZnJpY2ElMjB3aWxkbGlmZXxlbnwxfHx8fDE3Njk4NTg2NTJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1080&auto=format&fit=crop",
     ctaType: "primary",
   },
   {
-    title: "Private Yacht Cruises",
+    title: "Mediterranean Sail",
     description:
-      "Sail the azure waters of the Mediterranean with personalized itineraries and world-class service.",
+      "Drop anchor in hidden coves accessible only by private yacht.",
     image:
-      "https://images.unsplash.com/photo-1648997934392-7213a9ce50b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx5YWNodCUyMGNydWlzZSUyMGx1eHVyeSUyMG9jZWFufGVufDF8fHx8MTc2OTg1ODY1NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1080&auto=format&fit=crop",
     ctaType: "secondary",
   },
   {
-    title: "Culinary Journeys",
+    title: "Michelin & More",
     description:
-      "Savor Michelin-starred dining and authentic local cuisines curated by top chefs worldwide.",
+      "From street food tours in Bangkok to Chef's Tables in Lyon.",
     image:
-      "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxtaWNoZWxpbiUyMHJlc3RhdXJhbnQlMjBmaW5lJTIwZGluaW5nfGVufDF8fHx8MTc2OTg1ODY1OHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1080&auto=format&fit=crop",
     ctaType: "primary",
   },
 ];
 
 const testimonials = [
   {
-    name: "Priya Sharma",
+    name: "Priya & Raj",
     city: "Mumbai, India",
     image:
       "https://images.unsplash.com/photo-1623594675959-02360202d4d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHdvbWFuJTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTE0NDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
-      "Every detail was perfected. Our Maldives honeymoon exceeded all expectations.",
+      "We thought we knew Bali, but The Nomads Co. got us into a private villa that wasn't even listed online. Truly insider access.",
     rating: 5,
   },
   {
@@ -227,24 +228,24 @@ const testimonials = [
     city: "Bangalore, India",
     image:
       "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    quote: "Seamless planning from start to finish. Worth every rupee and more.",
+    quote: "When our flight to Rome was cancelled, Kirti had us rebooked before we even landed. That peace of mind is priceless.",
     rating: 5,
   },
   {
-    name: "Ananya & Rahul",
+    name: "The Mehras",
     city: "Delhi, India",
     image:
       "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
-      "The Nomads Co. turned our anniversary into an unforgettable journey.",
+      "It wasn't just a holiday; it was a chapter in our family story. Flawless execution from start to finish.",
     rating: 5,
   },
 ];
 
 const trustFeatures = [
-  { icon: CheckCircle2, label: "Personalized itineraries" },
-  { icon: MapPin, label: "End-to-end planning" },
-  { icon: Sparkles, label: "Premium stays & experiences" },
+  { icon: CheckCircle2, label: "Insider Access" },
+  { icon: MapPin, label: "End-to-end Concierge" },
+  { icon: Sparkles, label: "Vetted Luxury Stays" },
 ];
 
 export function meta({}: Route.MetaArgs) {
@@ -411,12 +412,13 @@ function Navigation() {
 }
 
 function Hero() {
+  // Warm, Golden Hour Images
   const heroImage =
-    "https://images.unsplash.com/photo-1520190282873-1c9808f1f512?q=80&w=1080&auto=format&fit=crop";
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop"; // Warm Beach
   const image1 =
-    "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=1080&auto=format&fit=crop";
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop"; // Warm Hotel/Pool
   const image2 =
-    "https://images.unsplash.com/photo-1589979481223-deb89306920f?q=80&w=1080&auto=format&fit=crop";
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop"; // Warm Restaurant/Lifestyle
 
   return (
     <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
@@ -440,9 +442,9 @@ function Hero() {
                   letterSpacing: "-0.03em",
                 }}
               >
-                Curated journeys,
+                The world,
                 <br />
-                flawlessly planned.
+                wrapped around <span className="text-[#2D3191]">your finger.</span>
               </h1>
             </RevealOnScroll>
 
@@ -451,9 +453,7 @@ function Hero() {
                 className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
                 style={{ letterSpacing: "-0.01em" }}
               >
-                Personalized premium travel with seamless planning. We design
-                extraordinary experiences tailored to your dreams, handling every
-                detail from start to finish.
+                We trade the tourist traps for insider access. From the Swiss Alps to the Maldives, experience the luxury of having every detail handled before you even ask.
               </p>
             </RevealOnScroll>
 
@@ -463,7 +463,7 @@ function Hero() {
                   to="/contactus"
                   className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0"
                 >
-                  Get a custom itinerary
+                  Design My Journey
                   <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
 
@@ -471,7 +471,7 @@ function Hero() {
                   href="#destinations"
                   className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
                 >
-                  Explore destinations
+                  Explore Collections
                 </a>
               </div>
             </RevealOnScroll>
@@ -483,7 +483,7 @@ function Hero() {
                 <div className="overflow-hidden rounded-2xl shadow-lg">
                   <img
                     src={heroImage}
-                    alt="St. Moritz, Switzerland"
+                    alt="Luxury Beach Escape"
                     className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -493,7 +493,7 @@ function Hero() {
                 <div className="overflow-hidden rounded-2xl shadow-lg">
                   <img
                     src={image1}
-                    alt="Monaco Harbor"
+                    alt="Private Pool Villa"
                     className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -503,7 +503,7 @@ function Hero() {
                 <div className="overflow-hidden rounded-2xl shadow-lg">
                   <img
                     src={image2}
-                    alt="Playa Juanillo, Cap Cana"
+                    alt="Fine Dining"
                     className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -571,7 +571,7 @@ function DiagonalDestinations() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Featured Destinations
+              Featured Collections
             </h2>
             <p
               className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
@@ -790,14 +790,14 @@ function ContactSection() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Plan your trip
+              Start Your Journey
             </h2>
             <p
               className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
               style={{ letterSpacing: "-0.01em" }}
             >
               Share your travel dreams with us and let our experts craft your perfect
-              journey
+              itinerary.
             </p>
           </div>
         </RevealOnScroll>
@@ -811,7 +811,7 @@ function ContactSection() {
                     className="text-2xl font-semibold text-[#1F2328] mb-6"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    Get in touch
+                    Concierge Support
                   </h3>
                   <p className="text-[#1F2328]/70 leading-relaxed">
                     Our team is ready to help you create the journey of a lifetime.

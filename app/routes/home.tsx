@@ -138,13 +138,15 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
+// Updated Destinations - London is now first and linked
 const destinations = [
   {
-    name: "Santorini, Greece",
-    descriptor: "The ultimate romantic getaway",
+    name: "London, UK",
+    descriptor: "Royalty, History & Modern Vibes",
     image:
-      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1080&auto=format&fit=crop", 
-    category: "beaches",
+      "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1080&auto=format&fit=crop", 
+    category: "cities",
+    link: "/london" // Added link property
   },
   {
     name: "Maldives",
@@ -491,7 +493,6 @@ function Hero() {
               </div>
             </RevealOnScroll>
             
-            {/* Added: Trust Signal under buttons */}
              <RevealOnScroll delay={500}>
                <div className="mt-8 flex items-center gap-4 text-sm text-[#1F2328]/60">
                   <div className="flex -space-x-2">
@@ -639,36 +640,42 @@ function DiagonalDestinations() {
         </RevealOnScroll>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {destinations.map((destination, index) => (
-            <RevealOnScroll key={destination.name} delay={index * 100}>
-              <div className="group cursor-pointer">
-                <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl">
-                  <img
-                    src={destination.image}
-                    alt={destination.name}
-                    className="w-full h-[320px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+          {destinations.map((destination, index) => {
+            // Check if link exists, otherwise default to nothing (or section ref)
+            const Wrapper = destination.link ? Link : 'div';
+            const wrapperProps = destination.link ? { to: destination.link } : {};
 
-                  <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-500 group-hover:translate-y-[-8px]">
-                    <h3
-                      className="text-2xl font-semibold text-white mb-2"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                      {destination.name}
-                    </h3>
-                    <p className="text-white/90 text-sm mb-4 font-light">
-                      {destination.descriptor}
-                    </p>
-                    <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors">
-                      Explore
-                      <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            return (
+              <RevealOnScroll key={destination.name} delay={index * 100}>
+                <Wrapper {...wrapperProps} className="group cursor-pointer block">
+                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl">
+                    <img
+                      src={destination.image}
+                      alt={destination.name}
+                      className="w-full h-[320px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-500 group-hover:translate-y-[-8px]">
+                      <h3
+                        className="text-2xl font-semibold text-white mb-2"
+                        style={{ fontFamily: "'Playfair Display', serif" }}
+                      >
+                        {destination.name}
+                      </h3>
+                      <p className="text-white/90 text-sm mb-4 font-light">
+                        {destination.descriptor}
+                      </p>
+                      <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors">
+                        Explore
+                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </RevealOnScroll>
-          ))}
+                </Wrapper>
+              </RevealOnScroll>
+            );
+          })}
         </div>
       </div>
     </section>

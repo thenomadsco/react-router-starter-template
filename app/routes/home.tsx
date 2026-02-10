@@ -1,7 +1,9 @@
 import { Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
+// --- Icons & Assets ---
 type IconProps = {
   size?: number;
   className?: string;
@@ -77,17 +79,6 @@ function Instagram(props: IconProps) {
       <rect x="4" y="4" width="16" height="16" rx="4" />
       <circle cx="12" cy="12" r="3.5" />
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </IconBase>
-  );
-}
-
-function Linkedin(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-      <path d="M8 10v6" />
-      <circle cx="8" cy="7" r="1" fill="currentColor" stroke="none" />
-      <path d="M12 16v-3.5c0-1.7 2-1.8 2-0.1V16" />
     </IconBase>
   );
 }
@@ -267,12 +258,80 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+// --- Animation Components & Styles ---
+
+const customStyles = `
+  html { scroll-behavior: smooth; }
+  
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .animate-ready { opacity: 0; }
+  
+  .animate-active-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .animate-active-fade {
+    animation: fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+`;
+
+function RevealOnScroll({ 
+  children, 
+  className = "", 
+  animation = "up", 
+  delay = 0 
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+  animation?: "up" | "fade";
+  delay?: number;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const animClass = animation === "up" ? "animate-active-up" : "animate-active-fade";
+
+  return (
+    <div 
+      ref={ref} 
+      className={`${className} ${isVisible ? animClass : "animate-ready"}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white antialiased">
+    <div className="min-h-screen bg-white antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191]">
+      <style>{customStyles}</style>
       <Navigation />
       <Hero />
-      {/* AboutSection removed */}
       <TrustStrip />
       <DiagonalDestinations />
       <ExperienceSection />
@@ -285,15 +344,15 @@ export default function Home() {
 
 function Navigation() {
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E6E8EF]">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
           {/* Logo & Brand */}
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 group">
             <img
               src={logoImage}
               alt="The Nomads Co."
-              className="h-10 w-auto transition-transform duration-300 ease-out hover:-translate-y-0.5"
+              className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
             />
             <span
               className="text-lg font-semibold text-[#1F2328] tracking-tight"
@@ -304,7 +363,7 @@ function Navigation() {
             >
               The Nomads Co.
             </span>
-          </div>
+          </Link>
 
           {/* Navigation Links */}
           <div className="hidden lg:flex items-center justify-center gap-10">
@@ -316,7 +375,7 @@ function Navigation() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+                className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
                 style={{ letterSpacing: "-0.01em" }}
               >
                 {link.label}
@@ -325,7 +384,7 @@ function Navigation() {
 
             <Link
               to="/contactus"
-              className="text-sm font-medium text-[#1F2328]/80 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+              className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
               style={{ letterSpacing: "-0.01em" }}
             >
               Contact
@@ -336,12 +395,12 @@ function Navigation() {
           <div className="flex items-center justify-end gap-4">
             <Link
               to="/contactus"
-              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
             >
               Plan My Trip
             </Link>
 
-            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:-translate-y-0.5">
+            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:scale-110">
               <Menu size={24} />
             </button>
           </div>
@@ -352,88 +411,103 @@ function Navigation() {
 }
 
 function Hero() {
-  // St. Moritz (Bright, Winter)
   const heroImage =
     "https://images.unsplash.com/photo-1520190282873-1c9808f1f512?q=80&w=1080&auto=format&fit=crop";
-  // Monaco (Bright, Harbor)
   const image1 =
     "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=1080&auto=format&fit=crop";
-  // Playa Juanillo / Cap Cana (Bright, Beach)
   const image2 =
     "https://images.unsplash.com/photo-1589979481223-deb89306920f?q=80&w=1080&auto=format&fit=crop";
 
   return (
-    <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12">
+    <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
           <div className="order-2 lg:order-1">
-            <div className="inline-block mb-8">
-              <span className="px-5 py-2 bg-[#E7F7EF] text-[#02A551] text-[0.6875rem] font-semibold tracking-[0.15em] uppercase rounded-full">
-                Creative Travel
-              </span>
-            </div>
+            <RevealOnScroll delay={100}>
+              <div className="inline-block mb-8">
+                <span className="px-5 py-2 bg-[#E7F7EF] text-[#02A551] text-[0.6875rem] font-semibold tracking-[0.15em] uppercase rounded-full">
+                  Creative Travel
+                </span>
+              </div>
+            </RevealOnScroll>
 
-            <h1
-              className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-8 text-[#1F2328]"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 600,
-                letterSpacing: "-0.03em",
-              }}
-            >
-              Curated journeys,
-              <br />
-              flawlessly planned.
-            </h1>
-
-            <p
-              className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Personalized premium travel with seamless planning. We design
-              extraordinary experiences tailored to your dreams, handling every
-              detail from start to finish.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-5">
-              <Link
-                to="/contactus"
-                className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+            <RevealOnScroll delay={200}>
+              <h1
+                className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-8 text-[#1F2328]"
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontWeight: 600,
+                  letterSpacing: "-0.03em",
+                }}
               >
-                Get a custom itinerary
-                <ArrowRight size={18} />
-              </Link>
+                Curated journeys,
+                <br />
+                flawlessly planned.
+              </h1>
+            </RevealOnScroll>
 
-              <a
-                href="#destinations"
-                className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5"
+            <RevealOnScroll delay={300}>
+              <p
+                className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
+                style={{ letterSpacing: "-0.01em" }}
               >
-                Explore destinations
-              </a>
-            </div>
+                Personalized premium travel with seamless planning. We design
+                extraordinary experiences tailored to your dreams, handling every
+                detail from start to finish.
+              </p>
+            </RevealOnScroll>
+
+            <RevealOnScroll delay={400}>
+              <div className="flex flex-col sm:flex-row gap-5">
+                <Link
+                  to="/contactus"
+                  className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0"
+                >
+                  Get a custom itinerary
+                  <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+
+                <a
+                  href="#destinations"
+                  className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
+                >
+                  Explore destinations
+                </a>
+              </div>
+            </RevealOnScroll>
           </div>
 
           <div className="order-1 lg:order-2">
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <img
-                  src={heroImage}
-                  alt="St. Moritz, Switzerland"
-                  className="w-full h-[300px] sm:h-[400px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
-                />
-              </div>
+              <RevealOnScroll delay={300} className="col-span-2">
+                <div className="overflow-hidden rounded-2xl shadow-lg">
+                  <img
+                    src={heroImage}
+                    alt="St. Moritz, Switzerland"
+                    className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
+                  />
+                </div>
+              </RevealOnScroll>
 
-              <img
-                src={image1}
-                alt="Monaco Harbor"
-                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
-              />
+              <RevealOnScroll delay={400}>
+                <div className="overflow-hidden rounded-2xl shadow-lg">
+                  <img
+                    src={image1}
+                    alt="Monaco Harbor"
+                    className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
+                  />
+                </div>
+              </RevealOnScroll>
 
-              <img
-                src={image2}
-                alt="Playa Juanillo, Cap Cana"
-                className="w-full h-[200px] sm:h-[250px] object-cover rounded-2xl shadow-lg transition-transform duration-500 ease-out hover:scale-[1.02]"
-              />
+              <RevealOnScroll delay={500}>
+                <div className="overflow-hidden rounded-2xl shadow-lg">
+                  <img
+                    src={image2}
+                    alt="Playa Juanillo, Cap Cana"
+                    className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
+                  />
+                </div>
+              </RevealOnScroll>
             </div>
           </div>
         </div>
@@ -446,36 +520,38 @@ function TrustStrip() {
   return (
     <section className="bg-[#EEF0FF] py-12 border-t border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h3
-              className="text-xl sm:text-2xl text-[#1F2328]"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Curated since 2015
-            </h3>
-          </div>
+        <RevealOnScroll delay={200}>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h3
+                className="text-xl sm:text-2xl text-[#1F2328]"
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Curated since 2015
+              </h3>
+            </div>
 
-          <div className="flex flex-wrap items-center gap-8 lg:gap-12">
-            {trustFeatures.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div key={feature.label} className="flex items-center gap-2">
-                  <div className="relative">
-                    <Icon size={20} className="text-[#2D3191]" strokeWidth={2} />
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#02A551] rounded-full" />
+            <div className="flex flex-wrap items-center gap-8 lg:gap-12">
+              {trustFeatures.map((feature, i) => {
+                const Icon = feature.icon;
+                return (
+                  <div key={feature.label} className="flex items-center gap-2 group cursor-default">
+                    <div className="relative transition-transform duration-300 group-hover:scale-110">
+                      <Icon size={20} className="text-[#2D3191]" strokeWidth={2} />
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#02A551] rounded-full" />
+                    </div>
+                    <span className="text-sm font-medium text-[#1F2328]">
+                      {feature.label}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-[#1F2328]">
-                    {feature.label}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </RevealOnScroll>
       </div>
     </section>
   );
@@ -485,65 +561,71 @@ function DiagonalDestinations() {
   return (
     <section id="destinations" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-white">
       <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Featured Destinations
-          </h2>
-          <p
-            className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-            style={{ letterSpacing: "-0.01em" }}
-          >
-            Handpicked places that inspire wonder
-          </p>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className="px-6 py-2.5 text-sm font-medium rounded-full border-2 bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] transition-all duration-300 ease-out hover:-translate-y-0.5"
+        <RevealOnScroll>
+          <div className="text-center mb-16 sm:mb-20">
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
             >
-              {category}
-            </button>
-          ))}
-        </div>
+              Featured Destinations
+            </h2>
+            <p
+              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Handpicked places that inspire wonder
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={200}>
+          <div className="flex flex-wrap justify-center gap-4 mb-16">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className="px-6 py-2.5 text-sm font-medium rounded-full border-2 bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] hover:text-[#2D3191] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95"
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </RevealOnScroll>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {destinations.map((destination) => (
-            <div key={destination.name} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl">
-                <img
-                  src={destination.image}
-                  alt={destination.name}
-                  className="w-full h-[320px] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          {destinations.map((destination, index) => (
+            <RevealOnScroll key={destination.name} delay={index * 100}>
+              <div className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl">
+                  <img
+                    src={destination.image}
+                    alt={destination.name}
+                    className="w-full h-[320px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3
-                    className="text-2xl font-semibold text-white mb-1"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    {destination.name}
-                  </h3>
-                  <p className="text-white/90 text-sm mb-3">
-                    {destination.descriptor}
-                  </p>
-                  <div className="flex items-center text-[#2D3191] bg-white px-3 py-1.5 rounded-lg inline-flex gap-1 text-sm font-medium transition-all duration-300 ease-out group-hover:translate-x-1">
-                    Explore
-                    <ArrowRight size={16} />
+                  <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-500 group-hover:translate-y-[-8px]">
+                    <h3
+                      className="text-2xl font-semibold text-white mb-2"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      {destination.name}
+                    </h3>
+                    <p className="text-white/90 text-sm mb-4 font-light">
+                      {destination.descriptor}
+                    </p>
+                    <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors">
+                      Explore
+                      <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
       </div>
@@ -555,58 +637,64 @@ function ExperienceSection() {
   return (
     <section id="experiences" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-[#EEF0FF]">
       <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Signature Experiences
-          </h2>
-          <p
-            className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-            style={{ letterSpacing: "-0.01em" }}
-          >
-            Thoughtfully crafted journeys for discerning travelers
-          </p>
-        </div>
+        <RevealOnScroll>
+          <div className="text-center mb-16 sm:mb-20">
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Signature Experiences
+            </h2>
+            <p
+              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Thoughtfully crafted journeys for discerning travelers
+            </p>
+          </div>
+        </RevealOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
-          {experiences.map((experience) => (
-            <div key={experience.title} className="group">
-              <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl">
-                <img
-                  src={experience.image}
-                  alt={experience.title}
-                  className="w-full h-[300px] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                />
+          {experiences.map((experience, index) => (
+            <RevealOnScroll key={experience.title} delay={index * 150}>
+              <div className="group h-full flex flex-col">
+                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-xl">
+                  <img
+                    src={experience.image}
+                    alt={experience.title}
+                    className="w-full h-[300px] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+
+                <h3
+                  className="text-2xl font-semibold text-[#1F2328] mb-3"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {experience.title}
+                </h3>
+                <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">
+                  {experience.description}
+                </p>
+
+                <div>
+                  {experience.ctaType === "primary" ? (
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
+                      Learn more
+                      <ArrowRight size={16} />
+                    </button>
+                  ) : (
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">
+                      Learn more
+                      <ArrowRight size={16} />
+                    </button>
+                  )}
+                </div>
               </div>
-
-              <h3
-                className="text-2xl font-semibold text-[#1F2328] mb-3"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {experience.title}
-              </h3>
-              <p className="text-[#1F2328]/70 leading-relaxed mb-6">
-                {experience.description}
-              </p>
-
-              {experience.ctaType === "primary" ? (
-                <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-2xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg">
-                  Learn more
-                  <ArrowRight size={16} />
-                </button>
-              ) : (
-                <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-2xl hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5">
-                  Learn more
-                  <ArrowRight size={16} />
-                </button>
-              )}
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
       </div>
@@ -618,66 +706,69 @@ function StatsSection() {
   return (
     <section id="testimonials" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-white">
       <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Loved by travellers who want it effortless
-          </h2>
-        </div>
+        <RevealOnScroll>
+          <div className="text-center mb-16 sm:mb-20">
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Loved by travellers who want it effortless
+            </h2>
+          </div>
+        </RevealOnScroll>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.name}
-              className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-1"
-            >
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star
-                    key={`${testimonial.name}-${i}`}
-                    size={16}
-                    fill="#02A551"
-                    className="text-[#02A551]"
+          {testimonials.map((testimonial, index) => (
+            <RevealOnScroll key={testimonial.name} delay={index * 150}>
+              <div
+                className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col"
+              >
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: testimonial.rating }).map((_, i) => (
+                    <Star
+                      key={`${testimonial.name}-${i}`}
+                      size={16}
+                      fill="#02A551"
+                      className="text-[#02A551]"
+                    />
+                  ))}
+                </div>
+
+                <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">
+                  "{testimonial.quote}"
+                </p>
+
+                <div className="flex items-center gap-4">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF]"
                   />
-                ))}
-              </div>
-
-              <p className="text-[#1F2328] leading-relaxed mb-6 italic">
-                "{testimonial.quote}"
-              </p>
-
-              <div className="flex items-center gap-4">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF]"
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold text-[#1F2328]">
-                      {testimonial.name}
-                    </h4>
-                    <BadgeCheck size={16} className="text-[#02A551]" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-[#1F2328]">
+                        {testimonial.name}
+                      </h4>
+                      <BadgeCheck size={16} className="text-[#02A551]" />
+                    </div>
+                    <p className="text-sm text-[#1F2328]/60">
+                      {testimonial.city}
+                    </p>
                   </div>
-                  <p className="text-sm text-[#1F2328]/60">
-                    {testimonial.city}
-                  </p>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-[#E6E8EF]">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full">
+                    <BadgeCheck size={12} />
+                    Verified trip
+                  </span>
                 </div>
               </div>
-
-              <div className="mt-4 pt-4 border-t border-[#E6E8EF]">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full">
-                  <BadgeCheck size={12} />
-                  Verified trip
-                </span>
-              </div>
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
       </div>
@@ -689,189 +780,195 @@ function ContactSection() {
   return (
     <section id="contact" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-[#EEF0FF]">
       <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Plan your trip
-          </h2>
-          <p
-            className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-            style={{ letterSpacing: "-0.01em" }}
-          >
-            Share your travel dreams with us and let our experts craft your perfect
-            journey
-          </p>
-        </div>
+        <RevealOnScroll>
+          <div className="text-center mb-16 sm:mb-20">
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Plan your trip
+            </h2>
+            <p
+              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Share your travel dreams with us and let our experts craft your perfect
+              journey
+            </p>
+          </div>
+        </RevealOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           <div className="lg:col-span-2">
-            <div className="space-y-8">
-              <div>
-                <h3
-                  className="text-2xl font-semibold text-[#1F2328] mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  Get in touch
-                </h3>
-                <p className="text-[#1F2328]/70 leading-relaxed">
-                  Our team is ready to help you create the journey of a lifetime.
-                  Reach out through any channel below.
-                </p>
+            <RevealOnScroll delay={200}>
+              <div className="space-y-8">
+                <div>
+                  <h3
+                    className="text-2xl font-semibold text-[#1F2328] mb-6"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Get in touch
+                  </h3>
+                  <p className="text-[#1F2328]/70 leading-relaxed">
+                    Our team is ready to help you create the journey of a lifetime.
+                    Reach out through any channel below.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  <a href="mailto:thenomadsco@gmail.com" className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
+                      <Mail size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div>
+                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</div>
+                    </div>
+                  </a>
+
+                  <a href="tel:+919924399335" className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
+                      <Phone size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div>
+                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">+91 9924399335</div>
+                    </div>
+                  </a>
+
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India"
+                    className="flex items-start gap-4 group"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
+                      <MapPin size={20} className="text-[#2D3191]" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
+                      <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
+                    </div>
+                  </a>
+                </div>
               </div>
-
-              <div className="space-y-6">
-                <a href="mailto:thenomadsco@gmail.com" className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#2D3191]">
-                    <Mail size={20} className="text-[#2D3191] group-hover:text-white" strokeWidth={2} />
-                  </div>
-                  <div>
-                    <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div>
-                    <div className="text-base text-[#1F2328] font-medium">thenomadsco@gmail.com</div>
-                  </div>
-                </a>
-
-                <a href="tel:+919924399335" className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#2D3191]">
-                    <Phone size={20} className="text-[#2D3191] group-hover:text-white" strokeWidth={2} />
-                  </div>
-                  <div>
-                    <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div>
-                    <div className="text-base text-[#1F2328] font-medium">+91 9924399335</div>
-                  </div>
-                </a>
-
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India"
-                  className="flex items-start gap-4 group"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0">
-                    <MapPin size={20} className="text-[#2D3191]" strokeWidth={2} />
-                  </div>
-                  <div>
-                    <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
-                    <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
-                  </div>
-                </a>
-              </div>
-            </div>
+            </RevealOnScroll>
           </div>
 
           <div className="lg:col-span-3">
-            <form
-              className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF]"
-              action="https://formsubmit.co/thenomadsco@gmail.com"
-              method="post"
-            >
-              <input type="hidden" name="_subject" value="New Nomads Co. inquiry" />
-              <input type="hidden" name="_captcha" value="false" />
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
-                  <input
-                    type="text"
-                    required
-                    name="name"
-                    className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                    placeholder="Your full name"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <RevealOnScroll delay={400}>
+              <form
+                className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                action="https://formsubmit.co/thenomadsco@gmail.com"
+                method="post"
+              >
+                <input type="hidden" name="_subject" value="New Nomads Co. inquiry" />
+                <input type="hidden" name="_captcha" value="false" />
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                      Email / WhatsApp *
-                    </label>
+                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
                     <input
-                      type="email"
+                      type="text"
                       required
-                      name="email"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                      placeholder="your@email.com"
+                      name="name"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                      placeholder="Your full name"
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Email / WhatsApp *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        name="email"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="+91 XXX XXX XXXX"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Destination idea
+                      </label>
+                      <input
+                        type="text"
+                        name="destination"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="e.g., Santorini"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Travel month
+                      </label>
+                      <input
+                        type="text"
+                        name="travel_month"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="e.g., June 2026"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                      placeholder="+91 XXX XXX XXXX"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                      Destination idea
-                    </label>
-                    <input
-                      type="text"
-                      name="destination"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                      placeholder="e.g., Santorini"
-                    />
+                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Budget range</label>
+                    <select
+                      name="budget"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                    >
+                      <option value="">Select your budget</option>
+                      <option value="under-2lakh">Under ₹2 Lakh</option>
+                      <option value="2-5lakh">₹2-5 Lakh</option>
+                      <option value="5-10lakh">₹5-10 Lakh</option>
+                      <option value="10lakh-plus">₹10 Lakh+</option>
+                    </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                      Travel month
-                    </label>
-                    <input
-                      type="text"
-                      name="travel_month"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                      placeholder="e.g., June 2026"
+                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label>
+                    <textarea
+                      rows={5}
+                      name="notes"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300 resize-none"
+                      placeholder="Tell us about your ideal trip..."
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-[#1F2328] mb-2">Budget range</label>
-                  <select
-                    name="budget"
-                    className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent"
-                  >
-                    <option value="">Select your budget</option>
-                    <option value="under-2lakh">Under ₹2 Lakh</option>
-                    <option value="2-5lakh">₹2-5 Lakh</option>
-                    <option value="5-10lakh">₹5-10 Lakh</option>
-                    <option value="10lakh-plus">₹10 Lakh+</option>
-                  </select>
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
+                    >
+                      Send inquiry
+                    </button>
+                    <p className="text-sm text-[#1F2328]/60 text-center mt-4">
+                      We reply within 24 hours
+                    </p>
+                  </div>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label>
-                  <textarea
-                    rows={5}
-                    name="notes"
-                    className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent resize-none"
-                    placeholder="Tell us about your ideal trip..."
-                  />
-                </div>
-
-                <div className="pt-4">
-                  <button
-                    type="submit"
-                    className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
-                  >
-                    Send inquiry
-                  </button>
-                  <p className="text-sm text-[#1F2328]/60 text-center mt-4">
-                    We reply within 24 hours
-                  </p>
-                </div>
-              </div>
-            </form>
+              </form>
+            </RevealOnScroll>
           </div>
         </div>
       </div>
@@ -939,7 +1036,7 @@ function Footer() {
             <ul className="space-y-3 text-sm">
               {["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (
                 <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191]">
+                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
                     {link}
                   </a>
                 </li>
@@ -952,15 +1049,14 @@ function Footer() {
               Support
             </h4>
             <ul className="space-y-3 text-sm">
-              {/* Optional: make Contact Us in footer route too */}
               <li>
-                <Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191]">
+                <Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
                   Contact Us
                 </Link>
               </li>
               {["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
                 <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191]">
+                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
                     {link}
                   </a>
                 </li>
@@ -979,9 +1075,9 @@ function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm"
+                className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm transition-shadow duration-300"
               />
-              <button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875]">
+              <button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">
                 Join
               </button>
             </div>
@@ -991,13 +1087,13 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
           <div>© {currentYear} The Nomads Co. All rights reserved.</div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#2D3191]">
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="hover:text-[#2D3191]">
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
               Terms of Service
             </a>
-            <a href="#" className="hover:text-[#2D3191]">
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
               Cookie Policy
             </a>
           </div>

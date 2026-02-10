@@ -138,7 +138,6 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
-// Updated for Indian Audience: Clear, aspirational names
 const destinations = [
   {
     name: "Santorini, Greece",
@@ -274,6 +273,12 @@ const customStyles = `
     100% { opacity: 1; }
   }
 
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
   .animate-ready { opacity: 0; }
   
   .animate-active-up {
@@ -282,6 +287,10 @@ const customStyles = `
   
   .animate-active-fade {
     animation: fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-float {
+    animation: float 5s ease-in-out infinite;
   }
 `;
 
@@ -420,14 +429,21 @@ function Hero() {
     "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop"; 
 
   return (
-    <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
+    <section className="relative pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
+      {/* Background Decor - Gradient Meshes */}
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-white overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#E7F7EF]/60 rounded-full blur-[100px] opacity-70 animate-float" />
+        <div className="absolute bottom-[0%] left-[-10%] w-[500px] h-[500px] bg-[#EEF0FF]/80 rounded-full blur-[80px] opacity-70" style={{ animationDelay: "2s" }} />
+      </div>
+
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 lg:order-1 relative z-10">
             <RevealOnScroll delay={100}>
-              <div className="inline-block mb-8">
-                <span className="px-5 py-2 bg-[#E7F7EF] text-[#02A551] text-[0.6875rem] font-semibold tracking-[0.15em] uppercase rounded-full">
-                  Premium Travel
+              <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#E6E8EF] rounded-full shadow-sm">
+                 <span className="w-2 h-2 rounded-full bg-[#02A551] animate-pulse" />
+                 <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">
+                  Premium Travel Experts
                 </span>
               </div>
             </RevealOnScroll>
@@ -443,13 +459,13 @@ function Hero() {
               >
                 Your dream holiday,
                 <br />
-                <span className="text-[#2D3191]">flawlessly planned.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">flawlessly planned.</span>
               </h1>
             </RevealOnScroll>
 
             <RevealOnScroll delay={300}>
               <p
-                className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
+                className="text-lg sm:text-xl text-[#1F2328]/70 leading-relaxed mb-10 max-w-xl"
                 style={{ letterSpacing: "-0.01em" }}
               >
                 Experience the world with zero stress. From visas and flights to luxury stays and Indian meals, we handle every detail so you can just make memories.
@@ -468,18 +484,45 @@ function Hero() {
 
                 <a
                   href="#destinations"
-                  className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
+                  className="px-10 py-4 bg-white/50 backdrop-blur-sm border border-[#02A551]/30 text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
                 >
                   See Destinations
                 </a>
               </div>
             </RevealOnScroll>
+            
+            {/* Added: Trust Signal under buttons */}
+             <RevealOnScroll delay={500}>
+               <div className="mt-8 flex items-center gap-4 text-sm text-[#1F2328]/60">
+                  <div className="flex -space-x-2">
+                    {[1,2,3].map(i => (
+                      <div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500">
+                         Use
+                      </div>
+                    ))}
+                  </div>
+                  <p>Trusted by 1000+ happy families</p>
+               </div>
+             </RevealOnScroll>
           </div>
 
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 relative">
+             {/* Floating Badge */}
+            <div className="absolute top-10 -right-6 z-20 animate-float" style={{ animationDelay: "1s" }}>
+                <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3">
+                   <div className="bg-[#E7F7EF] p-2 rounded-full text-[#02A551]">
+                     <BadgeCheck size={24} />
+                   </div>
+                   <div>
+                      <div className="text-xs text-[#1F2328]/60 font-medium">Trip Rating</div>
+                      <div className="text-sm font-bold text-[#1F2328]">4.9/5 Excellent</div>
+                   </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
-                <div className="overflow-hidden rounded-2xl shadow-lg">
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
                   <img
                     src={heroImage}
                     alt="Luxury Beach Escape"
@@ -489,7 +532,7 @@ function Hero() {
               </RevealOnScroll>
 
               <RevealOnScroll delay={400}>
-                <div className="overflow-hidden rounded-2xl shadow-lg">
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
                   <img
                     src={image1}
                     alt="Private Pool Villa"
@@ -499,7 +542,7 @@ function Hero() {
               </RevealOnScroll>
 
               <RevealOnScroll delay={500}>
-                <div className="overflow-hidden rounded-2xl shadow-lg">
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
                   <img
                     src={image2}
                     alt="Fine Dining"
@@ -517,10 +560,10 @@ function Hero() {
 
 function TrustStrip() {
   return (
-    <section className="bg-[#EEF0FF] py-12 border-t border-[#E6E8EF]">
+    <section className="bg-white py-12 border-t border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
         <RevealOnScroll delay={200}>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 bg-[#EEF0FF]/50 rounded-3xl border border-[#EEF0FF]">
             <div>
               <h3
                 className="text-xl sm:text-2xl text-[#1F2328]"

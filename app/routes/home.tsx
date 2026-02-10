@@ -782,7 +782,7 @@ function StatsSection() {
               </div>
 
               <p className="text-[#1F2328] leading-relaxed mb-6 italic">
-                &quot;{testimonial.quote}&quot;
+                "{testimonial.quote}"
               </p>
 
               <div className="flex items-center gap-4">

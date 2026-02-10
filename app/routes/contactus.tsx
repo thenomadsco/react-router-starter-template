@@ -181,10 +181,10 @@ function AboutSection() {
             Meet Kirti Shah
           </h2>
           <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
-            Since founding The Nomads Co. in 2015, Kirti has been the driving force behind hundreds of unforgettable journeys. Based in Vadodara, she brings a personal touch to travel planning that algorithms simply cannot match.
+            Kirti doesn't just book hotels; she calls the General Manager personally. With over a decade of building relationships globally, she ensures her clients are treated as VIPs, not just guests.
           </p>
           <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-            With an eye for detail and a heart for hospitality, Kirti ensures that every trip is not just a vacation, but a curated experience tailored to your unique story.
+            Based in Vadodara, she brings a personal touch to travel planning that algorithms simply cannot match. Every trip is not just a vacation, but a curated experience tailored to your unique story.
           </p>
         </div>
       </div>
@@ -324,10 +324,11 @@ function FormSection() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <p className="hidden sm:block text-sm text-[#1F2328]/50">
-                  We typically reply within 24 hours.
-                </p>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                 <div className="text-sm text-[#1F2328]/50 text-center sm:text-left">
+                  <p>We typically reply within 24 hours.</p>
+                  <p className="text-[#2D3191] font-medium mt-1">Limited client slots available.</p>
+                </div>
                 <button 
                   type="submit"
                   className="w-full sm:w-auto px-10 py-4 bg-[#2D3191] text-white font-medium rounded-2xl hover:bg-[#242875] hover:-translate-y-1 hover:shadow-lg active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2"

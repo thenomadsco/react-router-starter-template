@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 import nomadsLogo from "./the nomads logo.jpeg";
-import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types/home";
 
-// --- Icons (Same as home) ---
+// --- Icons ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
 function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
   return (
@@ -25,6 +24,7 @@ function MapPin(props: any) { return (<IconBase {...props}><path d="M12 21s6-6.2
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
 function Mail(props: any) { return (<IconBase {...props}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></IconBase>); }
+function PoundSterling(props: any) { return (<IconBase {...props}><path d="M18 7c0-5.333-8-5.333-8 0" /><path d="M10 7v14" /><path d="M6 21h12" /><path d="M6 13h10" /></IconBase>); }
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -89,15 +89,57 @@ export default function LondonPage() {
 
         <div className="grid sm:grid-cols-3 gap-8 text-left">
           {[
-            { title: "Private Transfers", desc: " luxury chauffeur service from Heathrow." },
-            { title: "VIP Access", desc: "Skip-the-line tickets to Madame Tussauds." },
-            { title: "Central Stay", desc: "4-star hotel in Zone 1 (City Center)." }
+            { title: "Central Stay", desc: "4-star hotel in Zone 1, walking distance to the Tube." },
+            { title: "VIP Access", desc: "Skip-the-line tickets to Madame Tussauds & Eye." },
+            { title: "Day Trips Included", desc: "Full day excursion to Windsor & Stonehenge." }
           ].map((item, i) => (
              <div key={i} className="bg-[#EEF0FF] p-6 rounded-2xl border border-[#E6E8EF]">
                <h3 className="font-semibold text-[#2D3191] mb-2">{item.title}</h3>
                <p className="text-sm text-[#1F2328]/70">{item.desc}</p>
              </div>
           ))}
+        </div>
+      </section>
+
+      {/* Ticket Price Breakdown (New Section) */}
+      <section className="py-16 bg-white px-6 sm:px-12 border-t border-b border-[#E6E8EF]">
+        <div className="max-w-[1000px] mx-auto">
+           <h3 className="text-2xl font-semibold text-center mb-10 text-[#1F2328]">Included Activity Breakdown (2025/26)</h3>
+           <div className="grid sm:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                 <p className="text-[#1F2328]/70">We believe in transparency. Here is the approximate cost of the tickets we have already included in your package:</p>
+                 <ul className="space-y-3">
+                    <li className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
+                       <span className="font-medium text-[#1F2328]">London Eye (Standard)</span>
+                       <span className="font-bold text-[#2D3191]">~£35 (₹3,700)</span>
+                    </li>
+                    <li className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
+                       <span className="font-medium text-[#1F2328]">Madame Tussauds</span>
+                       <span className="font-bold text-[#2D3191]">~£38 (₹4,000)</span>
+                    </li>
+                    <li className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
+                       <span className="font-medium text-[#1F2328]">Warner Bros Studio Tour</span>
+                       <span className="font-bold text-[#2D3191]">~£56 (₹6,000)</span>
+                    </li>
+                    <li className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
+                       <span className="font-medium text-[#1F2328]">Windsor & Stonehenge Tour</span>
+                       <span className="font-bold text-[#2D3191]">~£130 (₹13,800)</span>
+                    </li>
+                    <li className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
+                       <span className="font-medium text-[#1F2328]">24hr Hop-on Hop-off Bus</span>
+                       <span className="font-bold text-[#2D3191]">~£35 (₹3,700)</span>
+                    </li>
+                 </ul>
+              </div>
+              <div className="bg-[#2D3191] p-8 rounded-2xl text-white flex flex-col justify-center">
+                 <h4 className="text-xl font-semibold mb-2">Total Activity Value</h4>
+                 <p className="text-4xl font-bold mb-4">~₹31,000+</p>
+                 <p className="text-white/80 text-sm">per person included in your package price.</p>
+                 <div className="mt-6 pt-6 border-t border-white/20">
+                    <p className="text-sm font-medium">Plus: 6 Nights 4-Star Hotel + Breakfast + Visa Assistance.</p>
+                 </div>
+              </div>
+           </div>
         </div>
       </section>
 
@@ -110,12 +152,13 @@ export default function LondonPage() {
           
           <div className="space-y-8">
             {[
-              { day: 1, title: "Arrival & The London Eye", desc: "Arrive at Heathrow. Private transfer to hotel. Evening ride on the London Eye for panoramic views.", tag: "Leisure" },
-              { day: 2, title: "The Royal Tour", desc: "Hop-on Hop-off bus tour covering Buckingham Palace, Big Ben, and Westminster Abbey. Change of Guard ceremony included.", tag: "Sightseeing" },
-              { day: 3, title: "Windsor Castle & Stonehenge", desc: "Full day trip to the Queen's weekend home and the ancient mystery of Stonehenge.", tag: "Day Trip" },
-              { day: 4, title: "Madame Tussauds & Shopping", desc: "Selfie with stars at Tussauds. Afternoon free for shopping at Oxford Street & Selfridges.", tag: "Fun & Shop" },
-              { day: 5, title: "Harry Potter Studios (Optional)", desc: "A magical day out at Warner Bros Studios or leisure time to explore local cafes and parks.", tag: "Optional" },
-              { day: 6, title: "Departure", desc: "Breakfast at hotel. Private transfer to airport with happy memories.", tag: "Travel" }
+              { day: 1, title: "Arrival & Leisure", desc: "Arrive at Heathrow. Take the Elizabeth Line or Express train to Paddington (easy & fast). Check-in to your central hotel. Evening free to explore local cafes.", tag: "Leisure" },
+              { day: 2, title: "The Royal Tour", desc: "Start with a 24hr Hop-on Hop-off bus tour covering Buckingham Palace, Big Ben, and Westminster Abbey. Change of Guard ceremony included.", tag: "Sightseeing" },
+              { day: 3, title: "Icons of London", desc: "Morning at Madame Tussauds to meet the stars. Afternoon ride on the London Eye for iconic skyline views.", tag: "Attractions" },
+              { day: 4, title: "Windsor & Stonehenge", desc: "A full-day guided coach tour. Visit the Queen's weekend home (Windsor Castle) and the ancient mystery of Stonehenge.", tag: "Day Trip" },
+              { day: 5, title: "Harry Potter Studios", desc: "The Making of Harry Potter at Warner Bros Studios. See the Great Hall, Diagon Alley and try Butterbeer. (Transport from Victoria included).", tag: "Must Do" },
+              { day: 6, title: "Shopping at Oxford St.", desc: "A free day for shopping at Selfridges, Primark, and Oxford Street. Enjoy a nice Indian dinner at Dishoom in the evening.", tag: "Shopping" },
+              { day: 7, title: "Departure", desc: "Breakfast at hotel. Check-out and take the train to the airport with happy memories.", tag: "Travel" }
             ].map((day) => (
               <div key={day.day} className="flex gap-6 group">
                  <div className="flex flex-col items-center">
@@ -145,7 +188,7 @@ export default function LondonPage() {
                <span className="w-2 h-6 bg-[#02A551] rounded-full" /> What's Included
              </h3>
              <ul className="space-y-4">
-               {["5 Nights accommodation in 4-Star Hotel", "Daily Breakfast Buffet", "Airport Transfers (Private)", "All Entrance Fees mentioned", "Hop-on Hop-off 24hr Ticket", "All Local Taxes (GST & TCS)"].map((item) => (
+               {["6 Nights accommodation in 4-Star Central Hotel", "Daily Breakfast Buffet", "Warner Bros Studio Tour Ticket", "Windsor & Stonehenge Day Trip", "London Eye & Madame Tussauds Tickets", "UK Visa Application Assistance", "All Local Taxes (GST & TCS)"].map((item) => (
                  <li key={item} className="flex items-start gap-3 text-[#1F2328]/80">
                    <CheckCircle2 size={20} className="text-[#02A551] flex-shrink-0" /> {item}
                  </li>
@@ -158,7 +201,7 @@ export default function LondonPage() {
                <span className="w-2 h-6 bg-red-500 rounded-full" /> What's Excluded
              </h3>
              <ul className="space-y-4">
-               {["International Airfare (We can book for you)", "Visa Fees (Assistance provided)", "Lunch & Dinner", "Personal Expenses", "Travel Insurance"].map((item) => (
+               {["International Airfare (We can book for you)", "Airport Transfers (We recommend Train/Uber)", "Visa Fees (payable to Embassy)", "Lunch & Dinner", "Travel Insurance"].map((item) => (
                  <li key={item} className="flex items-start gap-3 text-[#1F2328]/80">
                    <XCircle size={20} className="text-red-500 flex-shrink-0" /> {item}
                  </li>
@@ -177,14 +220,14 @@ export default function LondonPage() {
                  <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Utensils /></div>
                  <div>
                    <h4 className="font-bold text-[#1F2328]">Indian Food?</h4>
-                   <p className="text-sm text-[#1F2328]/70 mt-1">Yes! We know the best Indian restaurants in London (Dishoom, Saravana Bhavan) near your hotel.</p>
+                   <p className="text-sm text-[#1F2328]/70 mt-1">Yes! We book hotels near top Indian restaurants like Dishoom & Saravana Bhavan.</p>
                  </div>
               </div>
               <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
                  <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><FileCheck /></div>
                  <div>
                    <h4 className="font-bold text-[#1F2328]">Visa Help?</h4>
-                   <p className="text-sm text-[#1F2328]/70 mt-1">UK Visas can be tricky. Our team handles the documentation and appointment booking for you.</p>
+                   <p className="text-sm text-[#1F2328]/70 mt-1">UK Visas are tricky. We handle the forms, appointment booking, and checklist for you.</p>
                  </div>
               </div>
               <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
@@ -209,20 +252,58 @@ export default function LondonPage() {
               
               <div className="grid sm:grid-cols-2 gap-4">
                  <div className="space-y-1">
-                   <label className="text-sm font-semibold ml-1">Name</label>
-                   <input type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191]" placeholder="Your Name" />
+                   <label className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
+                   <input 
+                     type="text" 
+                     name="name" 
+                     required 
+                     className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all" 
+                     placeholder="e.g. Rahul Sharma" 
+                   />
                  </div>
                  <div className="space-y-1">
-                   <label className="text-sm font-semibold ml-1">Phone</label>
-                   <input type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191]" placeholder="+91..." />
+                   <label className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
+                   <input 
+                     type="tel" 
+                     name="phone" 
+                     required 
+                     className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all" 
+                     placeholder="e.g. +91 98765 43210" 
+                   />
                  </div>
               </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                     <label className="text-sm font-semibold ml-1 text-[#1F2328]">Travel Month</label>
+                     <input 
+                       type="text" 
+                       name="travel_dates" 
+                       className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all" 
+                       placeholder="e.g. May 2026" 
+                     />
+                </div>
+                <div className="space-y-1">
+                     <label className="text-sm font-semibold ml-1 text-[#1F2328]">Number of Travelers</label>
+                     <input 
+                       type="number" 
+                       name="travelers" 
+                       className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all" 
+                       placeholder="e.g. 2 Adults, 1 Child" 
+                     />
+                </div>
+              </div>
+              
               <div className="space-y-1">
-                   <label className="text-sm font-semibold ml-1">Travel Month</label>
-                   <input type="text" name="travel_dates" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191]" placeholder="e.g. May 2026" />
+                   <label className="text-sm font-semibold ml-1 text-[#1F2328]">Any specific requirements?</label>
+                   <textarea 
+                     name="notes" 
+                     rows={3}
+                     className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all resize-none" 
+                     placeholder="e.g. Need Jain food, celebrating anniversary..." 
+                   />
               </div>
 
-              <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-4">
+              <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                  Get My Free Quote
               </button>
            </form>
@@ -232,12 +313,12 @@ export default function LondonPage() {
       <Footer />
       
       {/* Sticky Bottom Bar for Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E6E8EF] p-4 sm:hidden flex items-center justify-between z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E6E8EF] p-4 sm:hidden flex items-center justify-between z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
          <div>
             <p className="text-xs text-[#1F2328]/60">Starting from</p>
             <p className="text-lg font-bold text-[#2D3191]">₹1,25,000</p>
          </div>
-         <a href="#enquire" className="px-6 py-2.5 bg-[#02A551] text-white text-sm font-bold rounded-full">
+         <a href="#enquire" className="px-6 py-2.5 bg-[#02A551] text-white text-sm font-bold rounded-full shadow-md">
             Enquire Now
          </a>
       </div>
@@ -245,7 +326,7 @@ export default function LondonPage() {
   );
 }
 
-// --- Navigation & Footer Components (Duplicated for standalone functionality) ---
+// --- Navigation & Footer (Reused for consistency) ---
 function Navigation() {
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
@@ -280,7 +361,6 @@ function Footer() {
             <h3 className="text-2xl font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>The Nomads Co.</h3>
             <p className="text-sm text-[#1F2328]/70">Crafting extraordinary journeys since 2015.</p>
           </div>
-          {/* Simple footer links for standalone page */}
           <div><h4 className="font-semibold mb-4">Support</h4><ul className="space-y-2 text-sm text-[#1F2328]/70"><li><Link to="/contactus">Contact Us</Link></li><li>FAQs</li></ul></div>
           <div><h4 className="font-semibold mb-4">Legal</h4><ul className="space-y-2 text-sm text-[#1F2328]/70"><li>Privacy Policy</li><li>Terms</li></ul></div>
           <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start"><Facebook /><Instagram /></div></div>

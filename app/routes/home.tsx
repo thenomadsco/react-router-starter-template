@@ -138,48 +138,48 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
-// Updated with "Golden Hour" / Warm Textures
+// Updated for Indian Audience: Clear, aspirational names
 const destinations = [
   {
-    name: "The Aegean Escape",
-    descriptor: "Private sunsets away from the crowds",
+    name: "Santorini, Greece",
+    descriptor: "The ultimate romantic getaway",
     image:
-      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1080&auto=format&fit=crop", // Warm Santorini Sunset
+      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1080&auto=format&fit=crop", 
     category: "beaches",
   },
   {
-    name: "Maldives Atolls",
-    descriptor: "Barefoot luxury on private islands",
+    name: "Maldives",
+    descriptor: "Water villas & crystal clear oceans",
     image:
-      "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop", // Warm Maldives Sunset
+      "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop", 
     category: "honeymoon",
   },
   {
-    name: "Parisian Art de Vivre",
-    descriptor: "Behind-the-scenes access to the City of Light",
+    name: "Paris, France",
+    descriptor: "Fashion, art, and the Eiffel Tower",
     image:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop", // Warm Paris
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop", 
     category: "cities",
   },
   {
-    name: "Spiritual Bali",
-    descriptor: "Ancient temples and jungle sanctuaries",
+    name: "Bali, Indonesia",
+    descriptor: "Temples, beaches, and tropical vibes",
     image:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop", // Warm Bali
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop", 
     category: "adventure",
   },
   {
-    name: "Alpine Heights",
-    descriptor: "First tracks and fireside chalets",
+    name: "Switzerland",
+    descriptor: "Scenic trains and snowy peaks",
     image:
-      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1080&auto=format&fit=crop", // Alpenglow Alps
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1080&auto=format&fit=crop", 
     category: "adventure",
   },
   {
-    name: "Neon & Tradition",
-    descriptor: "The hidden side of Tokyo",
+    name: "Tokyo, Japan",
+    descriptor: "Modern lights meet ancient tradition",
     image:
-      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1080&auto=format&fit=crop", // Warm Tokyo Night
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1080&auto=format&fit=crop", 
     category: "cities",
   },
 ];
@@ -188,25 +188,25 @@ const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
 
 const experiences = [
   {
-    title: "The Untamed Wild",
+    title: "Luxury Safaris",
     description:
-      "Front-row seats to the Great Migration. We secure the lodges that others can't.",
+      "Witness the wildlife in comfort. We arrange the best lodges and guides.",
     image:
       "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1080&auto=format&fit=crop",
     ctaType: "primary",
   },
   {
-    title: "Mediterranean Sail",
+    title: "Private Cruises",
     description:
-      "Drop anchor in hidden coves accessible only by private yacht.",
+      "Relax on the open sea with your family on a private boat tour.",
     image:
       "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1080&auto=format&fit=crop",
     ctaType: "secondary",
   },
   {
-    title: "Michelin & More",
+    title: "Gourmet Dining",
     description:
-      "From street food tours in Bangkok to Chef's Tables in Lyon.",
+      "From local flavors to fine dining, we find the best spots (including vegetarian options).",
     image:
       "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1080&auto=format&fit=crop",
     ctaType: "primary",
@@ -216,36 +216,36 @@ const experiences = [
 const testimonials = [
   {
     name: "Priya & Raj",
-    city: "Mumbai, India",
+    city: "Mumbai",
     image:
       "https://images.unsplash.com/photo-1623594675959-02360202d4d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHdvbWFuJTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTE0NDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
-      "We thought we knew Bali, but The Nomads Co. got us into a private villa that wasn't even listed online. Truly insider access.",
+      "We were worried about food in Bali, but The Nomads Co. suggested amazing places. Kirti ma'am made everything so smooth!",
     rating: 5,
   },
   {
     name: "Vikram Patel",
-    city: "Bangalore, India",
+    city: "Bangalore",
     image:
       "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    quote: "When our flight to Rome was cancelled, Kirti had us rebooked before we even landed. That peace of mind is priceless.",
+    quote: "Flight got cancelled, but they sorted it out before we even reached the airport. True 24/7 support.",
     rating: 5,
   },
   {
-    name: "The Mehras",
-    city: "Delhi, India",
+    name: "The Mehra Family",
+    city: "Delhi",
     image:
       "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote:
-      "It wasn't just a holiday; it was a chapter in our family story. Flawless execution from start to finish.",
+      "The best family trip we've ever had. Hotels, transfers, everything was luxury but great value.",
     rating: 5,
   },
 ];
 
 const trustFeatures = [
-  { icon: CheckCircle2, label: "Insider Access" },
-  { icon: MapPin, label: "End-to-end Concierge" },
-  { icon: Sparkles, label: "Vetted Luxury Stays" },
+  { icon: CheckCircle2, label: "Visa & Flight Support" },
+  { icon: MapPin, label: "End-to-End Planning" },
+  { icon: Sparkles, label: "Verified 4 & 5 Star Stays" },
 ];
 
 export function meta({}: Route.MetaArgs) {
@@ -412,13 +412,12 @@ function Navigation() {
 }
 
 function Hero() {
-  // Warm, Golden Hour Images
   const heroImage =
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop"; // Warm Beach
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop"; 
   const image1 =
-    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop"; // Warm Hotel/Pool
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop"; 
   const image2 =
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop"; // Warm Restaurant/Lifestyle
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop"; 
 
   return (
     <section className="relative bg-white pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
@@ -428,7 +427,7 @@ function Hero() {
             <RevealOnScroll delay={100}>
               <div className="inline-block mb-8">
                 <span className="px-5 py-2 bg-[#E7F7EF] text-[#02A551] text-[0.6875rem] font-semibold tracking-[0.15em] uppercase rounded-full">
-                  Creative Travel
+                  Premium Travel
                 </span>
               </div>
             </RevealOnScroll>
@@ -442,9 +441,9 @@ function Hero() {
                   letterSpacing: "-0.03em",
                 }}
               >
-                The world,
+                Your dream holiday,
                 <br />
-                wrapped around <span className="text-[#2D3191]">your finger.</span>
+                <span className="text-[#2D3191]">flawlessly planned.</span>
               </h1>
             </RevealOnScroll>
 
@@ -453,7 +452,7 @@ function Hero() {
                 className="text-lg sm:text-xl text-[#1F2328]/60 leading-relaxed mb-10 max-w-xl"
                 style={{ letterSpacing: "-0.01em" }}
               >
-                We trade the tourist traps for insider access. From the Swiss Alps to the Maldives, experience the luxury of having every detail handled before you even ask.
+                Experience the world with zero stress. From visas and flights to luxury stays and Indian meals, we handle every detail so you can just make memories.
               </p>
             </RevealOnScroll>
 
@@ -463,7 +462,7 @@ function Hero() {
                   to="/contactus"
                   className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0"
                 >
-                  Design My Journey
+                  Plan My Holiday
                   <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
 
@@ -471,7 +470,7 @@ function Hero() {
                   href="#destinations"
                   className="px-10 py-4 bg-transparent border border-[#02A551] text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
                 >
-                  Explore Collections
+                  See Destinations
                 </a>
               </div>
             </RevealOnScroll>
@@ -530,7 +529,7 @@ function TrustStrip() {
                   letterSpacing: "-0.02em",
                 }}
               >
-                Curated since 2015
+                Vadodara's Trusted Experts
               </h3>
             </div>
 
@@ -571,13 +570,13 @@ function DiagonalDestinations() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Featured Collections
+              Trending Destinations
             </h2>
             <p
               className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
               style={{ letterSpacing: "-0.01em" }}
             >
-              Handpicked places that inspire wonder
+              Handpicked places that are perfect for Indian travelers
             </p>
           </div>
         </RevealOnScroll>
@@ -647,13 +646,13 @@ function ExperienceSection() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Signature Experiences
+              Experiences You'll Love
             </h2>
             <p
               className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
               style={{ letterSpacing: "-0.01em" }}
             >
-              Thoughtfully crafted journeys for discerning travelers
+              Tailored activities for families, couples, and groups
             </p>
           </div>
         </RevealOnScroll>
@@ -716,7 +715,7 @@ function StatsSection() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Loved by travellers who want it effortless
+              Happy Families & Travelers
             </h2>
           </div>
         </RevealOnScroll>
@@ -764,7 +763,7 @@ function StatsSection() {
                 <div className="mt-4 pt-4 border-t border-[#E6E8EF]">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full">
                     <BadgeCheck size={12} />
-                    Verified trip
+                    Verified Client
                   </span>
                 </div>
               </div>
@@ -811,7 +810,7 @@ function ContactSection() {
                     className="text-2xl font-semibold text-[#1F2328] mb-6"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    Concierge Support
+                    Contact Us
                   </h3>
                   <p className="text-[#1F2328]/70 leading-relaxed">
                     Our team is ready to help you create the journey of a lifetime.

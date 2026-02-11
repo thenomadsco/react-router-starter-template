@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
-// --- Local Image Imports (Matches your uploaded filenames) ---
+// --- Local Image Imports ---
 import jkImg from "./J&K.jpg";
 import keralaImg from "./Kerala.jpg";
 import andamanImg from "./Andaman and Nicobar Islands.jpg";
@@ -59,7 +59,7 @@ function Star(props: any) { return (<IconBase {...props} fill={props.fill ?? "cu
 
 const logoImage = nomadsLogo;
 
-// --- DATASET: 12 Indian States (Local Images) + 12 International Countries (Unsplash) ---
+// --- DATASET ---
 type Destination = {
   name: string;
   descriptor: string;
@@ -70,178 +70,33 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (12 States/UTs) - Using Local Images ---
-  {
-    name: "Jammu & Kashmir",
-    descriptor: "Heaven on Earth",
-    image: jkImg,
-    category: "honeymoon",
-    region: "india",
-  },
-  {
-    name: "Kerala",
-    descriptor: "God's Own Country",
-    image: keralaImg,
-    category: "honeymoon",
-    region: "india",
-  },
-  {
-    name: "Andaman & Nicobar",
-    descriptor: "Blue Waters & Coral Reefs",
-    image: andamanImg,
-    category: "beaches",
-    region: "india",
-  },
-  {
-    name: "Ladakh",
-    descriptor: "Land of High Passes",
-    image: ladakhImg,
-    category: "adventure",
-    region: "india",
-  },
-  {
-    name: "Goa",
-    descriptor: "Beaches & Susegad Life",
-    image: goaImg,
-    category: "beaches",
-    region: "india",
-  },
-  {
-    name: "Rajasthan",
-    descriptor: "Land of Kings",
-    image: rajasthanImg,
-    category: "cities",
-    region: "india",
-  },
-  {
-    name: "Karnataka",
-    descriptor: "Heritage & Hills",
-    image: karnatakaImg, 
-    category: "adventure",
-    region: "india",
-  },
-  {
-    name: "Madhya Pradesh",
-    descriptor: "Heart of Incredible India",
-    image: mpImg,
-    category: "adventure",
-    region: "india",
-  },
-  {
-    name: "Uttar Pradesh",
-    descriptor: "Spiritual & Timeless",
-    image: upImg,
-    category: "cities",
-    region: "india",
-  },
-  {
-    name: "Himachal Pradesh",
-    descriptor: "Abode of Snow",
-    image: himachalImg,
-    category: "adventure",
-    region: "india",
-  },
-  {
-    name: "Meghalaya",
-    descriptor: "Abode of Clouds",
-    image: meghalayaImg,
-    category: "adventure",
-    region: "india",
-  },
-  {
-    name: "Sikkim",
-    descriptor: "Organic Mystical Land",
-    image: sikkimImg,
-    category: "honeymoon",
-    region: "india",
-  },
+  // --- INDIA ---
+  { name: "Jammu & Kashmir", descriptor: "Heaven on Earth", image: jkImg, category: "honeymoon", region: "india" },
+  { name: "Kerala", descriptor: "God's Own Country", image: keralaImg, category: "honeymoon", region: "india" },
+  { name: "Andaman & Nicobar", descriptor: "Blue Waters & Coral Reefs", image: andamanImg, category: "beaches", region: "india" },
+  { name: "Ladakh", descriptor: "Land of High Passes", image: ladakhImg, category: "adventure", region: "india" },
+  { name: "Goa", descriptor: "Beaches & Susegad Life", image: goaImg, category: "beaches", region: "india" },
+  { name: "Rajasthan", descriptor: "Land of Kings", image: rajasthanImg, category: "cities", region: "india" },
+  { name: "Karnataka", descriptor: "Heritage & Hills", image: karnatakaImg, category: "adventure", region: "india" },
+  { name: "Madhya Pradesh", descriptor: "Heart of Incredible India", image: mpImg, category: "adventure", region: "india" },
+  { name: "Uttar Pradesh", descriptor: "Spiritual & Timeless", image: upImg, category: "cities", region: "india" },
+  { name: "Himachal Pradesh", descriptor: "Abode of Snow", image: himachalImg, category: "adventure", region: "india" },
+  { name: "Meghalaya", descriptor: "Abode of Clouds", image: meghalayaImg, category: "adventure", region: "india" },
+  { name: "Sikkim", descriptor: "Organic Mystical Land", image: sikkimImg, category: "honeymoon", region: "india" },
 
-  // --- INTERNATIONAL (12 Countries) - High Quality Unsplash ---
-  {
-    name: "United Kingdom",
-    descriptor: "Royalty & History",
-    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-    link: "/london",
-  },
-  {
-    name: "Switzerland",
-    descriptor: "The Alpine Dream",
-    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop",
-    category: "honeymoon",
-    region: "international",
-  },
-  {
-    name: "France",
-    descriptor: "Art & Romance",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-  },
-  {
-    name: "Italy",
-    descriptor: "Dolce Vita",
-    image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-  },
-  {
-    name: "Maldives",
-    descriptor: "Island Paradise",
-    image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop",
-    category: "honeymoon",
-    region: "international",
-  },
-  {
-    name: "Indonesia",
-    descriptor: "Tropical Culture",
-    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop",
-    category: "adventure",
-    region: "international",
-  },
-  {
-    name: "Thailand",
-    descriptor: "Beaches & Smiles",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800&auto=format&fit=crop",
-    category: "beaches",
-    region: "international",
-  },
-  {
-    name: "Vietnam",
-    descriptor: "Timeless Charm",
-    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=800&auto=format&fit=crop",
-    category: "adventure",
-    region: "international",
-  },
-  {
-    name: "United Arab Emirates",
-    descriptor: "Future Now",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-  },
-  {
-    name: "Singapore",
-    descriptor: "Urban Garden",
-    image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-  },
-  {
-    name: "Japan",
-    descriptor: "Tradition Meets Future",
-    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop",
-    category: "cities",
-    region: "international",
-  },
-  {
-    name: "Australia",
-    descriptor: "The Great Outback",
-    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop",
-    category: "adventure",
-    region: "international",
-  },
+  // --- INTERNATIONAL ---
+  { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/london" },
+  { name: "Switzerland", descriptor: "The Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international" },
+  { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Italy", descriptor: "Dolce Vita", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Maldives", descriptor: "Island Paradise", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international" },
+  { name: "Indonesia", descriptor: "Tropical Culture", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop", category: "adventure", region: "international" },
+  { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800&auto=format&fit=crop", category: "beaches", region: "international" },
+  { name: "Vietnam", descriptor: "Timeless Charm", image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=800&auto=format&fit=crop", category: "adventure", region: "international" },
+  { name: "United Arab Emirates", descriptor: "Future Now", image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Japan", descriptor: "Tradition Meets Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Australia", descriptor: "The Great Outback", image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop", category: "adventure", region: "international" },
 ];
 
 const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
@@ -249,26 +104,20 @@ const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
 const experiences = [
   {
     title: "Luxury Safaris",
-    description:
-      "Witness the wildlife in comfort. We arrange the best lodges and guides.",
-    image:
-      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop",
+    description: "Witness the wildlife in comfort. We arrange the best lodges and guides.",
+    image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop",
     ctaType: "primary",
   },
   {
     title: "Private Cruises",
-    description:
-      "Relax on the open sea with your family on a private boat tour.",
-    image:
-      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop",
+    description: "Relax on the open sea with your family on a private boat tour.",
+    image: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop",
     ctaType: "secondary",
   },
   {
     title: "Gourmet Dining",
-    description:
-      "From local flavors to fine dining, we find the best spots (including vegetarian options).",
-    image:
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop",
+    description: "From local flavors to fine dining, we find the best spots (including vegetarian options).",
+    image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop",
     ctaType: "primary",
   },
 ];
@@ -277,27 +126,22 @@ const testimonials = [
   {
     name: "Priya & Raj",
     city: "Mumbai",
-    image:
-      "https://images.unsplash.com/photo-1623594675959-02360202d4d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHdvbWFuJTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTE0NDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    quote:
-      "We were worried about food in Bali, but The Nomads Co. suggested amazing places. Kirti ma'am made everything so smooth!",
+    image: "https://images.unsplash.com/photo-1623594675959-02360202d4d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHdvbWFuJTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTE0NDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    quote: "We were worried about food in Bali, but The Nomads Co. suggested amazing places. Kirti ma'am made everything so smooth!",
     rating: 5,
   },
   {
     name: "Vikram Patel",
     city: "Bangalore",
-    image:
-      "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMG1hbiUyMGJ1c2luZXNzfGVufDF8fHx8MTc2OTc5NDM1Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     quote: "Flight got cancelled, but they sorted it out before we even reached the airport. True 24/7 support.",
     rating: 5,
   },
   {
     name: "The Mehra Family",
     city: "Delhi",
-    image:
-      "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    quote:
-      "The best family trip we've ever had. Hotels, transfers, everything was luxury but great value.",
+    image: "https://images.unsplash.com/photo-1605381942640-0a262ce59788?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb3VwbGUlMjBoYXBweSUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfHx8fDE3Njk4NTg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    quote: "The best family trip we've ever had. Hotels, transfers, everything was luxury but great value.",
     rating: 5,
   },
 ];
@@ -311,21 +155,16 @@ const trustFeatures = [
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "The Nomads Co. | Curated Journeys" },
-    {
-      name: "description",
-      content:
-        "Personalized premium travel with seamless planning and curated destinations.",
-    },
+    { name: "description", content: "Personalized premium travel with seamless planning and curated destinations." },
   ];
 }
 
 // --- Animation Components & Styles ---
-
 const customStyles = `
   html { scroll-behavior: smooth; }
   
   @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(40px); }
+    0% { opacity: 0; transform: translateY(60px); }
     100% { opacity: 1; transform: translateY(0); }
   }
   
@@ -340,11 +179,11 @@ const customStyles = `
     100% { transform: translateY(0px); }
   }
 
-  .animate-ready { opacity: 0; transform: translateY(20px); transition: opacity 0.1s; }
+  .animate-ready { opacity: 0; transform: translateY(30px); transition: opacity 0.1s; }
   
-  /* Increased duration and custom bezier for "fluid" feel */
+  /* Slower, more fluid entrance */
   .animate-active-up {
-    animation: fade-in-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: fade-in-up 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
   
   .animate-active-fade {
@@ -356,17 +195,7 @@ const customStyles = `
   }
 `;
 
-function RevealOnScroll({ 
-  children, 
-  className = "", 
-  animation = "up", 
-  delay = 0 
-}: { 
-  children: React.ReactNode; 
-  className?: string; 
-  animation?: "up" | "fade";
-  delay?: number;
-}) {
+function RevealOnScroll({ children, className = "", animation = "up", delay = 0 }: { children: React.ReactNode; className?: string; animation?: "up" | "fade"; delay?: number }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -380,7 +209,6 @@ function RevealOnScroll({
       },
       { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
     );
-
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
@@ -388,11 +216,7 @@ function RevealOnScroll({
   const animClass = animation === "up" ? "animate-active-up" : "animate-active-fade";
 
   return (
-    <div 
-      ref={ref} 
-      className={`${className} ${isVisible ? animClass : "animate-ready"}`}
-      style={{ animationDelay: `${delay}ms` }}
-    >
+    <div ref={ref} className={`${className} ${isVisible ? animClass : "animate-ready"}`} style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
   );
@@ -419,62 +243,19 @@ function Navigation() {
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img
-              src={logoImage}
-              alt="The Nomads Co."
-              className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
-            />
-            <span
-              className="text-lg font-semibold text-[#1F2328] tracking-tight"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              The Nomads Co.
-            </span>
+            <img src={logoImage} alt="The Nomads Co." className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5" />
+            <span className="text-lg font-semibold text-[#1F2328] tracking-tight" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>The Nomads Co.</span>
           </Link>
-
-          {/* Navigation Links */}
           <div className="hidden lg:flex items-center justify-center gap-10">
-            {[
-              { label: "Destinations", href: "#destinations" },
-              { label: "Experiences", href: "#experiences" },
-              { label: "Testimonials", href: "#testimonials" },
-            ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                style={{ letterSpacing: "-0.01em" }}
-              >
-                {link.label}
-              </a>
+            {[{ label: "Destinations", href: "#destinations" }, { label: "Experiences", href: "#experiences" }, { label: "Testimonials", href: "#testimonials" }].map((link) => (
+              <a key={link.label} href={link.href} className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out">{link.label}</a>
             ))}
-
-            <Link
-              to="/contactus"
-              className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Contact
-            </Link>
+            <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out">Contact</Link>
           </div>
-
-          {/* CTA & Mobile Menu */}
           <div className="flex items-center justify-end gap-4">
-            <Link
-              to="/contactus"
-              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
-            >
-              Plan My Trip
-            </Link>
-
-            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:scale-110">
-              <Menu size={24} />
-            </button>
+            <Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0">Plan My Trip</Link>
+            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:scale-110"><Menu size={24} /></button>
           </div>
         </div>
       </div>
@@ -483,138 +264,73 @@ function Navigation() {
 }
 
 function Hero() {
-  const heroImage =
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop"; 
-  const image1 =
-    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop"; 
-  const image2 =
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop"; 
+  const heroImage = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop";
+  const image1 = "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop";
+  const image2 = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop";
 
   return (
     <section className="relative pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
-      {/* Background Decor - Gradient Meshes */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-white overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#E7F7EF]/60 rounded-full blur-[100px] opacity-70 animate-float" />
         <div className="absolute bottom-[0%] left-[-10%] w-[500px] h-[500px] bg-[#EEF0FF]/80 rounded-full blur-[80px] opacity-70" style={{ animationDelay: "2s" }} />
       </div>
-
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
           <div className="order-2 lg:order-1 relative z-10">
             <RevealOnScroll delay={100}>
               <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#E6E8EF] rounded-full shadow-sm">
-                 <span className="w-2 h-2 rounded-full bg-[#02A551] animate-pulse" />
-                 <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">
-                  Premium Travel Experts
-                </span>
+                <span className="w-2 h-2 rounded-full bg-[#02A551] animate-pulse" />
+                <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">Premium Travel Experts</span>
               </div>
             </RevealOnScroll>
-
             <RevealOnScroll delay={200}>
-              <h1
-                className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-8 text-[#1F2328]"
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontWeight: 600,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                Your dream holiday,
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">flawlessly planned.</span>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.03em" }}>
+                Your dream holiday, <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">flawlessly planned.</span>
               </h1>
             </RevealOnScroll>
-
             <RevealOnScroll delay={300}>
-              <p
-                className="text-lg sm:text-xl text-[#1F2328]/70 leading-relaxed mb-10 max-w-xl"
-                style={{ letterSpacing: "-0.01em" }}
-              >
+              <p className="text-lg sm:text-xl text-[#1F2328]/70 leading-relaxed mb-10 max-w-xl" style={{ letterSpacing: "-0.01em" }}>
                 Experience the world with zero stress. From visas and flights to luxury stays and Indian meals, we handle every detail so you can just make memories.
               </p>
             </RevealOnScroll>
-
             <RevealOnScroll delay={400}>
               <div className="flex flex-col sm:flex-row gap-5">
-                <Link
-                  to="/contactus"
-                  className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0"
-                >
-                  Plan My Holiday
-                  <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <Link to="/contactus" className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0">
+                  Plan My Holiday <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-
-                <a
-                  href="#destinations"
-                  className="px-10 py-4 bg-white/50 backdrop-blur-sm border border-[#02A551]/30 text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0"
-                >
-                  See Destinations
-                </a>
+                <a href="#destinations" className="px-10 py-4 bg-white/50 backdrop-blur-sm border border-[#02A551]/30 text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0">See Destinations</a>
               </div>
             </RevealOnScroll>
-            
-             <RevealOnScroll delay={500}>
-               <div className="mt-8 flex items-center gap-4 text-sm text-[#1F2328]/60">
-                  <div className="flex -space-x-2">
-                    {[1,2,3].map(i => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500">
-                         Use
-                      </div>
-                    ))}
-                  </div>
-                  <p>Trusted by 1000+ happy families</p>
-               </div>
-             </RevealOnScroll>
-          </div>
-
-          <div className="order-1 lg:order-2 relative">
-             {/* Floating Badge */}
-            <div className="absolute top-10 -right-6 z-20 animate-float" style={{ animationDelay: "1s" }}>
-                <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3">
-                   <div className="bg-[#E7F7EF] p-2 rounded-full text-[#02A551]">
-                     <BadgeCheck size={24} />
-                   </div>
-                   <div>
-                      <div className="text-xs text-[#1F2328]/60 font-medium">Trip Rating</div>
-                      <div className="text-sm font-bold text-[#1F2328]">4.9/5 Excellent</div>
-                   </div>
+            <RevealOnScroll delay={500}>
+              <div className="mt-8 flex items-center gap-4 text-sm text-[#1F2328]/60">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map((i) => (<div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500">Use</div>))}
                 </div>
+                <p>Trusted by 1000+ happy families</p>
+              </div>
+            </RevealOnScroll>
+          </div>
+          <div className="order-1 lg:order-2 relative">
+            <div className="absolute top-10 -right-6 z-20 animate-float" style={{ animationDelay: "1s" }}>
+              <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3">
+                <div className="bg-[#E7F7EF] p-2 rounded-full text-[#02A551]"><BadgeCheck size={24} /></div>
+                <div><div className="text-xs text-[#1F2328]/60 font-medium">Trip Rating</div><div className="text-sm font-bold text-[#1F2328]">4.9/5 Excellent</div></div>
+              </div>
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
-                  <img
-                    src={heroImage}
-                    alt="Luxury Beach Escape"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
-                  />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
+                  <img src={heroImage} alt="Luxury Beach Escape" loading="lazy" decoding="async" className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
-
               <RevealOnScroll delay={400}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
-                  <img
-                    src={image1}
-                    alt="Private Pool Villa"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
-                  />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
+                  <img src={image1} alt="Private Pool Villa" loading="lazy" decoding="async" className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
-
               <RevealOnScroll delay={500}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white">
-                  <img
-                    src={image2}
-                    alt="Fine Dining"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
-                  />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
+                  <img src={image2} alt="Fine Dining" loading="lazy" decoding="async" className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
             </div>
@@ -631,20 +347,9 @@ function TrustStrip() {
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
         <RevealOnScroll delay={200}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 bg-[#EEF0FF]/50 rounded-3xl border border-[#EEF0FF]">
-            <div>
-              <h3
-                className="text-xl sm:text-2xl text-[#1F2328]"
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                Vadodara's Trusted Experts
-              </h3>
-            </div>
-
+            <div><h3 className="text-xl sm:text-2xl text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>Vadodara's Trusted Experts</h3></div>
             <div className="flex flex-wrap items-center gap-8 lg:gap-12">
-              {trustFeatures.map((feature, i) => {
+              {trustFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (
                   <div key={feature.label} className="flex items-center gap-2 group cursor-default">
@@ -652,9 +357,7 @@ function TrustStrip() {
                       <Icon size={20} className="text-[#2D3191]" strokeWidth={2} />
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#02A551] rounded-full" />
                     </div>
-                    <span className="text-sm font-medium text-[#1F2328]">
-                      {feature.label}
-                    </span>
+                    <span className="text-sm font-medium text-[#1F2328]">{feature.label}</span>
                   </div>
                 );
               })}
@@ -667,15 +370,11 @@ function TrustStrip() {
 }
 
 function DiagonalDestinations() {
-  // State for Region and Filters
   const [activeRegion, setActiveRegion] = useState<"india" | "international">("international");
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  // Filtering Logic
   const filteredDestinations = allDestinations.filter((dest) => {
-    // 1. Filter by Region
     if (dest.region !== activeRegion) return false;
-    // 2. Filter by Category (if not "All")
     if (activeCategory !== "All" && dest.category !== activeCategory.toLowerCase()) return false;
     return true;
   });
@@ -685,105 +384,45 @@ function DiagonalDestinations() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-10 sm:mb-16">
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 600,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              Trending Destinations
-            </h2>
-            <p
-              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Handpicked places that are perfect for Indian travelers
-            </p>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Trending Destinations</h2>
+            <p className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto" style={{ letterSpacing: "-0.01em" }}>Handpicked places that are perfect for Indian travelers</p>
           </div>
         </RevealOnScroll>
 
-        {/* 1. Main Region Toggle */}
         <RevealOnScroll delay={100}>
           <div className="flex justify-center mb-10">
             <div className="inline-flex bg-[#F7F6F1] p-1.5 rounded-full border border-[#E6E8EF] shadow-inner">
-              <button
-                onClick={() => { setActiveRegion("india"); setActiveCategory("All"); }}
-                className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
-                  activeRegion === "india"
-                    ? "bg-[#2D3191] text-white shadow-md"
-                    : "text-[#1F2328]/70 hover:text-[#1F2328]"
-                }`}
-              >
-                🇮🇳 India
-              </button>
-              <button
-                onClick={() => { setActiveRegion("international"); setActiveCategory("All"); }}
-                className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
-                  activeRegion === "international"
-                    ? "bg-[#2D3191] text-white shadow-md"
-                    : "text-[#1F2328]/70 hover:text-[#1F2328]"
-                }`}
-              >
-                🌍 International
-              </button>
+              <button onClick={() => { setActiveRegion("india"); setActiveCategory("All"); }} className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${activeRegion === "india" ? "bg-[#2D3191] text-white shadow-md" : "text-[#1F2328]/70 hover:text-[#1F2328]"}`}>🇮🇳 India</button>
+              <button onClick={() => { setActiveRegion("international"); setActiveCategory("All"); }} className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${activeRegion === "international" ? "bg-[#2D3191] text-white shadow-md" : "text-[#1F2328]/70 hover:text-[#1F2328]"}`}>🌍 International</button>
             </div>
           </div>
         </RevealOnScroll>
 
-        {/* 2. Category Filters */}
         <RevealOnScroll delay={200}>
           <div className="flex flex-wrap justify-center gap-3 mb-16">
             {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                type="button"
-                className={`px-5 py-2 text-sm font-medium rounded-full border-2 transition-all duration-300 ease-out active:scale-95 ${
-                  activeCategory === category
-                    ? "border-[#2D3191] bg-[#2D3191] text-white"
-                    : "bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] hover:text-[#2D3191]"
-                }`}
-              >
-                {category}
-              </button>
+              <button key={category} onClick={() => setActiveCategory(category)} type="button" className={`px-5 py-2 text-sm font-medium rounded-full border-2 transition-all duration-300 ease-out active:scale-95 ${activeCategory === category ? "border-[#2D3191] bg-[#2D3191] text-white" : "bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] hover:text-[#2D3191]"}`}>{category}</button>
             ))}
           </div>
         </RevealOnScroll>
 
-        {/* 3. Destination Grid - Updated with Fluid Hover & Lazy Loading */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {filteredDestinations.map((destination, index) => {
             const Wrapper = Link;
             const linkTo = destination.link ? destination.link : "/contactus";
-
             return (
-              <RevealOnScroll key={destination.name} delay={index * 100}>
-                <Wrapper to={linkTo} className="group cursor-pointer block">
-                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl">
-                    <img
-                      src={destination.image}
-                      alt={destination.name}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-[320px] object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110"
-                    />
+              <RevealOnScroll key={destination.name} delay={index * 50}>
+                <Wrapper to={linkTo} className="group cursor-pointer block h-full">
+                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-2xl h-[320px]">
+                    <img src={destination.image} alt={destination.name} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
-
-                    <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-y-[-8px]">
-                      <h3
-                        className="text-2xl font-semibold text-white mb-2"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        {destination.name}
-                      </h3>
-                      <p className="text-white/90 text-sm mb-4 font-light">
-                        {destination.descriptor}
-                      </p>
-                      <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors duration-500">
-                        Explore
-                        <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-1" />
+                    <div className="absolute bottom-0 left-0 right-0 p-8">
+                      <h3 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{destination.name}</h3>
+                      <p className="text-white/90 text-sm mb-4 font-light">{destination.descriptor}</p>
+                      
+                      {/* Magnifying Explore Button */}
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg">
+                        Explore <ArrowRight size={16} />
                       </div>
                     </div>
                   </div>
@@ -791,12 +430,7 @@ function DiagonalDestinations() {
               </RevealOnScroll>
             );
           })}
-          
-          {filteredDestinations.length === 0 && (
-             <div className="col-span-full text-center py-20 text-[#1F2328]/50">
-               <p>No destinations found in this category yet. Try "All".</p>
-             </div>
-          )}
+          {filteredDestinations.length === 0 && (<div className="col-span-full text-center py-20 text-[#1F2328]/50"><p>No destinations found in this category yet. Try "All".</p></div>)}
         </div>
       </div>
     </section>
@@ -809,60 +443,24 @@ function ExperienceSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 600,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              Experiences You'll Love
-            </h2>
-            <p
-              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Tailored activities for families, couples, and groups
-            </p>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Experiences You'll Love</h2>
+            <p className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto" style={{ letterSpacing: "-0.01em" }}>Tailored activities for families, couples, and groups</p>
           </div>
         </RevealOnScroll>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
           {experiences.map((experience, index) => (
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
-                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-xl">
-                  <img
-                    src={experience.image}
-                    alt={experience.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-[300px] object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
-                  />
+                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl">
+                  <img src={experience.image} alt={experience.title} className="w-full h-[300px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
-
-                <h3
-                  className="text-2xl font-semibold text-[#1F2328] mb-3"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  {experience.title}
-                </h3>
-                <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">
-                  {experience.description}
-                </p>
-
+                <h3 className="text-2xl font-semibold text-[#1F2328] mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{experience.title}</h3>
+                <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">{experience.description}</p>
                 <div>
                   {experience.ctaType === "primary" ? (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
-                      Learn more
-                      <ArrowRight size={16} />
-                    </button>
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">Learn more <ArrowRight size={16} /></button>
                   ) : (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">
-                      Learn more
-                      <ArrowRight size={16} />
-                    </button>
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">Learn more <ArrowRight size={16} /></button>
                   )}
                 </div>
               </div>
@@ -880,67 +478,25 @@ function StatsSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 600,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              Happy Families & Travelers
-            </h2>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Happy Families & Travelers</h2>
           </div>
         </RevealOnScroll>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
           {testimonials.map((testimonial, index) => (
             <RevealOnScroll key={testimonial.name} delay={index * 150}>
-              <div
-                className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col"
-              >
+              <div className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col group">
                 <div className="flex gap-1 mb-4">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star
-                      key={`${testimonial.name}-${i}`}
-                      size={16}
-                      fill="#02A551"
-                      className="text-[#02A551]"
-                    />
-                  ))}
+                  {Array.from({ length: testimonial.rating }).map((_, i) => (<Star key={`${testimonial.name}-${i}`} size={16} fill="#02A551" className="text-[#02A551]" />))}
                 </div>
-
-                <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">
-                  "{testimonial.quote}"
-                </p>
-
+                <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">"{testimonial.quote}"</p>
                 <div className="flex items-center gap-4">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF]"
-                  />
+                  <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF] transition-transform duration-500 group-hover:scale-110" />
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-[#1F2328]">
-                        {testimonial.name}
-                      </h4>
-                      <BadgeCheck size={16} className="text-[#02A551]" />
-                    </div>
-                    <p className="text-sm text-[#1F2328]/60">
-                      {testimonial.city}
-                    </p>
+                    <div className="flex items-center gap-2"><h4 className="font-semibold text-[#1F2328]">{testimonial.name}</h4><BadgeCheck size={16} className="text-[#02A551]" /></div>
+                    <p className="text-sm text-[#1F2328]/60">{testimonial.city}</p>
                   </div>
                 </div>
-
-                <div className="mt-4 pt-4 border-t border-[#E6E8EF]">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full">
-                    <BadgeCheck size={12} />
-                    Verified Client
-                  </span>
-                </div>
+                <div className="mt-4 pt-4 border-t border-[#E6E8EF]"><span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full"><BadgeCheck size={12} />Verified Client</span></div>
               </div>
             </RevealOnScroll>
           ))}
@@ -956,161 +512,50 @@ function ContactSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 600,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              Start Your Journey
-            </h2>
-            <p
-              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Share your travel dreams with us and let our experts craft your perfect
-              itinerary.
-            </p>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Start Your Journey</h2>
+            <p className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto" style={{ letterSpacing: "-0.01em" }}>Share your travel dreams with us and let our experts craft your perfect itinerary.</p>
           </div>
         </RevealOnScroll>
-
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           <div className="lg:col-span-2">
             <RevealOnScroll delay={200}>
               <div className="space-y-8">
-                <div>
-                  <h3
-                    className="text-2xl font-semibold text-[#1F2328] mb-6"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    Contact Us
-                  </h3>
-                  <p className="text-[#1F2328]/70 leading-relaxed">
-                    Our team is ready to help you create the journey of a lifetime.
-                    Reach out through any channel below.
-                  </p>
-                </div>
-
+                <div><h3 className="text-2xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Contact Us</h3><p className="text-[#1F2328]/70 leading-relaxed">Our team is ready to help you create the journey of a lifetime. Reach out through any channel below.</p></div>
                 <div className="space-y-6">
                   <a href="mailto:thenomadsco@gmail.com" className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
-                      <Mail size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div>
-                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</div>
-                    </div>
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110"><Mail size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} /></div>
+                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div><div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</div></div>
                   </a>
-
                   <a href="tel:+919924399335" className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
-                      <Phone size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div>
-                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">+91 9924399335</div>
-                    </div>
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110"><Phone size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} /></div>
+                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div><div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">+91 9924399335</div></div>
                   </a>
-
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India"
-                    className="flex items-start gap-4 group"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
-                      <MapPin size={20} className="text-[#2D3191]" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
-                      <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
-                    </div>
+                  <a href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India" className="flex items-start gap-4 group" target="_blank" rel="noreferrer">
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"><MapPin size={20} className="text-[#2D3191]" strokeWidth={2} /></div>
+                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div><div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div></div>
                   </a>
                 </div>
               </div>
             </RevealOnScroll>
           </div>
-
           <div className="lg:col-span-3">
             <RevealOnScroll delay={400}>
-              <form
-                className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
-                action="https://formsubmit.co/thenomadsco@gmail.com"
-                method="post"
-              >
+              <form className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" action="https://formsubmit.co/thenomadsco@gmail.com" method="post">
                 <input type="hidden" name="_subject" value="New Nomads Co. inquiry" />
                 <input type="hidden" name="_captcha" value="false" />
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
-                    <input
-                      type="text"
-                      required
-                      name="name"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                      placeholder="Your full name"
-                    />
-                  </div>
-
+                  <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label><input type="text" required name="name" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="Your full name" /></div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                        Email / WhatsApp *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        name="email"
-                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                        placeholder="your@email.com"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                        placeholder="+91 XXX XXX XXXX"
-                      />
-                    </div>
+                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Email / WhatsApp *</label><input type="email" required name="email" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="your@email.com" /></div>
+                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label><input type="tel" name="phone" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="+91 XXX XXX XXXX" /></div>
                   </div>
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                        Destination idea
-                      </label>
-                      <input
-                        type="text"
-                        name="destination"
-                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                        placeholder="e.g., Santorini"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
-                        Travel month
-                      </label>
-                      <input
-                        type="text"
-                        name="travel_month"
-                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                        placeholder="e.g., June 2026"
-                      />
-                    </div>
+                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Destination idea</label><input type="text" name="destination" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="e.g., Santorini" /></div>
+                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Travel month</label><input type="text" name="travel_month" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="e.g., June 2026" /></div>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-[#1F2328] mb-2">Budget range</label>
-                    <select
-                      name="budget"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
-                    >
+                    <select name="budget" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300">
                       <option value="">Select your budget</option>
                       <option value="under-2lakh">Under ₹2 Lakh</option>
                       <option value="2-5lakh">₹2-5 Lakh</option>
@@ -1118,28 +563,8 @@ function ContactSection() {
                       <option value="10lakh-plus">₹10 Lakh+</option>
                     </select>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label>
-                    <textarea
-                      rows={5}
-                      name="notes"
-                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300 resize-none"
-                      placeholder="Tell us about your ideal trip..."
-                    />
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
-                    >
-                      Send inquiry
-                    </button>
-                    <p className="text-sm text-[#1F2328]/60 text-center mt-4">
-                      We reply within 24 hours
-                    </p>
-                  </div>
+                  <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label><textarea rows={5} name="notes" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300 resize-none" placeholder="Tell us about your ideal trip..." /></div>
+                  <div className="pt-4"><button type="submit" className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0">Send inquiry</button><p className="text-sm text-[#1F2328]/60 text-center mt-4">We reply within 24 hours</p></div>
                 </div>
               </form>
             </RevealOnScroll>
@@ -1152,126 +577,24 @@ function ContactSection() {
 
 function Footer() {
   const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-[#FAFAF8] text-[#1F2328] py-16 sm:py-20 px-6 sm:px-8 lg:px-12 border-t border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-16 pb-16 border-b border-[#E6E8EF]">
           <div>
-            <h3
-              className="text-2xl font-semibold mb-5 text-[#1F2328]"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              The Nomads Co.
-            </h3>
-            <p
-              className="text-sm text-[#1F2328]/70 leading-relaxed mb-8"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              Crafting extraordinary journeys for extraordinary people since 2015.
-            </p>
+            <h3 className="text-2xl font-semibold mb-5 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>The Nomads Co.</h3>
+            <p className="text-sm text-[#1F2328]/70 leading-relaxed mb-8" style={{ letterSpacing: "-0.01em" }}>Crafting extraordinary journeys for extraordinary people since 2015.</p>
             <div className="flex gap-3">
-              {[
-                {
-                  icon: Instagram,
-                  label: "Instagram",
-                  href: "https://www.instagram.com/thenomadsco/",
-                },
-                {
-                  icon: Facebook,
-                  label: "Facebook",
-                  href: "https://www.facebook.com/Thenomadsco/",
-                },
-                { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" },
-              ].map(({ icon: Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5"
-                  target={href.startsWith("http") ? "_blank" : undefined}
-                  rel={href.startsWith("http") ? "noreferrer" : undefined}
-                >
-                  <Icon
-                    size={18}
-                    className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out"
-                  />
-                </a>
+              {[{ icon: Instagram, label: "Instagram", href: "https://www.instagram.com/thenomadsco/" }, { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/Thenomadsco/" }, { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" }].map(({ icon: Icon, label, href }) => (
+                <a key={label} href={href} className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5" target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}><Icon size={18} className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out" /></a>
               ))}
             </div>
           </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
-              Destinations
-            </h4>
-            <ul className="space-y-3 text-sm">
-              {["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
-              Support
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              {["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
-              Newsletter
-            </h4>
-            <p className="text-sm text-[#1F2328]/70 mb-4">
-              Get travel inspiration and exclusive deals
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm transition-shadow duration-300"
-              />
-              <button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">
-                Join
-              </button>
-            </div>
-          </div>
+          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Destinations</h4><ul className="space-y-3 text-sm">{["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (<li key={link}><a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">{link}</a></li>))}</ul></div>
+          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Support</h4><ul className="space-y-3 text-sm"><li><Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact Us</Link></li>{["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (<li key={link}><a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">{link}</a></li>))}</ul></div>
+          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Newsletter</h4><p className="text-sm text-[#1F2328]/70 mb-4">Get travel inspiration and exclusive deals</p><div className="flex gap-2"><input type="email" placeholder="Your email" className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm transition-shadow duration-300" /><button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">Join</button></div></div>
         </div>
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
-          <div>© {currentYear} The Nomads Co. All rights reserved.</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
-              Terms of Service
-            </a>
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
-              Cookie Policy
-            </a>
-          </div>
-        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60"><div>© {currentYear} The Nomads Co. All rights reserved.</div><div className="flex gap-6"><a href="#" className="hover:text-[#2D3191] transition-colors">Privacy Policy</a><a href="#" className="hover:text-[#2D3191] transition-colors">Terms of Service</a><a href="#" className="hover:text-[#2D3191] transition-colors">Cookie Policy</a></div></div>
       </div>
     </footer>
   );

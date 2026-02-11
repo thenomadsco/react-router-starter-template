@@ -138,7 +138,7 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
-// --- DATASET: 12 India + 12 International ---
+// --- DATASET: 12 Indian States + 12 International Countries ---
 type Destination = {
   name: string;
   descriptor: string;
@@ -149,73 +149,73 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (Top 12) ---
+  // --- INDIA (12 States/UTs) ---
   {
-    name: "Kashmir",
-    descriptor: "Paradise on Earth",
-    image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?q=80&w=1080&auto=format&fit=crop",
+    name: "Jammu & Kashmir",
+    descriptor: "Heaven on Earth",
+    image: "https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "india",
   },
   {
     name: "Kerala",
-    descriptor: "Backwaters & Houseboats",
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=1080&auto=format&fit=crop",
+    descriptor: "God's Own Country",
+    image: "https://images.unsplash.com/photo-1593693397690-362cb9666c61?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "india",
   },
   {
-    name: "Andaman Islands",
-    descriptor: "Pristine Blue Beaches",
+    name: "Andaman & Nicobar",
+    descriptor: "Blue Waters & Coral Reefs",
     image: "https://images.unsplash.com/photo-1589136777351-94344816a7d9?q=80&w=1080&auto=format&fit=crop",
     category: "beaches",
     region: "india",
   },
   {
     name: "Ladakh",
-    descriptor: "The Land of High Passes",
+    descriptor: "Land of High Passes",
     image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "india",
   },
   {
     name: "Goa",
-    descriptor: "Sun, Sand & Susegad",
+    descriptor: "Beaches & Susegad Life",
     image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1080&auto=format&fit=crop",
     category: "beaches",
     region: "india",
   },
   {
-    name: "Udaipur, Rajasthan",
-    descriptor: "The City of Lakes",
+    name: "Rajasthan",
+    descriptor: "Land of Kings",
     image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "india",
   },
   {
-    name: "Coorg, Karnataka",
-    descriptor: "Coffee Plantations & Mist",
-    image: "https://images.unsplash.com/photo-1593693397690-362cb9666c61?q=80&w=1080&auto=format&fit=crop",
+    name: "Karnataka",
+    descriptor: "Heritage & Hills",
+    image: "https://images.unsplash.com/photo-1620766182966-c6eb5ed2b788?q=80&w=1080&auto=format&fit=crop", // Hampi Image
     category: "adventure",
     region: "india",
   },
   {
-    name: "Ranthambore",
-    descriptor: "In Search of Tigers",
-    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1080&auto=format&fit=crop",
+    name: "Madhya Pradesh",
+    descriptor: "Heart of Incredible India",
+    image: "https://images.unsplash.com/photo-1629210042462-23b9cb03029f?q=80&w=1080&auto=format&fit=crop", // Tiger Image
     category: "adventure",
     region: "india",
   },
   {
-    name: "Varanasi",
-    descriptor: "Spiritual Capital",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop",
+    name: "Uttar Pradesh",
+    descriptor: "Spiritual & Timeless",
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop", // Varanasi
     category: "cities",
     region: "india",
   },
   {
-    name: "Manali, Himachal",
-    descriptor: "Mountains Calling",
+    name: "Himachal Pradesh",
+    descriptor: "Abode of Snow",
     image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "india",
@@ -228,16 +228,16 @@ const allDestinations: Destination[] = [
     region: "india",
   },
   {
-    name: "Hampi",
-    descriptor: "Ruins & History",
-    image: "https://images.unsplash.com/photo-1620766182966-c6eb5ed2b788?q=80&w=1080&auto=format&fit=crop",
-    category: "cities",
+    name: "Sikkim",
+    descriptor: "Organic Mystical Land",
+    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=1080&auto=format&fit=crop",
+    category: "honeymoon",
     region: "india",
   },
 
-  // --- INTERNATIONAL (Top 12) ---
+  // --- INTERNATIONAL (12 Countries) ---
   {
-    name: "London, UK",
+    name: "United Kingdom",
     descriptor: "Royalty & History",
     image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
@@ -252,28 +252,28 @@ const allDestinations: Destination[] = [
     region: "international",
   },
   {
-    name: "Paris, France",
-    descriptor: "City of Romance",
+    name: "France",
+    descriptor: "Art & Romance",
     image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Italy",
-    descriptor: "Art, Food & History",
+    descriptor: "Dolce Vita",
     image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Maldives",
-    descriptor: "Luxury Water Villas",
+    descriptor: "Island Paradise",
     image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "international",
   },
   {
-    name: "Bali, Indonesia",
+    name: "Indonesia",
     descriptor: "Tropical Culture",
     image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
@@ -281,42 +281,42 @@ const allDestinations: Destination[] = [
   },
   {
     name: "Thailand",
-    descriptor: "Beaches & Nightlife",
+    descriptor: "Beaches & Smiles",
     image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1080&auto=format&fit=crop",
     category: "beaches",
     region: "international",
   },
   {
     name: "Vietnam",
-    descriptor: "Nature & Heritage",
+    descriptor: "Timeless Charm",
     image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },
   {
-    name: "Dubai",
-    descriptor: "Futuristic Luxury",
+    name: "United Arab Emirates",
+    descriptor: "Future Now",
     image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Singapore",
-    descriptor: "Garden City",
+    descriptor: "Urban Garden",
     image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Japan",
-    descriptor: "Cherry Blossoms & Sushi",
+    descriptor: "Tradition Meets Future",
     image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Australia",
-    descriptor: "Outback to Opera House",
+    descriptor: "The Great Outback",
     image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",

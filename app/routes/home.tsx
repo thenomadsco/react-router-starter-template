@@ -56,88 +56,88 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (Updated with your specific Unsplash selections) ---
+  // --- INDIA (Updated with Reliable Alternatives) ---
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
-    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=800&auto=format&fit=crop", // ID: H8dcf-v98mA
+    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
     region: "india" 
   },
   { 
     name: "Kerala", 
     descriptor: "God's Own Country", 
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=800&auto=format&fit=crop", // ID: 29ezCWtMtnM
+    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
     region: "india" 
   },
   { 
     name: "Andaman & Nicobar", 
     descriptor: "Blue Waters & Coral Reefs", 
-    image: "https://images.unsplash.com/photo-1589136777351-94344816a7d9?q=80&w=800&auto=format&fit=crop", // ID: KbirwZJIq7g
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Radhanagar_Beach_Havelock.jpg/800px-Radhanagar_Beach_Havelock.jpg", // Wiki Alternative
     category: "beaches", 
     region: "india" 
   },
   { 
     name: "Ladakh", 
     descriptor: "Land of High Passes", 
-    image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800&auto=format&fit=crop", // ID: KwhxKAjhIjQ
+    image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Goa", 
     descriptor: "Beaches & Susegad Life", 
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800&auto=format&fit=crop", // ID: IijeyJbmrec
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800&auto=format&fit=crop", 
     category: "beaches", 
     region: "india" 
   },
   { 
     name: "Rajasthan", 
     descriptor: "Land of Kings", 
-    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800&auto=format&fit=crop", // ID: -TRBEN9BYgY
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
     region: "india" 
   },
   { 
     name: "Gujarat", 
     descriptor: "Heritage & Culture", 
-    image: "https://images.unsplash.com/photo-1579226527877-33e791b072b2?q=80&w=800&auto=format&fit=crop", // ID: 4hlgFBv6IrM
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/White_Rann_of_Kutch.jpg/800px-White_Rann_of_Kutch.jpg", // Wiki Alternative (Rann of Kutch)
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Madhya Pradesh", 
     descriptor: "Heart of Incredible India", 
-    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800&auto=format&fit=crop", // ID: AZ4y6Bc3qeI
+    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Uttar Pradesh", 
     descriptor: "Spiritual & Timeless", 
-    image: "https://images.unsplash.com/photo-1564507592333-c39739cf7d35?q=80&w=800&auto=format&fit=crop", // ID: iWMfiInivp4
+    image: "https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Taj Mahal)
     category: "cities", 
     region: "india" 
   },
   { 
     name: "Himachal Pradesh", 
     descriptor: "Abode of Snow", 
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800&auto=format&fit=crop", // ID: CMpr5o8CH2E
+    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Meghalaya", 
     descriptor: "Abode of Clouds", 
-    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=800&auto=format&fit=crop", // ID: fNnpZSdqLoY
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Nohkalikai_Falls_Cherrapunji.jpg/800px-Nohkalikai_Falls_Cherrapunji.jpg", // Wiki Alternative
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Sikkim", 
     descriptor: "Organic Mystical Land", 
-    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=800&auto=format&fit=crop", // ID: cT5OYzhsz70
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Kanchenjunga_from_Pelling%2C_Sikkim.jpg/800px-Kanchenjunga_from_Pelling%2C_Sikkim.jpg", // Wiki Alternative
     category: "honeymoon", 
     region: "india" 
   },
@@ -153,14 +153,14 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", // ID: niFWqrLdjlE
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ha_Long_Bay_on_a_sunny_day.jpg/800px-Ha_Long_Bay_on_a_sunny_day.jpg", // Wiki Alternative (Ha Long Bay)
     category: "adventure", 
     region: "international" 
   },
   { 
     name: "United Arab Emirates", 
     descriptor: "Future Now", 
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop", // ID: DcyL0IoCY0A
+    image: "https://images.pexels.com/photos/162031/dubai-tower-arab-khalifa-162031.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Burj Khalifa)
     category: "cities", 
     region: "international" 
   },
@@ -169,7 +169,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
-    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop", // ID: 7Zb7kUyQg1E
+    image: "https://images.pexels.com/photos/1878293/pexels-photo-1878293.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Opera House)
     category: "adventure", 
     region: "international" 
   },

@@ -159,34 +159,26 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// --- Animation Components & Styles ---
+// --- Optimized Animation Styles ---
 const customStyles = `
   html { scroll-behavior: smooth; }
   
   @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(60px); }
+    0% { opacity: 0; transform: translateY(40px); }
     100% { opacity: 1; transform: translateY(0); }
   }
   
-  @keyframes fade-in {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-
   @keyframes float {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
     100% { transform: translateY(0px); }
   }
 
-  .animate-ready { opacity: 0; transform: translateY(30px); transition: opacity 0.1s; }
+  .animate-ready { opacity: 0; transform: translateY(20px); transition: opacity 0.1s; }
   
+  /* Snappier 0.8s duration for better feel */
   .animate-active-up {
-    animation: fade-in-up 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  }
-  
-  .animate-active-fade {
-    animation: fade-in 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
 
   .animate-float {
@@ -194,33 +186,24 @@ const customStyles = `
   }
 `;
 
-// --- Updated Progressive Image (Fixed Layout) ---
-const ProgressiveImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
+// --- Simplified Optimized Image Component ---
+const OptimizedImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
   return (
-    // Outer div must be w-full h-full to prevent collapse
     <div className="w-full h-full relative overflow-hidden bg-[#F0F0F0]">
-      {/* Skeleton / Pulse */}
-      <div 
-        className={`absolute inset-0 bg-gray-200 animate-pulse transition-opacity duration-700 ${isLoaded ? 'opacity-0' : 'opacity-100'}`} 
-      />
-      
-      {/* Actual Image - className applies custom hover effects here */}
+      {/* Native Lazy Loading + Decoding Async = Fastest Performance */}
       <img
         src={src}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "auto"}
         decoding="async"
-        onLoad={() => setIsLoaded(true)}
-        className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
+        className={`w-full h-full object-cover ${className}`}
       />
     </div>
   );
 };
 
-function RevealOnScroll({ children, className = "", animation = "up", delay = 0 }: { children: React.ReactNode; className?: string; animation?: "up" | "fade"; delay?: number }) {
+function RevealOnScroll({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -232,16 +215,14 @@ function RevealOnScroll({ children, className = "", animation = "up", delay = 0 
           observer.disconnect();
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
-  const animClass = animation === "up" ? "animate-active-up" : "animate-active-fade";
-
   return (
-    <div ref={ref} className={`${className} ${isVisible ? animClass : "animate-ready"}`} style={{ animationDelay: `${delay}ms` }}>
+    <div ref={ref} className={`${className} ${isVisible ? "animate-active-up" : "animate-ready"}`} style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
   );
@@ -345,17 +326,17 @@ function Hero() {
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px] overflow-hidden">
-                  <ProgressiveImage src={heroImage} alt="Luxury Beach Escape" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
+                  <OptimizedImage src={heroImage} alt="Luxury Beach Escape" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={400}>
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
-                  <ProgressiveImage src={image1} alt="Private Pool Villa" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage src={image1} alt="Private Pool Villa" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={500}>
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
-                  <ProgressiveImage src={image2} alt="Fine Dining" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage src={image2} alt="Fine Dining" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
             </div>
@@ -439,7 +420,7 @@ function DiagonalDestinations() {
               <RevealOnScroll key={destination.name} delay={index * 50}>
                 <Wrapper to={linkTo} className="group cursor-pointer block h-full">
                   <div className="relative rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl h-[320px] overflow-hidden">
-                    <ProgressiveImage 
+                    <OptimizedImage 
                       src={destination.image} 
                       alt={destination.name} 
                       className="transition-transform duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110" 
@@ -484,7 +465,7 @@ function ExperienceSection() {
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
                 <div className="relative rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl h-[300px] overflow-hidden">
-                  <ProgressiveImage src={experience.image} alt={experience.title} className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage src={experience.image} alt={experience.title} className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
                 <h3 className="text-2xl font-semibold text-[#1F2328] mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{experience.title}</h3>
                 <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">{experience.description}</p>
@@ -523,7 +504,7 @@ function StatsSection() {
                 <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">"{testimonial.quote}"</p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#E6E8EF] flex-shrink-0">
-                     <ProgressiveImage src={testimonial.image} alt={testimonial.name} className="transition-transform duration-500 group-hover:scale-110" />
+                     <OptimizedImage src={testimonial.image} alt={testimonial.name} className="transition-transform duration-500 group-hover:scale-110" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2"><h4 className="font-semibold text-[#1F2328]">{testimonial.name}</h4><BadgeCheck size={16} className="text-[#02A551]" /></div>

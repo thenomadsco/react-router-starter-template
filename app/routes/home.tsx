@@ -3,6 +3,20 @@ import { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
+// --- Local Image Imports ---
+import jkImg from "./J&K.jpg";
+import keralaImg from "./Kerala.jpg";
+import andamanImg from "./Andaman and Nicobar Islands.jpg";
+import ladakhImg from "./Ladakh.jpg";
+import goaImg from "./Goa.jpg";
+import rajasthanImg from "./Rajasthan.jpg";
+import karnatakaImg from "./Karnataka.jpg";
+import mpImg from "./Madhya Pradesh.jpg";
+import upImg from "./Uttar Pradesh.jpg";
+import himachalImg from "./Himachal Pradesh.jpg";
+import meghalayaImg from "./Meghalaya.jpg";
+import sikkimImg from "./Sikkim.jpg";
+
 // --- Icons & Assets ---
 type IconProps = {
   size?: number;
@@ -138,7 +152,7 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
-// --- DATASET: 12 Indian States + 12 International Countries ---
+// --- DATASET: 12 Indian States (Local Images) + 12 International Countries (Unsplash) ---
 type Destination = {
   name: string;
   descriptor: string;
@@ -149,99 +163,93 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (12 States/UTs) ---
+  // --- INDIA (12 States/UTs) - Using Local Images ---
   {
     name: "Jammu & Kashmir",
     descriptor: "Heaven on Earth",
-    // Changed to a very stable Dal Lake/Shikara image
-    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=1080&auto=format&fit=crop", 
+    image: jkImg,
     category: "honeymoon",
     region: "india",
   },
   {
     name: "Kerala",
     descriptor: "God's Own Country",
-    // Changed to iconic Houseboat image
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=1080&auto=format&fit=crop",
+    image: keralaImg,
     category: "honeymoon",
     region: "india",
   },
   {
     name: "Andaman & Nicobar",
     descriptor: "Blue Waters & Coral Reefs",
-    // Changed to Havelock/Radhanagar Beach vibe
-    image: "https://images.unsplash.com/photo-1589136777351-94344816a7d9?q=80&w=1080&auto=format&fit=crop",
+    image: andamanImg,
     category: "beaches",
     region: "india",
   },
   {
     name: "Ladakh",
     descriptor: "Land of High Passes",
-    image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1080&auto=format&fit=crop",
+    image: ladakhImg,
     category: "adventure",
     region: "india",
   },
   {
     name: "Goa",
     descriptor: "Beaches & Susegad Life",
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1080&auto=format&fit=crop",
+    image: goaImg,
     category: "beaches",
     region: "india",
   },
   {
     name: "Rajasthan",
     descriptor: "Land of Kings",
-    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1080&auto=format&fit=crop",
+    image: rajasthanImg,
     category: "cities",
     region: "india",
   },
   {
     name: "Karnataka",
     descriptor: "Heritage & Hills",
-    image: "https://images.unsplash.com/photo-1593693397690-362cb9666c61?q=80&w=1080&auto=format&fit=crop", 
+    image: karnatakaImg, 
     category: "adventure",
     region: "india",
   },
   {
     name: "Madhya Pradesh",
     descriptor: "Heart of Incredible India",
-    // Changed to a Tiger image (Kanha/Bandhavgarh)
-    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1080&auto=format&fit=crop",
+    image: mpImg,
     category: "adventure",
     region: "india",
   },
   {
     name: "Uttar Pradesh",
     descriptor: "Spiritual & Timeless",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop", // Varanasi
+    image: upImg,
     category: "cities",
     region: "india",
   },
   {
     name: "Himachal Pradesh",
     descriptor: "Abode of Snow",
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1080&auto=format&fit=crop",
+    image: himachalImg,
     category: "adventure",
     region: "india",
   },
   {
     name: "Meghalaya",
     descriptor: "Abode of Clouds",
-    // Changed to iconic Waterfall/Bridge
-    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=1080&auto=format&fit=crop",
+    image: meghalayaImg,
     category: "adventure",
     region: "india",
   },
   {
     name: "Sikkim",
     descriptor: "Organic Mystical Land",
-    // Changed to snowy mountains
-    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=1080&auto=format&fit=crop",
+    image: sikkimImg,
     category: "honeymoon",
     region: "india",
   },
 
-  // --- INTERNATIONAL (12 Countries) ---
+  // --- INTERNATIONAL (12 Countries) - Using High-Quality Unsplash ---
   {
     name: "United Kingdom",
     descriptor: "Royalty & History",
@@ -253,7 +261,6 @@ const allDestinations: Destination[] = [
   {
     name: "Switzerland",
     descriptor: "The Alpine Dream",
-    // Changed to reliable Lauterbrunnen/Train
     image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "international",
@@ -296,7 +303,6 @@ const allDestinations: Destination[] = [
   {
     name: "Vietnam",
     descriptor: "Timeless Charm",
-    // Changed to Ha Long Bay
     image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",
@@ -304,7 +310,6 @@ const allDestinations: Destination[] = [
   {
     name: "United Arab Emirates",
     descriptor: "Future Now",
-    // Changed to Burj Khalifa Skyline
     image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
@@ -326,7 +331,6 @@ const allDestinations: Destination[] = [
   {
     name: "Australia",
     descriptor: "The Great Outback",
-    // Changed to Sydney Opera House
     image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",

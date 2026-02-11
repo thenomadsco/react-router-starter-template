@@ -138,50 +138,188 @@ function Star(props: IconProps) {
 
 const logoImage = nomadsLogo;
 
-// Updated Destinations - London is now first and linked
-const destinations = [
+// --- DATASET: 12 India + 12 International ---
+type Destination = {
+  name: string;
+  descriptor: string;
+  image: string;
+  category: "beaches" | "cities" | "adventure" | "honeymoon";
+  region: "india" | "international";
+  link?: string;
+};
+
+const allDestinations: Destination[] = [
+  // --- INDIA (Top 12) ---
+  {
+    name: "Kashmir",
+    descriptor: "Paradise on Earth",
+    image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?q=80&w=1080&auto=format&fit=crop",
+    category: "honeymoon",
+    region: "india",
+  },
+  {
+    name: "Kerala",
+    descriptor: "Backwaters & Houseboats",
+    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=1080&auto=format&fit=crop",
+    category: "honeymoon",
+    region: "india",
+  },
+  {
+    name: "Andaman Islands",
+    descriptor: "Pristine Blue Beaches",
+    image: "https://images.unsplash.com/photo-1589136777351-94344816a7d9?q=80&w=1080&auto=format&fit=crop",
+    category: "beaches",
+    region: "india",
+  },
+  {
+    name: "Ladakh",
+    descriptor: "The Land of High Passes",
+    image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "india",
+  },
+  {
+    name: "Goa",
+    descriptor: "Sun, Sand & Susegad",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1080&auto=format&fit=crop",
+    category: "beaches",
+    region: "india",
+  },
+  {
+    name: "Udaipur, Rajasthan",
+    descriptor: "The City of Lakes",
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "india",
+  },
+  {
+    name: "Coorg, Karnataka",
+    descriptor: "Coffee Plantations & Mist",
+    image: "https://images.unsplash.com/photo-1593693397690-362cb9666c61?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "india",
+  },
+  {
+    name: "Ranthambore",
+    descriptor: "In Search of Tigers",
+    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "india",
+  },
+  {
+    name: "Varanasi",
+    descriptor: "Spiritual Capital",
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "india",
+  },
+  {
+    name: "Manali, Himachal",
+    descriptor: "Mountains Calling",
+    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "india",
+  },
+  {
+    name: "Meghalaya",
+    descriptor: "Abode of Clouds",
+    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "india",
+  },
+  {
+    name: "Hampi",
+    descriptor: "Ruins & History",
+    image: "https://images.unsplash.com/photo-1620766182966-c6eb5ed2b788?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "india",
+  },
+
+  // --- INTERNATIONAL (Top 12) ---
   {
     name: "London, UK",
-    descriptor: "Royalty, History & Modern Vibes",
-    image:
-      "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1080&auto=format&fit=crop", 
+    descriptor: "Royalty & History",
+    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
-    link: "/london" // Added link property
-  },
-  {
-    name: "Maldives",
-    descriptor: "Water villas & crystal clear oceans",
-    image:
-      "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop", 
-    category: "honeymoon",
-  },
-  {
-    name: "Paris, France",
-    descriptor: "Fashion, art, and the Eiffel Tower",
-    image:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop", 
-    category: "cities",
-  },
-  {
-    name: "Bali, Indonesia",
-    descriptor: "Temples, beaches, and tropical vibes",
-    image:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop", 
-    category: "adventure",
+    region: "international",
+    link: "/london",
   },
   {
     name: "Switzerland",
-    descriptor: "Scenic trains and snowy peaks",
-    image:
-      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1080&auto=format&fit=crop", 
-    category: "adventure",
+    descriptor: "The Alpine Dream",
+    image: "https://images.unsplash.com/photo-1528629250003-138330190c21?q=80&w=1080&auto=format&fit=crop",
+    category: "honeymoon",
+    region: "international",
   },
   {
-    name: "Tokyo, Japan",
-    descriptor: "Modern lights meet ancient tradition",
-    image:
-      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1080&auto=format&fit=crop", 
+    name: "Paris, France",
+    descriptor: "City of Romance",
+    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
+    region: "international",
+  },
+  {
+    name: "Italy",
+    descriptor: "Art, Food & History",
+    image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "international",
+  },
+  {
+    name: "Maldives",
+    descriptor: "Luxury Water Villas",
+    image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop",
+    category: "honeymoon",
+    region: "international",
+  },
+  {
+    name: "Bali, Indonesia",
+    descriptor: "Tropical Culture",
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "international",
+  },
+  {
+    name: "Thailand",
+    descriptor: "Beaches & Nightlife",
+    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1080&auto=format&fit=crop",
+    category: "beaches",
+    region: "international",
+  },
+  {
+    name: "Vietnam",
+    descriptor: "Nature & Heritage",
+    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "international",
+  },
+  {
+    name: "Dubai",
+    descriptor: "Futuristic Luxury",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "international",
+  },
+  {
+    name: "Singapore",
+    descriptor: "Garden City",
+    image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "international",
+  },
+  {
+    name: "Japan",
+    descriptor: "Cherry Blossoms & Sushi",
+    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=1080&auto=format&fit=crop",
+    category: "cities",
+    region: "international",
+  },
+  {
+    name: "Australia",
+    descriptor: "Outback to Opera House",
+    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop",
+    category: "adventure",
+    region: "international",
   },
 ];
 
@@ -601,11 +739,24 @@ function TrustStrip() {
 }
 
 function DiagonalDestinations() {
+  // State for Region and Filters
+  const [activeRegion, setActiveRegion] = useState<"india" | "international">("international");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  // Filtering Logic
+  const filteredDestinations = allDestinations.filter((dest) => {
+    // 1. Filter by Region
+    if (dest.region !== activeRegion) return false;
+    // 2. Filter by Category (if not "All")
+    if (activeCategory !== "All" && dest.category !== activeCategory.toLowerCase()) return false;
+    return true;
+  });
+
   return (
     <section id="destinations" className="py-20 sm:py-32 px-6 sm:px-8 lg:px-12 bg-white">
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
-          <div className="text-center mb-16 sm:mb-20">
+          <div className="text-center mb-10 sm:mb-16">
             <h2
               className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
               style={{
@@ -625,13 +776,47 @@ function DiagonalDestinations() {
           </div>
         </RevealOnScroll>
 
+        {/* 1. Main Region Toggle */}
+        <RevealOnScroll delay={100}>
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex bg-[#F7F6F1] p-1.5 rounded-full border border-[#E6E8EF] shadow-inner">
+              <button
+                onClick={() => { setActiveRegion("india"); setActiveCategory("All"); }}
+                className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  activeRegion === "india"
+                    ? "bg-[#2D3191] text-white shadow-md"
+                    : "text-[#1F2328]/70 hover:text-[#1F2328]"
+                }`}
+              >
+                🇮🇳 India
+              </button>
+              <button
+                onClick={() => { setActiveRegion("international"); setActiveCategory("All"); }}
+                className={`px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  activeRegion === "international"
+                    ? "bg-[#2D3191] text-white shadow-md"
+                    : "text-[#1F2328]/70 hover:text-[#1F2328]"
+                }`}
+              >
+                🌍 International
+              </button>
+            </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* 2. Category Filters */}
         <RevealOnScroll delay={200}>
-          <div className="flex flex-wrap justify-center gap-4 mb-16">
+          <div className="flex flex-wrap justify-center gap-3 mb-16">
             {categories.map((category) => (
               <button
                 key={category}
+                onClick={() => setActiveCategory(category)}
                 type="button"
-                className="px-6 py-2.5 text-sm font-medium rounded-full border-2 bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] hover:text-[#2D3191] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95"
+                className={`px-5 py-2 text-sm font-medium rounded-full border-2 transition-all duration-300 ease-out active:scale-95 ${
+                  activeCategory === category
+                    ? "border-[#2D3191] bg-[#2D3191] text-white"
+                    : "bg-transparent border-[#E6E8EF] text-[#1F2328] hover:border-[#2D3191] hover:text-[#2D3191]"
+                }`}
               >
                 {category}
               </button>
@@ -639,15 +824,16 @@ function DiagonalDestinations() {
           </div>
         </RevealOnScroll>
 
+        {/* 3. Destination Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {destinations.map((destination, index) => {
-            // Check if link exists, otherwise default to nothing (or section ref)
-            const Wrapper = destination.link ? Link : 'div';
-            const wrapperProps = destination.link ? { to: destination.link } : {};
+          {filteredDestinations.map((destination, index) => {
+            // Check if link exists (only London has one for now), otherwise default to /contactus
+            const Wrapper = Link;
+            const linkTo = destination.link ? destination.link : "/contactus";
 
             return (
-              <RevealOnScroll key={destination.name} delay={index * 100}>
-                <Wrapper {...wrapperProps} className="group cursor-pointer block">
+              <RevealOnScroll key={destination.name} delay={index * 50}>
+                <Wrapper to={linkTo} className="group cursor-pointer block">
                   <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl">
                     <img
                       src={destination.image}
@@ -676,6 +862,12 @@ function DiagonalDestinations() {
               </RevealOnScroll>
             );
           })}
+          
+          {filteredDestinations.length === 0 && (
+             <div className="col-span-full text-center py-20 text-[#1F2328]/50">
+               <p>No destinations found in this category yet. Try "All".</p>
+             </div>
+          )}
         </div>
       </div>
     </section>

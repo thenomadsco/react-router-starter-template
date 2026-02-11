@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
-// --- Local Image Imports ---
+// --- Local Image Imports (Matches your uploaded filenames) ---
 import jkImg from "./J&K.jpg";
 import keralaImg from "./Kerala.jpg";
 import andamanImg from "./Andaman and Nicobar Islands.jpg";
@@ -18,13 +18,6 @@ import meghalayaImg from "./Meghalaya.jpg";
 import sikkimImg from "./Sikkim.jpg";
 
 // --- Icons & Assets ---
-type IconProps = {
-  size?: number;
-  className?: string;
-  strokeWidth?: number;
-  fill?: string;
-};
-
 const iconDefaults = { size: 24, strokeWidth: 2 };
 
 function IconBase({
@@ -33,7 +26,7 @@ function IconBase({
   strokeWidth = iconDefaults.strokeWidth,
   fill = "none",
   children,
-}: IconProps & { children: React.ReactNode }) {
+}: any) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -52,103 +45,17 @@ function IconBase({
   );
 }
 
-function ArrowRight(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M5 12h14" />
-      <path d="m13 5 7 7-7 7" />
-    </IconBase>
-  );
-}
-
-function BadgeCheck(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8 12 2.5 2.5L16 9" />
-    </IconBase>
-  );
-}
-
-function CheckCircle2(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8.5 12 2.5 2.5 4.5-5" />
-    </IconBase>
-  );
-}
-
-function Facebook(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" />
-    </IconBase>
-  );
-}
-
-function Instagram(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <rect x="4" y="4" width="16" height="16" rx="4" />
-      <circle cx="12" cy="12" r="3.5" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </IconBase>
-  );
-}
-
-function Mail(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-      <path d="m4 7 8 6 8-6" />
-    </IconBase>
-  );
-}
-
-function MapPin(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z" />
-      <circle cx="12" cy="10" r="2.5" />
-    </IconBase>
-  );
-}
-
-function Menu(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M4 7h16" />
-      <path d="M4 12h16" />
-      <path d="M4 17h16" />
-    </IconBase>
-  );
-}
-
-function Phone(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M6.5 4.5h2l1.2 3-2 1.2c.9 2 2.5 3.6 4.5 4.5l1.2-2 3 1.2v2c0 .9-.7 1.6-1.6 1.6-6.3-.5-11.4-5.6-11.8-11.8 0-.9.7-1.6 1.5-1.6z" />
-    </IconBase>
-  );
-}
-
-function Sparkles(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" />
-      <path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" />
-    </IconBase>
-  );
-}
-
-function Star(props: IconProps) {
-  return (
-    <IconBase {...props} fill={props.fill ?? "currentColor"}>
-      <path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" />
-    </IconBase>
-  );
-}
+function ArrowRight(props: any) { return (<IconBase {...props}><path d="M5 12h14" /><path d="m13 5 7 7-7 7" /></IconBase>); }
+function BadgeCheck(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></IconBase>); }
+function CheckCircle2(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>); }
+function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
+function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
+function Mail(props: any) { return (<IconBase {...props}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></IconBase>); }
+function MapPin(props: any) { return (<IconBase {...props}><path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z" /><circle cx="12" cy="10" r="2.5" /></IconBase>); }
+function Menu(props: any) { return (<IconBase {...props}><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></IconBase>); }
+function Phone(props: any) { return (<IconBase {...props}><path d="M6.5 4.5h2l1.2 3-2 1.2c.9 2 2.5 3.6 4.5 4.5l1.2-2 3 1.2v2c0 .9-.7 1.6-1.6 1.6-6.3-.5-11.4-5.6-11.8-11.8 0-.9.7-1.6 1.5-1.6z" /></IconBase>); }
+function Sparkles(props: any) { return (<IconBase {...props}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" /></IconBase>); }
+function Star(props: any) { return (<IconBase {...props} fill={props.fill ?? "currentColor"}><path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" /></IconBase>); }
 
 const logoImage = nomadsLogo;
 
@@ -249,11 +156,11 @@ const allDestinations: Destination[] = [
     region: "india",
   },
 
-  // --- INTERNATIONAL (12 Countries) - Using High-Quality Unsplash ---
+  // --- INTERNATIONAL (12 Countries) - High Quality Unsplash ---
   {
     name: "United Kingdom",
     descriptor: "Royalty & History",
-    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
     link: "/london",
@@ -261,77 +168,77 @@ const allDestinations: Destination[] = [
   {
     name: "Switzerland",
     descriptor: "The Alpine Dream",
-    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop",
     category: "honeymoon",
     region: "international",
   },
   {
     name: "France",
     descriptor: "Art & Romance",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Italy",
     descriptor: "Dolce Vita",
-    image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Maldives",
     descriptor: "Island Paradise",
-    image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop",
     category: "honeymoon",
     region: "international",
   },
   {
     name: "Indonesia",
     descriptor: "Tropical Culture",
-    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },
   {
     name: "Thailand",
     descriptor: "Beaches & Smiles",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800&auto=format&fit=crop",
     category: "beaches",
     region: "international",
   },
   {
     name: "Vietnam",
     descriptor: "Timeless Charm",
-    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=800&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },
   {
     name: "United Arab Emirates",
     descriptor: "Future Now",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Singapore",
     descriptor: "Urban Garden",
-    image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Japan",
     descriptor: "Tradition Meets Future",
-    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
   {
     name: "Australia",
     descriptor: "The Great Outback",
-    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },
@@ -345,7 +252,7 @@ const experiences = [
     description:
       "Witness the wildlife in comfort. We arrange the best lodges and guides.",
     image:
-      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop",
     ctaType: "primary",
   },
   {
@@ -353,7 +260,7 @@ const experiences = [
     description:
       "Relax on the open sea with your family on a private boat tour.",
     image:
-      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop",
     ctaType: "secondary",
   },
   {
@@ -361,7 +268,7 @@ const experiences = [
     description:
       "From local flavors to fine dining, we find the best spots (including vegetarian options).",
     image:
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop",
     ctaType: "primary",
   },
 ];
@@ -418,7 +325,7 @@ const customStyles = `
   html { scroll-behavior: smooth; }
   
   @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(30px); }
+    0% { opacity: 0; transform: translateY(40px); }
     100% { opacity: 1; transform: translateY(0); }
   }
   
@@ -433,18 +340,19 @@ const customStyles = `
     100% { transform: translateY(0px); }
   }
 
-  .animate-ready { opacity: 0; }
+  .animate-ready { opacity: 0; transform: translateY(20px); transition: opacity 0.1s; }
   
+  /* Increased duration and custom bezier for "fluid" feel */
   .animate-active-up {
-    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fade-in-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
   
   .animate-active-fade {
-    animation: fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fade-in 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
 
   .animate-float {
-    animation: float 5s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
   }
 `;
 
@@ -470,7 +378,7 @@ function RevealOnScroll({
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
     );
 
     if (ref.current) observer.observe(ref.current);
@@ -679,6 +587,8 @@ function Hero() {
                   <img
                     src={heroImage}
                     alt="Luxury Beach Escape"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -689,6 +599,8 @@ function Hero() {
                   <img
                     src={image1}
                     alt="Private Pool Villa"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -699,6 +611,8 @@ function Hero() {
                   <img
                     src={image2}
                     alt="Fine Dining"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out hover:scale-105"
                   />
                 </div>
@@ -838,25 +752,26 @@ function DiagonalDestinations() {
           </div>
         </RevealOnScroll>
 
-        {/* 3. Destination Grid */}
+        {/* 3. Destination Grid - Updated with Fluid Hover & Lazy Loading */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {filteredDestinations.map((destination, index) => {
-            // Check if link exists (only London has one for now), otherwise default to /contactus
             const Wrapper = Link;
             const linkTo = destination.link ? destination.link : "/contactus";
 
             return (
-              <RevealOnScroll key={destination.name} delay={index * 50}>
+              <RevealOnScroll key={destination.name} delay={index * 100}>
                 <Wrapper to={linkTo} className="group cursor-pointer block">
-                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl">
+                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl">
                     <img
                       src={destination.image}
                       alt={destination.name}
-                      className="w-full h-[320px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-[320px] object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
 
-                    <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-500 group-hover:translate-y-[-8px]">
+                    <div className="absolute bottom-0 left-0 right-0 p-8 transform transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-y-[-8px]">
                       <h3
                         className="text-2xl font-semibold text-white mb-2"
                         style={{ fontFamily: "'Playfair Display', serif" }}
@@ -866,9 +781,9 @@ function DiagonalDestinations() {
                       <p className="text-white/90 text-sm mb-4 font-light">
                         {destination.descriptor}
                       </p>
-                      <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors">
+                      <div className="inline-flex items-center gap-2 text-white text-sm font-medium border-b border-white/30 pb-1 group-hover:border-white transition-colors duration-500">
                         Explore
-                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-1" />
                       </div>
                     </div>
                   </div>
@@ -917,11 +832,13 @@ function ExperienceSection() {
           {experiences.map((experience, index) => (
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
-                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-xl">
+                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-xl">
                   <img
                     src={experience.image}
                     alt={experience.title}
-                    className="w-full h-[300px] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-[300px] object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105"
                   />
                 </div>
 
@@ -1001,6 +918,8 @@ function StatsSection() {
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF]"
                   />
                   <div>

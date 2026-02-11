@@ -56,11 +56,11 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (Updated with provided Unsplash Links) ---
+  // --- INDIA (Updated with your specific Unsplash selections) ---
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
-    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=800&auto=format&fit=crop", // ID: H8dcf-v98mA (Derived)
+    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=800&auto=format&fit=crop", // ID: H8dcf-v98mA
     category: "honeymoon", 
     region: "india" 
   },
@@ -153,7 +153,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", // ID: niFWqrLdjlE (Using high qual variant)
+    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", // ID: niFWqrLdjlE
     category: "adventure", 
     region: "international" 
   },
@@ -506,10 +506,18 @@ function DiagonalDestinations() {
                     
                     <div className="absolute bottom-0 left-0 right-0 p-8">
                       <div className="transform transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-y-[-8px]">
-                        <h3 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{destination.name}</h3>
-                        <p className="text-white/90 text-sm mb-4 font-light">{destination.descriptor}</p>
+                        <h3
+                          className="text-2xl font-semibold text-white mb-2"
+                          style={{ fontFamily: "'Playfair Display', serif" }}
+                        >
+                          {destination.name}
+                        </h3>
+                        <p className="text-white/90 text-sm mb-4 font-light">
+                          {destination.descriptor}
+                        </p>
                       </div>
                       
+                      {/* Magnifying Explore Button */}
                       <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg origin-left">
                         Explore <ArrowRight size={16} />
                       </div>
@@ -519,7 +527,12 @@ function DiagonalDestinations() {
               </RevealOnScroll>
             );
           })}
-          {filteredDestinations.length === 0 && (<div className="col-span-full text-center py-20 text-[#1F2328]/50"><p>No destinations found in this category yet. Try "All".</p></div>)}
+          
+          {filteredDestinations.length === 0 && (
+             <div className="col-span-full text-center py-20 text-[#1F2328]/50">
+               <p>No destinations found in this category yet. Try "All".</p>
+             </div>
+          )}
         </div>
       </div>
     </section>
@@ -532,24 +545,58 @@ function ExperienceSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Experiences You'll Love</h2>
-            <p className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto" style={{ letterSpacing: "-0.01em" }}>Tailored activities for families, couples, and groups</p>
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Experiences You'll Love
+            </h2>
+            <p
+              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Tailored activities for families, couples, and groups
+            </p>
           </div>
         </RevealOnScroll>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
           {experiences.map((experience, index) => (
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
                 <div className="relative rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl h-[300px] overflow-hidden">
-                  <OptimizedImage src={experience.image} alt={experience.title} className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage 
+                    src={experience.image} 
+                    alt={experience.title} 
+                    className="transition-transform duration-1000 ease-out group-hover:scale-105" 
+                  />
                 </div>
-                <h3 className="text-2xl font-semibold text-[#1F2328] mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{experience.title}</h3>
-                <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">{experience.description}</p>
+
+                <h3
+                  className="text-2xl font-semibold text-[#1F2328] mb-3"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {experience.title}
+                </h3>
+                <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">
+                  {experience.description}
+                </p>
+
                 <div>
                   {experience.ctaType === "primary" ? (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">Learn more <ArrowRight size={16} /></button>
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
+                      Learn more
+                      <ArrowRight size={16} />
+                    </button>
                   ) : (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">Learn more <ArrowRight size={16} /></button>
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">
+                      Learn more
+                      <ArrowRight size={16} />
+                    </button>
                   )}
                 </div>
               </div>
@@ -567,9 +614,19 @@ function StatsSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Happy Families & Travelers</h2>
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Happy Families & Travelers
+            </h2>
           </div>
         </RevealOnScroll>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
           {testimonials.map((testimonial, index) => (
             <RevealOnScroll key={testimonial.name} delay={index * 150}>
@@ -577,19 +634,47 @@ function StatsSection() {
                 className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col group"
               >
                 <div className="flex gap-1 mb-4">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (<Star key={`${testimonial.name}-${i}`} size={16} fill="#02A551" className="text-[#02A551]" />))}
+                  {Array.from({ length: testimonial.rating }).map((_, i) => (
+                    <Star
+                      key={`${testimonial.name}-${i}`}
+                      size={16}
+                      fill="#02A551"
+                      className="text-[#02A551]"
+                    />
+                  ))}
                 </div>
-                <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">"{testimonial.quote}"</p>
+
+                <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">
+                  "{testimonial.quote}"
+                </p>
+
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#E6E8EF] flex-shrink-0">
-                     <OptimizedImage src={testimonial.image} alt={testimonial.name} className="transition-transform duration-500 group-hover:scale-110" />
+                     <OptimizedImage 
+                       src={testimonial.image} 
+                       alt={testimonial.name} 
+                       className="transition-transform duration-500 group-hover:scale-110" 
+                     />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2"><h4 className="font-semibold text-[#1F2328]">{testimonial.name}</h4><BadgeCheck size={16} className="text-[#02A551]" /></div>
-                    <p className="text-sm text-[#1F2328]/60">{testimonial.city}</p>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-[#1F2328]">
+                        {testimonial.name}
+                      </h4>
+                      <BadgeCheck size={16} className="text-[#02A551]" />
+                    </div>
+                    <p className="text-sm text-[#1F2328]/60">
+                      {testimonial.city}
+                    </p>
                   </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-[#E6E8EF]"><span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full"><BadgeCheck size={12} />Verified Client</span></div>
+
+                <div className="mt-4 pt-4 border-t border-[#E6E8EF]">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-medium rounded-full">
+                    <BadgeCheck size={12} />
+                    Verified Client
+                  </span>
+                </div>
               </div>
             </RevealOnScroll>
           ))}
@@ -605,50 +690,161 @@ function ContactSection() {
       <div className="max-w-[1400px] mx-auto">
         <RevealOnScroll>
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.025em" }}>Start Your Journey</h2>
-            <p className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto" style={{ letterSpacing: "-0.01em" }}>Share your travel dreams with us and let our experts craft your perfect itinerary.</p>
+            <h2
+              className="text-4xl sm:text-5xl lg:text-6xl text-[#1F2328] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Start Your Journey
+            </h2>
+            <p
+              className="text-lg sm:text-xl text-[#1F2328]/60 max-w-2xl mx-auto"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Share your travel dreams with us and let our experts craft your perfect
+              itinerary.
+            </p>
           </div>
         </RevealOnScroll>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           <div className="lg:col-span-2">
             <RevealOnScroll delay={200}>
               <div className="space-y-8">
-                <div><h3 className="text-2xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Contact Us</h3><p className="text-[#1F2328]/70 leading-relaxed">Our team is ready to help you create the journey of a lifetime. Reach out through any channel below.</p></div>
+                <div>
+                  <h3
+                    className="text-2xl font-semibold text-[#1F2328] mb-6"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Contact Us
+                  </h3>
+                  <p className="text-[#1F2328]/70 leading-relaxed">
+                    Our team is ready to help you create the journey of a lifetime.
+                    Reach out through any channel below.
+                  </p>
+                </div>
+
                 <div className="space-y-6">
                   <a href="mailto:thenomadsco@gmail.com" className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110"><Mail size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} /></div>
-                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div><div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</div></div>
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
+                      <Mail size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Email</div>
+                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</div>
+                    </div>
                   </a>
+
                   <a href="tel:+919924399335" className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110"><Phone size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} /></div>
-                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div><div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">+91 9924399335</div></div>
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-[#2D3191] group-hover:scale-110">
+                      <Phone size={20} className="text-[#2D3191] group-hover:text-white transition-colors" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Phone / WhatsApp</div>
+                      <div className="text-base text-[#1F2328] font-medium group-hover:text-[#2D3191] transition-colors">+91 9924399335</div>
+                    </div>
                   </a>
-                  <a href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India" className="flex items-start gap-4 group" target="_blank" rel="noreferrer">
-                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"><MapPin size={20} className="text-[#2D3191]" strokeWidth={2} /></div>
-                    <div><div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div><div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div></div>
+
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=A%2F49%2C%20Nutan%20Maheshwar%20Society%2C%20Subhanpura%2C%20Gotri%2C%20Vadodara%2C%20Gujarat%2C%20India"
+                    className="flex items-start gap-4 group"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
+                      <MapPin size={20} className="text-[#2D3191]" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm text-[#1F2328]/60 font-medium mb-1">Location</div>
+                      <div className="text-base text-[#1F2328] font-medium">Vadodara, Gujarat, India</div>
+                    </div>
                   </a>
                 </div>
               </div>
             </RevealOnScroll>
           </div>
+
           <div className="lg:col-span-3">
             <RevealOnScroll delay={400}>
-              <form className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" action="https://formsubmit.co/thenomadsco@gmail.com" method="post">
+              <form
+                className="bg-[#F7F6F1] p-8 sm:p-10 rounded-2xl border border-[#E6E8EF] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                action="https://formsubmit.co/thenomadsco@gmail.com"
+                method="post"
+              >
                 <input type="hidden" name="_subject" value="New Nomads Co. inquiry" />
                 <input type="hidden" name="_captcha" value="false" />
                 <div className="space-y-6">
-                  <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label><input type="text" required name="name" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="Your full name" /></div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Email / WhatsApp *</label><input type="email" required name="email" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="your@email.com" /></div>
-                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label><input type="tel" name="phone" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="+91 XXX XXX XXXX" /></div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Name *</label>
+                    <input
+                      type="text"
+                      required
+                      name="name"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                      placeholder="Your full name"
+                    />
                   </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Destination idea</label><input type="text" name="destination" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="e.g., Santorini" /></div>
-                    <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Travel month</label><input type="text" name="travel_month" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300" placeholder="e.g., June 2026" /></div>
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Email / WhatsApp *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        name="email"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">Phone</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="+91 XXX XXX XXXX"
+                      />
+                    </div>
                   </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Destination idea
+                      </label>
+                      <input
+                        type="text"
+                        name="destination"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="e.g., Santorini"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#1F2328] mb-2">
+                        Travel month
+                      </label>
+                      <input
+                        type="text"
+                        name="travel_month"
+                        className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                        placeholder="e.g., June 2026"
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-[#1F2328] mb-2">Budget range</label>
-                    <select name="budget" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300">
+                    <select
+                      name="budget"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300"
+                    >
                       <option value="">Select your budget</option>
                       <option value="under-2lakh">Under ₹2 Lakh</option>
                       <option value="2-5lakh">₹2-5 Lakh</option>
@@ -656,8 +852,28 @@ function ContactSection() {
                       <option value="10lakh-plus">₹10 Lakh+</option>
                     </select>
                   </div>
-                  <div><label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label><textarea rows={5} name="notes" className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300 resize-none" placeholder="Tell us about your ideal trip..." /></div>
-                  <div className="pt-4"><button type="submit" className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0">Send inquiry</button><p className="text-sm text-[#1F2328]/60 text-center mt-4">We reply within 24 hours</p></div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#1F2328] mb-2">Notes</label>
+                    <textarea
+                      rows={5}
+                      name="notes"
+                      className="w-full px-4 py-3 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent transition-shadow duration-300 resize-none"
+                      placeholder="Tell us about your ideal trip..."
+                    />
+                  </div>
+
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
+                    >
+                      Send inquiry
+                    </button>
+                    <p className="text-sm text-[#1F2328]/60 text-center mt-4">
+                      We reply within 24 hours
+                    </p>
+                  </div>
                 </div>
               </form>
             </RevealOnScroll>
@@ -670,24 +886,126 @@ function ContactSection() {
 
 function Footer() {
   const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-[#FAFAF8] text-[#1F2328] py-16 sm:py-20 px-6 sm:px-8 lg:px-12 border-t border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-16 pb-16 border-b border-[#E6E8EF]">
           <div>
-            <h3 className="text-2xl font-semibold mb-5 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>The Nomads Co.</h3>
-            <p className="text-sm text-[#1F2328]/70 leading-relaxed mb-8" style={{ letterSpacing: "-0.01em" }}>Crafting extraordinary journeys for extraordinary people since 2015.</p>
+            <h3
+              className="text-2xl font-semibold mb-5 text-[#1F2328]"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              The Nomads Co.
+            </h3>
+            <p
+              className="text-sm text-[#1F2328]/70 leading-relaxed mb-8"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Crafting extraordinary journeys for extraordinary people since 2015.
+            </p>
             <div className="flex gap-3">
-              {[{ icon: Instagram, label: "Instagram", href: "https://www.instagram.com/thenomadsco/" }, { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/Thenomadsco/" }, { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" }].map(({ icon: Icon, label, href }) => (
-                <a key={label} href={href} className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5" target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}><Icon size={18} className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out" /></a>
+              {[
+                {
+                  icon: Instagram,
+                  label: "Instagram",
+                  href: "https://www.instagram.com/thenomadsco/",
+                },
+                {
+                  icon: Facebook,
+                  label: "Facebook",
+                  href: "https://www.facebook.com/Thenomadsco/",
+                },
+                { icon: Mail, label: "Email", href: "mailto:thenomadsco@gmail.com" },
+              ].map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all duration-300 ease-out hover:-translate-y-0.5"
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
+                >
+                  <Icon
+                    size={18}
+                    className="text-[#2D3191] group-hover:text-white transition-colors duration-300 ease-out"
+                  />
+                </a>
               ))}
             </div>
           </div>
-          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Destinations</h4><ul className="space-y-3 text-sm">{["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (<li key={link}><a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">{link}</a></li>))}</ul></div>
-          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Support</h4><ul className="space-y-3 text-sm"><li><Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact Us</Link></li>{["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (<li key={link}><a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">{link}</a></li>))}</ul></div>
-          <div><h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Newsletter</h4><p className="text-sm text-[#1F2328]/70 mb-4">Get travel inspiration and exclusive deals</p><div className="flex gap-2"><input type="email" placeholder="Your email" className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm transition-shadow duration-300" /><button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">Join</button></div></div>
+
+          <div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
+              Destinations
+            </h4>
+            <ul className="space-y-3 text-sm">
+              {["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
+              Support
+            </h4>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/contactus" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+              {["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
+              Newsletter
+            </h4>
+            <p className="text-sm text-[#1F2328]/70 mb-4">
+              Get travel inspiration and exclusive deals
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] focus:border-transparent text-sm transition-shadow duration-300"
+              />
+              <button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">
+                Join
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60"><div>© {currentYear} The Nomads Co. All rights reserved.</div><div className="flex gap-6"><a href="#" className="hover:text-[#2D3191] transition-colors">Privacy Policy</a><a href="#" className="hover:text-[#2D3191] transition-colors">Terms of Service</a><a href="#" className="hover:text-[#2D3191] transition-colors">Cookie Policy</a></div></div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
+          <div>© {currentYear} The Nomads Co. All rights reserved.</div>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-[#2D3191] transition-colors">
+              Cookie Policy
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );

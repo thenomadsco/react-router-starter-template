@@ -56,11 +56,11 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (Updated with Reliable Alternatives) ---
+  // --- INDIA (Updated IDs) ---
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
-    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=800&auto=format&fit=crop", // Fixed: Dal Lake Shikara
     category: "honeymoon", 
     region: "india" 
   },
@@ -74,7 +74,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Andaman & Nicobar", 
     descriptor: "Blue Waters & Coral Reefs", 
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Radhanagar_Beach_Havelock.jpg/800px-Radhanagar_Beach_Havelock.jpg", // Wiki Alternative
+    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800&auto=format&fit=crop", // KbirwZJIq7g -> Clean URL
     category: "beaches", 
     region: "india" 
   },
@@ -102,7 +102,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Gujarat", 
     descriptor: "Heritage & Culture", 
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/White_Rann_of_Kutch.jpg/800px-White_Rann_of_Kutch.jpg", // Wiki Alternative (Rann of Kutch)
+    image: "https://images.unsplash.com/photo-1579226527877-33e791b072b2?q=80&w=800&auto=format&fit=crop", // 4hlgFBv6IrM -> Clean URL
     category: "adventure", 
     region: "india" 
   },
@@ -116,7 +116,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Uttar Pradesh", 
     descriptor: "Spiritual & Timeless", 
-    image: "https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Taj Mahal)
+    image: "https://images.unsplash.com/photo-1564507592333-c39739cf7d35?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
     region: "india" 
   },
@@ -130,19 +130,19 @@ const allDestinations: Destination[] = [
   { 
     name: "Meghalaya", 
     descriptor: "Abode of Clouds", 
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Nohkalikai_Falls_Cherrapunji.jpg/800px-Nohkalikai_Falls_Cherrapunji.jpg", // Wiki Alternative
+    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=800&auto=format&fit=crop", // fNnpZSdqLoY -> Clean URL
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Sikkim", 
     descriptor: "Organic Mystical Land", 
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Kanchenjunga_from_Pelling%2C_Sikkim.jpg/800px-Kanchenjunga_from_Pelling%2C_Sikkim.jpg", // Wiki Alternative
+    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=800&auto=format&fit=crop", // cT5OYzhsz70 -> Clean URL
     category: "honeymoon", 
     region: "india" 
   },
 
-  // --- INTERNATIONAL ---
+  // --- INTERNATIONAL (Updated IDs) ---
   { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/london" },
   { name: "Switzerland", descriptor: "The Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international" },
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
@@ -153,14 +153,14 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ha_Long_Bay_on_a_sunny_day.jpg/800px-Ha_Long_Bay_on_a_sunny_day.jpg", // Wiki Alternative (Ha Long Bay)
+    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", // niFWqrLdjlE -> Clean URL
     category: "adventure", 
     region: "international" 
   },
   { 
     name: "United Arab Emirates", 
     descriptor: "Future Now", 
-    image: "https://images.pexels.com/photos/162031/dubai-tower-arab-khalifa-162031.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Burj Khalifa)
+    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop", // DcyL0IoCY0A -> Clean URL
     category: "cities", 
     region: "international" 
   },
@@ -169,7 +169,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
-    image: "https://images.pexels.com/photos/1878293/pexels-photo-1878293.jpeg?auto=compress&cs=tinysrgb&w=800", // Pexels Alternative (Opera House)
+    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop", // 7Zb7kUyQg1E -> Clean URL
     category: "adventure", 
     region: "international" 
   },

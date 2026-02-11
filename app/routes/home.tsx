@@ -60,7 +60,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
-    image: "https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=800&auto=format&fit=crop", // Fixed: Dal Lake Shikara
+    image: "https://images.unsplash.com/photo-1566837945700-30057527ade0?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
     region: "india" 
   },
@@ -74,7 +74,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Andaman & Nicobar", 
     descriptor: "Blue Waters & Coral Reefs", 
-    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800&auto=format&fit=crop", // KbirwZJIq7g -> Clean URL
+    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800&auto=format&fit=crop", 
     category: "beaches", 
     region: "india" 
   },
@@ -102,7 +102,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Gujarat", 
     descriptor: "Heritage & Culture", 
-    image: "https://images.unsplash.com/photo-1579226527877-33e791b072b2?q=80&w=800&auto=format&fit=crop", // 4hlgFBv6IrM -> Clean URL
+    image: "https://images.unsplash.com/photo-1579226527877-33e791b072b2?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "india" 
   },
@@ -130,14 +130,14 @@ const allDestinations: Destination[] = [
   { 
     name: "Meghalaya", 
     descriptor: "Abode of Clouds", 
-    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=800&auto=format&fit=crop", // fNnpZSdqLoY -> Clean URL
+    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "india" 
   },
   { 
     name: "Sikkim", 
     descriptor: "Organic Mystical Land", 
-    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=800&auto=format&fit=crop", // cT5OYzhsz70 -> Clean URL
+    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
     region: "india" 
   },
@@ -153,14 +153,14 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", // niFWqrLdjlE -> Clean URL
+    image: "https://images.unsplash.com/photo-1557750255-c76072a7bb56?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "international" 
   },
   { 
     name: "United Arab Emirates", 
     descriptor: "Future Now", 
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop", // DcyL0IoCY0A -> Clean URL
+    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
     region: "international" 
   },
@@ -169,7 +169,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
-    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop", // 7Zb7kUyQg1E -> Clean URL
+    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "international" 
   },

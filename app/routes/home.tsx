@@ -194,19 +194,19 @@ const customStyles = `
   }
 `;
 
-// --- NEW: Progressive Image Component for Smooth Loading ---
-// This handles the "blur-up" effect and prevents layout shifts
+// --- Updated Progressive Image (Fixed Layout) ---
 const ProgressiveImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className={`relative overflow-hidden bg-gray-100 ${className}`}>
-      {/* Loading Skeleton */}
+    // Outer div must be w-full h-full to prevent collapse
+    <div className="w-full h-full relative overflow-hidden bg-[#F0F0F0]">
+      {/* Skeleton / Pulse */}
       <div 
-        className={`absolute inset-0 bg-gray-200 animate-pulse transition-opacity duration-500 ${isLoaded ? 'opacity-0' : 'opacity-100'}`} 
+        className={`absolute inset-0 bg-gray-200 animate-pulse transition-opacity duration-700 ${isLoaded ? 'opacity-0' : 'opacity-100'}`} 
       />
       
-      {/* Actual Image */}
+      {/* Actual Image - className applies custom hover effects here */}
       <img
         src={src}
         alt={alt}
@@ -214,7 +214,7 @@ const ProgressiveImage = ({ src, alt, className, priority = false }: { src: stri
         fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         onLoad={() => setIsLoaded(true)}
-        className={`w-full h-full object-cover transition-all duration-1000 ease-out ${className} ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+        className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
       />
     </div>
   );
@@ -232,7 +232,7 @@ function RevealOnScroll({ children, className = "", animation = "up", delay = 0 
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -289,7 +289,6 @@ function Navigation() {
 }
 
 function Hero() {
-  // Use high-quality Unsplash for Hero as they are optimized by CDN
   const heroImage = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop";
   const image1 = "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop";
   const image2 = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop";
@@ -345,17 +344,17 @@ function Hero() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px]">
+                <div className="rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px] overflow-hidden">
                   <ProgressiveImage src={heroImage} alt="Luxury Beach Escape" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={400}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px]">
+                <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
                   <ProgressiveImage src={image1} alt="Private Pool Villa" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={500}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px]">
+                <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
                   <ProgressiveImage src={image2} alt="Fine Dining" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
@@ -439,8 +438,7 @@ function DiagonalDestinations() {
             return (
               <RevealOnScroll key={destination.name} delay={index * 50}>
                 <Wrapper to={linkTo} className="group cursor-pointer block h-full">
-                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl h-[320px] bg-gray-100">
-                    {/* Using Progressive Image for smooth loading */}
+                  <div className="relative rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl h-[320px] overflow-hidden">
                     <ProgressiveImage 
                       src={destination.image} 
                       alt={destination.name} 
@@ -455,7 +453,6 @@ function DiagonalDestinations() {
                         <p className="text-white/90 text-sm mb-4 font-light">{destination.descriptor}</p>
                       </div>
                       
-                      {/* Magnifying Explore Button */}
                       <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg origin-left">
                         Explore <ArrowRight size={16} />
                       </div>
@@ -486,7 +483,7 @@ function ExperienceSection() {
           {experiences.map((experience, index) => (
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
-                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl h-[300px]">
+                <div className="relative rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl h-[300px] overflow-hidden">
                   <ProgressiveImage src={experience.image} alt={experience.title} className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
                 <h3 className="text-2xl font-semibold text-[#1F2328] mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{experience.title}</h3>

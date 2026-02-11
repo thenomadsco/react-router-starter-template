@@ -181,7 +181,6 @@ const customStyles = `
 
   .animate-ready { opacity: 0; transform: translateY(30px); transition: opacity 0.1s; }
   
-  /* Slower, more fluid entrance */
   .animate-active-up {
     animation: fade-in-up 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
@@ -195,6 +194,32 @@ const customStyles = `
   }
 `;
 
+// --- NEW: Progressive Image Component for Smooth Loading ---
+// This handles the "blur-up" effect and prevents layout shifts
+const ProgressiveImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div className={`relative overflow-hidden bg-gray-100 ${className}`}>
+      {/* Loading Skeleton */}
+      <div 
+        className={`absolute inset-0 bg-gray-200 animate-pulse transition-opacity duration-500 ${isLoaded ? 'opacity-0' : 'opacity-100'}`} 
+      />
+      
+      {/* Actual Image */}
+      <img
+        src={src}
+        alt={alt}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        onLoad={() => setIsLoaded(true)}
+        className={`w-full h-full object-cover transition-all duration-1000 ease-out ${className} ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+      />
+    </div>
+  );
+};
+
 function RevealOnScroll({ children, className = "", animation = "up", delay = 0 }: { children: React.ReactNode; className?: string; animation?: "up" | "fade"; delay?: number }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -207,7 +232,7 @@ function RevealOnScroll({ children, className = "", animation = "up", delay = 0 
           observer.disconnect();
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -264,9 +289,10 @@ function Navigation() {
 }
 
 function Hero() {
-  const heroImage = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1080&auto=format&fit=crop";
-  const image1 = "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1080&auto=format&fit=crop";
-  const image2 = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1080&auto=format&fit=crop";
+  // Use high-quality Unsplash for Hero as they are optimized by CDN
+  const heroImage = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop";
+  const image1 = "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop";
+  const image2 = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop";
 
   return (
     <section className="relative pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
@@ -319,18 +345,18 @@ function Hero() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
-                  <img src={heroImage} alt="Luxury Beach Escape" loading="lazy" decoding="async" className="w-full h-[300px] sm:h-[400px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px]">
+                  <ProgressiveImage src={heroImage} alt="Luxury Beach Escape" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={400}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
-                  <img src={image1} alt="Private Pool Villa" loading="lazy" decoding="async" className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px]">
+                  <ProgressiveImage src={image1} alt="Private Pool Villa" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={500}>
-                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group">
-                  <img src={image2} alt="Fine Dining" loading="lazy" decoding="async" className="w-full h-[200px] sm:h-[250px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px]">
+                  <ProgressiveImage src={image2} alt="Fine Dining" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
             </div>
@@ -413,15 +439,24 @@ function DiagonalDestinations() {
             return (
               <RevealOnScroll key={destination.name} delay={index * 50}>
                 <Wrapper to={linkTo} className="group cursor-pointer block h-full">
-                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-2xl h-[320px]">
-                    <img src={destination.image} alt={destination.name} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" />
+                  <div className="relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl h-[320px] bg-gray-100">
+                    {/* Using Progressive Image for smooth loading */}
+                    <ProgressiveImage 
+                      src={destination.image} 
+                      alt={destination.name} 
+                      className="transition-transform duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110" 
+                    />
+                    
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                    
                     <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{destination.name}</h3>
-                      <p className="text-white/90 text-sm mb-4 font-light">{destination.descriptor}</p>
+                      <div className="transform transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-y-[-8px]">
+                        <h3 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{destination.name}</h3>
+                        <p className="text-white/90 text-sm mb-4 font-light">{destination.descriptor}</p>
+                      </div>
                       
                       {/* Magnifying Explore Button */}
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg origin-left">
                         Explore <ArrowRight size={16} />
                       </div>
                     </div>
@@ -451,8 +486,8 @@ function ExperienceSection() {
           {experiences.map((experience, index) => (
             <RevealOnScroll key={experience.title} delay={index * 150}>
               <div className="group h-full flex flex-col">
-                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl">
-                  <img src={experience.image} alt={experience.title} className="w-full h-[300px] object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
+                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-md transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl h-[300px]">
+                  <ProgressiveImage src={experience.image} alt={experience.title} className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
                 <h3 className="text-2xl font-semibold text-[#1F2328] mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{experience.title}</h3>
                 <p className="text-[#1F2328]/70 leading-relaxed mb-6 flex-grow">{experience.description}</p>
@@ -490,7 +525,9 @@ function StatsSection() {
                 </div>
                 <p className="text-[#1F2328] leading-relaxed mb-6 italic flex-grow">"{testimonial.quote}"</p>
                 <div className="flex items-center gap-4">
-                  <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover border-2 border-[#E6E8EF] transition-transform duration-500 group-hover:scale-110" />
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#E6E8EF] flex-shrink-0">
+                     <ProgressiveImage src={testimonial.image} alt={testimonial.name} className="transition-transform duration-500 group-hover:scale-110" />
+                  </div>
                   <div>
                     <div className="flex items-center gap-2"><h4 className="font-semibold text-[#1F2328]">{testimonial.name}</h4><BadgeCheck size={16} className="text-[#02A551]" /></div>
                     <p className="text-sm text-[#1F2328]/60">{testimonial.city}</p>

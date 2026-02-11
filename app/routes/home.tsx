@@ -153,21 +153,24 @@ const allDestinations: Destination[] = [
   {
     name: "Jammu & Kashmir",
     descriptor: "Heaven on Earth",
-    image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?q=80&w=1080&auto=format&fit=crop", // Dal Lake Shikara
+    // Changed to a very stable Dal Lake/Shikara image
+    image: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?q=80&w=1080&auto=format&fit=crop", 
     category: "honeymoon",
     region: "india",
   },
   {
     name: "Kerala",
     descriptor: "God's Own Country",
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=1080&auto=format&fit=crop", // Houseboat
+    // Changed to iconic Houseboat image
+    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "india",
   },
   {
     name: "Andaman & Nicobar",
     descriptor: "Blue Waters & Coral Reefs",
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1080&auto=format&fit=crop", // Tropical Beach (Havelock vibe)
+    // Changed to Havelock/Radhanagar Beach vibe
+    image: "https://images.unsplash.com/photo-1589136777351-94344816a7d9?q=80&w=1080&auto=format&fit=crop",
     category: "beaches",
     region: "india",
   },
@@ -180,8 +183,8 @@ const allDestinations: Destination[] = [
   },
   {
     name: "Goa",
-    descriptor: "Sun, Sand & Susegad Life",
-    image: "https://images.unsplash.com/photo-1587923488273-197f7c816e8b?q=80&w=1080&auto=format&fit=crop", // Palolem
+    descriptor: "Beaches & Susegad Life",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=1080&auto=format&fit=crop",
     category: "beaches",
     region: "india",
   },
@@ -195,21 +198,22 @@ const allDestinations: Destination[] = [
   {
     name: "Karnataka",
     descriptor: "Heritage & Hills",
-    image: "https://images.unsplash.com/photo-1620766182966-c6eb5ed2b788?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1593693397690-362cb9666c61?q=80&w=1080&auto=format&fit=crop", 
     category: "adventure",
     region: "india",
   },
   {
     name: "Madhya Pradesh",
     descriptor: "Heart of Incredible India",
-    image: "https://images.unsplash.com/photo-1629210042462-23b9cb03029f?q=80&w=1080&auto=format&fit=crop", // Tiger Safari
+    // Changed to a Tiger image (Kanha/Bandhavgarh)
+    image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "india",
   },
   {
     name: "Uttar Pradesh",
     descriptor: "Spiritual & Timeless",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1080&auto=format&fit=crop", // Varanasi
     category: "cities",
     region: "india",
   },
@@ -223,14 +227,16 @@ const allDestinations: Destination[] = [
   {
     name: "Meghalaya",
     descriptor: "Abode of Clouds",
-    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=1080&auto=format&fit=crop", // Waterfall/Nature
+    // Changed to iconic Waterfall/Bridge
+    image: "https://images.unsplash.com/photo-1629851723820-21a473b06322?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "india",
   },
   {
     name: "Sikkim",
     descriptor: "Organic Mystical Land",
-    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=1080&auto=format&fit=crop", // Himalayas
+    // Changed to snowy mountains
+    image: "https://images.unsplash.com/photo-1623145468783-d96bbd928230?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "india",
   },
@@ -247,7 +253,8 @@ const allDestinations: Destination[] = [
   {
     name: "Switzerland",
     descriptor: "The Alpine Dream",
-    image: "https://images.unsplash.com/photo-1528629250003-138330190c21?q=80&w=1080&auto=format&fit=crop", // Lauterbrunnen
+    // Changed to reliable Lauterbrunnen/Train
+    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=1080&auto=format&fit=crop",
     category: "honeymoon",
     region: "international",
   },
@@ -289,14 +296,16 @@ const allDestinations: Destination[] = [
   {
     name: "Vietnam",
     descriptor: "Timeless Charm",
-    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop", // Ha Long Bay
+    // Changed to Ha Long Bay
+    image: "https://images.unsplash.com/photo-1528127269322-53996db866bd?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },
   {
     name: "United Arab Emirates",
     descriptor: "Future Now",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop", // Burj Khalifa
+    // Changed to Burj Khalifa Skyline
+    image: "https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=1080&auto=format&fit=crop",
     category: "cities",
     region: "international",
   },
@@ -317,7 +326,8 @@ const allDestinations: Destination[] = [
   {
     name: "Australia",
     descriptor: "The Great Outback",
-    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop", // Opera House
+    // Changed to Sydney Opera House
+    image: "https://images.unsplash.com/photo-1523482580672-01e6f2eb60b3?q=80&w=1080&auto=format&fit=crop",
     category: "adventure",
     region: "international",
   },

@@ -327,134 +327,27 @@ export default function Home() {
 }
 
 function Navigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Prevent background scroll when menu is open (mobile UX)
-  useEffect(() => {
-    if (isMobileMenuOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isMobileMenuOpen]);
-
-  const closeMenu = () => setIsMobileMenuOpen(false);
-
   return (
-    <>
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-4">
-          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 sm:gap-6">
-            <Link to="/" className="flex items-center gap-3 group">
-              <img
-                src={logoImage}
-                alt="The Nomads Co."
-                className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
-              />
-              <span
-                className="text-lg font-semibold text-[#1F2328] tracking-tight hidden sm:inline"
-                style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
-              >
-                The Nomads Co.
-              </span>
-            </Link>
-
-            {/* Desktop links */}
-            <div className="hidden lg:flex items-center justify-center gap-10">
-              {[
-                { label: "Destinations", href: "#destinations" },
-                { label: "Experiences", href: "#experiences" },
-                { label: "Testimonials", href: "#testimonials" },
-              ].map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <Link
-                to="/contactus"
-                className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-              >
-                Contact
-              </Link>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 sm:gap-4">
-              <Link
-                to="/contactus"
-                className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
-              >
-                Plan My Trip
-              </Link>
-
-              {/* Mobile menu button */}
-              <button
-                type="button"
-                className="lg:hidden w-11 h-11 rounded-full border border-[#E6E8EF] bg-white flex items-center justify-center text-[#1F2328] transition-transform duration-300 ease-out hover:scale-105 active:scale-95"
-                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={isMobileMenuOpen}
-                onClick={() => setIsMobileMenuOpen((v) => !v)}
-              >
-                {isMobileMenuOpen ? (
-                  <span className="text-2xl leading-none">×</span>
-                ) : (
-                  <Menu size={22} />
-                )}
-              </button>
-            </div>
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+          <Link to="/" className="flex items-center gap-3 group">
+            <img src={logoImage} alt="The Nomads Co." className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5" />
+            <span className="text-lg font-semibold text-[#1F2328] tracking-tight" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>The Nomads Co.</span>
+          </Link>
+          <div className="hidden lg:flex items-center justify-center gap-10">
+            {[{ label: "Destinations", href: "#destinations" }, { label: "Experiences", href: "#experiences" }, { label: "Testimonials", href: "#testimonials" }].map((link) => (
+              <a key={link.label} href={link.href} className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out">{link.label}</a>
+            ))}
+            <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out">Contact</Link>
+          </div>
+          <div className="flex items-center justify-end gap-4">
+            <Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0">Plan My Trip</Link>
+            <button className="lg:hidden text-[#1F2328] transition-transform duration-300 ease-out hover:scale-110"><Menu size={24} /></button>
           </div>
         </div>
-      </nav>
-
-      {/* Mobile menu drawer */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-[60]">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/40"
-            aria-label="Close menu overlay"
-            onClick={closeMenu}
-          />
-          <div className="absolute top-[72px] left-0 right-0 bg-white border-t border-[#E6E8EF] shadow-2xl rounded-b-3xl">
-            <div className="max-w-[1400px] mx-auto px-6 py-6">
-              <div className="flex flex-col gap-3">
-                {[
-                  { label: "Destinations", href: "#destinations" },
-                  { label: "Experiences", href: "#experiences" },
-                  { label: "Testimonials", href: "#testimonials" },
-                ].map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={closeMenu}
-                    className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-
-                <Link
-                  to="/contactus"
-                  onClick={closeMenu}
-                  className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors"
-                >
-                  Contact
-                </Link>
-
-                <Link
-                  to="/contactus"
-                  onClick={closeMenu}
-                  className="mt-2 px-5 py-3 rounded-2xl bg-[#2D3191] text-white font-semibold text-center hover:bg-[#242875] transition-colors"
-                >
-                  Plan My Trip
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+      </div>
+    </nav>
   );
 }
 

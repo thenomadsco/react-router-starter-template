@@ -1,5 +1,6 @@
-import { Link } from "react-router";
+import { Link } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
@@ -238,10 +239,15 @@ export function meta({}: Route.MetaArgs) {
 // --- Animation Components & Styles ---
 const customStyles = `
   html { scroll-behavior: smooth; }
+  * { -webkit-tap-highlight-color: transparent; }
 
-  @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(40px); }
-    100% { opacity: 1; transform: translateY(0); }
+  :root {
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes reveal-soft {
+    0% { opacity: 0; transform: translateY(26px) scale(0.99); filter: blur(10px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
   }
 
   @keyframes float {
@@ -250,15 +256,48 @@ const customStyles = `
     100% { transform: translateY(0px); }
   }
 
-  .animate-ready { opacity: 0; transform: translateY(30px); transition: opacity 0.1s; }
+  @keyframes overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
-  /* Snappier 0.8s duration for better feel */
+  @keyframes drawer-in {
+    from { opacity: 0; transform: translateY(-14px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0px) scale(1); }
+  }
+
+  .animate-ready {
+    opacity: 0;
+    transform: translateY(24px) scale(0.99);
+    filter: blur(10px);
+  }
+
+  /* Snappy but premium */
   .animate-active-up {
-    animation: fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: reveal-soft 900ms var(--ease-premium) forwards;
   }
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-overlay-in {
+    animation: overlay-in 250ms var(--ease-premium) both;
+  }
+
+  .animate-drawer-in {
+    animation: drawer-in 380ms var(--ease-premium) both;
+  }
+
+  /* Respect user motion prefs */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 `;
 
@@ -266,17 +305,20 @@ const customStyles = `
 const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=jpg&q=60&w=1200";
 
-const OptimizedImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
+const OptimizedImage = ({
+  src,
+  alt,
+  className,
+  priority = false,
+}: { src: string; alt: string; className?: string; priority?: boolean }) => {
   return (
     <div className="w-full h-full relative overflow-hidden bg-[#F0F0F0]">
-      {/* Native Browser Loading - The smoothest way */}
       <img
         src={src}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
-        className={`w-full h-full object-cover ${className ?? ""}`}
+        className={`w-full h-full object-cover transform-gpu will-change-transform transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className ?? ""}`}
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
         }}
@@ -285,7 +327,7 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   );
 };
 
-function RevealOnScroll({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function RevealOnScroll({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -383,7 +425,7 @@ function Navigation() {
             <div className="flex items-center justify-end gap-3 sm:gap-4">
               <Link
                 to="/contactus"
-                className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
+                className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
               >
                 Plan My Trip
               </Link>
@@ -412,11 +454,11 @@ function Navigation() {
         <div className="lg:hidden fixed inset-0 z-[60]">
           <button
             type="button"
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px] animate-overlay-in"
             aria-label="Close menu overlay"
             onClick={closeMenu}
           />
-          <div className="absolute top-[72px] left-0 right-0 bg-white border-t border-[#E6E8EF] shadow-2xl rounded-b-3xl">
+          <div className="absolute top-[72px] left-0 right-0 bg-white border-t border-[#E6E8EF] shadow-2xl rounded-b-3xl animate-drawer-in">
             <div className="max-w-[1400px] mx-auto px-6 py-6">
               <div className="flex flex-col gap-3">
                 {[
@@ -608,11 +650,11 @@ function DiagonalDestinations() {
             return (
               <RevealOnScroll key={destination.name} delay={index * 50}>
                 <Wrapper to={linkTo} className="group cursor-pointer block h-full">
-                  <div className="relative rounded-2xl shadow-md transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-2 hover:shadow-2xl h-[320px] overflow-hidden">
+                  <div className="relative rounded-2xl shadow-md transform-gpu will-change-transform transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-2xl h-[320px] overflow-hidden">
                     <OptimizedImage 
                       src={destination.image} 
                       alt={destination.name} 
-                      className="transition-transform duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110" 
+                      className="filter transition-transform duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.12] group-hover:brightness-110" 
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
@@ -631,8 +673,8 @@ function DiagonalDestinations() {
                       </div>
 
                       {/* Magnifying Explore Button */}
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mt-2 transition-all duration-500 group-hover:bg-white group-hover:text-[#2D3191] group-hover:scale-110 group-hover:shadow-lg origin-left">
-                        Explore <ArrowRight size={16} />
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold mt-3 bg-white/10 backdrop-blur-lg border border-white/20 origin-left transform-gpu will-change-transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-85 scale-[0.98] group-hover:opacity-100 group-hover:scale-110 group-hover:bg-white group-hover:text-[#2D3191] group-hover:shadow-xl group-hover:-translate-y-0.5">
+                        Explore <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-1" />
                       </div>
                     </div>
                   </div>
@@ -701,7 +743,7 @@ function ExperienceSection() {
 
                 <div>
                   {experience.ctaType === "primary" ? (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
+                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
                       Learn more
                       <ArrowRight size={16} />
                     </button>
@@ -979,7 +1021,7 @@ function ContactSection() {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
+                      className="w-full px-8 py-4 bg-[#2D3191] text-white text-base font-medium rounded-xl hover:bg-[#242875] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
                     >
                       Send inquiry
                     </button>

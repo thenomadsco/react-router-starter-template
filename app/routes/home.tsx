@@ -56,7 +56,7 @@ type Destination = {
 };
 
 const allDestinations: Destination[] = [
-  // --- INDIA (Fixed broken images + requested updates) ---
+  // --- INDIA ---
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
@@ -142,7 +142,7 @@ const allDestinations: Destination[] = [
     region: "india" 
   },
 
-  // --- INTERNATIONAL (Fixed broken images) ---
+  // --- INTERNATIONAL ---
   { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/london" },
   { name: "Switzerland", descriptor: "The Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international", link: "/switzerland"},
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/france"},
@@ -766,11 +766,11 @@ function StatsSection() {
 
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#E6E8EF] flex-shrink-0">
-                     <OptimizedImage 
-                       src={testimonial.image} 
-                       alt={testimonial.name} 
-                       className="transition-transform duration-500 group-hover:scale-110" 
-                     />
+                      <OptimizedImage 
+                        src={testimonial.image} 
+                        alt={testimonial.name} 
+                        className="transition-transform duration-500 group-hover:scale-110" 
+                      />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -1111,9 +1111,9 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
           <div>© {currentYear} The Nomads Co. All rights reserved.</div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
+            <Link to="/privacypolicy" className="hover:text-[#2D3191] transition-colors">
               Privacy Policy
-            </a>
+            </Link>
             <a href="#" className="hover:text-[#2D3191] transition-colors">
               Terms of Service
             </a>

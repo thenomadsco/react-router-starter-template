@@ -166,14 +166,15 @@ const allDestinations: Destination[] = [
     region: "international",
     link: "/uae"
   },
-  { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
-  { name: "Japan", descriptor: "Tradition Meets Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
+  { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/singapore" },
+  { name: "Japan", descriptor: "Tradition Meets Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/japan"},
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
     image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVzdHJhbGlhfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "adventure", 
-    region: "international" 
+    region: "international",
+    link: "/australia"
   },
 ];
 

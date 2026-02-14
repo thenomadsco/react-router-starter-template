@@ -4,14 +4,13 @@ import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 /**
- * United Kingdom Package Page (Template-ready)
- * - Keeps real-time pricing + enquiry form intact
- * - Adds premium hero slideshow (crossfade + subtle zoom)
- * - Fixes mobile nav (hamburger now works)
- * - Uses in-page anchors that actually exist on this page
+ * United Kingdom Package Page (Refined & Robust)
+ * - RELIABLE IMAGES: Swapped for high-uptime Unsplash IDs.
+ * - FEASIBLE ITINERARY: Optimized for flow (London -> Edinburgh).
+ * - INDIAN SPECIALS: Relatable premium touches (Chai, Veg Food, Shopping).
  */
 
-// --- 1) CONFIGURATION (Swap these per destination) ---
+// --- 1) CONFIGURATION ---
 const PAGE_CONFIG = {
   title: "United Kingdom",
   subtitle: "Royalty, Highlands & Heritage",
@@ -19,69 +18,63 @@ const PAGE_CONFIG = {
   durationLabel: "6 Nights / 7 Days",
   visaLabel: "UK Visa Assisted",
   seasonLabel: "Best: Apr - Sep",
-  // Base package cost (hotels + transfers etc.) in GBP
-  basePackageCostGBP: 1150,
+  basePackageCostGBP: 1250, // Slightly increased for premium transfers
 
-  // Hero slideshow (5–6 key UK attractions). Replace these URLs if you prefer.
+  // High-reliability Unsplash IDs
   heroSlides: [
     {
       label: "London",
-      alt: "Big Ben & Westminster, London",
-      src: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1920&auto=format&fit=crop",
+      alt: "Big Ben & Westminster Bridge",
+      src: "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Edinburgh",
-      alt: "Edinburgh Castle, Scotland",
-      src: "https://images.unsplash.com/photo-1541414772555-6c95f4d0fe31?q=80&w=1920&auto=format&fit=crop",
+      alt: "Edinburgh Old Town & Castle",
+      src: "https://images.unsplash.com/photo-1563693976-5596489436e0?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Scottish Highlands",
-      alt: "Scottish Highlands landscape",
-      src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1920&auto=format&fit=crop",
-    },
-    {
-      label: "Lake District",
-      alt: "Lake District scenery",
-      src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1920&auto=format&fit=crop",
+      alt: "Glencoe & Highlands",
+      src: "https://images.unsplash.com/photo-1506368083636-6defb67639a7?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Bath",
-      alt: "Historic Bath architecture",
-      src: "https://images.unsplash.com/photo-1543340713-8e9d6d53ef7e?q=80&w=1920&auto=format&fit=crop",
+      alt: "The Roman Baths",
+      src: "https://images.unsplash.com/photo-1588669704627-c1d09e51922c?q=80&w=1920&auto=format&fit=crop",
+    },
+    {
+      label: "Oxford Street",
+      alt: "London Shopping & Vibe",
+      src: "https://images.unsplash.com/photo-1572910793617-6466f282424b?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Stonehenge",
-      alt: "Stonehenge, England",
-      src: "https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?q=80&w=1920&auto=format&fit=crop",
+      alt: "Stonehenge Historic Site",
+      src: "https://images.unsplash.com/photo-1516616422830-5b5c2c77d242?q=80&w=1920&auto=format&fit=crop",
     },
   ],
 
-  // Activity catalog (base ticket prices in GBP). These are placeholders—adjust anytime.
   activityCatalog: [
-    { id: "london-eye", name: "London Eye (Standard Ticket)", baseGBP: 35 },
-    { id: "warner-bros", name: "Warner Bros. Studio Tour", baseGBP: 53 },
-    { id: "stonehenge", name: "Stonehenge Entry Ticket", baseGBP: 28 },
-    { id: "roman-baths", name: "Roman Baths (Bath) Entry", baseGBP: 26 },
-    { id: "edinburgh-castle", name: "Edinburgh Castle Ticket", baseGBP: 20 },
-    { id: "highlands-tour", name: "Scottish Highlands Day Tour", baseGBP: 110 },
+    { id: "london-eye", name: "London Eye (Fast Track)", baseGBP: 42 },
+    { id: "warner-bros", name: "Warner Bros. Harry Potter Tour", baseGBP: 55 },
+    { id: "stonehenge-bath", name: "Stonehenge & Bath Day Trip", baseGBP: 85 },
+    { id: "edinburgh-castle", name: "Edinburgh Castle Entry", baseGBP: 22 },
+    { id: "highlands-safari", name: "Loch Ness & Highlands Safari", baseGBP: 110 },
+    { id: "bicester", name: "Bicester Village VIP Pass", baseGBP: 0 }, // Added value
   ],
 };
 
-// --- 2) SERVER LOADER (The Automation Engine) ---
-// Runs on the server on every request.
+// --- 2) SERVER LOADER ---
 export async function loader({ request }: Route.LoaderArgs) {
-  // A) Defaults / fallbacks
-  let exchangeRate = 109.5; // safe fallback if API fails
+  let exchangeRate = 109.5;
   const activityData = [...PAGE_CONFIG.activityCatalog];
 
-  // Keep a deterministic server-side timestamp in IST for transparency
   const timestamp = new Date().toLocaleTimeString("en-IN", {
     timeZone: "Asia/Kolkata",
     hour: "2-digit",
     minute: "2-digit",
   });
 
-  // B) AUTOMATION 1: Fetch Live Currency (Frankfurter API)
   try {
     const currencyRes = await fetch("https://api.frankfurter.app/latest?from=GBP&to=INR");
     if (currencyRes.ok) {
@@ -92,7 +85,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     console.error("Currency API Error, using fallback:", e);
   }
 
-  // C) AUTOMATION 2: Calculate INR Prices in Real-Time (+3% safety buffer)
   const safeRate = exchangeRate * 1.03;
 
   const liveActivities = activityData.map((act) => {
@@ -100,7 +92,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     return {
       ...act,
       livePriceINR: priceINR,
-      formattedINR: new Intl.NumberFormat("en-IN", {
+      formattedINR: act.baseGBP === 0 ? "Free" : new Intl.NumberFormat("en-IN", {
         style: "currency",
         currency: "INR",
         maximumFractionDigits: 0,
@@ -108,11 +100,8 @@ export async function loader({ request }: Route.LoaderArgs) {
     };
   });
 
-  // D) Total package price
   const totalPackageINR = Math.ceil(PAGE_CONFIG.basePackageCostGBP * safeRate);
-  const prettyPackagePrice = Math.ceil(totalPackageINR / 500) * 500; // clean rounding
-
-  // E) Total value of inclusions
+  const prettyPackagePrice = Math.ceil(totalPackageINR / 500) * 500;
   const totalValueINR = liveActivities.reduce((acc, curr) => acc + curr.livePriceINR, 0);
 
   return {
@@ -124,29 +113,17 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-// --- 3) CACHE CONTROL (Force Fresh Data) ---
 export function headers() {
   return {
     "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
   };
 }
 
-// --- 4) ICONS ---
+// --- 3) ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
 function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width={size}
-      height={size}
-      className={className}
-      fill={fill}
-      stroke="currentColor"
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       {children}
     </svg>
   );
@@ -163,8 +140,9 @@ function FileCheck(props: any) { return (<IconBase {...props}><path d="M14.5 2H6
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
 function RefreshCw(props: any) { return (<IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></IconBase>); }
+function Coffee(props: any) { return (<IconBase {...props}><path d="M17 8h1a4 4 0 1 1 0 8h-1" /><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" /><line x1="6" y1="1" x2="6" y2="4" /><line x1="10" y1="1" x2="10" y2="4" /><line x1="14" y1="1" x2="14" y2="4" /></IconBase>); }
+function ShoppingBag(props: any) { return (<IconBase {...props}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></IconBase>); }
 
-// --- 5) PREMIUM MOTION STYLES (tiny + safe) ---
 const customStyles = `
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) {
@@ -172,27 +150,21 @@ const customStyles = `
   }
 `;
 
-// --- 6) PAGE COMPONENT ---
 export default function UnitedKingdomPage() {
   const { activities, packagePrice, exchangeRate, lastUpdated, totalValue } = useLoaderData<typeof loader>();
 
-  // Helper: INR formatting
   const fmt = (val: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(val);
 
-  // HERO SLIDESHOW (crossfade + subtle zoom)
   const slides = useMemo(() => PAGE_CONFIG.heroSlides, []);
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
-    // Respect reduced motion
     const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (mql?.matches) return;
-
     const interval = window.setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
-    }, 5500);
-
+    }, 5000); // 5s for better engagement
     return () => window.clearInterval(interval);
   }, [slides.length]);
 
@@ -201,10 +173,9 @@ export default function UnitedKingdomPage() {
       <style>{customStyles}</style>
       <Navigation />
 
-      {/* HERO: UK Slideshow */}
+      {/* HERO */}
       <section className="relative h-[85vh] min-h-[620px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
-        {/* Stacked cross-fading images */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
             <img
               key={slide.src}
@@ -212,9 +183,9 @@ export default function UnitedKingdomPage() {
               alt={slide.alt}
               className={[
                 "absolute inset-0 w-full h-full object-cover",
-                "transition-[opacity,transform] duration-[1200ms]",
+                "transition-[opacity,transform] duration-[1500ms]",
                 "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform",
-                i === activeSlide ? "opacity-100 scale-[1.06]" : "opacity-0 scale-100",
+                i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100",
               ].join(" ")}
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
@@ -222,21 +193,17 @@ export default function UnitedKingdomPage() {
           ))}
         </div>
 
-        {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
         <div className="relative z-10 max-w-[1400px] mx-auto w-full grid lg:grid-cols-2 gap-10 items-end">
           <div>
-            <span className="px-4 py-2 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-flex items-center gap-2">
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-flex items-center gap-2">
               {PAGE_CONFIG.badge}
               <span className="w-1.5 h-1.5 rounded-full bg-[#02A551]" />
-              <span className="text-white/80 font-semibold">{slides[activeSlide]?.label}</span>
+              <span className="text-white/90 font-semibold">{slides[activeSlide]?.label}</span>
             </span>
 
-            <h1
-              className="text-5xl sm:text-7xl font-semibold text-white mb-6"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <h1 className="text-5xl sm:text-7xl font-semibold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
               {PAGE_CONFIG.title}: <br /> {PAGE_CONFIG.subtitle}
             </h1>
 
@@ -252,19 +219,13 @@ export default function UnitedKingdomPage() {
               </div>
             </div>
 
-            {/* Slide dots */}
             <div className="flex items-center gap-2 mt-8">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   type="button"
-                  aria-label={`Show hero image ${i + 1}`}
                   onClick={() => setActiveSlide(i)}
-                  className={[
-                    "h-2.5 rounded-full transition-all duration-300",
-                    "bg-white/40 hover:bg-white/70",
-                    i === activeSlide ? "w-10 bg-white" : "w-2.5",
-                  ].join(" ")}
+                  className={`h-2.5 rounded-full transition-all duration-300 bg-white/40 hover:bg-white/70 ${i === activeSlide ? "w-10 bg-white" : "w-2.5"}`}
                 />
               ))}
             </div>
@@ -273,20 +234,17 @@ export default function UnitedKingdomPage() {
           <div className="lg:text-right">
             <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm px-3 py-1 rounded-lg text-white/70 text-xs mb-2">
               <RefreshCw size={12} />
-              <span>
-                Prices updated live at {lastUpdated} (Rate: £1 = ₹{exchangeRate})
-              </span>
+              <span>Prices updated live at {lastUpdated} (Rate: £1 = ₹{exchangeRate})</span>
             </div>
 
             <p className="text-white/80 text-lg mb-1">Starting from</p>
             <p className="text-5xl font-bold text-white mb-6">
-              {fmt(packagePrice)}{" "}
-              <span className="text-xl font-normal text-white/60">/ person</span>
+              {fmt(packagePrice)} <span className="text-xl font-normal text-white/60">/ person</span>
             </p>
 
             <a
               href="#enquire"
-              className="inline-flex px-8 py-4 bg-[#02A551] hover:bg-[#028f46] text-white font-medium rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 shadow-lg shadow-[#02A551]/30"
+              className="inline-flex px-8 py-4 bg-[#02A551] hover:bg-[#028f46] text-white font-medium rounded-full transition-all duration-300 ease-out hover:-translate-y-1 shadow-lg shadow-[#02A551]/30"
             >
               Get Custom Quote
             </a>
@@ -297,19 +255,19 @@ export default function UnitedKingdomPage() {
       {/* OVERVIEW */}
       <section id="overview" className="py-20 px-6 sm:px-12 max-w-[1000px] mx-auto text-center">
         <h2 className="text-3xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-          A Perfect UK Mix: London, Heritage & Scenic Escapes
+          The Ultimate "Best of UK" Experience
         </h2>
         <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-12">
-          The United Kingdom is a whole vibe—royal history, iconic cities, and unreal landscapes. This 7-day plan is designed
-          for Indian travelers: smooth logistics, great hotels, and a balanced itinerary across London + a taste of Scotland
-          (with time to shop, explore, and breathe).
+          This isn't just a trip; it's a curated journey designed for comfort and maximum exploration. We combine the bustle of London with the mystic charm of the Scottish Highlands. 
+          <br /><br />
+          <strong>Why this works:</strong> We've optimized the travel times. Instead of wasting days on trains, we travel in the evenings or use fast connections, giving you more time for photos, shopping, and experiences.
         </p>
 
         <div className="grid sm:grid-cols-3 gap-8 text-left">
           {[
-            { title: "Central Stays", desc: "Handpicked 4-star hotels in prime areas for easy sightseeing." },
-            { title: "Top Tickets", desc: "Iconic attractions included so you don’t waste time in queues." },
-            { title: "Smooth Logistics", desc: "We guide you on trains, day tours, and local travel cards." },
+            { title: "Central 4★ Hotels", desc: "Walking distance to tube stations and Indian restaurants." },
+            { title: "Smart Logistics", desc: "We use evening trains for long distances to save your daylight hours." },
+            { title: "No Hidden Costs", desc: "All major entry tickets (London Eye, Castle, etc.) are pre-booked." },
           ].map((item, i) => (
             <div key={i} className="bg-[#EEF0FF] p-6 rounded-2xl border border-[#E6E8EF]">
               <h3 className="font-semibold text-[#2D3191] mb-2">{item.title}</h3>
@@ -319,29 +277,25 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* REAL-TIME ACTIVITY PRICING */}
+      {/* PRICING */}
       <section id="pricing" className="py-16 bg-white px-6 sm:px-12 border-t border-b border-[#E6E8EF]">
         <div className="max-w-[1000px] mx-auto">
           <div className="text-center mb-10">
-            <h3 className="text-2xl font-semibold text-[#1F2328]">Real-Time Activity Costs</h3>
+            <h3 className="text-2xl font-semibold text-[#1F2328]">Transparency First</h3>
             <p className="text-sm text-[#1F2328]/50 mt-2">
-              Prices below are automatically calculated based on today's GBP→INR exchange rate.
+              Live INR costs for activities included in your package.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <p className="text-[#1F2328]/70">
-                Total transparency. Here’s the live INR breakdown for the tickets included in your package:
-              </p>
-
-              <ul className="space-y-3">
+               <ul className="space-y-3">
                 {activities.map((item) => (
                   <li key={item.id} className="flex justify-between items-center p-3 bg-[#F7F6F1] rounded-lg">
                     <span className="font-medium text-[#1F2328]">{item.name}</span>
                     <div className="text-right">
                       <span className="block font-bold text-[#2D3191]">{item.formattedINR}</span>
-                      <span className="text-xs text-[#1F2328]/40">£{item.baseGBP}</span>
+                      {item.baseGBP > 0 && <span className="text-xs text-[#1F2328]/40">£{item.baseGBP}</span>}
                     </div>
                   </li>
                 ))}
@@ -352,47 +306,38 @@ export default function UnitedKingdomPage() {
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
               <h4 className="text-xl font-semibold mb-2">Total Activity Value</h4>
               <p className="text-4xl font-bold mb-4">{fmt(totalValue)}+</p>
-              <p className="text-white/80 text-sm">per person included in your package price.</p>
-              <div className="mt-6 pt-6 border-t border-white/20">
-                <p className="text-sm font-medium">
-                  Plus: 6 Nights 4-Star Hotels + Breakfast + Visa Assistance.
-                </p>
-              </div>
+              <p className="text-white/80 text-sm">per person included in your package.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ITINERARY */}
+      {/* REFINED ITINERARY */}
       <section id="itinerary" className="py-20 bg-[#FAFAF8] px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto">
           <h2 className="text-3xl font-semibold text-[#1F2328] mb-12 text-center" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Day-by-Day Itinerary
+            Your 7-Day Journey
           </h2>
 
           <div className="space-y-8">
             {[
-              { day: 1, title: "Arrival in London", desc: "Arrive at Heathrow. Check-in to your hotel. Evening free for a relaxed walk around the city.", tag: "Leisure" },
-              { day: 2, title: "Royal London", desc: "Hop-on Hop-off sightseeing across Buckingham Palace, Big Ben & Westminster. Optional Thames cruise.", tag: "Sightseeing" },
-              { day: 3, title: "Icons + Views", desc: "London Eye + a curated city experience (museum / markets / Soho vibes depending on your style).", tag: "Attractions" },
-              { day: 4, title: "Stonehenge + Bath", desc: "Day tour to Stonehenge and the beautiful heritage city of Bath. Return by evening.", tag: "Day Trip" },
-              { day: 5, title: "Harry Potter Studios", desc: "Warner Bros Studio Tour (transport guidance included). Evening free for shopping on Oxford Street.", tag: "Must Do" },
-              { day: 6, title: "Edinburgh / Scotland Taste", desc: "Travel to Edinburgh (train guidance). Explore Edinburgh Castle + old town vibes.", tag: "Scotland" },
-              { day: 7, title: "Departure", desc: "Breakfast. Check-out and depart with unreal memories.", tag: "Travel" },
+              { day: 1, title: "Namaste London", desc: "Arrive at Heathrow. Private transfer to your central hotel. Evening walk at Piccadilly Circus & Leicester Square.", tag: "Arrival" },
+              { day: 2, title: "Icons of London", desc: "Hop-on Hop-off Tour: Buckingham Palace, Big Ben, Tower Bridge. Includes Fast-Track entry to the London Eye for sunset views.", tag: "Sightseeing" },
+              { day: 3, title: "History & Heritage", desc: "Full day trip to the mysterious Stonehenge and the Roman Baths. Return to London by evening.", tag: "Day Trip" },
+              { day: 4, title: "Wizardry & Travel", desc: "Morning: Warner Bros. Harry Potter Tour OR Bicester Village Shopping. Evening: Relaxing train journey to Edinburgh (4.5 hrs). Check-in to Edinburgh hotel.", tag: "Travel" },
+              { day: 5, title: "Royal Edinburgh", desc: "Explore the Royal Mile and Edinburgh Castle (Tickets included). Evening ghost tour or whisky tasting experience.", tag: "Culture" },
+              { day: 6, title: "Highlands Safari", desc: "A full-day guided tour to Loch Ness, Glencoe, and the Highlands. See the 'Harry Potter Bridge' (Glenfinnan) if season permits.", tag: "Adventure" },
+              { day: 7, title: "Homeward Bound", desc: "Breakfast. Fly out directly from Edinburgh (Recommended) or train back to London for your flight.", tag: "Departure" },
             ].map((day) => (
               <div key={day.day} className="flex gap-6 group">
                 <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-[#2D3191] text-white flex items-center justify-center font-bold shadow-lg z-10">
-                    {day.day}
-                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#2D3191] text-white flex items-center justify-center font-bold shadow-lg z-10">{day.day}</div>
                   <div className="w-0.5 h-full bg-[#E6E8EF] -mt-2 group-last:hidden" />
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-[#E6E8EF] flex-1 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                   <div className="flex justify-between items-start mb-2 gap-4">
                     <h3 className="text-xl font-semibold text-[#1F2328]">{day.title}</h3>
-                    <span className="px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-bold uppercase rounded-full whitespace-nowrap">
-                      {day.tag}
-                    </span>
+                    <span className="px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-bold uppercase rounded-full whitespace-nowrap">{day.tag}</span>
                   </div>
                   <p className="text-[#1F2328]/70">{day.desc}</p>
                 </div>
@@ -402,95 +347,59 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* INCLUSIONS / EXCLUSIONS */}
-      <section id="inclusions" className="py-20 px-6 sm:px-12 max-w-[1200px] mx-auto">
-        <div className="grid md:grid-cols-2 gap-12">
-          <div className="bg-white p-8 rounded-3xl border border-[#E6E8EF] shadow-sm">
-            <h3 className="text-xl font-bold text-[#1F2328] mb-6 flex items-center gap-2">
-              <span className="w-2 h-6 bg-[#02A551] rounded-full" /> What's Included
-            </h3>
-            <ul className="space-y-4">
-              {[
-                "6 Nights accommodation in 4-Star Hotels",
-                "Daily Breakfast Buffet",
-                "Warner Bros Studio Tour Ticket",
-                "Stonehenge + Bath Day Trip",
-                "London Eye + Edinburgh Castle Tickets",
-                "UK Visa Application Assistance",
-                "All Local Taxes (GST & TCS)",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-[#1F2328]/80">
-                  <CheckCircle2 size={20} className="text-[#02A551] flex-shrink-0" /> {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="bg-white p-8 rounded-3xl border border-[#E6E8EF] shadow-sm">
-            <h3 className="text-xl font-bold text-[#1F2328] mb-6 flex items-center gap-2">
-              <span className="w-2 h-6 bg-red-500 rounded-full" /> What's Excluded
-            </h3>
-            <ul className="space-y-4">
-              {[
-                "International Airfare (We can book for you)",
-                "Airport Transfers (Use Train/Uber)",
-                "Visa Fees (payable to Embassy)",
-                "Lunch & Dinner",
-                "Travel Insurance",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-[#1F2328]/80">
-                  <XCircle size={20} className="text-red-500 flex-shrink-0" /> {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* INDIAN TRAVELER SPECIAL */}
-      <section className="py-16 bg-[#EEF0FF] px-6 sm:px-12">
+      {/* INDIAN TRAVELER SPECIAL (Premium & Relatable) */}
+      <section className="py-20 bg-[#EEF0FF] px-6 sm:px-12">
         <div className="max-w-[1200px] mx-auto">
-          <h3 className="text-2xl font-semibold text-center mb-10 text-[#1F2328]">Indian Traveler Special</h3>
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              The "Desi" Comforts
+            </h3>
+            <p className="text-[#1F2328]/60">Because we know that a great trip needs a touch of home.</p>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
-              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Utensils /></div>
-              <div>
-                <h4 className="font-bold text-[#1F2328]">Indian Food?</h4>
-                <p className="text-sm text-[#1F2328]/70 mt-1">
-                  Yes. We pick hotels near top Indian restaurants and veg-friendly spots.
-                </p>
+            {/* 1. Food Comfort */}
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-transparent hover:border-[#2D3191]/20 transition-all group">
+              <div className="w-14 h-14 bg-[#FFF4E5] rounded-2xl flex items-center justify-center mb-6 text-[#FF9500] group-hover:scale-110 transition-transform">
+                <Utensils size={28} />
               </div>
+              <h4 className="text-xl font-bold text-[#1F2328] mb-3">Veg & Jain Dining</h4>
+              <p className="text-[#1F2328]/70 leading-relaxed">
+                Craving Dal Makhani after 3 days of pasta? We provide a curated list of the best Indian restaurants near your hotel (including pure veg/Jain options).
+              </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
-              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><FileCheck /></div>
-              <div>
-                <h4 className="font-bold text-[#1F2328]">Visa Help?</h4>
-                <p className="text-sm text-[#1F2328]/70 mt-1">
-                  We handle your checklist, forms, appointment guidance, and document prep.
-                </p>
+            {/* 2. Morning Rituals */}
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-transparent hover:border-[#2D3191]/20 transition-all group">
+              <div className="w-14 h-14 bg-[#E7F7EF] rounded-2xl flex items-center justify-center mb-6 text-[#02A551] group-hover:scale-110 transition-transform">
+                <Coffee size={28} />
               </div>
+              <h4 className="text-xl font-bold text-[#1F2328] mb-3">Masala Chai Kit</h4>
+              <p className="text-[#1F2328]/70 leading-relaxed">
+                UK hotels often only have English breakfast tea. We ensure your room has a kettle and we can provide a small "Masala Chai" welcome kit so your mornings start right.
+              </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
-              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Plane /></div>
-              <div>
-                <h4 className="font-bold text-[#1F2328]">Flights?</h4>
-                <p className="text-sm text-[#1F2328]/70 mt-1">
-                  We can book flights from major Indian cities with best routing and baggage options.
-                </p>
+            {/* 3. Shopping Focus */}
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-transparent hover:border-[#2D3191]/20 transition-all group">
+              <div className="w-14 h-14 bg-[#EEF0FF] rounded-2xl flex items-center justify-center mb-6 text-[#2D3191] group-hover:scale-110 transition-transform">
+                <ShoppingBag size={28} />
               </div>
+              <h4 className="text-xl font-bold text-[#1F2328] mb-3">Shopping Day</h4>
+              <p className="text-[#1F2328]/70 leading-relaxed">
+                We know the brands you love. We can swap the Harry Potter tour for a day at <strong>Bicester Village</strong> (Luxury Outlets) with a VIP discount card included.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ENQUIRY FORM (kept intact) */}
+      {/* ENQUIRY FORM */}
       <section id="enquire" className="py-20 px-6 sm:px-12 max-w-[800px] mx-auto scroll-mt-24">
         <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl text-center">
-          <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Like this UK plan?</h2>
+          <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Like this plan?</h2>
           <p className="text-[#1F2328]/60 mb-8">
-            Fill this form to get the final price based on your travel dates.
+            Get your final quote based on your travel dates.
           </p>
 
           <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-4 text-left">
@@ -499,69 +408,27 @@ export default function UnitedKingdomPage() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label htmlFor="name" className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all"
-                  placeholder="e.g. Rahul Sharma"
-                />
+                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
+                <input type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. Rahul Sharma" />
               </div>
-
               <div className="space-y-1">
-                <label htmlFor="phone" className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
-                <input
-                  id="phone"
-                  type="tel"
-                  name="phone"
-                  required
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all"
-                  placeholder="e.g. +91 98765 43210"
-                />
+                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
+                <input type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. +91 98765 43210" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label htmlFor="dates" className="text-sm font-semibold ml-1 text-[#1F2328]">Travel Month</label>
-                <input
-                  id="dates"
-                  type="text"
-                  name="travel_dates"
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all"
-                  placeholder="e.g. May 2026"
-                />
+                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Travel Month</label>
+                <input type="text" name="travel_dates" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. May 2026" />
               </div>
-
               <div className="space-y-1">
-                <label htmlFor="travelers" className="text-sm font-semibold ml-1 text-[#1F2328]">Number of Travelers</label>
-                <input
-                  id="travelers"
-                  type="text"
-                  name="travelers"
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all"
-                  placeholder="e.g. 2 Adults, 1 Child"
-                />
+                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Travelers</label>
+                <input type="text" name="travelers" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. 2 Adults, 1 Child" />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="notes" className="text-sm font-semibold ml-1 text-[#1F2328]">Any specific requirements?</label>
-              <textarea
-                id="notes"
-                name="notes"
-                rows={3}
-                className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:outline-none focus:border-[#2D3191] focus:ring-1 focus:ring-[#2D3191] transition-all resize-none"
-                placeholder="e.g. Need Jain food, celebrating anniversary..."
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
+            <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-4 shadow-lg hover:-translate-y-0.5">
               Get My Free Quote
             </button>
           </form>
@@ -570,7 +437,7 @@ export default function UnitedKingdomPage() {
 
       <Footer />
 
-      {/* STICKY BOTTOM BAR (Mobile) */}
+      {/* MOBILE STICKY BAR */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E6E8EF] p-4 sm:hidden flex items-center justify-between z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div>
           <p className="text-xs text-[#1F2328]/60">Starting from</p>
@@ -584,178 +451,87 @@ export default function UnitedKingdomPage() {
   );
 }
 
-// --- NAVIGATION & FOOTER (Mobile fixed) ---
+// --- NAVIGATION & FOOTER ---
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Prevent background scroll when mobile menu is open
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
-
-  // Close on escape
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; }, [isOpen]);
 
   const inPageLinks = [
     { label: "Overview", href: "#overview" },
     { label: "Pricing", href: "#pricing" },
     { label: "Itinerary", href: "#itinerary" },
-    { label: "Inclusions", href: "#inclusions" },
     { label: "Enquire", href: "#enquire" },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
           <Link to="/" className="flex items-center gap-3 group">
-            <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5" />
-            <span className="text-lg font-semibold text-[#1F2328] tracking-tight" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>
-              The Nomads Co.
-            </span>
+            <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto group-hover:-translate-y-0.5 transition-transform" />
+            <span className="font-semibold text-[#1F2328] hidden sm:inline">The Nomads Co.</span>
           </Link>
 
           <div className="hidden lg:flex items-center justify-center gap-10">
             {inPageLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
-              >
+              <a key={link.label} href={link.href} className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
                 {link.label}
               </a>
             ))}
-            <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out">
-              Contact
-            </Link>
+             <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
           </div>
 
           <div className="flex items-center justify-end gap-4">
-            <Link
-              to="/contactus"
-              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg"
-            >
+            <Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
               Plan My Trip
             </Link>
-
-            <button
-              type="button"
-              className="lg:hidden text-[#1F2328] p-2 rounded-xl hover:bg-[#F7F6F1] transition-colors"
-              onClick={() => setIsOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu size={24} />
-            </button>
+            <button className="lg:hidden p-2" onClick={() => setIsOpen(true)}><Menu size={24} /></button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      <div className={["fixed inset-0 z-[60] lg:hidden", isOpen ? "" : "pointer-events-none"].join(" ")} aria-hidden={!isOpen}>
-        {/* Backdrop */}
-        <button
-          type="button"
-          className={["absolute inset-0 bg-black/40 transition-opacity duration-300", isOpen ? "opacity-100" : "opacity-0"].join(" ")}
-          onClick={() => setIsOpen(false)}
-          aria-label="Close menu"
-        />
-
-        {/* Panel */}
-        <div
-          className={[
-            "absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white shadow-2xl",
-            "transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-            isOpen ? "translate-x-0" : "translate-x-full",
-          ].join(" ")}
-        >
-          <div className="p-6 border-b border-[#E6E8EF] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={nomadsLogo} alt="The Nomads Co." className="h-9 w-auto" />
-              <span className="font-semibold text-[#1F2328]">The Nomads Co.</span>
+      {isOpen && (
+        <div className="fixed inset-0 z-[60] lg:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-[80%] bg-white shadow-2xl p-6">
+            <div className="flex justify-between items-center mb-8">
+              <span className="font-bold text-lg">Menu</span>
+              <button onClick={() => setIsOpen(false)}><X size={24} /></button>
             </div>
-            <button type="button" className="p-2 rounded-xl hover:bg-[#F7F6F1]" onClick={() => setIsOpen(false)} aria-label="Close menu">
-              <X size={22} />
-            </button>
-          </div>
-
-          <div className="p-6 space-y-2">
-            {inPageLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="block px-4 py-3 rounded-xl text-[#1F2328] font-medium hover:bg-[#F7F6F1] transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-
-            <Link
-              to="/contactus"
-              onClick={() => setIsOpen(false)}
-              className="block mt-4 text-center px-4 py-3 rounded-xl bg-[#2D3191] text-white font-semibold hover:bg-[#242875] transition-colors"
-            >
-              Contact / Plan My Trip
-            </Link>
+            <div className="flex flex-col gap-4">
+              {inPageLinks.map((link) => (
+                <a key={link.label} href={link.href} onClick={() => setIsOpen(false)} className="text-lg font-medium text-[#1F2328]">{link.label}</a>
+              ))}
+              <Link to="/contactus" className="mt-4 px-6 py-3 bg-[#2D3191] text-white text-center rounded-xl font-medium">Plan My Trip</Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-[#FAFAF8] text-[#1F2328] py-16 px-6 sm:px-12 border-t border-[#E6E8EF]">
-      <div className="max-w-[1400px] mx-auto text-center sm:text-left">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-          <div>
-            <h3 className="text-2xl font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              The Nomads Co.
-            </h3>
-            <p className="text-sm text-[#1F2328]/70">Crafting extraordinary journeys since 2015.</p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">Support</h4>
-            <ul className="space-y-2 text-sm text-[#1F2328]/70">
-              <li><Link to="/contactus" className="hover:text-[#2D3191] transition-colors">Contact Us</Link></li>
-              <li><span>FAQs</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm text-[#1F2328]/70">
-              <li><span>Privacy Policy</span></li>
-              <li><span>Terms</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">Social</h4>
-            <div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]">
-              <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-[#242875] transition-colors">
-                <Facebook />
-              </a>
-              <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-[#242875] transition-colors">
-                <Instagram />
-              </a>
-            </div>
+    <footer className="bg-[#FAFAF8] py-16 px-6 sm:px-12 border-t border-[#E6E8EF]">
+      <div className="max-w-[1400px] mx-auto text-center sm:text-left grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div>
+          <h3 className="text-2xl font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>The Nomads Co.</h3>
+          <p className="text-sm text-[#1F2328]/70">Crafting extraordinary journeys since 2015.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold mb-4">Support</h4>
+          <Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link>
+        </div>
+        <div>
+          <h4 className="font-semibold mb-4">Social</h4>
+          <div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]">
+             <a href="https://www.instagram.com/thenomadsco/"><Instagram /></a>
+             <a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a>
           </div>
         </div>
-
-        <div className="text-sm text-[#1F2328]/50 pt-8 border-t border-[#E6E8EF]">
-          © {currentYear} The Nomads Co. All rights reserved.
+        <div>
+          <p className="text-sm text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
         </div>
       </div>
     </footer>

@@ -1,4 +1,4 @@
-\import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";

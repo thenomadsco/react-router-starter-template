@@ -6,19 +6,11 @@ import type { Route } from "./+types/home";
 /**
  * MASTER BLUEPRINT TEMPLATE (UK VERSION)
  * --------------------------------------
- * Use this structure for all 23 destinations.
- *
- * KEY SECTIONS:
- * 1. Hero Slideshow (High-Quality Assets)
- * 2. Overview (The "Hook")
- * 3. The Nomads Advantage (Why Us? - Replaces generic details)
- * 4. Itinerary (The Product)
- * 5. Pricing Transparency (The Value)
- * 6. Smart FAQ (Objection Handling)
- * 7. Enquiry Form (Conversion)
+ * UPDATED: Replaced "Nomads Advantage" with "Vertical Timeline Itinerary"
+ * DESIGN REF: Narmada Holidays (Day Box + Spine Line)
  */
 
-// --- 1) CONFIGURATION (Edit this for each destination) ---
+// --- 1) CONFIGURATION ---
 const PAGE_CONFIG = {
   title: "United Kingdom",
   subtitle: "Royalty, Highlands & Heritage",
@@ -28,7 +20,6 @@ const PAGE_CONFIG = {
   seasonLabel: "Best: Apr - Sep",
   basePackageCostGBP: 1250,
 
-  // Reliable Unsplash IDs
   heroSlides: [
     {
       label: "London",
@@ -52,7 +43,6 @@ const PAGE_CONFIG = {
     },
   ],
 
-  // Activity Catalog (Live Pricing Calculation)
   activityCatalog: [
     { id: "london-eye", name: "London Eye (Fast Track)", baseGBP: 42 },
     { id: "warner-bros", name: "Warner Bros. Harry Potter Tour", baseGBP: 55 },
@@ -61,7 +51,66 @@ const PAGE_CONFIG = {
     { id: "highlands-safari", name: "Loch Ness & Highlands Safari", baseGBP: 110 },
   ],
 
-  // FAQs specific to this destination
+  // DETAILED VERTICAL ITINERARY DATA
+  itinerary: [
+    {
+      day: "01",
+      title: "Arrival in London: The Royal Welcome",
+      desc: "Touch down at London Heathrow where your private chauffeur awaits. Enjoy a smooth transfer to your central hotel, passing iconic sights like Hyde Park and Harrods. After check-in, the evening is yours. We recommend a relaxed stroll through Covent Garden or Leicester Square to soak in the electric atmosphere of the capital.",
+      stay: "The Strand Palace (or similar 4★)",
+      meals: "Dinner included",
+      travel: "Private Transfer: 1 hr",
+    },
+    {
+      day: "02",
+      title: "Icons of London: Palaces & Panoramas",
+      desc: "After a hearty English breakfast, board the Hop-on Hop-off bus to witness Buckingham Palace, Big Ben, and the Tower of London at your own pace. In the late afternoon, skip the queues with our Fast-Track tickets to the London Eye. Witness the sun setting over the Thames—a truly magical perspective of the city skyline.",
+      stay: "The Strand Palace (or similar 4★)",
+      meals: "Breakfast & Dinner",
+      travel: "Sightseeing: 6-8 hrs",
+    },
+    {
+      day: "03",
+      title: "Ancient Mysteries: Stonehenge & Bath",
+      desc: "Escape the city for a journey back in time. We drive through the rolling English countryside to Stonehenge, the world's most famous prehistoric monument. Continue to the UNESCO city of Bath. Walk the cobblestone streets, visit the ancient Roman Baths, and admire the Georgian architecture before returning to London in the evening.",
+      stay: "The Strand Palace (or similar 4★)",
+      meals: "Breakfast",
+      travel: "Coach Tour: Full Day",
+    },
+    {
+      day: "04",
+      title: "Wizardry & The North: London to Edinburgh",
+      desc: "A treat for the fans—start your day with the Warner Bros. Harry Potter Studio Tour (transport included). Walk the Great Hall and Diagon Alley. In the afternoon, we transfer you to King's Cross for a scenic high-speed train journey to Edinburgh. Watch the landscape shift from urban sprawl to green hills as you enter Scotland.",
+      stay: "Apex Grassmarket (or similar 4★)",
+      meals: "Breakfast",
+      travel: "Train: 4.5 hrs",
+    },
+    {
+      day: "05",
+      title: "The Old Town: Secrets of Edinburgh",
+      desc: "Wake up in the medieval beauty of Edinburgh. Walk the Royal Mile, listening to bagpipers, up to the imposing Edinburgh Castle (entry included). See the Crown Jewels and the Stone of Destiny. The afternoon is free for whisky tasting or exploring the spooky underground vaults of the city.",
+      stay: "Apex Grassmarket (or similar 4★)",
+      meals: "Breakfast & Dinner",
+      travel: "Walking Tour: 3-4 hrs",
+    },
+    {
+      day: "06",
+      title: "Highlands Safari: Loch Ness & Glencoe",
+      desc: "The grand finale. A full-day guided adventure into the Scottish Highlands. Drive past the hauntingly beautiful Glencoe, see Britain's highest mountain (Ben Nevis), and cruise on the legendary Loch Ness. Keep an eye out for 'Nessie'! Return to Edinburgh with camera rolls full of memories.",
+      stay: "Apex Grassmarket (or similar 4★)",
+      meals: "Breakfast",
+      travel: "Coach Tour: 9-10 hrs",
+    },
+    {
+      day: "07",
+      title: "Homeward Bound",
+      desc: "Enjoy a final breakfast in Scotland. Your driver will pick you up for a transfer to Edinburgh Airport (EDI) for your flight back home. Bid farewell to the UK with a promise to return.",
+      stay: "N/A",
+      meals: "Breakfast",
+      travel: "Airport Transfer: 45 mins",
+    },
+  ],
+
   faqs: [
     {
       question: "How long does the UK Visa take?",
@@ -74,10 +123,6 @@ const PAGE_CONFIG = {
     {
       question: "Is airfare included in the cost?",
       answer: "The package price covers hotels, transfers, and sightseeing. Flights are not included as prices fluctuate daily, but we can help you book the best connections from your city at net rates."
-    },
-    {
-      question: "Will we get Indian food options?",
-      answer: "Yes. The UK has excellent Indian cuisine. We specifically choose hotels that are within walking distance of top-rated Indian/Veg restaurants and provide a curated list in your travel guidebook."
     }
   ]
 };
@@ -157,19 +202,15 @@ function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" 
 function RefreshCw(props: any) { return (<IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></IconBase>); }
 function ChevronDown(props: any) { return (<IconBase {...props}><path d="m6 9 6 6 6-6" /></IconBase>); }
 function ChevronUp(props: any) { return (<IconBase {...props}><path d="m18 15-6-6-6 6" /></IconBase>); }
-function ShieldCheck(props: any) { return (<IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></IconBase>); }
-function Headset(props: any) { return (<IconBase {...props}><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z" /><path d="M21 16v2a4 4 0 0 1-4 4h-5" /></IconBase>); }
-function Wallet(props: any) { return (<IconBase {...props}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" /><path d="M3 5v14a2 2 0 0 0 2 2h16v-5" /><path d="M18 12a2 2 0 0 0 0 4h4v-4Z" /></IconBase>); }
-function Sparkles(props: any) { return (<IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /><path d="M5 3v4" /><path d="M9 3v4" /><path d="M3 5h4" /><path d="M3 9h4" /></IconBase>); }
+function Utensils(props: any) { return (<IconBase {...props}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></IconBase>); }
+function Car(props: any) { return (<IconBase {...props}><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /></IconBase>); }
+function BedDouble(props: any) { return (<IconBase {...props}><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" /><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" /><path d="M12 4v6" /><path d="M2 18h20" /></IconBase>); }
 
 const customStyles = `
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
-  .accordion-content { transition: grid-template-rows 0.3s ease-out; }
-  .accordion-open { grid-template-rows: 1fr; }
-  .accordion-closed { grid-template-rows: 0fr; }
 `;
 
 export default function UnitedKingdomPage() {
@@ -274,7 +315,7 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 2. OVERVIEW (The Hook) */}
+      {/* 2. OVERVIEW */}
       <section id="overview" className="py-20 px-6 sm:px-12 max-w-[1000px] mx-auto text-center">
         <h2 className="text-3xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
           The "Best of UK" Route
@@ -297,98 +338,68 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 3. THE NOMADS ADVANTAGE (Trust & Value - Replaces details) */}
-      <section className="py-20 bg-[#F7F6F1] px-6 sm:px-12">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Why Travel with The Nomads Co.?
-            </h3>
-            <p className="text-[#1F2328]/60 max-w-2xl mx-auto">
-              You pack the bags. We handle the stress. Here is the Nomads promise.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all group">
-              <div className="w-12 h-12 bg-[#E7F7EF] rounded-xl flex items-center justify-center text-[#02A551] mb-6 group-hover:scale-110 transition-transform">
-                <ShieldCheck size={24} />
-              </div>
-              <h4 className="text-lg font-bold text-[#1F2328] mb-3">No-Rejection Visa Protocol</h4>
-              <p className="text-sm text-[#1F2328]/70 leading-relaxed">
-                Visas can be scary. We don't just give you a checklist; our team reviews every document to ensure a near-perfect success rate.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all group">
-              <div className="w-12 h-12 bg-[#EEF0FF] rounded-xl flex items-center justify-center text-[#2D3191] mb-6 group-hover:scale-110 transition-transform">
-                <Headset size={24} />
-              </div>
-              <h4 className="text-lg font-bold text-[#1F2328] mb-3">24/7 Human Support</h4>
-              <p className="text-sm text-[#1F2328]/70 leading-relaxed">
-                Stuck at a station? Flight delayed? We are one WhatsApp away. No bots, just your dedicated trip manager in your time zone.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all group">
-              <div className="w-12 h-12 bg-[#FFF4E5] rounded-xl flex items-center justify-center text-[#B45309] mb-6 group-hover:scale-110 transition-transform">
-                <Sparkles size={24} />
-              </div>
-              <h4 className="text-lg font-bold text-[#1F2328] mb-3">Curated Experiences</h4>
-              <p className="text-sm text-[#1F2328]/70 leading-relaxed">
-                We don't just book hotels. We book memories. From VIP passes to hidden local gems, we ensure your trip stands out.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl border border-[#E6E8EF] shadow-sm hover:shadow-lg transition-all group">
-              <div className="w-12 h-12 bg-[#F3F4F6] rounded-xl flex items-center justify-center text-[#374151] mb-6 group-hover:scale-110 transition-transform">
-                <Wallet size={24} />
-              </div>
-              <h4 className="text-lg font-bold text-[#1F2328] mb-3">Zero Hidden Costs</h4>
-              <p className="text-sm text-[#1F2328]/70 leading-relaxed">
-                The price we quote is the price you pay. Taxes, resort fees, and internal transfers are calculated upfront. No nasty surprises.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. ITINERARY (The Product) */}
-      <section id="itinerary" className="py-20 bg-white px-6 sm:px-12">
+      {/* 3. NEW VERTICAL TIMELINE ITINERARY */}
+      <section id="itinerary" className="py-16 bg-white px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto">
-          <h2 className="text-3xl font-semibold text-[#1F2328] mb-12 text-center" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Your 7-Day Journey
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Day-by-Day Journey
+            </h2>
+            <p className="text-[#1F2328]/60">A detailed breakdown of your trip.</p>
+          </div>
 
-          <div className="space-y-8">
-            {[
-              { day: 1, title: "Namaste London", desc: "Arrive at Heathrow. Private transfer to your central hotel. Evening walk at Piccadilly Circus & Leicester Square.", tag: "Arrival" },
-              { day: 2, title: "Icons of London", desc: "Hop-on Hop-off Tour: Buckingham Palace, Big Ben, Tower Bridge. Includes Fast-Track entry to the London Eye for sunset views.", tag: "Sightseeing" },
-              { day: 3, title: "History & Heritage", desc: "Full day trip to the mysterious Stonehenge and the Roman Baths. Return to London by evening.", tag: "Day Trip" },
-              { day: 4, title: "Wizardry & Travel", desc: "Morning: Warner Bros. Harry Potter Tour OR Bicester Village Shopping. Evening: Relaxing train journey to Edinburgh (4.5 hrs). Check-in to Edinburgh hotel.", tag: "Travel" },
-              { day: 5, title: "Royal Edinburgh", desc: "Explore the Royal Mile and Edinburgh Castle (Tickets included). Evening ghost tour or whisky tasting experience.", tag: "Culture" },
-              { day: 6, title: "Highlands Safari", desc: "A full-day guided tour to Loch Ness, Glencoe, and the Highlands. See the 'Harry Potter Bridge' (Glenfinnan) if season permits.", tag: "Adventure" },
-              { day: 7, title: "Homeward Bound", desc: "Breakfast. Fly out directly from Edinburgh (Recommended) or train back to London for your flight.", tag: "Departure" },
-            ].map((day) => (
-              <div key={day.day} className="flex gap-6 group">
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-full bg-[#2D3191] text-white flex items-center justify-center font-bold shadow-lg z-10">{day.day}</div>
-                  <div className="w-0.5 h-full bg-[#E6E8EF] -mt-2 group-last:hidden" />
-                </div>
-                <div className="bg-white p-6 rounded-2xl border border-[#E6E8EF] flex-1 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-                  <div className="flex justify-between items-start mb-2 gap-4">
-                    <h3 className="text-xl font-semibold text-[#1F2328]">{day.title}</h3>
-                    <span className="px-3 py-1 bg-[#E7F7EF] text-[#02A551] text-xs font-bold uppercase rounded-full whitespace-nowrap">{day.tag}</span>
+          <div className="relative pl-8 sm:pl-10">
+            {/* The Vertical Spine */}
+            <div className="absolute left-0 top-2 bottom-4 w-[2px] bg-[#E6E8EF]"></div>
+
+            <div className="space-y-12">
+              {PAGE_CONFIG.itinerary.map((item, index) => (
+                <div key={index} className="relative group">
+                  {/* The Black Day Box */}
+                  <div className="absolute -left-[42px] sm:-left-[50px] top-0 w-[24px] sm:w-auto bg-[#1F2328] text-white text-xs font-bold py-1.5 px-2 rounded-md shadow-md z-10 text-center leading-tight">
+                    <span className="hidden sm:inline">Day </span>{item.day}
                   </div>
-                  <p className="text-[#1F2328]/70">{day.desc}</p>
+                  
+                  {/* The Content Card */}
+                  <div className="ml-4 sm:ml-8">
+                    <h3 className="text-xl font-bold text-[#1F2328] mb-3 group-hover:text-[#2D3191] transition-colors">
+                      {item.title}
+                    </h3>
+                    
+                    <p className="text-[#1F2328]/70 leading-relaxed mb-6">
+                      {item.desc}
+                    </p>
+
+                    {/* Micro Stats / Tags */}
+                    <div className="flex flex-wrap gap-4 text-xs font-medium text-[#1F2328]/60 uppercase tracking-wide">
+                      {item.travel && (
+                        <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
+                          <Car size={14} className="text-[#2D3191]" /> {item.travel}
+                        </div>
+                      )}
+                      {item.stay && item.stay !== "N/A" && (
+                         <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
+                          <BedDouble size={14} className="text-[#2D3191]" /> {item.stay}
+                        </div>
+                      )}
+                      {item.meals && (
+                         <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
+                          <Utensils size={14} className="text-[#2D3191]" /> {item.meals}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            
+            {/* End Dot */}
+            <div className="absolute left-[-4px] bottom-0 w-3 h-3 bg-[#E6E8EF] rounded-full border-2 border-white"></div>
           </div>
         </div>
       </section>
 
-      {/* 5. PRICING TRANSPARENCY (The Value) */}
+      {/* 4. PRICING TRANSPARENCY */}
       <section id="pricing" className="py-16 bg-[#EEF0FF] px-6 sm:px-12 border-t border-b border-[#E6E8EF]">
         <div className="max-w-[1000px] mx-auto">
           <div className="text-center mb-10">
@@ -426,7 +437,7 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 6. SMART FAQ (Objection Handling) */}
+      {/* 5. FAQ */}
       <section className="py-20 bg-white px-6 sm:px-12">
         <div className="max-w-[800px] mx-auto">
           <div className="text-center mb-12">
@@ -438,7 +449,7 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 7. ENQUIRY FORM (Conversion) */}
+      {/* 6. ENQUIRY FORM */}
       <section id="enquire" className="py-20 px-6 sm:px-12 max-w-[800px] mx-auto scroll-mt-24">
         <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl text-center">
           <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Like this plan?</h2>

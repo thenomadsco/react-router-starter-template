@@ -1,13 +1,11 @@
-import { Link, useLoaderData } from "react-router";
+import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 /**
- * MASTER BLUEPRINT TEMPLATE (UK VERSION)
- * --------------------------------------
- * UPDATED: Removed specific Hotel/Meal/Transfer tags from Itinerary.
- * FOCUS: Pure storytelling and visuals.
+ * United Kingdom Package Page
+ * STYLE: Narmada Holidays (Detailed Narrative, No Prices, No Extra Panels)
  */
 
 // --- 1) CONFIGURATION ---
@@ -18,7 +16,6 @@ const PAGE_CONFIG = {
   durationLabel: "6 Nights / 7 Days",
   visaLabel: "UK Visa Assisted",
   seasonLabel: "Best: Apr - Sep",
-  basePackageCostGBP: 1250,
 
   heroSlides: [
     {
@@ -43,117 +40,45 @@ const PAGE_CONFIG = {
     },
   ],
 
-  activityCatalog: [
-    { id: "london-eye", name: "London Eye (Fast Track)", baseGBP: 42 },
-    { id: "warner-bros", name: "Warner Bros. Harry Potter Tour", baseGBP: 55 },
-    { id: "stonehenge-bath", name: "Stonehenge & Bath Day Trip", baseGBP: 85 },
-    { id: "edinburgh-castle", name: "Edinburgh Castle Entry", baseGBP: 22 },
-    { id: "highlands-safari", name: "Loch Ness & Highlands Safari", baseGBP: 110 },
-  ],
-
-  // DETAILED VERTICAL ITINERARY DATA (Simplified)
+  // DETAILED NARRATIVE ITINERARY (Narmada Style)
   itinerary: [
     {
       day: "01",
-      title: "Arrival in London: The Royal Welcome",
-      desc: "Touch down at London Heathrow where your private chauffeur awaits. Enjoy a smooth transfer to your central hotel, passing iconic sights like Hyde Park and Harrods. After check-in, the evening is yours. We recommend a relaxed stroll through Covent Garden or Leicester Square to soak in the electric atmosphere of the capital.",
+      title: "Arrival in London",
+      desc: "Welcome to England! Arrive at London Heathrow Airport where our representative will meet you at the arrivals hall. You will be transferred to your hotel in a private car. After checking in and resting for a while, the evening is free for you to explore. We suggest taking a walk to Leicester Square or Piccadilly Circus to see the lively city lights and enjoy dinner at one of the many restaurants nearby.",
     },
     {
       day: "02",
-      title: "Icons of London: Palaces & Panoramas",
-      desc: "After a hearty English breakfast, board the Hop-on Hop-off bus to witness Buckingham Palace, Big Ben, and the Tower of London at your own pace. In the late afternoon, skip the queues with our Fast-Track tickets to the London Eye. Witness the sun setting over the Thames—a truly magical perspective of the city skyline.",
+      title: "London Sightseeing – Hop-on Hop-off Tour",
+      desc: "After breakfast at the hotel, head out for a full day of sightseeing. We have arranged a Hop-on Hop-off bus tour for you. This is the best way to see the main landmarks like Buckingham Palace, the Houses of Parliament, and Big Ben at your own pace. Later in the afternoon, visit the famous London Eye. From the top, you will get a complete view of the city and the River Thames. Return to the hotel in the evening.",
     },
     {
       day: "03",
-      title: "Ancient Mysteries: Stonehenge & Bath",
-      desc: "Escape the city for a journey back in time. We drive through the rolling English countryside to Stonehenge, the world's most famous prehistoric monument. Continue to the UNESCO city of Bath. Walk the cobblestone streets, visit the ancient Roman Baths, and admire the Georgian architecture before returning to London in the evening.",
+      title: "Full Day Trip to Stonehenge & Bath",
+      desc: "Today, we leave the city for a scenic drive to the English countryside. First, we visit the mysterious Stonehenge, a world-famous prehistoric monument. Afterwards, we continue to the beautiful city of Bath. Here you will see the ancient Roman Baths and the stunning Georgian architecture that makes this town so special. It is a relaxing day full of history. We return to London by evening for an overnight stay.",
     },
     {
       day: "04",
-      title: "Wizardry & The North: London to Edinburgh",
-      desc: "A treat for the fans—start your day with the Warner Bros. Harry Potter Studio Tour (transport included). Walk the Great Hall and Diagon Alley. In the afternoon, we transfer you to King's Cross for a scenic high-speed train journey to Edinburgh. Watch the landscape shift from urban sprawl to green hills as you enter Scotland.",
+      title: "London to Edinburgh by High-Speed Train",
+      desc: "After breakfast, check out from your London hotel. You will be transferred to the train station to board your train to Edinburgh. The 4.5-hour journey offers lovely views of the countryside as you cross from England into Scotland. Upon arrival in Edinburgh, transfer to your hotel and check in. In the evening, you can take a walk along the famous Royal Mile and enjoy the medieval atmosphere of the Old Town.",
     },
     {
       day: "05",
-      title: "The Old Town: Secrets of Edinburgh",
-      desc: "Wake up in the medieval beauty of Edinburgh. Walk the Royal Mile, listening to bagpipers, up to the imposing Edinburgh Castle (entry included). See the Crown Jewels and the Stone of Destiny. The afternoon is free for whisky tasting or exploring the spooky underground vaults of the city.",
+      title: "Edinburgh City Tour & Castle Visit",
+      desc: "Wake up in the capital of Scotland. Today, you will explore the city's rich history. We have included tickets to the magnificent Edinburgh Castle, which sits on top of a hill overlooking the city. You can see the Crown Jewels and the Stone of Destiny here. Later, explore the New Town area for some shopping or visit the Palace of Holyroodhouse. Overnight stay in Edinburgh.",
     },
     {
       day: "06",
-      title: "Highlands Safari: Loch Ness & Glencoe",
-      desc: "The grand finale. A full-day guided adventure into the Scottish Highlands. Drive past the hauntingly beautiful Glencoe, see Britain's highest mountain (Ben Nevis), and cruise on the legendary Loch Ness. Keep an eye out for 'Nessie'! Return to Edinburgh with camera rolls full of memories.",
+      title: "Scottish Highlands & Loch Ness Day Trip",
+      desc: "Today is the highlight of your Scotland trip. We proceed on a full-day guided tour to the Scottish Highlands. You will drive past the spectacular Glencoe valley and see Britain’s highest mountain, Ben Nevis. We then reach the legendary Loch Ness. You can take a boat cruise (optional) and look out for 'Nessie', the famous monster. The landscapes today are truly breathtaking. Return to Edinburgh in the evening.",
     },
     {
       day: "07",
-      title: "Homeward Bound",
-      desc: "Enjoy a final breakfast in Scotland. Your driver will pick you up for a transfer to Edinburgh Airport (EDI) for your flight back home. Bid farewell to the UK with a promise to return.",
+      title: "Departure from Edinburgh",
+      desc: "After breakfast, check out from the hotel. Depending on your flight time, our driver will pick you up and transfer you to Edinburgh Airport for your flight back home. Return with wonderful memories of your UK holiday.",
     },
   ],
-
-  faqs: [
-    {
-      question: "How long does the UK Visa take?",
-      answer: "Currently, UK standard visitor visas take about 15-20 working days. We recommend applying at least 2 months in advance. Our team handles the entire documentation process for you to minimize rejection risks."
-    },
-    {
-      question: "Can I customize this itinerary?",
-      answer: "Absolutely. This is a recommended 'Best of UK' route, but if you want to add 2 days in Manchester or skip the Highlands, we will tailor it exactly to your needs."
-    },
-    {
-      question: "Is airfare included in the cost?",
-      answer: "The package price covers hotels, transfers, and sightseeing. Flights are not included as prices fluctuate daily, but we can help you book the best connections from your city at net rates."
-    }
-  ]
 };
-
-// --- 2) SERVER LOADER ---
-export async function loader({ request }: Route.LoaderArgs) {
-  let exchangeRate = 109.5;
-  const activityData = [...PAGE_CONFIG.activityCatalog];
-
-  const timestamp = new Date().toLocaleTimeString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  try {
-    const currencyRes = await fetch("https://api.frankfurter.app/latest?from=GBP&to=INR");
-    if (currencyRes.ok) {
-      const data = await currencyRes.json();
-      if (data?.rates?.INR) exchangeRate = data.rates.INR;
-    }
-  } catch (e) {
-    console.error("Currency API Error, using fallback:", e);
-  }
-
-  const safeRate = exchangeRate * 1.03;
-
-  const liveActivities = activityData.map((act) => {
-    const priceINR = Math.ceil(act.baseGBP * safeRate);
-    return {
-      ...act,
-      livePriceINR: priceINR,
-      formattedINR: act.baseGBP === 0 ? "Free" : new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-        maximumFractionDigits: 0,
-      }).format(priceINR),
-    };
-  });
-
-  const totalPackageINR = Math.ceil(PAGE_CONFIG.basePackageCostGBP * safeRate);
-  const prettyPackagePrice = Math.ceil(totalPackageINR / 500) * 500;
-  const totalValueINR = liveActivities.reduce((acc, curr) => acc + curr.livePriceINR, 0);
-
-  return {
-    activities: liveActivities,
-    packagePrice: prettyPackagePrice,
-    exchangeRate: exchangeRate.toFixed(2),
-    lastUpdated: timestamp,
-    totalValue: totalValueINR,
-  };
-}
 
 export function headers() {
   return {
@@ -161,7 +86,7 @@ export function headers() {
   };
 }
 
-// --- 3) ICONS ---
+// --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
 function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
   return (
@@ -172,15 +97,11 @@ function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefau
 }
 function Menu(props: any) { return (<IconBase {...props}><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
-function CheckCircle2(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>); }
 function Clock(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></IconBase>); }
 function Calendar(props: any) { return (<IconBase {...props}><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></IconBase>); }
 function FileCheck(props: any) { return (<IconBase {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="m9 15 2 2 4-4" /></IconBase>); }
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
-function RefreshCw(props: any) { return (<IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></IconBase>); }
-function ChevronDown(props: any) { return (<IconBase {...props}><path d="m6 9 6 6 6-6" /></IconBase>); }
-function ChevronUp(props: any) { return (<IconBase {...props}><path d="m18 15-6-6-6 6" /></IconBase>); }
 
 const customStyles = `
   html { scroll-behavior: smooth; }
@@ -190,11 +111,6 @@ const customStyles = `
 `;
 
 export default function UnitedKingdomPage() {
-  const { activities, packagePrice, exchangeRate, lastUpdated, totalValue } = useLoaderData<typeof loader>();
-
-  const fmt = (val: number) =>
-    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(val);
-
   const slides = useMemo(() => PAGE_CONFIG.heroSlides, []);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -212,7 +128,7 @@ export default function UnitedKingdomPage() {
       <style>{customStyles}</style>
       <Navigation />
 
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (Clean, No Price) */}
       <section className="relative h-[85vh] min-h-[620px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
@@ -271,16 +187,9 @@ export default function UnitedKingdomPage() {
           </div>
 
           <div className="lg:text-right">
-            <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm px-3 py-1 rounded-lg text-white/70 text-xs mb-2">
-              <RefreshCw size={12} />
-              <span>Prices updated live at {lastUpdated} (Rate: £1 = ₹{exchangeRate})</span>
-            </div>
-
-            <p className="text-white/80 text-lg mb-1">Starting from</p>
-            <p className="text-5xl font-bold text-white mb-6">
-              {fmt(packagePrice)} <span className="text-xl font-normal text-white/60">/ person</span>
+            <p className="text-white/80 text-lg mb-6">
+              Experience the best of England and Scotland with our curated 7-day tour.
             </p>
-
             <a
               href="#enquire"
               className="inline-flex px-8 py-4 bg-[#02A551] hover:bg-[#028f46] text-white font-medium rounded-full transition-all duration-300 ease-out hover:-translate-y-1 shadow-lg shadow-[#02A551]/30"
@@ -291,58 +200,43 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 2. OVERVIEW */}
+      {/* 2. SIMPLE OVERVIEW (No Panels) */}
       <section id="overview" className="py-20 px-6 sm:px-12 max-w-[1000px] mx-auto text-center">
         <h2 className="text-3xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
           The "Best of UK" Route
         </h2>
-        <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-12">
-          This itinerary is engineered for the modern traveler. We've optimized the travel times to ensure you spend more time seeing Big Ben and the Highlands, and less time on trains.
+        <p className="text-lg text-[#1F2328]/70 leading-relaxed">
+          This itinerary is designed for travelers who want to see the icons of London and the beauty of the Scottish Highlands without rushing. We handle all the planning so you can simply enjoy your holiday.
         </p>
-
-        <div className="grid sm:grid-cols-3 gap-8 text-left">
-          {[
-            { title: "Central Hotels", desc: "4-star stays near tube stations and Indian restaurants." },
-            { title: "Smart Logistics", desc: "We use evening trains for long distances to save your daylight hours." },
-            { title: "No Hidden Costs", desc: "All major entry tickets (London Eye, Castle, etc.) are pre-booked." },
-          ].map((item, i) => (
-            <div key={i} className="bg-[#EEF0FF] p-6 rounded-2xl border border-[#E6E8EF]">
-              <h3 className="font-semibold text-[#2D3191] mb-2">{item.title}</h3>
-              <p className="text-sm text-[#1F2328]/70">{item.desc}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
-      {/* 3. VERTICAL TIMELINE ITINERARY */}
+      {/* 3. DETAILED NARRATIVE ITINERARY */}
       <section id="itinerary" className="py-16 bg-white px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               Day-by-Day Journey
             </h2>
-            <p className="text-[#1F2328]/60">A detailed breakdown of your trip.</p>
           </div>
 
           <div className="relative pl-8 sm:pl-10">
-            {/* The Vertical Spine */}
+            {/* Vertical Spine */}
             <div className="absolute left-0 top-2 bottom-4 w-[2px] bg-[#E6E8EF]"></div>
 
             <div className="space-y-12">
               {PAGE_CONFIG.itinerary.map((item, index) => (
                 <div key={index} className="relative group">
-                  {/* The Black Day Box */}
+                  {/* Black Day Box */}
                   <div className="absolute -left-[42px] sm:-left-[50px] top-0 w-[24px] sm:w-auto bg-[#1F2328] text-white text-xs font-bold py-1.5 px-2 rounded-md shadow-md z-10 text-center leading-tight">
                     <span className="hidden sm:inline">Day </span>{item.day}
                   </div>
                   
-                  {/* The Content Card */}
+                  {/* Content */}
                   <div className="ml-4 sm:ml-8">
                     <h3 className="text-xl font-bold text-[#1F2328] mb-3 group-hover:text-[#2D3191] transition-colors">
                       {item.title}
                     </h3>
-                    
-                    <p className="text-[#1F2328]/70 leading-relaxed">
+                    <p className="text-[#1F2328]/80 leading-relaxed whitespace-pre-line">
                       {item.desc}
                     </p>
                   </div>
@@ -356,57 +250,7 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 4. PRICING TRANSPARENCY */}
-      <section id="pricing" className="py-16 bg-[#EEF0FF] px-6 sm:px-12 border-t border-b border-[#E6E8EF]">
-        <div className="max-w-[1000px] mx-auto">
-          <div className="text-center mb-10">
-            <h3 className="text-2xl font-semibold text-[#1F2328]">What's Included?</h3>
-            <p className="text-sm text-[#1F2328]/50 mt-2">
-              Full transparency. Here is the live value of your package.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div className="space-y-4">
-               <ul className="space-y-3">
-                {activities.map((item) => (
-                  <li key={item.id} className="flex justify-between items-center p-3 bg-white rounded-lg border border-[#E6E8EF]">
-                    <span className="font-medium text-[#1F2328]">{item.name}</span>
-                    <div className="text-right">
-                      <span className="block font-bold text-[#2D3191]">{item.formattedINR}</span>
-                      {item.baseGBP > 0 && <span className="text-xs text-[#1F2328]/40">£{item.baseGBP}</span>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-[#2D3191] p-8 rounded-2xl text-white flex flex-col justify-center relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-              <h4 className="text-xl font-semibold mb-2">Total Activity Value</h4>
-              <p className="text-4xl font-bold mb-4">{fmt(totalValue)}+</p>
-              <p className="text-white/80 text-sm">per person included in your package.</p>
-              <div className="mt-6 pt-6 border-t border-white/20 text-xs opacity-70">
-                * Prices fluctuate with exchange rates. Lock your price today.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. FAQ */}
-      <section className="py-20 bg-white px-6 sm:px-12">
-        <div className="max-w-[800px] mx-auto">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Frequently Asked Questions
-            </h3>
-          </div>
-          <FAQSection faqs={PAGE_CONFIG.faqs} />
-        </div>
-      </section>
-
-      {/* 6. ENQUIRY FORM */}
+      {/* 4. ENQUIRY FORM */}
       <section id="enquire" className="py-20 px-6 sm:px-12 max-w-[800px] mx-auto scroll-mt-24">
         <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl text-center">
           <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Like this plan?</h2>
@@ -452,8 +296,8 @@ export default function UnitedKingdomPage() {
       {/* MOBILE STICKY BAR */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E6E8EF] p-4 sm:hidden flex items-center justify-between z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div>
-          <p className="text-xs text-[#1F2328]/60">Starting from</p>
-          <p className="text-lg font-bold text-[#2D3191]">{fmt(packagePrice)}</p>
+          <p className="text-xs text-[#1F2328]/60">Interested?</p>
+          <p className="text-lg font-bold text-[#2D3191]">Get a Quote</p>
         </div>
         <a href="#enquire" className="px-6 py-2.5 bg-[#02A551] text-white text-sm font-bold rounded-full shadow-md">
           Enquire Now
@@ -465,33 +309,6 @@ export default function UnitedKingdomPage() {
 
 // --- SUBCOMPONENTS ---
 
-function FAQSection({ faqs }: { faqs: { question: string, answer: string }[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <div className="space-y-4">
-      {faqs.map((faq, index) => (
-        <div key={index} className="border border-[#E6E8EF] rounded-xl overflow-hidden bg-[#FAFAF8]">
-          <button
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between p-5 text-left font-medium text-[#1F2328] hover:bg-[#F3F4F6] transition-colors"
-          >
-            {faq.question}
-            {openIndex === index ? <ChevronUp size={20} className="text-[#2D3191]" /> : <ChevronDown size={20} className="text-[#1F2328]/50" />}
-          </button>
-          <div className={`grid transition-all duration-300 ease-in-out ${openIndex === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-             <div className="overflow-hidden">
-               <div className="p-5 pt-0 text-[#1F2328]/70 leading-relaxed text-sm">
-                 {faq.answer}
-               </div>
-             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; }, [isOpen]);
@@ -499,7 +316,6 @@ function Navigation() {
   const inPageLinks = [
     { label: "Overview", href: "#overview" },
     { label: "Itinerary", href: "#itinerary" },
-    { label: "Pricing", href: "#pricing" },
     { label: "Enquire", href: "#enquire" },
   ];
 

@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+\import { Link, useLoaderData } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
@@ -16,7 +16,7 @@ const PAGE_CONFIG = {
   title: "United Kingdom",
   subtitle: "Royalty, Highlands & Heritage",
   badge: "Best Seller",
-  durationLabel: "6 Nights / 7 Days • London + Scotland",
+  durationLabel: "6 Nights / 7 Days",
   visaLabel: "UK Visa Assisted",
   seasonLabel: "Best: Apr - Sep",
   // Base package cost (hotels + transfers etc.) in GBP
@@ -26,33 +26,33 @@ const PAGE_CONFIG = {
   heroSlides: [
     {
       label: "London",
-      alt: "Big Ben and Westminster Bridge, London",
-      src: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Big_Ben_and_Westminster_Bridge%2C_London%2C_UK_-_Diliff.jpg",
-    },
-    {
-      label: "Stonehenge",
-      alt: "Stonehenge at sunset, Wiltshire",
-      src: "https://upload.wikimedia.org/wikipedia/commons/7/78/Stonehenge_at_sunset_03.jpg",
-    },
-    {
-      label: "Bath",
-      alt: "Roman Baths, Bath (steamy at night)",
-      src: "https://upload.wikimedia.org/wikipedia/commons/0/09/Roman_Baths%2C_Bath%2C_steamy_at_night.jpg",
+      alt: "Big Ben & Westminster, London",
+      src: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Edinburgh",
-      alt: "Edinburgh Castle at night, Scotland",
-      src: "https://upload.wikimedia.org/wikipedia/commons/9/98/Edinburgh_Castle_at_Night.jpg",
+      alt: "Edinburgh Castle, Scotland",
+      src: "https://images.unsplash.com/photo-1541414772555-6c95f4d0fe31?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Scottish Highlands",
-      alt: "Old Man of Storr, Isle of Skye",
-      src: "https://upload.wikimedia.org/wikipedia/commons/1/12/Old_Man_Of_Storr.jpg",
+      alt: "Scottish Highlands landscape",
+      src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1920&auto=format&fit=crop",
     },
     {
       label: "Lake District",
-      alt: "Windermere in the Lake District around sunset",
-      src: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lake_district_2012_75.jpg",
+      alt: "Lake District scenery",
+      src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1920&auto=format&fit=crop",
+    },
+    {
+      label: "Bath",
+      alt: "Historic Bath architecture",
+      src: "https://images.unsplash.com/photo-1543340713-8e9d6d53ef7e?q=80&w=1920&auto=format&fit=crop",
+    },
+    {
+      label: "Stonehenge",
+      alt: "Stonehenge, England",
+      src: "https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?q=80&w=1920&auto=format&fit=crop",
     },
   ],
 
@@ -210,12 +210,6 @@ export default function UnitedKingdomPage() {
               key={slide.src}
               src={slide.src}
               alt={slide.alt}
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                const fallback = slides?.[0]?.src;
-                const img = e.currentTarget as HTMLImageElement;
-                if (fallback && img.src !== fallback) img.src = fallback;
-              }}
               className={[
                 "absolute inset-0 w-full h-full object-cover",
                 "transition-[opacity,transform] duration-[1200ms]",
@@ -378,13 +372,13 @@ export default function UnitedKingdomPage() {
 
           <div className="space-y-8">
             {[
-              { day: 1, title: "Arrival in London + Thames Evening", desc: "Arrive in London, check-in to your 4-star hotel. Evening is perfect for a relaxed Thames walk (or cruise) and a cozy dinner in Covent Garden.", tag: "Arrival" },
-              { day: 2, title: "Harry Potter Studios + City Nightlife", desc: "Warner Bros. Studio Tour (pre-booked). Come back to central London for a light evening—Soho, Leicester Square, or a West End show if you want to go full premium.", tag: "Must Do" },
-              { day: 3, title: "Classic London Icons", desc: "Start at Madame Tussauds, then explore with a 24hr Hop-on Hop-off bus. End with sunset views from the London Eye.", tag: "Icons" },
-              { day: 4, title: "Windsor + Stonehenge (Coach Day Trip)", desc: "A full-day guided coach tour covering Windsor Castle and Stonehenge. It’s a long day, but everything is organized—no planning stress.", tag: "Day Trip" },
-              { day: 5, title: "High-Speed Train to Edinburgh", desc: "Daytime train (around 4.5–5 hours) to Edinburgh. Evening stroll on the Royal Mile + viewpoints like Calton Hill for unreal sunsets.", tag: "Scotland" },
-              { day: 6, title: "Scottish Highlands Adventure", desc: "Guided Highlands day tour (Glencoe / Loch Ness route depending on season). Dramatic landscapes, photo stops, optional whisky tasting.", tag: "Adventure" },
-              { day: 7, title: "Departure", desc: "Fly out from Edinburgh, or take a morning train back to London if your international flight is from there. We tailor this based on your tickets.", tag: "Travel" },
+              { day: 1, title: "Arrival in London", desc: "Arrive at Heathrow. Check-in to your hotel. Evening free for a relaxed walk around the city.", tag: "Leisure" },
+              { day: 2, title: "Royal London", desc: "Hop-on Hop-off sightseeing across Buckingham Palace, Big Ben & Westminster. Optional Thames cruise.", tag: "Sightseeing" },
+              { day: 3, title: "Icons + Views", desc: "London Eye + a curated city experience (museum / markets / Soho vibes depending on your style).", tag: "Attractions" },
+              { day: 4, title: "Stonehenge + Bath", desc: "Day tour to Stonehenge and the beautiful heritage city of Bath. Return by evening.", tag: "Day Trip" },
+              { day: 5, title: "Harry Potter Studios", desc: "Warner Bros Studio Tour (transport guidance included). Evening free for shopping on Oxford Street.", tag: "Must Do" },
+              { day: 6, title: "Edinburgh / Scotland Taste", desc: "Travel to Edinburgh (train guidance). Explore Edinburgh Castle + old town vibes.", tag: "Scotland" },
+              { day: 7, title: "Departure", desc: "Breakfast. Check-out and depart with unreal memories.", tag: "Travel" },
             ].map((day) => (
               <div key={day.day} className="flex gap-6 group">
                 <div className="flex flex-col items-center">
@@ -457,23 +451,23 @@ export default function UnitedKingdomPage() {
       <section className="py-16 bg-[#EEF0FF] px-6 sm:px-12">
         <div className="max-w-[1200px] mx-auto">
           <h3 className="text-2xl font-semibold text-center mb-10 text-[#1F2328]">Indian Traveler Special</h3>
-                    <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
-              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><MapPin /></div>
+              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Utensils /></div>
               <div>
-                <h4 className="font-bold text-[#1F2328]">Dedicated WhatsApp Concierge</h4>
+                <h4 className="font-bold text-[#1F2328]">Indian Food?</h4>
                 <p className="text-sm text-[#1F2328]/70 mt-1">
-                  One trip manager for everything: restaurant bookings, route help, last-minute tweaks—no “call center” vibes.
+                  Yes. We pick hotels near top Indian restaurants and veg-friendly spots.
                 </p>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
-              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Utensils /></div>
+              <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><FileCheck /></div>
               <div>
-                <h4 className="font-bold text-[#1F2328]">Veg/Jain Dining + Hotel Preferences</h4>
+                <h4 className="font-bold text-[#1F2328]">Visa Help?</h4>
                 <p className="text-sm text-[#1F2328]/70 mt-1">
-                  We shortlist strong veg-friendly spots, reserve tables, and request hotel preferences (family rooms, elevators, breakfast timing).
+                  We handle your checklist, forms, appointment guidance, and document prep.
                 </p>
               </div>
             </div>
@@ -481,9 +475,9 @@ export default function UnitedKingdomPage() {
             <div className="bg-white p-6 rounded-2xl flex items-start gap-4">
               <div className="bg-[#E7F7EF] p-3 rounded-xl text-[#02A551]"><Plane /></div>
               <div>
-                <h4 className="font-bold text-[#1F2328]">Premium Comfort Setup</h4>
+                <h4 className="font-bold text-[#1F2328]">Flights?</h4>
                 <p className="text-sm text-[#1F2328]/70 mt-1">
-                  City-ready from day 1: eSIM guidance, Oyster/transport tips, and a shopping + VAT refund game-plan (so you don’t miss the money).
+                  We can book flights from major Indian cities with best routing and baggage options.
                 </p>
               </div>
             </div>

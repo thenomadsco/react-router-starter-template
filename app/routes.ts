@@ -15,4 +15,5 @@ export default [
   route("singapore", "routes/singapore.tsx"),
   route("japan", "routes/japan.tsx"),
   route("australia", "routes/australia.tsx"),
+  route("privacypolicy", "routes/privacypolicy.tsx"),
 ] satisfies RouteConfig;

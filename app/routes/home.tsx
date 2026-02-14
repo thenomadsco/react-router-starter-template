@@ -1114,9 +1114,9 @@ function Footer() {
             <Link to="/privacypolicy" className="hover:text-[#2D3191] transition-colors">
               Privacy Policy
             </Link>
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
+            <Link to="/terms" className="hover:text-[#2D3191] transition-colors">
               Terms of Service
-            </a>
+            </Link>
             <a href="#" className="hover:text-[#2D3191] transition-colors">
               Cookie Policy
             </a>

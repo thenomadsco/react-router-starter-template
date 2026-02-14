@@ -163,7 +163,8 @@ const allDestinations: Destination[] = [
     descriptor: "Future Now", 
     image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dW5pdGVkJTIwYXJhYiUyMGVtaXJhdGVzfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "cities", 
-    region: "international" 
+    region: "international",
+    link: "/uae"
   },
   { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
   { name: "Japan", descriptor: "Tradition Meets Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },

@@ -11,4 +11,5 @@ export default [
   route("indonesia", "routes/indonesia.tsx"),
   route("thailand", "routes/thailand.tsx"),
   route("vietnam", "routes/vietnam.tsx"),
+  route("uae", "routes/uae.tsx"),
 ] satisfies RouteConfig;

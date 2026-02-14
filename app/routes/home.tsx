@@ -144,7 +144,7 @@ const allDestinations: Destination[] = [
 
   // --- INTERNATIONAL (Fixed broken images) ---
   { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/london" },
-  { name: "Switzerland", descriptor: "The Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international" },
+  { name: "Switzerland", descriptor: "The Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international", link: "/switzerland"},
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
   { name: "Italy", descriptor: "Dolce Vita", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international" },
   { name: "Maldives", descriptor: "Island Paradise", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international" },

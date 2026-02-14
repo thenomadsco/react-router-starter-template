@@ -6,8 +6,8 @@ import type { Route } from "./+types/home";
 /**
  * MASTER BLUEPRINT TEMPLATE (UK VERSION)
  * --------------------------------------
- * UPDATED: Replaced "Nomads Advantage" with "Vertical Timeline Itinerary"
- * DESIGN REF: Narmada Holidays (Day Box + Spine Line)
+ * UPDATED: Removed specific Hotel/Meal/Transfer tags from Itinerary.
+ * FOCUS: Pure storytelling and visuals.
  */
 
 // --- 1) CONFIGURATION ---
@@ -51,63 +51,42 @@ const PAGE_CONFIG = {
     { id: "highlands-safari", name: "Loch Ness & Highlands Safari", baseGBP: 110 },
   ],
 
-  // DETAILED VERTICAL ITINERARY DATA
+  // DETAILED VERTICAL ITINERARY DATA (Simplified)
   itinerary: [
     {
       day: "01",
       title: "Arrival in London: The Royal Welcome",
       desc: "Touch down at London Heathrow where your private chauffeur awaits. Enjoy a smooth transfer to your central hotel, passing iconic sights like Hyde Park and Harrods. After check-in, the evening is yours. We recommend a relaxed stroll through Covent Garden or Leicester Square to soak in the electric atmosphere of the capital.",
-      stay: "The Strand Palace (or similar 4★)",
-      meals: "Dinner included",
-      travel: "Private Transfer: 1 hr",
     },
     {
       day: "02",
       title: "Icons of London: Palaces & Panoramas",
       desc: "After a hearty English breakfast, board the Hop-on Hop-off bus to witness Buckingham Palace, Big Ben, and the Tower of London at your own pace. In the late afternoon, skip the queues with our Fast-Track tickets to the London Eye. Witness the sun setting over the Thames—a truly magical perspective of the city skyline.",
-      stay: "The Strand Palace (or similar 4★)",
-      meals: "Breakfast & Dinner",
-      travel: "Sightseeing: 6-8 hrs",
     },
     {
       day: "03",
       title: "Ancient Mysteries: Stonehenge & Bath",
       desc: "Escape the city for a journey back in time. We drive through the rolling English countryside to Stonehenge, the world's most famous prehistoric monument. Continue to the UNESCO city of Bath. Walk the cobblestone streets, visit the ancient Roman Baths, and admire the Georgian architecture before returning to London in the evening.",
-      stay: "The Strand Palace (or similar 4★)",
-      meals: "Breakfast",
-      travel: "Coach Tour: Full Day",
     },
     {
       day: "04",
       title: "Wizardry & The North: London to Edinburgh",
       desc: "A treat for the fans—start your day with the Warner Bros. Harry Potter Studio Tour (transport included). Walk the Great Hall and Diagon Alley. In the afternoon, we transfer you to King's Cross for a scenic high-speed train journey to Edinburgh. Watch the landscape shift from urban sprawl to green hills as you enter Scotland.",
-      stay: "Apex Grassmarket (or similar 4★)",
-      meals: "Breakfast",
-      travel: "Train: 4.5 hrs",
     },
     {
       day: "05",
       title: "The Old Town: Secrets of Edinburgh",
       desc: "Wake up in the medieval beauty of Edinburgh. Walk the Royal Mile, listening to bagpipers, up to the imposing Edinburgh Castle (entry included). See the Crown Jewels and the Stone of Destiny. The afternoon is free for whisky tasting or exploring the spooky underground vaults of the city.",
-      stay: "Apex Grassmarket (or similar 4★)",
-      meals: "Breakfast & Dinner",
-      travel: "Walking Tour: 3-4 hrs",
     },
     {
       day: "06",
       title: "Highlands Safari: Loch Ness & Glencoe",
       desc: "The grand finale. A full-day guided adventure into the Scottish Highlands. Drive past the hauntingly beautiful Glencoe, see Britain's highest mountain (Ben Nevis), and cruise on the legendary Loch Ness. Keep an eye out for 'Nessie'! Return to Edinburgh with camera rolls full of memories.",
-      stay: "Apex Grassmarket (or similar 4★)",
-      meals: "Breakfast",
-      travel: "Coach Tour: 9-10 hrs",
     },
     {
       day: "07",
       title: "Homeward Bound",
       desc: "Enjoy a final breakfast in Scotland. Your driver will pick you up for a transfer to Edinburgh Airport (EDI) for your flight back home. Bid farewell to the UK with a promise to return.",
-      stay: "N/A",
-      meals: "Breakfast",
-      travel: "Airport Transfer: 45 mins",
     },
   ],
 
@@ -202,9 +181,6 @@ function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" 
 function RefreshCw(props: any) { return (<IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></IconBase>); }
 function ChevronDown(props: any) { return (<IconBase {...props}><path d="m6 9 6 6 6-6" /></IconBase>); }
 function ChevronUp(props: any) { return (<IconBase {...props}><path d="m18 15-6-6-6 6" /></IconBase>); }
-function Utensils(props: any) { return (<IconBase {...props}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></IconBase>); }
-function Car(props: any) { return (<IconBase {...props}><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /></IconBase>); }
-function BedDouble(props: any) { return (<IconBase {...props}><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" /><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" /><path d="M12 4v6" /><path d="M2 18h20" /></IconBase>); }
 
 const customStyles = `
   html { scroll-behavior: smooth; }
@@ -338,7 +314,7 @@ export default function UnitedKingdomPage() {
         </div>
       </section>
 
-      {/* 3. NEW VERTICAL TIMELINE ITINERARY */}
+      {/* 3. VERTICAL TIMELINE ITINERARY */}
       <section id="itinerary" className="py-16 bg-white px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto">
           <div className="text-center mb-16">
@@ -366,28 +342,9 @@ export default function UnitedKingdomPage() {
                       {item.title}
                     </h3>
                     
-                    <p className="text-[#1F2328]/70 leading-relaxed mb-6">
+                    <p className="text-[#1F2328]/70 leading-relaxed">
                       {item.desc}
                     </p>
-
-                    {/* Micro Stats / Tags */}
-                    <div className="flex flex-wrap gap-4 text-xs font-medium text-[#1F2328]/60 uppercase tracking-wide">
-                      {item.travel && (
-                        <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
-                          <Car size={14} className="text-[#2D3191]" /> {item.travel}
-                        </div>
-                      )}
-                      {item.stay && item.stay !== "N/A" && (
-                         <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
-                          <BedDouble size={14} className="text-[#2D3191]" /> {item.stay}
-                        </div>
-                      )}
-                      {item.meals && (
-                         <div className="flex items-center gap-1.5 bg-[#F7F6F1] px-3 py-1.5 rounded-full border border-[#E6E8EF]">
-                          <Utensils size={14} className="text-[#2D3191]" /> {item.meals}
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               ))}

@@ -7,4 +7,5 @@ export default [
   route("switzerland", "routes/switzerland.tsx"),
   route("france", "routes/france.tsx"),
   route("italy", "routes/italy.tsx"),
+  route("maldives", "routes/maldives.tsx"),
 ] satisfies RouteConfig;

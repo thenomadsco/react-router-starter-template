@@ -148,7 +148,7 @@ const allDestinations: Destination[] = [
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/france"},
   { name: "Italy", descriptor: "Dolce Vita", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop", category: "cities", region: "international", link: "/italy" },
   { name: "Maldives", descriptor: "Island Paradise", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop", category: "honeymoon", region: "international", link: "/maldives"},
-  { name: "Indonesia", descriptor: "Tropical Culture", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop", category: "adventure", region: "international" },
+  { name: "Indonesia", descriptor: "Tropical Culture", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop", category: "adventure", region: "international", link: "/indonesia"},
   { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800&auto=format&fit=crop", category: "beaches", region: "international" },
   { 
     name: "Vietnam", 

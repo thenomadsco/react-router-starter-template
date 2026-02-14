@@ -155,7 +155,8 @@ const allDestinations: Destination[] = [
     descriptor: "Timeless Charm", 
     image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "adventure", 
-    region: "international" 
+    region: "international",
+    link: "/vietnam"
   },
   { 
     name: "United Arab Emirates", 

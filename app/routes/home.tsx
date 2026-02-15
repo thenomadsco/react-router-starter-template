@@ -60,86 +60,98 @@ const allDestinations: Destination[] = [
   { 
     name: "Jammu & Kashmir", 
     descriptor: "Heaven on Earth", 
-    image: "https://images.unsplash.com/photo-1632231065530-f5fd55c62846?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1632231065530-f5fd55c62846?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
-    region: "india" 
+    region: "india",
+    link: "/kashmir"
   },
   { 
     name: "Kerala", 
     descriptor: "God's Own Country", 
     image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
-    region: "india" 
+    region: "india",
+    link: "/kerala"
   },
   { 
     name: "Andaman & Nicobar", 
     descriptor: "Blue Waters & Coral Reefs", 
     image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800&auto=format&fit=crop", 
     category: "beaches", 
-    region: "india" 
+    region: "india",
+    link: "/andaman"
   },
   { 
     name: "Ladakh", 
     descriptor: "Land of High Passes", 
     image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
-    region: "india" 
+    region: "india",
+    link: "/ladakh"
   },
   { 
     name: "Goa", 
     descriptor: "Beaches & Susegad Life", 
     image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800&auto=format&fit=crop", 
     category: "beaches", 
-    region: "india" 
+    region: "india",
+    link: "/goa"
   },
   { 
     name: "Rajasthan", 
     descriptor: "Land of Kings", 
     image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
-    region: "india" 
+    region: "india",
+    link: "/rajasthan"
   },
   { 
     name: "Gujarat", 
     descriptor: "Heritage & Culture", 
-    image: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z3VqYXJhdHxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
-    region: "india" 
+    region: "india",
+    link: "/gujarat"
   },
   { 
     name: "Madhya Pradesh", 
     descriptor: "Heart of Incredible India", 
     image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
-    region: "india" 
+    region: "india",
+    link: "/mp"
   },
   { 
     name: "Uttar Pradesh", 
     descriptor: "Spiritual & Timeless", 
-    image: "https://images.unsplash.com/photo-1748433069358-831b8a154c71?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1748433069358-831b8a154c71?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
-    region: "india" 
+    region: "india",
+    link: "/up"
   },
   { 
     name: "Himachal Pradesh", 
     descriptor: "Abode of Snow", 
     image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
-    region: "india" 
+    region: "india",
+    link: "/himachal"
   },
   { 
     name: "Meghalaya", 
     descriptor: "Abode of Clouds", 
-    image: "https://images.unsplash.com/photo-1742494267580-e026d3737f65?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1742494267580-e026d3737f65?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
-    region: "india" 
+    region: "india",
+    link: "/meghalaya"
   },
   { 
     name: "Sikkim", 
     descriptor: "Organic Mystical Land", 
-    image: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?q=80&w=800&auto=format&fit=crop", 
     category: "honeymoon", 
-    region: "india" 
+    region: "india",
+    link: "/sikkim"
   },
 
   // --- INTERNATIONAL ---
@@ -153,7 +165,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "international",
     link: "/vietnam"
@@ -161,7 +173,7 @@ const allDestinations: Destination[] = [
   { 
     name: "United Arab Emirates", 
     descriptor: "Future Now", 
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dW5pdGVkJTIwYXJhYiUyMGVtaXJhdGVzfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop", 
     category: "cities", 
     region: "international",
     link: "/uae"
@@ -171,7 +183,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
-    image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVzdHJhbGlhfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
+    image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?q=80&w=800&auto=format&fit=crop", 
     category: "adventure", 
     region: "international",
     link: "/australia"

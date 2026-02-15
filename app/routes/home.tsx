@@ -192,23 +192,24 @@ const allDestinations: Destination[] = [
 
 const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
 
+// --- UPDATED EXPERIENCES (Realistic, Relatable, Service-Focused) ---
 const experiences = [
   {
-    title: "Luxury Safaris",
-    description: "Witness the wildlife in comfort. We arrange the best lodges and guides.",
-    image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop",
+    title: "Family Vacations",
+    description: "Trips designed for all ages. We ensure kid-friendly hotels, safe transfers, and fun activities for the whole family.",
+    image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800&auto=format&fit=crop", // Family walking/traveling
     ctaType: "primary",
   },
   {
-    title: "Private Cruises",
-    description: "Relax on the open sea with your family on a private boat tour.",
-    image: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop",
+    title: "Honeymoon Specials",
+    description: "Start your journey together perfectly. Candlelit dinners, flower-bed decorations, and romantic scenic spots.",
+    image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop", // Couple/wedding/romance
     ctaType: "secondary",
   },
   {
-    title: "Gourmet Dining",
-    description: "From local flavors to fine dining, we find the best spots (including vegetarian options).",
-    image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop",
+    title: "Friends & Adventure",
+    description: "On a budget or looking for thrills? We plan action-packed trips for you and your squad.",
+    image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=800&auto=format&fit=crop", // Friends having fun
     ctaType: "primary",
   },
 ];

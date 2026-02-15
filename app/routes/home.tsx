@@ -165,7 +165,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Vietnam", 
     descriptor: "Timeless Charm", 
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "adventure", 
     region: "international",
     link: "/vietnam"
@@ -173,7 +173,7 @@ const allDestinations: Destination[] = [
   { 
     name: "United Arab Emirates", 
     descriptor: "Future Now", 
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dW5pdGVkJTIwYXJhYiUyMGVtaXJhdGVzfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "cities", 
     region: "international",
     link: "/uae"
@@ -183,7 +183,7 @@ const allDestinations: Destination[] = [
   { 
     name: "Australia", 
     descriptor: "The Great Outback", 
-    image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?q=80&w=800&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVzdHJhbGlhfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000", 
     category: "adventure", 
     region: "international",
     link: "/australia"
@@ -1018,7 +1018,7 @@ function Footer() {
   return (
     <footer className="bg-[#FAFAF8] text-[#1F2328] py-16 sm:py-20 px-6 sm:px-8 lg:px-12 border-t border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-16 pb-16 border-b border-[#E6E8EF]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-16 mb-16 pb-16 border-b border-[#E6E8EF]">
           <div>
             <h3
               className="text-2xl font-semibold mb-5 text-[#1F2328]"
@@ -1067,21 +1067,6 @@ function Footer() {
 
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
-              Destinations
-            </h4>
-            <ul className="space-y-3 text-sm">
-              {["Europe", "Asia Pacific", "Middle East", "Americas", "Africa"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">
               Support
             </h4>
             <ul className="space-y-3 text-sm">
@@ -1090,13 +1075,11 @@ function Footer() {
                   Contact Us
                 </Link>
               </li>
-              {["FAQs", "Travel Blog", "About Us", "Careers"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
+                  About Us
+                </a>
+              </li>
             </ul>
           </div>
 

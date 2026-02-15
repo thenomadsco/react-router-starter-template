@@ -192,25 +192,25 @@ const allDestinations: Destination[] = [
 
 const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon"];
 
-// --- UPDATED EXPERIENCES (Realistic, Relatable, Service-Focused) ---
+// --- UPDATED EXPERIENCES (With new links and uniform button styling) ---
 const experiences = [
   {
     title: "Family Vacations",
     description: "Trips designed for all ages. We ensure kid-friendly hotels, safe transfers, and fun activities for the whole family.",
-    image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800&auto=format&fit=crop", // Family walking/traveling
-    ctaType: "primary",
+    image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800&auto=format&fit=crop",
+    link: "/family-vacations",
   },
   {
     title: "Honeymoon Specials",
     description: "Start your journey together perfectly. Candlelit dinners, flower-bed decorations, and romantic scenic spots.",
-    image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop", // Couple/wedding/romance
-    ctaType: "secondary",
+    image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop",
+    link: "/honeymoon-specials",
   },
   {
     title: "Friends & Adventure",
     description: "On a budget or looking for thrills? We plan action-packed trips for you and your squad.",
-    image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=800&auto=format&fit=crop", // Friends having fun
-    ctaType: "primary",
+    image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=800&auto=format&fit=crop",
+    link: "/friends-adventure",
   },
 ];
 
@@ -475,12 +475,8 @@ function Navigation() {
 }
 
 function Hero() {
-  // --- UPDATED IMAGES: Iconic Global Landmarks ---
-  // Santorini, Greece
   const heroImage = "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1200&auto=format&fit=crop"; 
-  // Taj Mahal, India
   const image1 = "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800&auto=format&fit=crop"; 
-  // Eiffel Tower, France
   const image2 = "https://images.unsplash.com/photo-1511739001486-6bfe10ce7859?q=80&w=800&auto=format&fit=crop"; 
 
   return (
@@ -499,7 +495,6 @@ function Hero() {
               </div>
             </RevealOnScroll>
             
-            {/* UPDATED TITLE & DESCRIPTION */}
             <RevealOnScroll delay={200}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.2] mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, letterSpacing: "-0.02em" }}>
                 Discover the world <br /> with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">The Nomads Co.</span>
@@ -511,8 +506,6 @@ function Hero() {
               </p>
             </RevealOnScroll>
             
-            {/* BUTTONS REMOVED AS REQUESTED */}
-
             <RevealOnScroll delay={500}>
               <div className="mt-4 flex items-center gap-4 text-sm text-[#1F2328]/60">
                 <div className="flex -space-x-2">
@@ -717,18 +710,15 @@ function ExperienceSection() {
                   {experience.description}
                 </p>
 
+                {/* --- UPDATED BUTTON LOGIC (Always Blue & Linked) --- */}
                 <div>
-                  {experience.ctaType === "primary" ? (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
-                      Learn more
-                      <ArrowRight size={16} />
-                    </button>
-                  ) : (
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-[#02A551] text-[#02A551] text-sm font-medium rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-0.5 active:scale-95">
-                      Learn more
-                      <ArrowRight size={16} />
-                    </button>
-                  )}
+                  <Link 
+                    to={experience.link}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95"
+                  >
+                    Learn more
+                    <ArrowRight size={16} />
+                  </Link>
                 </div>
               </div>
             </RevealOnScroll>

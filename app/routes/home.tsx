@@ -474,9 +474,13 @@ function Navigation() {
 }
 
 function Hero() {
-  const heroImage = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop";
-  const image1 = "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop";
-  const image2 = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop";
+  // --- UPDATED IMAGES: Iconic Global Landmarks ---
+  // Santorini, Greece
+  const heroImage = "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1200&auto=format&fit=crop"; 
+  // Taj Mahal, India
+  const image1 = "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800&auto=format&fit=crop"; 
+  // Eiffel Tower, France
+  const image2 = "https://images.unsplash.com/photo-1511739001486-6bfe10ce7859?q=80&w=800&auto=format&fit=crop"; 
 
   return (
     <section className="relative pt-32 pb-24 sm:pt-40 sm:pb-32 px-6 sm:px-8 lg:px-12 overflow-hidden">
@@ -493,26 +497,23 @@ function Hero() {
                 <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">Premium Travel Experts</span>
               </div>
             </RevealOnScroll>
+            
+            {/* UPDATED TITLE & DESCRIPTION */}
             <RevealOnScroll delay={200}>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-0.03em" }}>
-                Your dream holiday, <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">flawlessly planned.</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.2] mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, letterSpacing: "-0.02em" }}>
+                Discover the world <br /> with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">The Nomads Co.</span>
               </h1>
             </RevealOnScroll>
             <RevealOnScroll delay={300}>
-              <p className="text-lg sm:text-xl text-[#1F2328]/70 leading-relaxed mb-10 max-w-xl" style={{ letterSpacing: "-0.01em" }}>
-                Experience the world with zero stress. From visas and flights to luxury stays and Indian meals, we handle every detail so you can just make memories.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1F2328]/70 mb-10 max-w-xl" style={{ letterSpacing: "0.01em" }}>
+                At The Nomads Co., we believe that travel is not just about visiting new places, but about the stories you create and the memories you cherish forever. Whether you dream of walking through ancient streets, relaxing on pristine beaches, or exploring vibrant cultures, we are here to craft the perfect journey just for you. Sit back, relax, and let us handle every detail while you focus on the magic of discovery.
               </p>
             </RevealOnScroll>
-            <RevealOnScroll delay={400}>
-              <div className="flex flex-col sm:flex-row gap-5">
-                <Link to="/contactus" className="group px-10 py-4 bg-[#2D3191] text-white text-sm font-medium tracking-wide rounded-full hover:bg-[#242875] flex items-center justify-center gap-2 shadow-lg shadow-[#2D3191]/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:scale-95 active:translate-y-0">
-                  Plan My Holiday <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-                <a href="#destinations" className="px-10 py-4 bg-white/50 backdrop-blur-sm border border-[#02A551]/30 text-[#02A551] text-sm font-medium tracking-wide rounded-full hover:bg-[#E7F7EF] transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 active:translate-y-0">See Destinations</a>
-              </div>
-            </RevealOnScroll>
+            
+            {/* BUTTONS REMOVED AS REQUESTED */}
+
             <RevealOnScroll delay={500}>
-              <div className="mt-8 flex items-center gap-4 text-sm text-[#1F2328]/60">
+              <div className="mt-4 flex items-center gap-4 text-sm text-[#1F2328]/60">
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map((i) => (<div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500">Use</div>))}
                 </div>
@@ -520,6 +521,7 @@ function Hero() {
               </div>
             </RevealOnScroll>
           </div>
+          
           <div className="order-1 lg:order-2 relative">
             <div className="absolute top-10 -right-6 z-20 animate-float" style={{ animationDelay: "1s" }}>
               <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3">
@@ -530,17 +532,17 @@ function Hero() {
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px] overflow-hidden">
-                  <OptimizedImage src={heroImage} alt="Luxury Beach Escape" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
+                  <OptimizedImage src={heroImage} alt="Santorini" className="transition-transform duration-1000 ease-out group-hover:scale-105" priority={true} />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={400}>
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
-                  <OptimizedImage src={image1} alt="Private Pool Villa" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage src={image1} alt="Taj Mahal" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={500}>
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[200px] sm:h-[250px] overflow-hidden">
-                  <OptimizedImage src={image2} alt="Fine Dining" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
+                  <OptimizedImage src={image2} alt="Eiffel Tower" className="transition-transform duration-1000 ease-out group-hover:scale-105" />
                 </div>
               </RevealOnScroll>
             </div>
@@ -1075,11 +1077,6 @@ function Footer() {
                   Contact Us
                 </Link>
               </li>
-              <li>
-                <a href="#" className="text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">
-                  About Us
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -1112,9 +1109,6 @@ function Footer() {
             <Link to="/terms" className="hover:text-[#2D3191] transition-colors">
               Terms of Service
             </Link>
-            <a href="#" className="hover:text-[#2D3191] transition-colors">
-              Cookie Policy
-            </a>
           </div>
         </div>
       </div>

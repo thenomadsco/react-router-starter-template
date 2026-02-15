@@ -29,4 +29,7 @@ export default [
   route("himachal", "routes/himachal.tsx"),
   route("meghalaya", "routes/meghalaya.tsx"),
   route("sikkim", "routes/sikkim.tsx"),
+  route("family-vacations", "routes/family.tsx"),
+  route("honeymoon-specials", "routes/honeymoon.tsx"),
+  route("friends-adventure", "routes/friends.tsx"),
 ] satisfies RouteConfig;

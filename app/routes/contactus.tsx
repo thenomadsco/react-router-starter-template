@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
+import kirtiProfile from "./kirti-shah-profile.jpeg"; // Ensure this image is in the same folder
 
 // --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
@@ -18,6 +19,7 @@ function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" 
 function Mail(props: any) { return (<IconBase {...props}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></IconBase>); }
 function Phone(props: any) { return (<IconBase {...props}><path d="M6.5 4.5h2l1.2 3-2 1.2c.9 2 2.5 3.6 4.5 4.5l1.2-2 3 1.2v2c0 .9-.7 1.6-1.6 1.6-6.3-.5-11.4-5.6-11.8-11.8 0-.9.7-1.6 1.5-1.6z" /></IconBase>); }
 function MapPin(props: any) { return (<IconBase {...props}><path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z" /><circle cx="12" cy="10" r="2.5" /></IconBase>); }
+function Send(props: any) { return (<IconBase {...props}><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></IconBase>); }
 
 const customStyles = `
   html { scroll-behavior: smooth; }
@@ -44,8 +46,76 @@ export default function ContactUsPage() {
         </div>
       </section>
 
-      {/* CONTACT CONTENT */}
-      <section className="py-20 px-6 sm:px-12">
+      {/* FOUNDER & COMPANY SECTION (Restored) */}
+      <section className="px-6 sm:px-8 lg:px-12 py-16 sm:py-20 max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center mb-24">
+          {/* Founder Block */}
+          <div className="order-2 md:order-1 relative group">
+            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
+            <img 
+              src={kirtiProfile} 
+              alt="Kirti Shah" 
+              className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-lg transition-transform duration-500 group-hover:-translate-y-2"
+            />
+          </div>
+          <div className="order-1 md:order-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E7F7EF] text-[#02A551] text-xs font-bold uppercase tracking-widest mb-6">
+              The Founder
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-[#1F2328] mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Meet Kirti Shah
+            </h2>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
+              Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.
+            </p>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed">
+              With over 10 years of experience, she knows how to get the best deals and the warmest hospitality for her clients.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
+          {/* Company Block */}
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EEF0FF] text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-6">
+              The Company
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-[#1F2328] mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+              The Nomads Co.
+            </h2>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
+              We are Vadodara's premium travel experts. We specialize in international packages that feel like home, no matter where you go.
+            </p>
+            <ul className="space-y-4 text-[#1F2328]/80 font-medium">
+              <li className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
+                We handle visas, flights, and bookings
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
+                Luxury stays at best-value prices
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191]" />
+                24/7 support (we are always a call away)
+              </li>
+            </ul>
+          </div>
+          <div className="relative group">
+            <div className="absolute inset-0 bg-[#F7F6F1] rounded-[2.5rem] -rotate-3 transition-transform duration-500 group-hover:-rotate-6" />
+            <div className="relative bg-white p-12 rounded-[2.5rem] shadow-lg flex items-center justify-center border border-[#E6E8EF] aspect-square transition-transform duration-500 group-hover:-translate-y-2">
+              <img 
+                src={nomadsLogo} 
+                alt="The Nomads Co. Logo" 
+                className="w-48 h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT FORM & INFO SECTION */}
+      <section className="py-20 px-6 sm:px-12 bg-white border-t border-[#E6E8EF]">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           {/* Contact Details */}
@@ -96,7 +166,7 @@ export default function ContactUsPage() {
           </div>
 
           {/* Enquiry Form */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl">
+          <div className="bg-[#FAFAF8] p-8 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl">
             <h3 className="text-2xl font-bold text-[#1F2328] mb-6">Send us a Message</h3>
             <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-4">
               <input type="hidden" name="_subject" value="Website Contact Form" />
@@ -105,26 +175,26 @@ export default function ContactUsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
-                  <input type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="Rahul Sharma" />
+                  <input type="text" name="name" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="Rahul Sharma" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
-                  <input type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="+91 98765 43210" />
+                  <input type="tel" name="phone" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold ml-1 text-[#1F2328]">Email Address</label>
-                <input type="email" name="email" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="rahul@example.com" />
+                <input type="email" name="email" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="rahul@example.com" />
               </div>
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold ml-1 text-[#1F2328]">Message</label>
-                <textarea name="message" rows={4} className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none resize-none" placeholder="Tell us about your travel plans..." />
+                <textarea name="message" rows={4} className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none resize-none" placeholder="Tell us about your travel plans..." />
               </div>
 
-              <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-2 shadow-lg hover:-translate-y-0.5">
-                Send Message
+              <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-2 shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                Send Message <Send size={18} />
               </button>
             </form>
           </div>
@@ -137,7 +207,7 @@ export default function ContactUsPage() {
   );
 }
 
-// --- NAVIGATION & FOOTER (Synced with Home) ---
+// --- NAVIGATION & FOOTER (Fully Responsive + Drawer) ---
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; }, [isOpen]);
@@ -145,40 +215,110 @@ function Navigation() {
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF]">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF] transition-all duration-300">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-4">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 sm:gap-6">
           <Link to="/" className="flex items-center gap-3 group">
-            <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto group-hover:-translate-y-0.5 transition-transform" />
-            <span className="font-semibold text-[#1F2328] hidden sm:inline">The Nomads Co.</span>
+            <img
+              src={nomadsLogo}
+              alt="The Nomads Co."
+              className="h-10 w-auto transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
+            />
+            <span
+              className="text-lg font-semibold text-[#1F2328] tracking-tight hidden sm:inline"
+              style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
+            >
+              The Nomads Co.
+            </span>
           </Link>
 
+          {/* Desktop links */}
           <div className="hidden lg:flex items-center justify-center gap-10">
-             <Link to="/" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
-             <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
+            {[
+              { label: "Destinations", to: "/#destinations" },
+              { label: "Experiences", to: "/#experiences" },
+              { label: "Testimonials", to: "/#testimonials" },
+              { label: "Contact", to: "/contactus" },
+            ].map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors duration-300 ease-out"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
 
-          <div className="flex items-center justify-end gap-4">
-            <Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
+          <div className="flex items-center justify-end gap-3 sm:gap-4">
+            <Link
+              to="/contactus"
+              className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-95 active:translate-y-0"
+            >
               Plan My Trip
             </Link>
-            <button className="lg:hidden p-2" onClick={() => setIsOpen(true)}><Menu size={24} /></button>
+
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              className="lg:hidden w-11 h-11 rounded-full border border-[#E6E8EF] bg-white flex items-center justify-center text-[#1F2328] transition-transform duration-300 ease-out hover:scale-105 active:scale-95"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              onClick={() => setIsOpen((v) => !v)}
+            >
+              {isOpen ? (
+                <span className="text-2xl leading-none">×</span>
+              ) : (
+                <Menu size={22} />
+              )}
+            </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile menu drawer */}
       {isOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
-          <div className="absolute right-0 top-0 h-full w-[80%] bg-white shadow-2xl p-6">
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-bold text-lg">Menu</span>
-              <button onClick={closeMenu}><X size={24} /></button>
-            </div>
-            <div className="flex flex-col gap-4">
-              <Link to="/" onClick={closeMenu} className="text-lg font-medium text-[#1F2328]">Home</Link>
-              <Link to="/contactus" onClick={closeMenu} className="text-lg font-medium text-[#1F2328]">Contact</Link>
-              <Link to="/contactus" className="mt-4 px-6 py-3 bg-[#2D3191] text-white text-center rounded-xl font-medium">Plan My Trip</Link>
+        <div className="lg:hidden fixed inset-0 z-[60]">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close menu overlay"
+            onClick={closeMenu}
+          />
+          <div className="absolute top-[72px] left-0 right-0 bg-white border-t border-[#E6E8EF] shadow-2xl rounded-b-3xl">
+            <div className="max-w-[1400px] mx-auto px-6 py-6">
+              <div className="flex flex-col gap-3">
+                {[
+                  { label: "Destinations", to: "/#destinations" },
+                  { label: "Experiences", to: "/#experiences" },
+                  { label: "Testimonials", to: "/#testimonials" },
+                ].map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.to}
+                    onClick={closeMenu}
+                    className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+
+                <Link
+                  to="/contactus"
+                  onClick={closeMenu}
+                  className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors"
+                >
+                  Contact
+                </Link>
+
+                <Link
+                  to="/contactus"
+                  onClick={closeMenu}
+                  className="mt-2 px-5 py-3 rounded-2xl bg-[#2D3191] text-white font-semibold text-center hover:bg-[#242875] transition-colors"
+                >
+                  Plan My Trip
+                </Link>
+              </div>
             </div>
           </div>
         </div>

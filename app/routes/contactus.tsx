@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
-import kirtiProfile from "./kirti-shah-profile.jpeg"; // Ensure this image is in the same folder
+import kirtiProfile from "./kirti-shah-profile.jpeg";
 
 // --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
@@ -46,7 +46,7 @@ export default function ContactUsPage() {
         </div>
       </section>
 
-      {/* FOUNDER & COMPANY SECTION (Restored) */}
+      {/* FOUNDER & COMPANY SECTION */}
       <section className="px-6 sm:px-8 lg:px-12 py-16 sm:py-20 max-w-[1200px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center mb-24">
           {/* Founder Block */}
@@ -157,11 +157,6 @@ export default function ContactUsPage() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Map Placeholder */}
-            <div className="w-full h-64 bg-[#F7F6F1] rounded-2xl border border-[#E6E8EF] flex items-center justify-center text-[#1F2328]/40">
-              <span className="flex items-center gap-2"><MapPin size={20} /> View on Google Maps</span>
             </div>
           </div>
 

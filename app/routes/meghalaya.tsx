@@ -3,6 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
+// =============================================================================
+// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// =============================================================================
+
 const PAGE_CONFIG = {
   title: "Meghalaya",
   subtitle: "Abode of Clouds",
@@ -10,71 +14,33 @@ const PAGE_CONFIG = {
   durationLabel: "4 Nights / 5 Days",
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - May",
-
   heroSlides: [
-    {
-      label: "Root Bridges",
-      alt: "Living Root Bridge Nongriat",
-      src: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=80&w=1920&auto=format&fit=crop",
-    },
-    {
-      label: "Dawki River",
-      alt: "Clear water boat Dawki",
-      src: "https://images.unsplash.com/photo-1589379677465-b7787373ae4a?q=80&w=1920&auto=format&fit=crop",
-    },
-    {
-      label: "Waterfalls",
-      alt: "Nohkalikai Falls",
-      src: "https://images.unsplash.com/photo-1627284704386-777579728276?q=80&w=1920&auto=format&fit=crop",
-    },
-    {
-      label: "Shillong",
-      alt: "Cherry Blossoms Shillong",
-      src: "https://images.unsplash.com/photo-1518182170546-07fa6ee551f0?q=80&w=1920&auto=format&fit=crop",
-    },
+    { label: "Root Bridge", alt: "Living Root Bridge", src: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Dawki", alt: "Clear River", src: "https://images.unsplash.com/photo-1589379677465-b7787373ae4a?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Falls", alt: "Nohkalikai", src: "https://images.unsplash.com/photo-1627284704386-777579728276?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Shillong", alt: "Cherry Blossom", src: "https://images.unsplash.com/photo-1518182170546-07fa6ee551f0?q=80&w=1920&auto=format&fit=crop" },
   ],
-
   itinerary: [
-    {
-      day: "01",
-      title: "Arrival in Guwahati & Transfer to Shillong",
-      desc: "Arrive at Guwahati Airport. Drive to Shillong, the 'Scotland of the East'. En route, stop at Umiam Lake (Barapani) for a stunning sunset view. Check into your hotel in Shillong and explore the local Police Bazar in the evening.",
-    },
-    {
-      day: "02",
-      title: "Cherrapunji – Land of Waterfalls",
-      desc: "Day trip to Cherrapunji, one of the wettest places on earth. Visit the spectacular Nohkalikai Falls, the Seven Sisters Falls, and the Mawsmai Cave. The drive through the misty hills is an experience in itself.",
-    },
-    {
-      day: "03",
-      title: "Living Root Bridges & Dawki",
-      desc: "Drive to Mawlynnong, voted Asia's cleanest village. See the Single Living Root Bridge here. Continue to Dawki on the Bangladesh border. Enjoy a boat ride on the Umngot River, famous for its crystal clear water where boats appear to float on air.",
-    },
-    {
-      day: "04",
-      title: "Shillong Sightseeing",
-      desc: "Visit the Don Bosco Museum to learn about Northeast culture. Head to Shillong Peak for a panoramic view of the city. Visit Elephant Falls and the Laitlum Canyons for breathtaking valley views.",
-    },
-    {
-      day: "05",
-      title: "Departure",
-      desc: "Drive back to Guwahati. If time permits, visit the Kamakhya Temple before heading to the airport for your onward journey.",
-    },
+    { day: "01", title: "Arrival & Transfer to Shillong", desc: "Arrive at Guwahati and drive to Shillong, the 'Scotland of the East'. Stop at Umiam Lake (Barapani) for a stunning sunset view. Evening at leisure in Police Bazar." },
+    { day: "02", title: "Cherrapunji Excursion", desc: "Day trip to Cherrapunji. Visit the spectacular Nohkalikai Falls, Seven Sisters Falls, and explore the Mawsmai Cave. The drive through the misty hills is an experience in itself." },
+    { day: "03", title: "Dawki & Mawlynnong", desc: "Visit Mawlynnong, Asia's cleanest village, and see the Single Living Root Bridge. Continue to Dawki for a boat ride on the crystal-clear Umngot River." },
+    { day: "04", title: "Shillong Sightseeing", desc: "Visit Don Bosco Museum to learn about Northeast culture. Head to Shillong Peak for city views, followed by Elephant Falls and Laitlum Canyons." },
+    { day: "05", title: "Departure", desc: "Drive back to Guwahati. Optional visit to Kamakhya Temple before the airport drop." },
   ],
 };
+
+// =============================================================================
+// 👆 END OF CONFIGURATION 👆
+// =============================================================================
 
 export function headers() {
   return { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" };
 }
 
-// --- ICONS & COMPONENTS ---
+// --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
 function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {children}
-    </svg>
-  );
+  return (<svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>);
 }
 function Menu(props: any) { return (<IconBase {...props}><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
@@ -83,6 +49,7 @@ function Calendar(props: any) { return (<IconBase {...props}><rect width="18" he
 function FileCheck(props: any) { return (<IconBase {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="m9 15 2 2 4-4" /></IconBase>); }
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
+function Mail(props: any) { return (<IconBase {...props}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></IconBase>); }
 
 const customStyles = `html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }`;
 
@@ -104,7 +71,7 @@ export default function DestinationPage() {
       <style>{customStyles}</style>
       <Navigation />
 
-      <section className="relative h-[85vh] min-h-[620px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
+      <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
             <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
@@ -116,7 +83,9 @@ export default function DestinationPage() {
             <span className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-flex items-center gap-2">
               {PAGE_CONFIG.badge}<span className="w-1.5 h-1.5 rounded-full bg-[#02A551]" /><span className="text-white/90 font-semibold">{slides[activeSlide]?.label}</span>
             </span>
-            <h1 className="text-5xl sm:text-7xl font-semibold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>{PAGE_CONFIG.title}: <br /> {PAGE_CONFIG.subtitle}</h1>
+            <h1 className="text-5xl sm:text-7xl font-semibold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              {PAGE_CONFIG.title}: <br /> {PAGE_CONFIG.subtitle}
+            </h1>
             <div className="flex flex-wrap gap-6 text-white/90 font-medium">
               <div className="flex items-center gap-2"><Clock size={20} /> {PAGE_CONFIG.durationLabel}</div>
               <div className="flex items-center gap-2"><FileCheck size={20} /> {PAGE_CONFIG.visaLabel}</div>
@@ -141,20 +110,22 @@ export default function DestinationPage() {
       <section id="itinerary" className="py-16 bg-white px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto">
           <div className="text-center mb-16"><h2 className="text-3xl font-semibold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>Day-by-Day Journey</h2></div>
-          <div className="relative pl-8 sm:pl-10">
-            <div className="absolute left-0 top-2 bottom-4 w-[2px] bg-[#E6E8EF]"></div>
+          <div className="relative pl-12 sm:pl-16">
+            <div className="absolute left-4 top-2 bottom-4 w-[2px] bg-[#E6E8EF]"></div>
             <div className="space-y-12">
               {PAGE_CONFIG.itinerary.map((item, index) => (
                 <div key={index} className="relative group">
-                  <div className="absolute -left-[42px] sm:-left-[50px] top-0 w-[24px] sm:w-auto bg-[#1F2328] text-white text-xs font-bold py-1.5 px-2 rounded-md shadow-md z-10 text-center leading-tight"><span className="hidden sm:inline">Day </span>{item.day}</div>
-                  <div className="ml-4 sm:ml-8">
+                  <div className="absolute left-4 -translate-x-1/2 top-0 w-auto min-w-[60px] bg-[#1F2328] text-white text-xs font-bold py-1.5 px-2 rounded-md shadow-md z-10 text-center leading-tight whitespace-nowrap">
+                    Day {item.day}
+                  </div>
+                  <div className="ml-4">
                     <h3 className="text-xl font-bold text-[#1F2328] mb-3 group-hover:text-[#2D3191] transition-colors">{item.title}</h3>
                     <p className="text-[#1F2328]/80 leading-relaxed whitespace-pre-line">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="absolute left-[-4px] bottom-0 w-3 h-3 bg-[#E6E8EF] rounded-full border-2 border-white"></div>
+            <div className="absolute left-4 -translate-x-1/2 bottom-0 w-3 h-3 bg-[#E6E8EF] rounded-full border-2 border-white"></div>
           </div>
         </div>
       </section>
@@ -191,17 +162,34 @@ export default function DestinationPage() {
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; }, [isOpen]);
-  const inPageLinks = [{ label: "Overview", href: "#overview" }, { label: "Itinerary", href: "#itinerary" }, { label: "Enquire", href: "#enquire" }];
+  const closeMenu = () => setIsOpen(false);
+
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
           <Link to="/" className="flex items-center gap-3 group"><img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto group-hover:-translate-y-0.5 transition-transform" /><span className="font-semibold text-[#1F2328] hidden sm:inline">The Nomads Co.</span></Link>
-          <div className="hidden lg:flex items-center justify-center gap-10">{inPageLinks.map((link) => (<a key={link.label} href={link.href} className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">{link.label}</a>))} <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link></div>
-          <div className="flex items-center justify-end gap-4"><Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">Plan My Trip</Link><button className="lg:hidden p-2" onClick={() => setIsOpen(true)}><Menu size={24} /></button></div>
+          <div className="hidden lg:flex items-center justify-center gap-10">
+             <Link to="/" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
+             <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
+          </div>
+          <div className="flex items-center justify-end gap-4"><Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">Plan My Trip</Link><button className="lg:hidden p-2" onClick={() => setIsOpen(!isOpen)}><Menu size={24} /></button></div>
         </div>
       </div>
-      {isOpen && (<div className="fixed inset-0 z-[60] lg:hidden"><div className="absolute inset-0 bg-black/40" onClick={() => setIsOpen(false)} /><div className="absolute right-0 top-0 h-full w-[80%] bg-white shadow-2xl p-6"><div className="flex justify-between items-center mb-8"><span className="font-bold text-lg">Menu</span><button onClick={() => setIsOpen(false)}><X size={24} /></button></div><div className="flex flex-col gap-4">{inPageLinks.map((link) => (<a key={link.label} href={link.href} onClick={() => setIsOpen(false)} className="text-lg font-medium text-[#1F2328]">{link.label}</a>))} <Link to="/contactus" className="mt-4 px-6 py-3 bg-[#2D3191] text-white text-center rounded-xl font-medium">Plan My Trip</Link></div></div></div>)}
+      {isOpen && (
+        <div className="fixed inset-0 z-[60] lg:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
+          <div className="absolute top-[72px] left-0 right-0 bg-white border-t border-[#E6E8EF] shadow-2xl rounded-b-3xl">
+            <div className="max-w-[1400px] mx-auto px-6 py-6">
+              <div className="flex flex-col gap-3">
+                <Link to="/" onClick={closeMenu} className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors">Home</Link>
+                <Link to="/contactus" onClick={closeMenu} className="px-4 py-3 rounded-2xl border border-[#E6E8EF] text-[#1F2328] font-medium hover:border-[#2D3191] hover:text-[#2D3191] transition-colors">Contact</Link>
+                <Link to="/contactus" onClick={closeMenu} className="mt-2 px-5 py-3 rounded-2xl bg-[#2D3191] text-white font-semibold text-center hover:bg-[#242875] transition-colors">Plan My Trip</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
@@ -209,11 +197,14 @@ function Navigation() {
 function Footer() {
   return (
     <footer className="bg-[#FAFAF8] py-16 px-6 sm:px-12 border-t border-[#E6E8EF]">
-      <div className="max-w-[1400px] mx-auto text-center sm:text-left grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="max-w-[1400px] mx-auto text-center sm:text-left grid grid-cols-1 md:grid-cols-3 gap-10">
         <div><h3 className="text-2xl font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>The Nomads Co.</h3><p className="text-sm text-[#1F2328]/70">Crafting extraordinary journeys since 2015.</p></div>
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
-        <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a></div></div>
-        <div><p className="text-sm text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p></div>
+        <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
+        <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
+          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
+        </div>
       </div>
     </footer>
   );

@@ -42,7 +42,6 @@ function IconBase({
 
 function ArrowRight(props: any) { return (<IconBase {...props}><path d="M5 12h14" /><path d="m13 5 7 7-7 7" /></IconBase>); }
 function ArrowLeft(props: any) { return (<IconBase {...props}><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></IconBase>); }
-function BadgeCheck(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></IconBase>); }
 function CheckCircle2(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>); }
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
@@ -54,7 +53,6 @@ function Send(props: any) { return (<IconBase {...props}><path d="m22 2-7 20-4-9
 function Sparkles(props: any) { return (<IconBase {...props}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" /></IconBase>); }
 function Star(props: any) { return (<IconBase {...props} fill={props.fill ?? "currentColor"}><path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
-function Robot(props: any) { return (<IconBase {...props}><rect width="18" height="10" x="3" y="11" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4" /><line x1="8" x2="8" y1="16" y2="16" /><line x1="16" x2="16" y1="16" y2="16" /></IconBase>); }
 
 // --- ASSETS ---
 const logoImage = nomadsLogo;
@@ -155,14 +153,6 @@ const customStyles = `
   .animate-ready { opacity: 0; transform: translateY(30px); transition: opacity 0.1s; }
   .animate-float { animation: float 6s ease-in-out infinite; }
   @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-  
-  /* Chatbot Styles */
-  .chat-slide-in { animation: slideIn 0.3s ease-out forwards; }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
-  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-  @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 `;
 
 // --- HELPER COMPONENTS ---
@@ -232,8 +222,7 @@ export default function Home() {
       {/* 6. FOOTER */}
       <Footer />
       
-      {/* 7. AI CHATBOT (Replaces WhatsApp) */}
-      <ChatWidget />
+      {/* NOTE: Chatbot is now handled globally via root.tsx script */}
 
       {/* 8. DESTINATION POPUP (Full Grid) */}
       {showDestinationsPopup && (
@@ -548,145 +537,6 @@ function ContactSection({ prefilledDestination }: { prefilledDestination: string
         </div>
       </div>
     </section>
-  );
-}
-
-// --- SMART AI CHATBOT (WITH FALLBACK) ---
-function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
-    { role: 'ai', text: "Namaste! 🙏 I am Kirti's AI assistant. How can I help you plan your dream trip today?" }
-  ]);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // --------------------------------------------------------
-  // 🔑 KEY
-  // --------------------------------------------------------
-  const GEMINI_API_KEY = "AIzaSyAseoa-cPfc1cDhSg_DdbEtkPW5WOtRJOE"; 
-
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, isTyping, isOpen]);
-
-  // --- LOCAL FALLBACK LOGIC ---
-  const getLocalResponse = (text: string) => {
-    const lower = text.toLowerCase();
-    if (lower.includes("book") || lower.includes("reserve") || lower.includes("price") || lower.includes("cost")) {
-      return "For bookings and packages, please fill out the 'Plan My Trip' form below or contact Kirti directly at +91 9924399335 for the best rates!";
-    }
-    if (lower.includes("bali") || lower.includes("indonesia")) {
-      return "Bali is a wonderful choice! We have special packages for beaches, temples, and Nusa Penida tours. Shall I guide you to our enquiry form?";
-    }
-    if (lower.includes("cancel") || lower.includes("refund")) {
-      return "Cancellation policies vary by airline and hotel. Please reach out to our support team on WhatsApp for immediate assistance with existing bookings.";
-    }
-    return "That sounds like a great plan! To get you the best personalized itinerary, could you please share your details in the enquiry form below? Kirti will get back to you personally.";
-  };
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input.trim();
-    setInput("");
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsTyping(true);
-
-    try {
-      // 1. Try API Call
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: `System: You are 'Ask Kirti', a polite travel assistant for 'The Nomads Co.'. Keep answers under 3 sentences. User: ${userMsg}` }] }]
-        })
-      });
-
-      const data = await response.json();
-
-      // 2. Check for API Errors or success
-      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
-         const aiText = data.candidates[0].content.parts[0].text;
-         setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
-      } else {
-         // API returned an error object (e.g. maintenance, quota, safety) -> USE FALLBACK
-         console.warn("AI API Error, switching to fallback:", data);
-         const fallbackText = getLocalResponse(userMsg);
-         setMessages(prev => [...prev, { role: 'ai', text: fallbackText }]);
-      }
-    } catch (error) {
-      // 3. Network/Fetch Error -> USE FALLBACK
-      console.error("Network Error, switching to fallback", error);
-      const fallbackText = getLocalResponse(userMsg);
-      setMessages(prev => [...prev, { role: 'ai', text: fallbackText }]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  return (
-    <>
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 ${isOpen ? "bg-[#2D3191] text-white" : "bg-white text-[#1F2328]"}`}
-      >
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isOpen ? "bg-white/20" : "bg-[#2D3191] text-white"}`}>
-          {isOpen ? <X size={20} /> : <Robot size={24} />}
-        </div>
-        <span className="font-bold pr-2">{isOpen ? "Close Chat" : "Ask Kirti AI"}</span>
-      </button>
-
-      {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[90vw] max-w-[350px] bg-white rounded-2xl shadow-2xl border border-[#E6E8EF] overflow-hidden flex flex-col chat-slide-in h-[500px]">
-          <div className="bg-[#2D3191] p-4 flex items-center gap-3">
-             <div className="relative">
-               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white"><Robot size={20} /></div>
-               <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#02A551] border-2 border-[#2D3191] rounded-full"></div>
-             </div>
-             <div>
-               <h4 className="text-white font-bold text-sm">Ask Kirti</h4>
-               <p className="text-white/60 text-xs">Interactive AI • Online</p>
-             </div>
-          </div>
-
-          <div className="flex-1 bg-[#FAFAF8] p-4 overflow-y-auto space-y-4" ref={scrollRef}>
-             {messages.map((m, i) => (
-               <div key={i} className={`flex ${m.role === 'user' ? "justify-end" : "justify-start"}`}>
-                 <div className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${m.role === 'user' ? "bg-[#2D3191] text-white rounded-tr-sm" : "bg-white border border-[#E6E8EF] text-[#1F2328] rounded-tl-sm shadow-sm"}`}>
-                   {m.text}
-                 </div>
-               </div>
-             ))}
-             {isTyping && (
-               <div className="flex justify-start">
-                 <div className="bg-white border border-[#E6E8EF] p-3 rounded-2xl rounded-tl-sm shadow-sm flex gap-1">
-                   <span className="w-2 h-2 bg-[#2D3191]/40 rounded-full typing-dot" />
-                   <span className="w-2 h-2 bg-[#2D3191]/40 rounded-full typing-dot" />
-                   <span className="w-2 h-2 bg-[#2D3191]/40 rounded-full typing-dot" />
-                 </div>
-               </div>
-             )}
-          </div>
-
-          <div className="p-3 bg-white border-t border-[#E6E8EF] flex gap-2">
-            <input 
-              type="text" 
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask about trips..." 
-              className="flex-1 bg-[#F0F0F0] rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2D3191] text-black"
-            />
-            <button 
-              onClick={handleSend}
-              className="w-10 h-10 bg-[#2D3191] text-white rounded-full flex items-center justify-center hover:bg-[#242875] transition-colors"
-            >
-              <Send size={16} />
-            </button>
-          </div>
-        </div>
-      )}
-    </>
   );
 }
 

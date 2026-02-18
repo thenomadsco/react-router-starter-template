@@ -41,6 +41,7 @@ function IconBase({
 }
 
 function ArrowRight(props: any) { return (<IconBase {...props}><path d="M5 12h14" /><path d="m13 5 7 7-7 7" /></IconBase>); }
+function ArrowLeft(props: any) { return (<IconBase {...props}><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></IconBase>); }
 function BadgeCheck(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></IconBase>); }
 function CheckCircle2(props: any) { return (<IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>); }
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
@@ -53,7 +54,6 @@ function Send(props: any) { return (<IconBase {...props}><path d="m22 2-7 20-4-9
 function Sparkles(props: any) { return (<IconBase {...props}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" /></IconBase>); }
 function Star(props: any) { return (<IconBase {...props} fill={props.fill ?? "currentColor"}><path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
-function MessageCircle(props: any) { return (<IconBase {...props}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" /></IconBase>); }
 function Robot(props: any) { return (<IconBase {...props}><rect width="18" height="10" x="3" y="11" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4" /><line x1="8" x2="8" y1="16" y2="16" /><line x1="16" x2="16" y1="16" y2="16" /></IconBase>); }
 
 // --- ASSETS ---
@@ -72,34 +72,34 @@ type Destination = {
   ideal_days: string;
 };
 
+// Expanded to 18 Destinations including CUSMA
 const allDestinations: Destination[] = [
-  // --- INDIA ---
+  // --- INDIA (6) ---
   { name: "Jammu & Kashmir", descriptor: "Heaven on Earth", image: "https://images.unsplash.com/photo-1632231065530-f5fd55c62846?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Experience the magic of Dal Lake and snow-capped Gulmarg.", best_time: "Apr - Oct", ideal_days: "6 Days" },
   { name: "Kerala", descriptor: "God's Own Country", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Tranquil backwaters, misty tea gardens, and authentic Ayurveda.", best_time: "Sep - Mar", ideal_days: "6 Days" },
   { name: "Andaman", descriptor: "Blue Waters", image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800", category: "beaches", region: "india", desc_short: "Pristine beaches, world-class scuba diving, and history.", best_time: "Oct - May", ideal_days: "6 Days" },
   { name: "Ladakh", descriptor: "High Passes", image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800", category: "adventure", region: "india", desc_short: "Rugged mountains, crystal blue lakes, and ancient monasteries.", best_time: "May - Sep", ideal_days: "7 Days" },
   { name: "Goa", descriptor: "Sun & Sand", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800", category: "beaches", region: "india", desc_short: "Portuguese heritage, vibrant nightlife, and relaxed beaches.", best_time: "Nov - Feb", ideal_days: "4 Days" },
   { name: "Rajasthan", descriptor: "Royal Heritage", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800", category: "culture", region: "india", desc_short: "Land of Kings, grand palaces, and desert safaris.", best_time: "Oct - Mar", ideal_days: "7 Days" },
-  { name: "Gujarat", descriptor: "Culture & Rann", image: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=80&w=800", category: "culture", region: "india", desc_short: "The White Desert, Asiatic Lions, and vibrant festivals.", best_time: "Nov - Feb", ideal_days: "5 Days" },
-  { name: "Madhya Pradesh", descriptor: "Heart of India", image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800", category: "adventure", region: "india", desc_short: "Tiger reserves, ancient temples of Khajuraho, and forts.", best_time: "Oct - Mar", ideal_days: "6 Days" },
-  { name: "Uttar Pradesh", descriptor: "Spiritual Heritage", image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800", category: "culture", region: "india", desc_short: "The Taj Mahal, spiritual Varanasi, and historic Lucknow.", best_time: "Oct - Mar", ideal_days: "5 Days" },
-  { name: "Himachal", descriptor: "Snow Abode", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800", category: "adventure", region: "india", desc_short: "Pine forests, apple orchards, and snowy peaks of Manali.", best_time: "Mar - Jun", ideal_days: "7 Days" },
-  { name: "Meghalaya", descriptor: "Cloud Abode", image: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=80&w=800", category: "adventure", region: "india", desc_short: "Living root bridges, waterfalls, and the cleanest village.", best_time: "Oct - May", ideal_days: "5 Days" },
-  { name: "Sikkim", descriptor: "Himalayan Gem", image: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Views of Kanchenjunga, monasteries, and frozen lakes.", best_time: "Mar - Jun", ideal_days: "6 Days" },
 
-  // --- INTERNATIONAL ---
+  // --- INTERNATIONAL (12) ---
+  // CUSMA
+  { name: "United States", descriptor: "The American Dream", image: "https://images.unsplash.com/photo-1550565118-3a1498d308cd?q=80&w=800", category: "cities", region: "international", desc_short: "Times Square, Grand Canyon, and Hollywood glam.", best_time: "All Year", ideal_days: "10 Days" },
+  { name: "Canada", descriptor: "Nature's Glory", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800", category: "adventure", region: "international", desc_short: "Banff National Park, Niagara Falls, and vibrant Toronto.", best_time: "May - Oct", ideal_days: "9 Days" },
+  { name: "Mexico", descriptor: "Fiesta & Beach", image: "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?q=80&w=800", category: "beaches", region: "international", desc_short: "Mayan ruins, Tulum beaches, and delicious tacos.", best_time: "Dec - Apr", ideal_days: "8 Days" },
+  
+  // Europe
   { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", category: "cities", region: "international", desc_short: "London icons, Scottish highlands, and Harry Potter magic.", best_time: "Apr - Sep", ideal_days: "7 Days" },
   { name: "Switzerland", descriptor: "Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Snow-capped peaks, scenic trains, and chocolates.", best_time: "Apr - Oct", ideal_days: "7 Days" },
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800", category: "culture", region: "international", desc_short: "Parisian romance, Disneyland fun, and the Riviera.", best_time: "Apr - Oct", ideal_days: "7 Days" },
-  { name: "Italy", descriptor: "La Dolce Vita", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800", category: "culture", region: "international", desc_short: "Venice canals, Roman history, and delicious food.", best_time: "Apr - Oct", ideal_days: "7 Days" },
-  { name: "Maldives", descriptor: "Island Paradise", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Overwater villas, turquoise lagoons, and pure luxury.", best_time: "Nov - Apr", ideal_days: "5 Days" },
-  { name: "Indonesia", descriptor: "Tropical Culture", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800", category: "adventure", region: "international", desc_short: "Bali's temples, beaches, and Nusa Penida adventures.", best_time: "Apr - Oct", ideal_days: "7 Days" },
-  { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800", category: "beaches", region: "international", desc_short: "Bangkok shopping, Phuket beaches, and island hopping.", best_time: "Nov - Apr", ideal_days: "7 Days" },
-  { name: "Vietnam", descriptor: "Timeless Charm", image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800", category: "adventure", region: "international", desc_short: "Ha Long Bay cruise, Hoi An lanterns, and street food.", best_time: "Oct - Apr", ideal_days: "7 Days" },
+  
+  // Asia & Others
+  { name: "Turkey", descriptor: "East Meets West", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=800", category: "culture", region: "international", desc_short: "Hot air balloons in Cappadocia and Istanbul's bazaars.", best_time: "Apr - May", ideal_days: "8 Days" },
+  { name: "Greece", descriptor: "Ancient & Blue", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Santorini sunsets, Mykonos parties, and Athens history.", best_time: "May - Oct", ideal_days: "7 Days" },
+  { name: "South Africa", descriptor: "Safari & Sea", image: "https://images.unsplash.com/photo-1553913861-c0fdd65522a5?q=80&w=800", category: "adventure", region: "international", desc_short: "Big 5 Safari, Cape Town sights, and wine tasting.", best_time: "May - Sep", ideal_days: "9 Days" },
   { name: "Dubai (UAE)", descriptor: "Future Now", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800", category: "cities", region: "international", desc_short: "Skyscrapers, desert safaris, and luxury shopping.", best_time: "Oct - Apr", ideal_days: "6 Days" },
-  { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800", category: "cities", region: "international", desc_short: "Gardens by the Bay, Sentosa Island, and cultural mix.", best_time: "All Year", ideal_days: "5 Days" },
+  { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800", category: "beaches", region: "international", desc_short: "Bangkok shopping, Phuket beaches, and island hopping.", best_time: "Nov - Apr", ideal_days: "7 Days" },
   { name: "Japan", descriptor: "Tradition & Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800", category: "culture", region: "international", desc_short: "Cherry blossoms, Mt. Fuji, and neon-lit Tokyo.", best_time: "Mar - May", ideal_days: "7 Days" },
-  { name: "Australia", descriptor: "Great Outback", image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?q=80&w=800", category: "adventure", region: "international", desc_short: "Sydney Opera House, Gold Coast surf, and kangaroos.", best_time: "Sep - May", ideal_days: "7 Days" },
 ];
 
 const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon", "Culture"];
@@ -321,7 +321,6 @@ function Hero() {
           </div>
           
           <div className="order-1 lg:order-2 relative">
-             {/* Removed Trip Rating Badge as requested */}
             <div className="grid grid-cols-2 gap-4">
               <RevealOnScroll delay={300} className="col-span-2">
                 <div className="rounded-2xl shadow-lg border-4 border-white group h-[300px] sm:h-[400px] overflow-hidden">
@@ -379,7 +378,7 @@ function FounderSection() {
   );
 }
 
-// --- NEW COMPONENT: Large Clickable Trigger ---
+// --- Trigger ---
 function DestinationsTrigger({ onOpen }: { onOpen: () => void }) {
   return (
     <section id="destinations" className="py-24 px-6 bg-white flex flex-col items-center justify-center text-center">
@@ -401,19 +400,28 @@ function DestinationsTrigger({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-// --- NEW COMPONENT: Full Screen Popup for Destinations ---
+// --- Full Screen Popup for Destinations ---
 function DestinationsPopup({ onClose, onPlan }: { onClose: () => void, onPlan: (name: string) => void }) {
   const [activeRegion, setActiveRegion] = useState<"india" | "international">("international");
   const filtered = allDestinations.filter(d => d.region === activeRegion);
 
-  // Prevent scroll on body
   useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
 
   return (
     <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-active-up">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-[#E6E8EF] bg-white/90 backdrop-blur-md sticky top-0 z-10">
-        <h3 className="text-xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>All Destinations</h3>
+        <div className="flex items-center gap-4">
+            <h3 className="text-xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>All Destinations</h3>
+            
+            {/* NEW: Explicit Back Button */}
+            <button 
+                onClick={onClose}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-100 text-[#1F2328] rounded-full text-sm font-bold hover:bg-gray-200 transition-colors"
+            >
+                <ArrowLeft size={16} /> Back to Home
+            </button>
+        </div>
         <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X size={28} /></button>
       </div>
 
@@ -437,7 +445,6 @@ function DestinationsPopup({ onClose, onPlan }: { onClose: () => void, onPlan: (
                   <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{dest.name}</h3>
                   <p className="text-white/70 text-sm mb-4 line-clamp-2">{dest.descriptor}</p>
                   
-                  {/* Clicking this button redirects to contact form with value */}
                   <button 
                     onClick={() => onPlan(dest.name)}
                     className="w-full py-2 bg-white/20 backdrop-blur-md rounded-lg text-white text-sm font-bold hover:bg-white hover:text-[#2D3191] transition-colors flex items-center justify-center gap-2"
@@ -454,6 +461,9 @@ function DestinationsPopup({ onClose, onPlan }: { onClose: () => void, onPlan: (
 }
 
 function ContactSection({ prefilledDestination }: { prefilledDestination: string }) {
+  // Common style for inputs to ensure black text visibility
+  const inputClass = "w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500";
+
   return (
     <section id="contact" className="py-20 px-6 sm:px-12 bg-[#EEF0FF]">
       <div className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24">
@@ -487,27 +497,27 @@ function ContactSection({ prefilledDestination }: { prefilledDestination: string
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-[#1F2328]">Name</label>
-                <input type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="Your Name" />
+                <input type="text" name="name" required className={inputClass} placeholder="Your Name" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold text-[#1F2328]">Phone</label>
-                <input type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="+91 98765 43210" />
+                <input type="tel" name="phone" required className={inputClass} placeholder="+91 98765 43210" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-[#1F2328]">Email</label>
-                <input type="email" name="email" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="you@example.com" />
+                <input type="email" name="email" required className={inputClass} placeholder="you@example.com" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold text-[#1F2328]">Destination</label>
                 <input 
                   type="text" 
                   name="destination" 
-                  value={prefilledDestination} // Changed to controlled value/prop
-                  readOnly={!!prefilledDestination} // Optional: make readonly if selected from grid
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" 
+                  value={prefilledDestination}
+                  readOnly={!!prefilledDestination} 
+                  className={inputClass}
                   placeholder="Where do you want to go?" 
                 />
               </div>
@@ -515,7 +525,7 @@ function ContactSection({ prefilledDestination }: { prefilledDestination: string
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-[#1F2328]">Any specific requirements?</label>
-              <textarea name="message" rows={4} className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none resize-none" placeholder="Travel dates, number of people, budget..." />
+              <textarea name="message" rows={4} className={`${inputClass} resize-none`} placeholder="Travel dates, number of people, budget..." />
             </div>
 
             <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all shadow-lg flex items-center justify-center gap-2">
@@ -528,7 +538,7 @@ function ContactSection({ prefilledDestination }: { prefilledDestination: string
   );
 }
 
-// --- NEW COMPONENT: AI Chatbot Widget (Ask Kirti) ---
+// --- UPDATED AI CHATBOT (REAL TIME) ---
 function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
@@ -538,7 +548,12 @@ function ChatWidget() {
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom of chat
+  // --------------------------------------------------------
+  // 🔑 IMPORTANT: REPLACE WITH YOUR GOOGLE GEMINI API KEY
+  // Get one here: https://aistudio.google.com/app/apikey
+  // --------------------------------------------------------
+  const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isTyping, isOpen]);
@@ -550,31 +565,52 @@ function ChatWidget() {
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsTyping(true);
 
-    // --- SIMULATED AI BACKEND (Replace this with actual API call) ---
-    // In a real app, you would fetch('/api/chat', { method: 'POST', body: ... })
-    setTimeout(() => {
-      let aiResponse = "I'd love to help with that! Could you please provide more details or drop your contact info in the form below so Kirti can personally assist you?";
+    try {
+      // Direct call to Gemini API for real-time response
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `System: You are 'Ask Kirti', a helpful and polite travel assistant for 'The Nomads Co.'. 
+                         Your scope is strictly restricted to travel planning, bookings, destinations (India/International), and general travel advice. 
+                         If a user asks about code, politics, or non-travel topics, politely decline and steer them back to travel. 
+                         Keep answers concise (under 3 sentences) and encouraging. 
+                         User: ${userMsg}`
+                }
+              ]
+            }
+          ]
+        })
+      });
+
+      const data = await response.json();
       
-      const lower = userMsg.toLowerCase();
-      if (lower.includes("booking") || lower.includes("book")) {
-        aiResponse = "For bookings, we ensure a seamless experience! We handle flights, hotels, and visas. Please let me know which destination you are interested in, or use the 'Plan My Trip' form to get a quote.";
-      } else if (lower.includes("cancel") || lower.includes("refund")) {
-        aiResponse = "I understand you have a question about cancellations. Our cancellation policy depends on the specific airline and hotel terms. Please contact our support line at +91 9924399335 for immediate assistance with existing bookings.";
-      } else if (lower.includes("reschedule") || lower.includes("change")) {
-        aiResponse = "Plans change, and we get that! Rescheduling is possible subject to availability and fare differences. Please reach out to us directly on WhatsApp or phone for the quickest resolution.";
-      } else if (lower.includes("price") || lower.includes("cost") || lower.includes("package")) {
-        aiResponse = "Our packages are custom-tailored to your budget and luxury preferences. If you tell me your preferred destination, I can guide you to our packages, or you can request a specific quote below!";
+      let aiText = "I'm having a little trouble connecting right now. Please try again or call us directly!";
+      
+      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+        aiText = data.candidates[0].content.parts[0].text;
+      } else if (data.error) {
+         console.error("Gemini API Error:", data.error);
+         aiText = "Please configure your API Key in home.tsx to enable the AI chat.";
       }
 
-      setMessages(prev => [...prev, { role: 'ai', text: aiResponse }]);
+      setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
+    } catch (error) {
+      console.error("Chat Error", error);
+      setMessages(prev => [...prev, { role: 'ai', text: "I seem to be offline. Please check your internet connection." }]);
+    } finally {
       setIsTyping(false);
-    }, 1500); // Simulated delay
-    // -------------------------------------------------------------
+    }
   };
 
   return (
     <>
-      {/* Trigger Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 ${isOpen ? "bg-[#2D3191] text-white" : "bg-white text-[#1F2328]"}`}
@@ -585,10 +621,8 @@ function ChatWidget() {
         <span className="font-bold pr-2">{isOpen ? "Close Chat" : "Ask Kirti AI"}</span>
       </button>
 
-      {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[90vw] max-w-[350px] bg-white rounded-2xl shadow-2xl border border-[#E6E8EF] overflow-hidden flex flex-col chat-slide-in h-[500px]">
-          {/* Header */}
           <div className="bg-[#2D3191] p-4 flex items-center gap-3">
              <div className="relative">
                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white"><Robot size={20} /></div>
@@ -596,11 +630,10 @@ function ChatWidget() {
              </div>
              <div>
                <h4 className="text-white font-bold text-sm">Ask Kirti</h4>
-               <p className="text-white/60 text-xs">AI Assistant • Online</p>
+               <p className="text-white/60 text-xs">Interactive AI • Online</p>
              </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 bg-[#FAFAF8] p-4 overflow-y-auto space-y-4" ref={scrollRef}>
              {messages.map((m, i) => (
                <div key={i} className={`flex ${m.role === 'user' ? "justify-end" : "justify-start"}`}>
@@ -620,15 +653,14 @@ function ChatWidget() {
              )}
           </div>
 
-          {/* Input */}
           <div className="p-3 bg-white border-t border-[#E6E8EF] flex gap-2">
             <input 
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask about bookings..." 
-              className="flex-1 bg-[#F0F0F0] rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2D3191]"
+              placeholder="Ask about trips..." 
+              className="flex-1 bg-[#F0F0F0] rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2D3191] text-black"
             />
             <button 
               onClick={handleSend}

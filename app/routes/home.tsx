@@ -72,34 +72,47 @@ type Destination = {
   ideal_days: string;
 };
 
-// Expanded to 18 Destinations including CUSMA
+// FULL LIST: 18 INDIA + 18 INTERNATIONAL = 36 TOTAL
 const allDestinations: Destination[] = [
-  // --- INDIA (6) ---
+  // --- 18 INDIA ---
   { name: "Jammu & Kashmir", descriptor: "Heaven on Earth", image: "https://images.unsplash.com/photo-1632231065530-f5fd55c62846?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Experience the magic of Dal Lake and snow-capped Gulmarg.", best_time: "Apr - Oct", ideal_days: "6 Days" },
   { name: "Kerala", descriptor: "God's Own Country", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Tranquil backwaters, misty tea gardens, and authentic Ayurveda.", best_time: "Sep - Mar", ideal_days: "6 Days" },
   { name: "Andaman", descriptor: "Blue Waters", image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800", category: "beaches", region: "india", desc_short: "Pristine beaches, world-class scuba diving, and history.", best_time: "Oct - May", ideal_days: "6 Days" },
   { name: "Ladakh", descriptor: "High Passes", image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800", category: "adventure", region: "india", desc_short: "Rugged mountains, crystal blue lakes, and ancient monasteries.", best_time: "May - Sep", ideal_days: "7 Days" },
   { name: "Goa", descriptor: "Sun & Sand", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800", category: "beaches", region: "india", desc_short: "Portuguese heritage, vibrant nightlife, and relaxed beaches.", best_time: "Nov - Feb", ideal_days: "4 Days" },
   { name: "Rajasthan", descriptor: "Royal Heritage", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800", category: "culture", region: "india", desc_short: "Land of Kings, grand palaces, and desert safaris.", best_time: "Oct - Mar", ideal_days: "7 Days" },
+  { name: "Gujarat", descriptor: "Culture & Rann", image: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=80&w=800", category: "culture", region: "india", desc_short: "The White Desert, Asiatic Lions, and vibrant festivals.", best_time: "Nov - Feb", ideal_days: "5 Days" },
+  { name: "Madhya Pradesh", descriptor: "Heart of India", image: "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=800", category: "adventure", region: "india", desc_short: "Tiger reserves, ancient temples of Khajuraho, and forts.", best_time: "Oct - Mar", ideal_days: "6 Days" },
+  { name: "Uttar Pradesh", descriptor: "Spiritual Heritage", image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800", category: "culture", region: "india", desc_short: "The Taj Mahal, spiritual Varanasi, and historic Lucknow.", best_time: "Oct - Mar", ideal_days: "5 Days" },
+  { name: "Himachal", descriptor: "Snow Abode", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800", category: "adventure", region: "india", desc_short: "Pine forests, apple orchards, and snowy peaks of Manali.", best_time: "Mar - Jun", ideal_days: "7 Days" },
+  { name: "Meghalaya", descriptor: "Cloud Abode", image: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=80&w=800", category: "adventure", region: "india", desc_short: "Living root bridges, waterfalls, and the cleanest village.", best_time: "Oct - May", ideal_days: "5 Days" },
+  { name: "Sikkim", descriptor: "Himalayan Gem", image: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?q=80&w=800", category: "honeymoon", region: "india", desc_short: "Views of Kanchenjunga, monasteries, and frozen lakes.", best_time: "Mar - Jun", ideal_days: "6 Days" },
+  { name: "Uttarakhand", descriptor: "Land of Gods", image: "https://images.unsplash.com/photo-1589136777351-94344812280a?q=80&w=800", category: "adventure", region: "india", desc_short: "Rishikesh rafting, Nainital lakes, and Jim Corbett wildlife.", best_time: "Mar - Jun", ideal_days: "6 Days" },
+  { name: "Karnataka", descriptor: "Heritage & Hills", image: "https://images.unsplash.com/photo-1582555620953-b413054c2596?q=80&w=800", category: "culture", region: "india", desc_short: "Ancient Hampi ruins, Coorg coffee estates, and Mysore Palace.", best_time: "Oct - Mar", ideal_days: "6 Days" },
+  { name: "Tamil Nadu", descriptor: "Temple State", image: "https://images.unsplash.com/photo-1582510003544-bea4e1e9d571?q=80&w=800", category: "culture", region: "india", desc_short: "Great Living Chola Temples, Ooty hills, and Chennai coast.", best_time: "Nov - Feb", ideal_days: "6 Days" },
+  { name: "Pondicherry", descriptor: "French Vibes", image: "https://images.unsplash.com/photo-1616053678083-d3434191c015?q=80&w=800", category: "beaches", region: "india", desc_short: "French colonial architecture, Promenade beach, and Auroville.", best_time: "Oct - Mar", ideal_days: "4 Days" },
+  { name: "West Bengal", descriptor: "Tea & Culture", image: "https://images.unsplash.com/photo-1571679352932-f32734a3628e?q=80&w=800", category: "culture", region: "india", desc_short: "Darjeeling tea gardens, Kolkata heritage, and Sundarbans.", best_time: "Oct - Mar", ideal_days: "5 Days" },
+  { name: "Odisha", descriptor: "Soul of India", image: "https://images.unsplash.com/photo-1629215037478-f6859dc0594f?q=80&w=800", category: "culture", region: "india", desc_short: "Jagannath Temple, Konark Sun Temple, and Chilika Lake.", best_time: "Oct - Mar", ideal_days: "5 Days" },
 
-  // --- INTERNATIONAL (12) ---
-  // CUSMA
+  // --- 18 INTERNATIONAL ---
   { name: "United States", descriptor: "The American Dream", image: "https://images.unsplash.com/photo-1550565118-3a1498d308cd?q=80&w=800", category: "cities", region: "international", desc_short: "Times Square, Grand Canyon, and Hollywood glam.", best_time: "All Year", ideal_days: "10 Days" },
   { name: "Canada", descriptor: "Nature's Glory", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800", category: "adventure", region: "international", desc_short: "Banff National Park, Niagara Falls, and vibrant Toronto.", best_time: "May - Oct", ideal_days: "9 Days" },
   { name: "Mexico", descriptor: "Fiesta & Beach", image: "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?q=80&w=800", category: "beaches", region: "international", desc_short: "Mayan ruins, Tulum beaches, and delicious tacos.", best_time: "Dec - Apr", ideal_days: "8 Days" },
-  
-  // Europe
   { name: "United Kingdom", descriptor: "Royalty & History", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800", category: "cities", region: "international", desc_short: "London icons, Scottish highlands, and Harry Potter magic.", best_time: "Apr - Sep", ideal_days: "7 Days" },
   { name: "Switzerland", descriptor: "Alpine Dream", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Snow-capped peaks, scenic trains, and chocolates.", best_time: "Apr - Oct", ideal_days: "7 Days" },
   { name: "France", descriptor: "Art & Romance", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800", category: "culture", region: "international", desc_short: "Parisian romance, Disneyland fun, and the Riviera.", best_time: "Apr - Oct", ideal_days: "7 Days" },
-  
-  // Asia & Others
+  { name: "Italy", descriptor: "La Dolce Vita", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800", category: "culture", region: "international", desc_short: "Venice canals, Roman history, and delicious food.", best_time: "Apr - Oct", ideal_days: "7 Days" },
+  { name: "Maldives", descriptor: "Island Paradise", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Overwater villas, turquoise lagoons, and pure luxury.", best_time: "Nov - Apr", ideal_days: "5 Days" },
+  { name: "Indonesia", descriptor: "Tropical Culture", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800", category: "adventure", region: "international", desc_short: "Bali's temples, beaches, and Nusa Penida adventures.", best_time: "Apr - Oct", ideal_days: "7 Days" },
+  { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800", category: "beaches", region: "international", desc_short: "Bangkok shopping, Phuket beaches, and island hopping.", best_time: "Nov - Apr", ideal_days: "7 Days" },
+  { name: "Vietnam", descriptor: "Timeless Charm", image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800", category: "adventure", region: "international", desc_short: "Ha Long Bay cruise, Hoi An lanterns, and street food.", best_time: "Oct - Apr", ideal_days: "7 Days" },
+  { name: "Dubai (UAE)", descriptor: "Future Now", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800", category: "cities", region: "international", desc_short: "Skyscrapers, desert safaris, and luxury shopping.", best_time: "Oct - Apr", ideal_days: "6 Days" },
+  { name: "Singapore", descriptor: "Urban Garden", image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=800", category: "cities", region: "international", desc_short: "Gardens by the Bay, Sentosa Island, and cultural mix.", best_time: "All Year", ideal_days: "5 Days" },
+  { name: "Japan", descriptor: "Tradition & Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800", category: "culture", region: "international", desc_short: "Cherry blossoms, Mt. Fuji, and neon-lit Tokyo.", best_time: "Mar - May", ideal_days: "7 Days" },
+  { name: "Australia", descriptor: "Great Outback", image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?q=80&w=800", category: "adventure", region: "international", desc_short: "Sydney Opera House, Gold Coast surf, and kangaroos.", best_time: "Sep - May", ideal_days: "7 Days" },
   { name: "Turkey", descriptor: "East Meets West", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=800", category: "culture", region: "international", desc_short: "Hot air balloons in Cappadocia and Istanbul's bazaars.", best_time: "Apr - May", ideal_days: "8 Days" },
   { name: "Greece", descriptor: "Ancient & Blue", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=800", category: "honeymoon", region: "international", desc_short: "Santorini sunsets, Mykonos parties, and Athens history.", best_time: "May - Oct", ideal_days: "7 Days" },
   { name: "South Africa", descriptor: "Safari & Sea", image: "https://images.unsplash.com/photo-1553913861-c0fdd65522a5?q=80&w=800", category: "adventure", region: "international", desc_short: "Big 5 Safari, Cape Town sights, and wine tasting.", best_time: "May - Sep", ideal_days: "9 Days" },
-  { name: "Dubai (UAE)", descriptor: "Future Now", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800", category: "cities", region: "international", desc_short: "Skyscrapers, desert safaris, and luxury shopping.", best_time: "Oct - Apr", ideal_days: "6 Days" },
-  { name: "Thailand", descriptor: "Beaches & Smiles", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=800", category: "beaches", region: "international", desc_short: "Bangkok shopping, Phuket beaches, and island hopping.", best_time: "Nov - Apr", ideal_days: "7 Days" },
-  { name: "Japan", descriptor: "Tradition & Future", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800", category: "culture", region: "international", desc_short: "Cherry blossoms, Mt. Fuji, and neon-lit Tokyo.", best_time: "Mar - May", ideal_days: "7 Days" },
 ];
 
 const categories = ["All", "Beaches", "Cities", "Adventure", "Honeymoon", "Culture"];
@@ -414,7 +427,7 @@ function DestinationsPopup({ onClose, onPlan }: { onClose: () => void, onPlan: (
         <div className="flex items-center gap-4">
             <h3 className="text-xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>All Destinations</h3>
             
-            {/* NEW: Explicit Back Button */}
+            {/* Back Button */}
             <button 
                 onClick={onClose}
                 className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-100 text-[#1F2328] rounded-full text-sm font-bold hover:bg-gray-200 transition-colors"
@@ -549,10 +562,9 @@ function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // --------------------------------------------------------
-  // 🔑 IMPORTANT: REPLACE WITH YOUR GOOGLE GEMINI API KEY
-  // Get one here: https://aistudio.google.com/app/apikey
+  // 🔑 API Key provided by user
   // --------------------------------------------------------
-  const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+  const GEMINI_API_KEY = "AIzaSyAseoa-cPfc1cDhSg_DdbEtkPW5WOtRJOE"; 
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -567,6 +579,7 @@ function ChatWidget() {
 
     try {
       // Direct call to Gemini API for real-time response
+      // Using 'generativelanguage.googleapis.com' which is standard for AI Studio keys
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
@@ -597,7 +610,7 @@ function ChatWidget() {
         aiText = data.candidates[0].content.parts[0].text;
       } else if (data.error) {
          console.error("Gemini API Error:", data.error);
-         aiText = "Please configure your API Key in home.tsx to enable the AI chat.";
+         aiText = "I am currently undergoing maintenance. Please contact Kirti directly!";
       }
 
       setMessages(prev => [...prev, { role: 'ai', text: aiText }]);

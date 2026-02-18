@@ -551,7 +551,7 @@ function ContactSection({ prefilledDestination }: { prefilledDestination: string
   );
 }
 
-// --- UPDATED AI CHATBOT (REAL TIME) ---
+// --- SMART AI CHATBOT (WITH FALLBACK) ---
 function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
@@ -562,13 +562,28 @@ function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // --------------------------------------------------------
-  // 🔑 API Key provided by user
+  // 🔑 KEY
   // --------------------------------------------------------
   const GEMINI_API_KEY = "AIzaSyAseoa-cPfc1cDhSg_DdbEtkPW5WOtRJOE"; 
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isTyping, isOpen]);
+
+  // --- LOCAL FALLBACK LOGIC ---
+  const getLocalResponse = (text: string) => {
+    const lower = text.toLowerCase();
+    if (lower.includes("book") || lower.includes("reserve") || lower.includes("price") || lower.includes("cost")) {
+      return "For bookings and packages, please fill out the 'Plan My Trip' form below or contact Kirti directly at +91 9924399335 for the best rates!";
+    }
+    if (lower.includes("bali") || lower.includes("indonesia")) {
+      return "Bali is a wonderful choice! We have special packages for beaches, temples, and Nusa Penida tours. Shall I guide you to our enquiry form?";
+    }
+    if (lower.includes("cancel") || lower.includes("refund")) {
+      return "Cancellation policies vary by airline and hotel. Please reach out to our support team on WhatsApp for immediate assistance with existing bookings.";
+    }
+    return "That sounds like a great plan! To get you the best personalized itinerary, could you please share your details in the enquiry form below? Kirti will get back to you personally.";
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -578,45 +593,32 @@ function ChatWidget() {
     setIsTyping(true);
 
     try {
-      // Direct call to Gemini API for real-time response
-      // Using 'generativelanguage.googleapis.com' which is standard for AI Studio keys
+      // 1. Try API Call
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `System: You are 'Ask Kirti', a helpful and polite travel assistant for 'The Nomads Co.'. 
-                         Your scope is strictly restricted to travel planning, bookings, destinations (India/International), and general travel advice. 
-                         If a user asks about code, politics, or non-travel topics, politely decline and steer them back to travel. 
-                         Keep answers concise (under 3 sentences) and encouraging. 
-                         User: ${userMsg}`
-                }
-              ]
-            }
-          ]
+          contents: [{ parts: [{ text: `System: You are 'Ask Kirti', a polite travel assistant for 'The Nomads Co.'. Keep answers under 3 sentences. User: ${userMsg}` }] }]
         })
       });
 
       const data = await response.json();
-      
-      let aiText = "I'm having a little trouble connecting right now. Please try again or call us directly!";
-      
-      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
-        aiText = data.candidates[0].content.parts[0].text;
-      } else if (data.error) {
-         console.error("Gemini API Error:", data.error);
-         aiText = "I am currently undergoing maintenance. Please contact Kirti directly!";
-      }
 
-      setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
+      // 2. Check for API Errors or success
+      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+         const aiText = data.candidates[0].content.parts[0].text;
+         setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
+      } else {
+         // API returned an error object (e.g. maintenance, quota, safety) -> USE FALLBACK
+         console.warn("AI API Error, switching to fallback:", data);
+         const fallbackText = getLocalResponse(userMsg);
+         setMessages(prev => [...prev, { role: 'ai', text: fallbackText }]);
+      }
     } catch (error) {
-      console.error("Chat Error", error);
-      setMessages(prev => [...prev, { role: 'ai', text: "I seem to be offline. Please check your internet connection." }]);
+      // 3. Network/Fetch Error -> USE FALLBACK
+      console.error("Network Error, switching to fallback", error);
+      const fallbackText = getLocalResponse(userMsg);
+      setMessages(prev => [...prev, { role: 'ai', text: fallbackText }]);
     } finally {
       setIsTyping(false);
     }

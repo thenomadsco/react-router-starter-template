@@ -659,11 +659,53 @@ export default function Home() {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 bg-white/95 backdrop-blur-md z-[60] flex flex-col items-center justify-center gap-8 px-6">
-            <button onClick={() => scrollToSection("about")} className="text-xl font-semibold">About</button>
-            <button onClick={() => scrollToSection("destinations")} className="text-xl font-semibold">Destinations</button>
-            <button onClick={() => scrollToSection("reviews")} className="text-xl font-semibold">Reviews</button>
-            <button onClick={() => scrollToSection("contact")} className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full">Plan My Trip</button>
+          <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6">
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute top-6 right-6 text-3xl font-light text-gray-900"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col items-center gap-8">
+              <button
+                onClick={() => {
+                  scrollToSection("about");
+                  setIsMenuOpen(false);
+                }}
+                className="text-2xl font-semibold text-gray-900"
+              >
+                About
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("destinations");
+                  setIsMenuOpen(false);
+                }}
+                className="text-2xl font-semibold text-gray-900"
+              >
+                Destinations
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("reviews");
+                  setIsMenuOpen(false);
+                }}
+                className="text-2xl font-semibold text-gray-900"
+              >
+                Reviews
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("contact");
+                  setIsMenuOpen(false);
+                }}
+                className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors"
+              >
+                Plan My Trip
+              </button>
+            </div>
           </div>
         )}
       </nav>
@@ -964,7 +1006,7 @@ export default function Home() {
       </section>
 
       {/* Footer - Updated for better contrast */}
-      <footer className="bg-black text-gray-200 py-16">
+      <footer className="relative z-10 bg-black text-white py-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">

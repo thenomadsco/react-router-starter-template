@@ -40,7 +40,7 @@ function SlidersHorizontal(props: any) { return (<IconBase {...props}><line x1="
 function Shield(props: any) { return (<IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /></IconBase>); }
 function Heart(props: any) { return (<IconBase {...props}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></IconBase>); }
 
-// --- HELPER COMPONENTS (With Types) ---
+// --- HELPER COMPONENTS ---
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string, alt: string, className?: string, priority?: boolean }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -98,9 +98,9 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
 
 // --- DATASETS ---
 const heroImages = [
-  { url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80", label: "Taj Mahal, India" },
-  { url: "https://images.unsplash.com/photo-1613395933344-8691eb5477e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80", label: "Santorini, Greece" },
-  { url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80", label: "Eiffel Tower, Paris" }
+  { url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80", label: "Taj Mahal, India" },
+  { url: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80", label: "Santorini, Greece" }, // Corrected Santorini
+  { url: "https://images.unsplash.com/photo-1543305113-562a1975eec3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80", label: "Eiffel Tower, Paris" } // Corrected Eiffel Tower
 ];
 
 const keyServices = [
@@ -117,12 +117,12 @@ type Destination = { id: number; title: string; category: string; image: string;
 const destinations: Destination[] = [
   // International
   { id: 1, title: "Bali, Indonesia", category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80", tags: ["Tropical", "Beaches", "Culture"], description: "Island of Gods with serene beaches and vibrant culture." },
-  { id: 2, title: "Maldives", category: "International", image: "https://images.unsplash.com/photo-1514282401047-d79aa23f5e2b?auto=format&fit=crop&w=800&q=80", tags: ["Honeymoon", "Luxury", "Beaches"], description: "Overwater villas and crystal clear turquoise lagoons." },
+  { id: 2, title: "Maldives", category: "International", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=80", tags: ["Honeymoon", "Luxury", "Beaches"], description: "Overwater villas and crystal clear turquoise lagoons." }, // Corrected Maldives
   { id: 3, title: "Dubai, UAE", category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80", tags: ["Luxury", "City", "Desert"], description: "Futuristic architecture, luxury shopping, and desert safaris." },
   { id: 4, title: "Singapore", category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80", tags: ["City", "Family", "Modern"], description: "A blend of nature and modernity in a global metropolis." },
   { id: 5, title: "Thailand", category: "International", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "Culture", "Nightlife"], description: "Vibrant street life, ornate temples, and tropical beaches." },
   { id: 6, title: "Vietnam", category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Culture", "Food"], description: "Bustling cities, serene limestone islands, and rich history." },
-  { id: 7, title: "Sri Lanka", category: "International", image: "https://images.unsplash.com/photo-1586052556237-3039b4cb8944?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Wildlife", "Beaches"], description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
+  { id: 7, title: "Sri Lanka", category: "International", image: "https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Wildlife", "Beaches"], description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." }, // Corrected Sri Lanka
   { id: 8, title: "Bhutan", category: "International", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Culture", "Peace"], description: "The last great Himalayan kingdom, shrouded in mystery." },
   { id: 9, title: "Europe (Schengen)", category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80", tags: ["History", "Culture", "Romance"], description: "Explore diverse cultures, history, and architecture across Europe." },
   { id: 10, title: "Australia", category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=800&q=80", tags: ["Adventure", "Wildlife", "Beaches"], description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
@@ -130,29 +130,29 @@ const destinations: Destination[] = [
   { id: 12, title: "Japan", category: "International", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Modern", "Food"], description: "A seamless blend of ancient traditions and cutting-edge technology." },
   { id: 13, title: "South Korea", category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "City", "Food"], description: "Dynamic cities, ancient palaces, and trendy pop culture." },
   { id: 14, title: "Turkey", category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80", tags: ["History", "Culture", "Landscapes"], description: "Where East meets West, featuring rich history and unique landscapes." },
-  { id: 15, title: "USA", category: "International", image: "https://images.unsplash.com/photo-1503431374360-f18ebeb8746c?auto=format&fit=crop&w=800&q=80", tags: ["City", "Nature", "Diverse"], description: "Diverse experiences from bustling metropolises to vast national parks." },
-  { id: 16, title: "South Africa", category: "International", image: "https://images.unsplash.com/photo-1516426122078-c23e7631985c?auto=format&fit=crop&w=800&q=80", tags: ["Wildlife", "Adventure", "Nature"], description: "Safari adventures, stunning coastlines, and vibrant culture." },
+  { id: 15, title: "USA", category: "International", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=800&q=80", tags: ["City", "Nature", "Diverse"], description: "Diverse experiences from bustling metropolises to vast national parks." }, // Corrected USA
+  { id: 16, title: "South Africa", category: "International", image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=800&q=80", tags: ["Wildlife", "Adventure", "Nature"], description: "Safari adventures, stunning coastlines, and vibrant culture." }, // Corrected South Africa
   { id: 17, title: "Kenya", category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=800&q=80", tags: ["Wildlife", "Safari", "Nature"], description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, title: "Tanzania", category: "International", image: "https://images.unsplash.com/photo-1516026672322-bc52d61a5535?auto=format&fit=crop&w=800&q=80", tags: ["Wildlife", "Safari", "Beaches"], description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+  { id: 18, title: "Tanzania", category: "International", image: "https://images.unsplash.com/photo-1516026672322-bc52d61a5535?auto=format&fit=crop&w=800&q=80", tags: ["Wildlife", "Safari", "Beaches"], description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." }, // Corrected Tanzania
   // India
   { id: 19, title: "Kashmir", category: "India", image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Nature", "Romance"], description: "Paradise on Earth with stunning valleys and Dal Lake." },
   { id: 20, title: "Leh-Ladakh", category: "India", image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=800&q=80", tags: ["Adventure", "Mountains", "Road Trip"], description: "Stark mountain landscapes, monasteries, and high passes." },
-  { id: 21, title: "Himachal Pradesh", category: "India", image: "https://images.unsplash.com/photo-1573644783262-71185f23470c?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Nature", "Adventure"], description: "Scenic hill stations, pine forests, and snow-capped peaks." },
-  { id: 22, title: "Uttarakhand", category: "India", image: "https://images.unsplash.com/photo-1593183842771-73d1364550c5?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Spiritual", "Nature"], description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
+  { id: 21, title: "Himachal Pradesh", category: "India", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Nature", "Adventure"], description: "Scenic hill stations, pine forests, and snow-capped peaks." }, // Corrected Himachal
+  { id: 22, title: "Uttarakhand", category: "India", image: "https://images.unsplash.com/photo-1589136777351-94344812280a?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Spiritual", "Nature"], description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." }, // Corrected Uttarakhand
   { id: 23, title: "Rajasthan", category: "India", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80", tags: ["History", "Culture", "Desert"], description: "Royal palaces, vibrant culture, and vast desert landscapes." },
   { id: 24, title: "Goa", category: "India", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "Nightlife", "Relaxation"], description: "Sun, sand, beaches, and a relaxed coastal vibe." },
   { id: 25, title: "Kerala", category: "India", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Backwaters", "Wellness"], description: "God's Own Country with tranquil backwaters and lush greenery." },
-  { id: 26, title: "Andaman Islands", category: "India", image: "https://images.unsplash.com/photo-1555660177-2e90c2884334?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "Islands", "Adventure"], description: "Pristine beaches, clear waters, and water sports." },
-  { id: 27, title: "North East India", category: "India", image: "https://images.unsplash.com/photo-1619609477623-902e7333c357?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Culture", "Offbeat"], description: "Unexplored beauty, tribal culture, and biodiversity." },
-  { id: 28, title: "Sikkim", category: "India", image: "https://images.unsplash.com/photo-1615459428680-e9942df16c6d?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Nature", "Monasteries"], description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
-  { id: 29, title: "Meghalaya", category: "India", image: "https://images.unsplash.com/photo-1605629672844-250d79c0ff7d?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Waterfalls", "Offbeat"], description: "Abode of Clouds, known for living root bridges and waterfalls." },
-  { id: 30, title: "Arunachal Pradesh", category: "India", image: "https://images.unsplash.com/photo-1622307862343-568731cb41d8?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Culture", "Adventure"], description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
-  { id: 31, title: "Karnataka", category: "India", image: "https://images.unsplash.com/photo-1600626333389-21377b3f1683?auto=format&fit=crop&w=800&q=80", tags: ["History", "Nature", "Culture"], description: "Heritage sites like Hampi, coffee plantations in Coorg." },
-  { id: 32, title: "Tamil Nadu", category: "India", image: "https://images.unsplash.com/photo-1582510003544-5d1454053607?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Temples", "Beaches"], description: "Land of temples, rich culture, and coastal beauty." },
-  { id: 33, title: "Pondicherry", category: "India", image: "https://images.unsplash.com/photo-1568521247052-61d971601883?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "French Colony", "Relaxation"], description: "A touch of French culture on the Indian coast." },
-  { id: 34, title: "West Bengal", category: "India", image: "https://images.unsplash.com/photo-1586673235975-b4b610529977?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "History", "Mountains"], description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, title: "Odisha", category: "India", image: "https://images.unsplash.com/photo-1597735487288-f85eb0d47c70?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Temples", "Beaches"], description: "Known for its ancient temples, beaches, and tribal culture." },
-  { id: 36, title: "Gujarat", category: "India", image: "https://images.unsplash.com/photo-1556916795-baf0a9058816?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Wildlife", "White Desert"], description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." }
+  { id: 26, title: "Andaman Islands", category: "India", image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "Islands", "Adventure"], description: "Pristine beaches, clear waters, and water sports." }, // Corrected Andaman
+  { id: 27, title: "North East India", category: "India", image: "https://images.unsplash.com/photo-1520612147326-880ea7bfa07e?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Culture", "Offbeat"], description: "Unexplored beauty, tribal culture, and biodiversity." }, // Corrected North East
+  { id: 28, title: "Sikkim", category: "India", image: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Nature", "Monasteries"], description: "Home to Kanchenjunga, scenic landscapes, and monasteries." }, // Corrected Sikkim
+  { id: 29, title: "Meghalaya", category: "India", image: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?auto=format&fit=crop&w=800&q=80", tags: ["Nature", "Waterfalls", "Offbeat"], description: "Abode of Clouds, known for living root bridges and waterfalls." }, // Corrected Meghalaya
+  { id: 30, title: "Arunachal Pradesh", category: "India", image: "https://images.unsplash.com/photo-1622307862343-568731cb41d8?auto=format&fit=crop&w=800&q=80", tags: ["Mountains", "Culture", "Adventure"], description: "Land of the Dawn-Lit Mountains with rich tribal heritage." }, // Corrected Arunachal
+  { id: 31, title: "Karnataka", category: "India", image: "https://images.unsplash.com/photo-1600626333389-21377b3f1683?auto=format&fit=crop&w=800&q=80", tags: ["History", "Nature", "Culture"], description: "Heritage sites like Hampi, coffee plantations in Coorg." }, // Corrected Karnataka
+  { id: 32, title: "Tamil Nadu", category: "India", image: "https://images.unsplash.com/photo-1582510003544-bea4e1e9d571?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Temples", "Beaches"], description: "Land of temples, rich culture, and coastal beauty." }, // Corrected Tamil Nadu
+  { id: 33, title: "Pondicherry", category: "India", image: "https://images.unsplash.com/photo-1616053678083-d3434191c015?auto=format&fit=crop&w=800&q=80", tags: ["Beaches", "French Colony", "Relaxation"], description: "A touch of French culture on the Indian coast." }, // Corrected Pondicherry
+  { id: 34, title: "West Bengal", category: "India", image: "https://images.unsplash.com/photo-1571679352932-f32734a3628e?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "History", "Mountains"], description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." }, // Corrected West Bengal
+  { id: 35, title: "Odisha", category: "India", image: "https://images.unsplash.com/photo-1601058268499-e52658b8ebf8?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Temples", "Beaches"], description: "Known for its ancient temples, beaches, and tribal culture." }, // Corrected Odisha
+  { id: 36, title: "Gujarat", category: "India", image: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?auto=format&fit=crop&w=800&q=80", tags: ["Culture", "Wildlife", "White Desert"], description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." } // Corrected Gujarat
 ];
 
 const testimonials = [
@@ -213,7 +213,7 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm border-b border-gray-100" : "bg-transparent py-6"}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm border-b border-gray-100" : "bg-white/50 backdrop-blur-sm py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
              <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto rounded-md shadow-sm" />
@@ -242,68 +242,65 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
-            <RevealOnScroll>
-              <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-8">
-                Your Next Great <br className="hidden md:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500">Adventure</span> Awaits.
-              </h1>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-lg mb-10">
-                Curating personalized, stress-free journeys for the modern explorer. Discover the world's most captivating destinations with expertly crafted itineraries.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <button onClick={() => scrollToSection("contact")} className="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center group">
-                  Start Planning <Calendar className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
-                </button>
-                <div className="flex items-center text-sm font-medium text-gray-500">
-                  <div className="flex -space-x-3 mr-4">
-                    {[1, 2, 3, 4].map((i) => (
-                      <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 ? "women" : "men"}/${30 + i}.jpg`} alt="User" className="w-10 h-10 rounded-full border-2 border-white" />
-                    ))}
-                  </div>
-                  <div>
-                    <div className="flex text-yellow-400">
-                      {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                    </div>
-                    <span className="text-gray-600">Trusted by 1000+ happy families</span>
-                  </div>
-                </div>
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll className="delay-200">
-              <div className="relative">
-                <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-[4/3] md:aspect-[16/9] lg:aspect-[4/3] bg-gray-100">
-                    {heroImages.map((img, index) => (
-                        <div key={index} className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${index === heroActiveIndex ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-                            <OptimizedImage src={img.url} alt={img.label} priority={index === 0} className="w-full h-full object-cover" />
-                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent">
-                                <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
-                                    <h3 className="text-2xl md:text-3xl font-bold">{img.label}</h3>
-                                </div>
-                             </div>
+      {/* Hero Section - Redesigned Edge-to-Edge Carousel */}
+      <section className="relative pt-[72px] md:pt-[88px] w-full bg-white">
+        {/* Full Width Carousel */}
+        <div className="w-full relative h-[50vh] md:h-[65vh] lg:h-[75vh] overflow-hidden">
+            {heroImages.map((img, index) => (
+                <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === heroActiveIndex ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
+                    <OptimizedImage src={img.url} alt={img.label} priority={index === 0} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60">
+                        <div className="absolute bottom-8 left-0 w-full flex justify-center text-white">
+                            <h3 className="text-xl md:text-3xl font-bold tracking-wide drop-shadow-md">{img.label}</h3>
                         </div>
-                    ))}
+                    </div>
                 </div>
-                <div className="flex justify-center mt-6 md:mt-8 space-x-4">
-                    {heroImages.map((img, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setHeroActiveIndex(index)}
-                            className={`relative px-4 py-2 text-sm md:text-base font-medium transition-all duration-300 ${index === heroActiveIndex ? "text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
-                        >
-                            {img.label.split(",")[0]}
-                            {index === heroActiveIndex && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-full"></span>}
-                        </button>
-                    ))}
+            ))}
+            
+            {/* Carousel Tabs/Indicators Overlay */}
+            <div className="absolute bottom-0 left-0 w-full z-20 flex justify-center pb-4 md:pb-6 space-x-2 md:space-x-4 bg-gradient-to-t from-black/80 to-transparent pt-10">
+                {heroImages.map((img, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setHeroActiveIndex(index)}
+                        className={`px-3 md:px-6 py-2 text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-300 rounded-full backdrop-blur-md ${index === heroActiveIndex ? "bg-white text-black" : "bg-black/30 text-white/80 hover:bg-black/50 hover:text-white"}`}
+                    >
+                        {img.label.split(",")[0]}
+                    </button>
+                ))}
+            </div>
+        </div>
+
+        {/* Hero Text Content Below Carousel */}
+        <div className="container mx-auto px-4 md:px-8 py-16 md:py-20 text-center relative z-10">
+          <RevealOnScroll>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight mb-6">
+              Your Next Great <br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500">Adventure</span> Awaits.
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-10">
+              Curating personalized, stress-free journeys for the modern explorer. Discover the world's most captivating destinations with expertly crafted itineraries.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <button onClick={() => scrollToSection("contact")} className="px-10 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center group">
+                Start Planning <Calendar className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
+              </button>
+              <div className="flex items-center text-sm font-medium text-gray-500 bg-gray-50/80 backdrop-blur-sm px-6 py-3 rounded-full border border-gray-100">
+                <div className="flex -space-x-3 mr-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 ? "women" : "men"}/${30 + i}.jpg`} alt="User" className="w-8 h-8 rounded-full border-2 border-white" />
+                  ))}
+                </div>
+                <div className="text-left">
+                  <div className="flex text-yellow-400">
+                    {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
+                  </div>
+                  <span className="text-gray-600 text-xs mt-0.5 block">Trusted by 1000+ families</span>
                 </div>
               </div>
-            </RevealOnScroll>
-          </div>
+            </div>
+          </RevealOnScroll>
         </div>
       </section>
 
@@ -513,13 +510,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-16">
+      {/* Footer - Updated for better contrast */}
+      <footer className="bg-black text-gray-200 py-16 border-t border-gray-800">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
               <span className="text-3xl font-bold text-white mb-6 block">The Nomads Co.</span>
-              <p className="text-gray-400 pr-6 leading-relaxed mb-8">Crafting unforgettable, personalized travel experiences. Your journey, our expertise. Let's explore the world together.</p>
+              <p className="text-gray-300 pr-6 leading-relaxed mb-8">Crafting unforgettable, personalized travel experiences. Your journey, our expertise. Let's explore the world together.</p>
               <div className="flex space-x-4">
                 <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Instagram className="w-5 h-5" /></a>
                 <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Facebook className="w-5 h-5" /></a>
@@ -528,7 +525,7 @@ export default function Home() {
             </div>
             <div>
               <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-3 font-medium text-gray-400">
                 <li><button onClick={() => scrollToSection("about")} className="hover:text-blue-400 transition-colors">About Us</button></li>
                 <li><button onClick={() => scrollToSection("destinations")} className="hover:text-blue-400 transition-colors">Destinations</button></li>
                 <li><button onClick={() => scrollToSection("reviews")} className="hover:text-blue-400 transition-colors">Reviews</button></li>
@@ -537,15 +534,15 @@ export default function Home() {
             </div>
              <div>
               <h4 className="text-lg font-bold text-white mb-6">Legal</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-3 font-medium text-gray-400">
                 <li><Link to="/privacypolicy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
-             <p className="text-sm text-gray-500 mt-4 md:mt-0 flex items-center gap-1">Made with <Heart className="w-4 h-4 text-red-500" /> in India</p>
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 font-medium">
+            <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
+             <p className="text-sm mt-4 md:mt-0 flex items-center gap-1">Made with <Heart className="w-4 h-4 text-red-500" /> in India</p>
           </div>
         </div>
       </footer>

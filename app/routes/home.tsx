@@ -299,23 +299,90 @@ const testimonials = [
       return undefined;
     };
 
+    const looksLikePhone = (s: string) => {
+      const digits = s.replace(/\D/g, "");
+      return digits.length >= 10;
+    };
+
+    const monthLike = (s: string) =>
+      /(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)/i.test(s);
+
     const validate = (key: typeof current.key, raw: string) => {
       const v = raw.trim();
+
       if (key === "intent") {
         const intent = parseIntent(v);
-        if (!intent) return { ok: false as const, err: "Type 1, 2, or 3 🙂" };
+        if (!intent) return { ok: false as const, err: "Type 1 for Enquiry, 2 for Change, or 3 for Cancel 🙂" };
         return { ok: true as const, value: intent };
       }
+
       if (key === "name") {
-        if (v.length < 2) return { ok: false as const, err: "Just your name (2+ letters) 🙂" };
+        // Block obvious non-name junk (numbers/URLs)
+        if (!/[a-zA-Z]/.test(v) || v.length < 2) {
+          return { ok: false as const, err: "That doesn’t look like a name — type your name (2+ letters) 🙂" };
+        }
         return { ok: true as const, value: v };
       }
+
       if (key === "phone") {
         const norm = normalizeNomadsPhone(v);
         const digits = norm.replace(/^\+/, "").replace(/\D/g, "");
         if (digits.length < 10) return { ok: false as const, err: "That phone looks short — re-check it?" };
+        // Avoid people pasting emails/words here
+        if (/[a-zA-Z]/.test(norm)) return { ok: false as const, err: "Phone number only here 🙂 (digits with optional +)" };
         return { ok: true as const, value: norm };
       }
+
+      if (key === "bookingRef") {
+        if (!v) return { ok: true as const, value: "" };
+        if (v.toLowerCase() === "na" || v.toLowerCase() === "n/a") return { ok: true as const, value: "NA" };
+
+        // Booking references are typically short alphanumeric strings
+        if (!/^[a-zA-Z0-9_-]{4,24}$/.test(v)) {
+          return {
+            ok: false as const,
+            err: "Booking ref should be 4–24 chars (letters/numbers, optional - or _). Or type NA.",
+          };
+        }
+        return { ok: true as const, value: v };
+      }
+
+      if (key === "destination") {
+        if (current.required && !v) return { ok: false as const, err: "Destination can’t be blank 🙂" };
+        if (looksLikePhone(v)) return { ok: false as const, err: "That looks like a phone number — type a destination name 🙂" };
+        if (!/[a-zA-Z]/.test(v) || v.length < 2) {
+          return { ok: false as const, err: "Type a destination name (e.g., Dubai / Bali / Kashmir) 🙂" };
+        }
+        // Keep it permissive but block pure digits
+        if (/^\d+$/.test(v)) return { ok: false as const, err: "Destination should be words, not just numbers 🙂" };
+        return { ok: true as const, value: v };
+      }
+
+      if (key === "dates") {
+        if (current.required && !v) return { ok: false as const, err: "Dates can’t be blank 🙂" };
+        if (looksLikePhone(v)) return { ok: false as const, err: "That looks like a phone number — type dates (e.g., 10–14 Mar) 🙂" };
+
+        // Accept "10-14 Mar", "March 10", "10/03/2026", "next weekend", etc.
+        const hasDigit = /\d/.test(v);
+        const hasDatePunct = /[-/]/.test(v);
+        const hasRelative = /(today|tomorrow|weekend|next|this|coming)/i.test(v);
+
+        if (!(monthLike(v) || hasRelative || (hasDigit && (hasDatePunct || v.length >= 4)))) {
+          return { ok: false as const, err: "Give dates like “10–14 Mar”, “March 10”, or “next weekend” 🙂" };
+        }
+        return { ok: true as const, value: v };
+      }
+
+      if (key === "details") {
+        if (current.required && !v) return { ok: false as const, err: "Quick one — please add a short message 🙂" };
+        const cleaned = v.replace(/\s+/g, " ").trim();
+        if (cleaned.length < 6) return { ok: false as const, err: "A bit more detail please (at least ~6 characters) 🙂" };
+        if (/^(hi|hello|hey|test)$/i.test(cleaned)) {
+          return { ok: false as const, err: "Tell me what you want (enquiry/change/cancel details) 🙂" };
+        }
+        return { ok: true as const, value: v };
+      }
+
       if (current.required && !v) return { ok: false as const, err: "Quick one — this can’t be blank 🙂" };
       return { ok: true as const, value: v || "" };
     };
@@ -364,7 +431,8 @@ const testimonials = [
             aria-label="Open chat"
             type="button"
           >
-            💬 Chat
+            <MessageCircle className="w-6 h-6" />
+            <span className="hidden sm:inline">Chat</span>
           </button>
         ) : (
           <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden border border-black/10">
@@ -931,20 +999,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      {/* Floating WhatsApp CTA */}
       <NomadsChatbot />
-
-      <a
-        href="https://wa.me/919924399335?text=Hi%20The%20Nomads%20Co%20%E2%80%94%20I%27d%20like%20to%20plan%20a%20trip!"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-3 rounded-full bg-green-600 text-white font-extrabold px-5 py-4 shadow-2xl hover:-translate-y-1 hover:bg-green-700 transition-all focus:outline-none focus:ring-4 focus:ring-green-200"
-      >
-        <MessageCircle className="w-6 h-6" />
-        <span className="hidden sm:inline">WhatsApp</span>
-      </a>
-
-    </div>
+</div>
   );
 }

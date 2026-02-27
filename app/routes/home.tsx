@@ -122,12 +122,12 @@ const heroImages = [
 ];
 
 const keyServices = [
-    { icon: <Plane className="w-8 h-8 text-blue-600" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
-    { icon: <MapIcon className="w-8 h-8 text-blue-600" />, title: "End-to-End Planning", description: "From itinerary creation to returning home safely." },
-    { icon: <Shield className="w-8 h-8 text-blue-600" />, title: "Verified Premium Stays", description: "Handpicked 4 & 5 star accommodations for comfort." },
-    { icon: <Headphones className="w-8 h-8 text-blue-600" />, title: "24/7 On-Trip Support", description: "Always just a message away whenever you need us." },
-    { icon: <Compass className="w-8 h-8 text-blue-600" />, title: "Curated Local Experiences", description: "Authentic activities beyond standard tourist traps." },
-    { icon: <SlidersHorizontal className="w-8 h-8 text-blue-600" />, title: "Flexible Itineraries", description: "Plans that adapt to your pace and preferences." }
+    { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
+    { icon: <MapIcon className="w-8 h-8 text-[#2D3191]" />, title: "End-to-End Planning", description: "From itinerary creation to returning home safely." },
+    { icon: <Shield className="w-8 h-8 text-[#2D3191]" />, title: "Verified Premium Stays", description: "Handpicked 4 & 5 star accommodations for comfort." },
+    { icon: <Headphones className="w-8 h-8 text-[#2D3191]" />, title: "24/7 On-Trip Support", description: "Always just a message away whenever you need us." },
+    { icon: <Compass className="w-8 h-8 text-[#2D3191]" />, title: "Curated Local Experiences", description: "Authentic activities beyond standard tourist traps." },
+    { icon: <SlidersHorizontal className="w-8 h-8 text-[#2D3191]" />, title: "Flexible Itineraries", description: "Plans that adapt to your pace and preferences." }
 ];
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string; };
@@ -632,8 +632,8 @@ export default function Home() {
       
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-50"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#EEF0FF] via-white to-[#E7F7EF] opacity-50"></div>
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#E6E8EF] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
@@ -647,10 +647,10 @@ export default function Home() {
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollToSection("about")} className="text-sm font-medium hover:text-blue-600 transition-colors">About</button>
-            <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium hover:text-blue-600 transition-colors">Destinations</button>
-            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium hover:text-blue-600 transition-colors">Reviews</button>
-            <button onClick={() => scrollToSection("contact")} className="px-6 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">Plan My Trip</button>
+            <button onClick={() => scrollToSection("about")} className="text-sm font-medium hover:text-[#2D3191] transition-colors">About</button>
+            <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium hover:text-[#2D3191] transition-colors">Destinations</button>
+            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium hover:text-[#2D3191] transition-colors">Reviews</button>
+            <button onClick={() => scrollToSection("contact")} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg">Plan My Trip</button>
           </div>
 
           <button className="md:hidden z-50 p-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
@@ -701,7 +701,7 @@ export default function Home() {
                   scrollToSection("contact");
                   setIsMenuOpen(false);
                 }}
-                className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors"
+                className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors"
               >
                 Plan My Trip
               </button>
@@ -789,7 +789,7 @@ export default function Home() {
       <section id="about" className="py-20 relative">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold tracking-wider mb-4">THE FOUNDER</span>
+            <span className="inline-block py-1 px-3 rounded-full bg-[#EEF0FF] text-[#2D3191] text-sm font-semibold tracking-wider mb-4">THE FOUNDER</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Meet Kirti Shah</h2>
           </RevealOnScroll>
 
@@ -802,13 +802,13 @@ export default function Home() {
               </div>
               <div className="flex items-center space-x-4">
                 <div className="h-px bg-gray-300 flex-grow"></div>
-                <span className="font-semibold text-2xl text-blue-600" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>Kirti Shah</span>
+                <span className="font-semibold text-2xl text-[#2D3191]" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>Kirti Shah</span>
                 <div className="h-px bg-gray-300 flex-grow"></div>
               </div>
             </RevealOnScroll>
             <RevealOnScroll className="order-1 md:order-2 delay-200">
               <div className="relative group">
-                <div className="absolute inset-0 bg-blue-200 rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
+                <div className="absolute inset-0 bg-[#E6E8EF] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
                 <img src={kirtiProfile} alt="Kirti Shah" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
               </div>
             </RevealOnScroll>
@@ -820,14 +820,14 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 md:px-8">
             <RevealOnScroll className="text-center mb-16">
-                <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">WHAT WE DO</span>
+                <span className="inline-block py-1 px-3 rounded-full bg-[#EEF0FF] text-[#2D3191] text-sm font-semibold tracking-wider mb-4">WHAT WE DO</span>
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Key Services Offered</h2>
             </RevealOnScroll>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((service, index) => (
                 <RevealOnScroll key={index} className={`delay-${index * 100}`}>
                   <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full border border-gray-100">
-                      <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">{service.icon}</div>
+                      <div className="bg-[#EEF0FF] w-16 h-16 rounded-xl flex items-center justify-center mb-6">{service.icon}</div>
                       <h3 className="text-xl font-bold mb-3">{service.title}</h3>
                       <p className="text-gray-600 leading-relaxed">{service.description}</p>
                   </div>
@@ -842,13 +842,13 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-8">
             <RevealOnScroll>
                 <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-teal-700 opacity-90 z-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#2D3191] to-teal-700 opacity-90 z-10"></div>
                     <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80" alt="World Travel" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-white">
                         <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
                         <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">Explore Trending Destinations</h2>
-                        <p className="text-lg md:text-xl text-blue-100 max-w-2xl mb-8">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
-                        <button className="px-8 py-3 bg-white text-blue-700 font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
+                        <p className="text-lg md:text-xl text-[#EEF0FF] max-w-2xl mb-8">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
+                        <button className="px-8 py-3 bg-white text-[#242875] font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
                             Discover Now <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform"/>
                         </button>
                     </div>
@@ -869,7 +869,7 @@ export default function Home() {
             <div className="flex justify-center p-6 bg-white z-10 border-b border-gray-100 shadow-sm">
               <div className="inline-flex bg-gray-100 rounded-full p-1.5">
                 {["International", "India"].map((category) => (
-                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${activeCategory === category ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
+                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${activeCategory === category ? "bg-white text-[#2D3191] shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
                     {category} <span className="ml-2 text-xs opacity-70">({destinations.filter((d) => d.category === category).length})</span>
                   </button>
                 ))}
@@ -887,9 +887,9 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-5">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">{dest.title}</h4>
+                      <h4 className="text-xl font-bold mb-2 group-hover:text-[#2D3191] transition-colors">{dest.title}</h4>
                       <p className="text-gray-600 text-sm line-clamp-2">{dest.description}</p>
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-[#2D3191] font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                         <span>Quick View & Plan</span><ChevronDown className="w-4 h-4 -rotate-90" />
                       </div>
                     </div>
@@ -902,10 +902,10 @@ export default function Home() {
       )}
 
       {/* Testimonials */}
-      <section id="reviews" className="py-24 relative bg-blue-50/50">
+      <section id="reviews" className="py-24 relative bg-[#EEF0FF]/50">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">TESTIMONIALS</span>
+            <span className="inline-block py-1 px-3 rounded-full bg-[#EEF0FF] text-[#2D3191] text-sm font-semibold tracking-wider mb-4">TESTIMONIALS</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Loved by Travelers</h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -917,7 +917,7 @@ export default function Home() {
                   </div>
                   <p className="text-gray-700 leading-relaxed italic mb-8 flex-grow">"{testimonial.text}"</p>
                   <div className="flex items-center">
-                    <img src={testimonial.image} alt={testimonial.name} className="w-14 h-14 rounded-full mr-4 object-cover border-2 border-blue-100" />
+                    <img src={testimonial.image} alt={testimonial.name} className="w-14 h-14 rounded-full mr-4 object-cover border-2 border-[#EEF0FF]" />
                     <div><h4 className="font-bold">{testimonial.name}</h4><p className="text-gray-500 text-sm">{testimonial.location}</p></div>
                   </div>
                 </div>
@@ -931,7 +931,7 @@ export default function Home() {
       <section id="contact" className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-16">
-             <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold tracking-wider mb-4">GET IN TOUCH</span>
+             <span className="inline-block py-1 px-3 rounded-full bg-[#EEF0FF] text-[#2D3191] text-sm font-semibold tracking-wider mb-4">GET IN TOUCH</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Start Your Journey</h2>
             <p className="text-xl text-gray-600 mt-4 max-w-2xl mx-auto">Tell us about your dream trip, and we'll make it a reality.</p>
           </RevealOnScroll>
@@ -943,17 +943,17 @@ export default function Home() {
                 <p className="text-gray-600 mb-8 leading-relaxed">Reach out directly or fill the form. We're eager to hear from you!</p>
               </div>
               <div className="space-y-6">
-                <a href="tel:+919924399335" className="flex items-center p-4 rounded-2xl hover:bg-blue-50 transition-colors group">
-                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"><Phone className="w-5 h-5" /></div>
-                  <div><p className="text-sm text-gray-500 font-medium">Call / WhatsApp</p><p className="text-lg font-bold group-hover:text-blue-600 transition-colors">+91 9924399335</p></div>
+                <a href="tel:+919924399335" className="flex items-center p-4 rounded-2xl hover:bg-[#EEF0FF] transition-colors group">
+                  <div className="w-12 h-12 bg-[#EEF0FF] text-[#2D3191] rounded-xl flex items-center justify-center mr-4 group-hover:bg-[#2D3191] group-hover:text-white transition-colors"><Phone className="w-5 h-5" /></div>
+                  <div><p className="text-sm text-gray-500 font-medium">Call / WhatsApp</p><p className="text-lg font-bold group-hover:text-[#2D3191] transition-colors">+91 9924399335</p></div>
                 </a>
-                <a href="mailto:thenomadsco@gmail.com" className="flex items-center p-4 rounded-2xl hover:bg-blue-50 transition-colors group">
-                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"><Mail className="w-5 h-5" /></div>
-                  <div><p className="text-sm text-gray-500 font-medium">Email Us</p><p className="text-lg font-bold group-hover:text-blue-600 transition-colors">thenomadsco@gmail.com</p></div>
+                <a href="mailto:thenomadsco@gmail.com" className="flex items-center p-4 rounded-2xl hover:bg-[#EEF0FF] transition-colors group">
+                  <div className="w-12 h-12 bg-[#EEF0FF] text-[#2D3191] rounded-xl flex items-center justify-center mr-4 group-hover:bg-[#2D3191] group-hover:text-white transition-colors"><Mail className="w-5 h-5" /></div>
+                  <div><p className="text-sm text-gray-500 font-medium">Email Us</p><p className="text-lg font-bold group-hover:text-[#2D3191] transition-colors">thenomadsco@gmail.com</p></div>
                 </a>
-                <div className="flex items-center p-4 rounded-2xl hover:bg-blue-50 transition-colors group">
-                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"><MapPin className="w-5 h-5" /></div>
-                  <div><p className="text-sm text-gray-500 font-medium">Location</p><p className="text-lg font-bold group-hover:text-blue-600 transition-colors">Vadodara, Gujarat</p></div>
+                <div className="flex items-center p-4 rounded-2xl hover:bg-[#EEF0FF] transition-colors group">
+                  <div className="w-12 h-12 bg-[#EEF0FF] text-[#2D3191] rounded-xl flex items-center justify-center mr-4 group-hover:bg-[#2D3191] group-hover:text-white transition-colors"><MapPin className="w-5 h-5" /></div>
+                  <div><p className="text-sm text-gray-500 font-medium">Location</p><p className="text-lg font-bold group-hover:text-[#2D3191] transition-colors">Vadodara, Gujarat</p></div>
                 </div>
               </div>
             </RevealOnScroll>
@@ -971,25 +971,25 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                    <input type="text" id="name" name="name" value={formValues.name} onChange={(e) => handleFormChange("name", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="John Doe" />
+                    <input type="text" id="name" name="name" value={formValues.name} onChange={(e) => handleFormChange("name", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2D3191] outline-none transition-all" placeholder="John Doe" />
                   </div>
                   <div>
                     <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" value={formValues.phone} onChange={(e) => handleFormChange("phone", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="+91 98765 43210" />
+                    <input type="tel" id="phone" name="phone" value={formValues.phone} onChange={(e) => handleFormChange("phone", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2D3191] outline-none transition-all" placeholder="+91 98765 43210" />
                   </div>
                 </div>
                 <div className="mb-6">
                   <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                  <input type="email" id="email" name="email" value={formValues.email} onChange={(e) => handleFormChange("email", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="john@example.com" />
+                  <input type="email" id="email" name="email" value={formValues.email} onChange={(e) => handleFormChange("email", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2D3191] outline-none transition-all" placeholder="john@example.com" />
                 </div>
                 <div className="mb-6">
                   <label htmlFor="destination" className="block text-sm font-bold text-gray-700 mb-2">Destination in Mind</label>
-                  <input type="text" id="destination" name="destination" defaultValue={selectedDestination} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="e.g., Maldives, Kerala, Europe..." />
+                  <input type="text" id="destination" name="destination" defaultValue={selectedDestination} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2D3191] outline-none transition-all" placeholder="e.g., Maldives, Kerala, Europe..." />
                     {formErrors.destination && <p className="mt-2 text-sm font-semibold text-red-600">{formErrors.destination}</p>}
                 </div>
                 <div className="mb-8">
                   <label htmlFor="message" className="block text-sm font-bold text-gray-700 mb-2">Trip Details & Requirements</label>
-                  <textarea id="message" name="message" rows={4} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" placeholder="Tell us about your preferences, dates, travelers..."></textarea>
+                  <textarea id="message" name="message" rows={4} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2D3191] outline-none transition-all resize-none" placeholder="Tell us about your preferences, dates, travelers..."></textarea>
                     {formErrors.message && <p className="mt-2 text-sm font-semibold text-red-600">{formErrors.message}</p>}
                 </div>
                 {submitStatus && (
@@ -998,7 +998,7 @@ export default function Home() {
                   </div>
                 )}
 
-                <button type="submit" disabled={isSubmitting} className="w-full px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-xl hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed">{isSubmitting ? "Sending..." : "Send Enquiry"}</button>
+                <button type="submit" disabled={isSubmitting} className="w-full px-8 py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all shadow-md hover:shadow-xl hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed">{isSubmitting ? "Sending..." : "Send Enquiry"}</button>
 </form>
             </RevealOnScroll>
           </div>

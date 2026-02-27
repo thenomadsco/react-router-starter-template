@@ -6,9 +6,26 @@ import type { Route } from "./+types/home";
 
 // --- META ---
 export function meta({}: Route.MetaArgs) {
+  const title = "The Nomads Co. | Curated Journeys";
+  const description = "Personalized premium travel planning by Kirti Shah.";
+  const url = "https://thenomadsco.in";
+  const ogImage = "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=80";
+
   return [
-    { title: "The Nomads Co. | Curated Journeys" },
-    { name: "description", content: "Personalized premium travel planning by Kirti Shah." },
+    { title },
+    { name: "description", content: description },
+
+    // Social previews
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: url },
+    { property: "og:image", content: ogImage },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: ogImage },
   ];
 }
 
@@ -29,6 +46,7 @@ function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
 function Mail(props: any) { return (<IconBase {...props}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></IconBase>); }
 function Phone(props: any) { return (<IconBase {...props}><path d="M6.5 4.5h2l1.2 3-2 1.2c.9 2 2.5 3.6 4.5 4.5l1.2-2 3 1.2v2c0 .9-.7 1.6-1.6 1.6-6.3-.5-11.4-5.6-11.8-11.8 0-.9.7-1.6 1.5-1.6z" /></IconBase>); }
+function MessageCircle(props: any) { return (<IconBase {...props}><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1l-4.4 1.2 1.3-4.1A8.5 8.5 0 1 1 21 11.5z" /><path d="M8 12h.01" /><path d="M12 12h.01" /><path d="M16 12h.01" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
 function Calendar(props: any) { return (<IconBase {...props}><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></IconBase>); }
 function ChevronDown(props: any) { return (<IconBase {...props}><polyline points="6 9 12 15 18 9" /></IconBase>); }
@@ -174,6 +192,95 @@ export default function Home() {
   const [selectedDestination, setSelectedDestination] = useState("");
   const [heroActiveIndex, setHeroActiveIndex] = useState(0);
 
+  const [formValues, setFormValues] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    destination: "",
+    message: "",
+  });
+  const [formErrors, setFormErrors] = useState<{ [k: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<null | { type: "success" | "error"; message: string }>(null);
+
+  const normalizePhone = (value: string) => value.replace(/[^0-9+]/g, "");
+
+  const validateForm = () => {
+    const errors: { [k: string]: string } = {};
+    const name = formValues.name.trim();
+    const phone = normalizePhone(formValues.phone).replace(/^\+/, "");
+    const email = formValues.email.trim();
+    const destination = formValues.destination.trim();
+    const message = formValues.message.trim();
+
+    if (!name) errors.name = "Please enter your name.";
+    if (!phone) errors.phone = "Please enter your phone number.";
+    else if (phone.length < 10) errors.phone = "Please enter a valid phone number.";
+    if (!email) errors.email = "Please enter your email.";
+    else if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Please enter a valid email address.";
+    if (!destination) errors.destination = "Please enter a destination.";
+    if (!message) errors.message = "Please add a short message.";
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleFormChange = (field: keyof typeof formValues, value: string) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }));
+    setFormErrors((prev) => {
+      if (!prev[field]) return prev;
+      const { [field]: _, ...rest } = prev;
+      return rest;
+    });
+    if (submitStatus) setSubmitStatus(null);
+  };
+
+  const submitFormAjax = async () => {
+    const formData = new FormData();
+    formData.append("name", formValues.name);
+    formData.append("phone", formValues.phone);
+    formData.append("email", formValues.email);
+    formData.append("destination", formValues.destination);
+    formData.append("message", formValues.message);
+
+    // FormSubmit options
+    formData.append("_captcha", "false");
+    formData.append("_template", "table");
+    formData.append("_subject", "New enquiry via thenomadsco.in");
+    formData.append("_replyto", formValues.email);
+    formData.append("_url", "https://thenomadsco.in");
+
+    const res = await fetch("https://formsubmit.co/ajax/thenomadsco@gmail.com", {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Failed to submit form");
+    return res.json();
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setSubmitStatus(null);
+
+    const ok = validateForm();
+    if (!ok) return;
+
+    try {
+      setIsSubmitting(true);
+      await submitFormAjax();
+      setSubmitStatus({ type: "success", message: "Sent! We’ll reach out shortly 🙂" });
+      setFormValues({ name: "", phone: "", email: "", destination: "", message: "" });
+      setFormErrors({});
+    } catch (err) {
+      setSubmitStatus({ type: "error", message: "Something went wrong. Please try again, or WhatsApp us directly." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
         setHeroActiveIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
@@ -191,6 +298,7 @@ export default function Home() {
 
   const handleDestinationClick = (destinationName: string) => {
     setSelectedDestination(destinationName);
+    handleFormChange("destination", destinationName);
     setShowDestinations(false);
     setTimeout(() => {
         document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
@@ -292,9 +400,14 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button onClick={() => scrollToSection("contact")} className="px-10 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center group">
-                Start Planning <Calendar className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
-              </button>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <button onClick={() => scrollToSection("contact")} className="px-10 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center justify-center group">
+                  Start Planning <Calendar className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
+                </button>
+                <a href="tel:+919924399335" aria-label="Call The Nomads Co" className="px-10 py-4 bg-white/90 backdrop-blur-sm text-gray-900 font-bold rounded-full hover:bg-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center justify-center border border-gray-200">
+                  Call Now <Phone className="ml-2 w-5 h-5" />
+                </a>
+              </div>
               <div className="flex items-center text-sm font-medium text-gray-500 bg-gray-50/80 backdrop-blur-sm px-6 py-3 rounded-full border border-gray-100">
                 <div className="flex -space-x-3 mr-4">
                   {[1, 2, 3, 4].map((i) => (
@@ -487,33 +600,47 @@ export default function Home() {
             </RevealOnScroll>
 
             <RevealOnScroll className="lg:col-span-3 delay-200">
-              <form target="_blank" action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100">
+              <form onSubmit={handleSubmit} action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100">
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_subject" value="New enquiry via thenomadsco.in" />
+                <input type="hidden" name="_url" value="https://thenomadsco.in" />
+
+<input type="hidden" name="_subject" value="New enquiry via thenomadsco.in" />
+                <input type="hidden" name="_url" value="https://thenomadsco.in" />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                    <input type="text" id="name" name="name" required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="John Doe" />
+                    <input type="text" id="name" name="name" value={formValues.name} onChange={(e) => handleFormChange("name", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="John Doe" />
                   </div>
                   <div>
                     <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="+91 98765 43210" />
+                    <input type="tel" id="phone" name="phone" value={formValues.phone} onChange={(e) => handleFormChange("phone", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="+91 98765 43210" />
                   </div>
                 </div>
                 <div className="mb-6">
                   <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                  <input type="email" id="email" name="email" required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="john@example.com" />
+                  <input type="email" id="email" name="email" value={formValues.email} onChange={(e) => handleFormChange("email", e.target.value)} required className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="john@example.com" />
                 </div>
                 <div className="mb-6">
                   <label htmlFor="destination" className="block text-sm font-bold text-gray-700 mb-2">Destination in Mind</label>
                   <input type="text" id="destination" name="destination" defaultValue={selectedDestination} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="e.g., Maldives, Kerala, Europe..." />
+                    {formErrors.destination && <p className="mt-2 text-sm font-semibold text-red-600">{formErrors.destination}</p>}
                 </div>
                 <div className="mb-8">
                   <label htmlFor="message" className="block text-sm font-bold text-gray-700 mb-2">Trip Details & Requirements</label>
                   <textarea id="message" name="message" rows={4} className="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" placeholder="Tell us about your preferences, dates, travelers..."></textarea>
+                    {formErrors.message && <p className="mt-2 text-sm font-semibold text-red-600">{formErrors.message}</p>}
                 </div>
-                <button type="submit" className="w-full px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-xl hover:-translate-y-1">Send Enquiry</button>
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_template" value="table" />
-              </form>
+                {submitStatus && (
+                  <div className={`mb-6 rounded-xl px-5 py-4 font-semibold ${submitStatus.type === "success" ? "bg-green-50 text-green-800 border border-green-200" : "bg-red-50 text-red-800 border border-red-200"}`} role="status">
+                    {submitStatus.message}
+                  </div>
+                )}
+
+                <button type="submit" disabled={isSubmitting} className="w-full px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-xl hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed">{isSubmitting ? "Sending..." : "Send Enquiry"}</button>
+</form>
             </RevealOnScroll>
           </div>
         </div>
@@ -555,6 +682,18 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      {/* Floating WhatsApp CTA */}
+      <a
+        href="https://wa.me/919924399335?text=Hi%20The%20Nomads%20Co%20%E2%80%94%20I%27d%20like%20to%20plan%20a%20trip!"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat on WhatsApp"
+        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-3 rounded-full bg-green-600 text-white font-extrabold px-5 py-4 shadow-2xl hover:-translate-y-1 hover:bg-green-700 transition-all focus:outline-none focus:ring-4 focus:ring-green-200"
+      >
+        <MessageCircle className="w-6 h-6" />
+        <span className="hidden sm:inline">WhatsApp</span>
+      </a>
+
     </div>
   );
 }

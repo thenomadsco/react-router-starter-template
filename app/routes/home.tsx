@@ -643,7 +643,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
              <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto rounded-md shadow-sm" />
-             <span className="text-2xl font-bold tracking-tighter hidden sm:inline">The Nomads Co.</span>
+             <span className="font-bold tracking-tighter text-lg sm:text-2xl">The Nomads Co.</span>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -659,10 +659,10 @@ export default function Home() {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-8 animate-active-up">
-            <button onClick={() => scrollToSection("about")} className="text-2xl font-medium">About</button>
-            <button onClick={() => scrollToSection("destinations")} className="text-2xl font-medium">Destinations</button>
-            <button onClick={() => scrollToSection("reviews")} className="text-2xl font-medium">Reviews</button>
+          <div className="fixed inset-0 bg-white/95 backdrop-blur-md z-[60] flex flex-col items-center justify-center gap-8 px-6">
+            <button onClick={() => scrollToSection("about")} className="text-xl font-semibold">About</button>
+            <button onClick={() => scrollToSection("destinations")} className="text-xl font-semibold">Destinations</button>
+            <button onClick={() => scrollToSection("reviews")} className="text-xl font-semibold">Reviews</button>
             <button onClick={() => scrollToSection("contact")} className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full">Plan My Trip</button>
           </div>
         )}
@@ -964,7 +964,7 @@ export default function Home() {
       </section>
 
       {/* Footer - Updated for better contrast */}
-      <footer className="bg-black text-gray-200 py-16 border-t border-gray-800">
+      <footer className="bg-black text-gray-200 py-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">

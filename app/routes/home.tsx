@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
@@ -183,6 +183,255 @@ const testimonials = [
 // =================================================================================
 // MAIN COMPONENT
 // =================================================================================
+
+
+
+  // --- SIMPLE CHATBOT (guided "AI-style" convo that drafts a WhatsApp message) ---
+  type NomadsIntent = "enquiry" | "change" | "cancel";
+  type NomadsChatState = {
+    intent?: NomadsIntent;
+    name?: string;
+    phone?: string;
+    destination?: string;
+    dates?: string;
+    bookingRef?: string;
+    details?: string;
+  };
+
+  type NomadsMsg = { from: "bot" | "user"; text: string };
+
+  const NOMADS_WHATSAPP_NUMBER_E164 = "919924399335"; // no +, no spaces
+
+  function buildNomadsWhatsappText(s: NomadsChatState) {
+    const name = (s.name || "").trim() || "—";
+    const phone = (s.phone || "").trim() || "—";
+
+    if (s.intent === "enquiry") {
+      return `Hi The Nomads Co 👋
+  I'm ${name} (${phone}). I'd like to enquire about a trip.
+
+  Destination: ${s.destination || "—"}
+  Dates: ${s.dates || "—"}
+
+  Details:
+  ${s.details || "—"}`;
+    }
+
+    if (s.intent === "change") {
+      return `Hi The Nomads Co 👋
+  I'm ${name} (${phone}). I want to modify my reservation.
+
+  Booking Ref: ${s.bookingRef || "—"}
+  New Destination: ${s.destination || "—"}
+  New Dates: ${s.dates || "—"}
+
+  Request:
+  ${s.details || "—"}`;
+    }
+
+    return `Hi The Nomads Co 👋
+  I'm ${name} (${phone}). I want to cancel my reservation.
+
+  Booking Ref: ${s.bookingRef || "—"}
+
+  Reason / Notes:
+  ${s.details || "—"}`;
+  }
+
+  function nomadsWaLink(text: string) {
+    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(text)}`;
+  }
+
+  function normalizeNomadsPhone(v: string) {
+    return v.replace(/[^0-9+]/g, "");
+  }
+
+  function NomadsChatbot() {
+    const [open, setOpen] = useState(false);
+    const [step, setStep] = useState(0);
+    const [input, setInput] = useState("");
+    const [state, setState] = useState<NomadsChatState>({});
+    const [msgs, setMsgs] = useState<NomadsMsg[]>([
+      { from: "bot", text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)" },
+      { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" },
+    ]);
+
+    const steps = useMemo(() => {
+      // Step list changes slightly based on intent (so it doesn't ask irrelevant stuff).
+      const base: Array<{ key: keyof NomadsChatState | "done"; prompt: string; required?: boolean }> = [
+        { key: "intent", prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).", required: true },
+        { key: "name", prompt: "What’s your name?", required: true },
+        { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true },
+      ];
+
+      const intent = state.intent;
+      if (!intent) return base;
+
+      const mid: Array<{ key: keyof NomadsChatState | "done"; prompt: string; required?: boolean }> = [];
+
+      if (intent === "change" || intent === "cancel") {
+        mid.push({ key: "bookingRef", prompt: "Booking reference (if you have one). If not, type NA." });
+      }
+
+      if (intent === "enquiry" || intent === "change") {
+        mid.push({ key: "destination", prompt: "Which destination?", required: true });
+        mid.push({ key: "dates", prompt: "What dates? (approx is fine)", required: true });
+      }
+
+      mid.push({ key: "details", prompt: "Tell me what you want in 1–2 lines.", required: true });
+
+      return [...base, ...mid, { key: "done", prompt: "Done ✅ Tap below to send this on WhatsApp." }];
+    }, [state.intent]);
+
+    const current = steps[Math.min(step, steps.length - 1)];
+
+    const whatsappText = useMemo(() => buildNomadsWhatsappText(state), [state]);
+    const whatsappUrl = useMemo(() => nomadsWaLink(whatsappText), [whatsappText]);
+
+    const pushBot = (t: string) => setMsgs((m) => [...m, { from: "bot", text: t }]);
+    const pushUser = (t: string) => setMsgs((m) => [...m, { from: "user", text: t }]);
+
+    const parseIntent = (v: string): NomadsIntent | undefined => {
+      const s = v.trim().toLowerCase();
+      if (s === "1" || s.includes("enq")) return "enquiry";
+      if (s === "2" || s.includes("change") || s.includes("modify")) return "change";
+      if (s === "3" || s.includes("cancel")) return "cancel";
+      return undefined;
+    };
+
+    const validate = (key: typeof current.key, raw: string) => {
+      const v = raw.trim();
+      if (key === "intent") {
+        const intent = parseIntent(v);
+        if (!intent) return { ok: false as const, err: "Type 1, 2, or 3 🙂" };
+        return { ok: true as const, value: intent };
+      }
+      if (key === "name") {
+        if (v.length < 2) return { ok: false as const, err: "Just your name (2+ letters) 🙂" };
+        return { ok: true as const, value: v };
+      }
+      if (key === "phone") {
+        const norm = normalizeNomadsPhone(v);
+        const digits = norm.replace(/^\+/, "").replace(/\D/g, "");
+        if (digits.length < 10) return { ok: false as const, err: "That phone looks short — re-check it?" };
+        return { ok: true as const, value: norm };
+      }
+      if (current.required && !v) return { ok: false as const, err: "Quick one — this can’t be blank 🙂" };
+      return { ok: true as const, value: v || "" };
+    };
+
+    const send = () => {
+      if (!current || current.key === "done") return;
+      const userText = input.trim();
+      if (!userText) return;
+
+      pushUser(userText);
+      const res = validate(current.key, userText);
+      setInput("");
+
+      if (!res.ok) {
+        pushBot(res.err);
+        return;
+      }
+
+      setState((prev) => ({ ...prev, [current.key]: res.value } as NomadsChatState));
+
+      const next = step + 1;
+      setStep(next);
+      const nextStep = steps[Math.min(next, steps.length - 1)];
+      if (nextStep?.prompt) pushBot(nextStep.prompt);
+    };
+
+    const reset = () => {
+      setOpen(false);
+      setStep(0);
+      setInput("");
+      setState({});
+      setMsgs([
+        { from: "bot", text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)" },
+        { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" },
+      ]);
+      // reopen with a fresh state if user clicks chat again
+      setTimeout(() => setOpen(true), 0);
+    };
+
+    return (
+      <div className="fixed bottom-6 left-6 z-50 font-sans">
+        {!open ? (
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full bg-black text-white font-extrabold px-5 py-4 shadow-2xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-black/10"
+            aria-label="Open chat"
+            type="button"
+          >
+            💬 Chat
+          </button>
+        ) : (
+          <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden border border-black/10">
+            <div className="flex items-center justify-between px-4 py-3 bg-black text-white">
+              <div className="text-sm font-semibold">Nomads Assistant</div>
+              <div className="flex items-center gap-2">
+                <button onClick={reset} className="text-xs opacity-90 hover:opacity-100" type="button">
+                  Reset
+                </button>
+                <button onClick={() => setOpen(false)} className="text-lg leading-none" aria-label="Close chat" type="button">
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div className="h-[320px] overflow-y-auto px-4 py-3 space-y-3">
+              {msgs.map((m, idx) => (
+                <div key={idx} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
+                      m.from === "user" ? "bg-black text-white" : "bg-gray-100 text-gray-900"
+                    }`}
+                  >
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {current?.key !== "done" ? (
+              <div className="p-3 border-t border-black/10 flex gap-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") send();
+                  }}
+                  placeholder="Type here…"
+                  className="flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-black/30"
+                />
+                <button onClick={send} className="rounded-xl px-4 py-2 bg-black text-white text-sm hover:opacity-90" type="button">
+                  Send
+                </button>
+              </div>
+            ) : (
+              <div className="p-3 border-t border-black/10 space-y-2">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block text-center rounded-xl px-4 py-3 bg-green-600 text-white text-sm font-semibold hover:opacity-90"
+                >
+                  Send on WhatsApp ✅
+                </a>
+                <details className="text-xs text-gray-600">
+                  <summary className="cursor-pointer">Preview message</summary>
+                  <pre className="whitespace-pre-wrap mt-2 bg-gray-50 p-2 rounded-xl border border-black/5">
+{whatsappText}
+                  </pre>
+                </details>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -683,6 +932,8 @@ export default function Home() {
         </div>
       </footer>
       {/* Floating WhatsApp CTA */}
+      <NomadsChatbot />
+
       <a
         href="https://wa.me/919924399335?text=Hi%20The%20Nomads%20Co%20%E2%80%94%20I%27d%20like%20to%20plan%20a%20trip!"
         target="_blank"

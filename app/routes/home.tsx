@@ -318,16 +318,17 @@ const RevealOnScroll = ({
 // --- DATASETS ---
 const heroImages = [
   {
-    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=80",
+    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2400&q=80&fm=jpg",
     label: "Taj Mahal, India",
   },
-  // FIX #1: reliable Unsplash URLs (Wikimedia often fails/CORS/redirects)
+  // FIX: Santorini visible (reliable Unsplash URL)
   {
-    url: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=2400&q=80",
+    url: "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=2400&q=80&fm=jpg",
     label: "Santorini, Greece",
   },
+  // FIX: Eiffel visible (reliable Unsplash URL)
   {
-    url: "https://images.unsplash.com/photo-1511739001486-6bfe10ce7859?auto=format&fit=crop&w=2400&q=80",
+    url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=2400&q=80&fm=jpg",
     label: "Eiffel Tower, Paris",
   },
 ];
@@ -465,7 +466,8 @@ const destinations: Destination[] = [
     image:
       "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=800&q=80",
     tags: ["Adventure", "Wildlife", "Beaches"],
-    description: "The Great Barrier Reef, outback adventures, and vibrant cities.",
+    description:
+      "The Great Barrier Reef, outback adventures, and vibrant cities.",
   },
   {
     id: 11,
@@ -579,7 +581,8 @@ const destinations: Destination[] = [
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=1600",
     tags: ["Mountains", "Spiritual", "Nature"],
-    description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas.",
+    description:
+      "Land of Gods, featuring pilgrimage sites and Himalayan vistas.",
   },
   {
     id: 23,
@@ -642,7 +645,8 @@ const destinations: Destination[] = [
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=1600",
     tags: ["Nature", "Waterfalls", "Offbeat"],
-    description: "Abode of Clouds, known for living root bridges and waterfalls.",
+    description:
+      "Abode of Clouds, known for living root bridges and waterfalls.",
   },
   {
     id: 30,
@@ -710,19 +714,19 @@ const destinations: Destination[] = [
   },
 ];
 
-// FIX #5: replace testimonials + remove profile pics
+// Testimonials (no profile pictures)
 const testimonials = [
   {
     id: 1,
     name: "Client Review",
     location: "",
     rating: 5,
-    text: `We decided to go on a holiday to Greece.
-We were 10 of us. The destination was all we were sure of. Rest was chaos.
-In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.
-We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.
-Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.
-Nomads has never failed to be on point to everything, the reminders the information and looking after everyone’s needs. Keep it up Kirti.
+    text: `We decided to go on a holiday to Greece. 
+We were 10 of us. The destination was all we were sure of. Rest was chaos. 
+In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. 
+We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. 
+Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. 
+Nomads has never failed to be on point to everything, the reminders the information and looking after everyone’s needs. Keep it up Kirti. 
 Thank you for this and all the ones we will put you through`,
   },
   {
@@ -817,26 +821,50 @@ function NomadsChatbot() {
   const [input, setInput] = useState("");
   const [state, setState] = useState<NomadsChatState>({});
   const [msgs, setMsgs] = useState<NomadsMsg[]>([
-    { from: "bot", text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)" },
-    { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" },
+    {
+      from: "bot",
+      text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)",
+    },
+    {
+      from: "bot",
+      text: "1) New enquiry  2) Change reservation  3) Cancel reservation",
+    },
   ]);
 
   const steps = useMemo(() => {
     // Step list changes slightly based on intent (so it doesn't ask irrelevant stuff).
-    const base: Array<{ key: keyof NomadsChatState | "done"; prompt: string; required?: boolean }> =
-      [
-        { key: "intent", prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).", required: true },
-        { key: "name", prompt: "What’s your name?", required: true },
-        { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true },
-      ];
+    const base: Array<{
+      key: keyof NomadsChatState | "done";
+      prompt: string;
+      required?: boolean;
+    }> = [
+      {
+        key: "intent",
+        prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).",
+        required: true,
+      },
+      { key: "name", prompt: "What’s your name?", required: true },
+      {
+        key: "phone",
+        prompt: "Phone number? (WhatsApp preferred)",
+        required: true,
+      },
+    ];
 
     const intent = state.intent;
     if (!intent) return base;
 
-    const mid: Array<{ key: keyof NomadsChatState | "done"; prompt: string; required?: boolean }> = [];
+    const mid: Array<{
+      key: keyof NomadsChatState | "done";
+      prompt: string;
+      required?: boolean;
+    }> = [];
 
     if (intent === "change" || intent === "cancel") {
-      mid.push({ key: "bookingRef", prompt: "Booking reference (if you have one). If not, type NA." });
+      mid.push({
+        key: "bookingRef",
+        prompt: "Booking reference (if you have one). If not, type NA.",
+      });
     }
 
     if (intent === "enquiry" || intent === "change") {
@@ -844,9 +872,17 @@ function NomadsChatbot() {
       mid.push({ key: "dates", prompt: "What dates? (approx is fine)", required: true });
     }
 
-    mid.push({ key: "details", prompt: "Tell me what you want in 1–2 lines.", required: true });
+    mid.push({
+      key: "details",
+      prompt: "Tell me what you want in 1–2 lines.",
+      required: true,
+    });
 
-    return [...base, ...mid, { key: "done", prompt: "Done ✅ Tap below to send this on WhatsApp." }];
+    return [
+      ...base,
+      ...mid,
+      { key: "done", prompt: "Done ✅ Tap below to send this on WhatsApp." },
+    ];
   }, [state.intent]);
 
   const current = steps[Math.min(step, steps.length - 1)];
@@ -870,21 +906,29 @@ function NomadsChatbot() {
     return digits.length >= 10;
   };
 
-  const monthLike = (s: string) => /(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)/i.test(s);
+  const monthLike = (s: string) =>
+    /(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)/i.test(s);
 
   const validate = (key: typeof current.key, raw: string) => {
     const v = raw.trim();
 
     if (key === "intent") {
       const intent = parseIntent(v);
-      if (!intent) return { ok: false as const, err: "Type 1 for Enquiry, 2 for Change, or 3 for Cancel 🙂" };
+      if (!intent)
+        return {
+          ok: false as const,
+          err: "Type 1 for Enquiry, 2 for Change, or 3 for Cancel 🙂",
+        };
       return { ok: true as const, value: intent };
     }
 
     if (key === "name") {
       // Block obvious non-name junk (numbers/URLs)
       if (!/[a-zA-Z]/.test(v) || v.length < 2) {
-        return { ok: false as const, err: "That doesn’t look like a name — type your name (2+ letters) 🙂" };
+        return {
+          ok: false as const,
+          err: "That doesn’t look like a name — type your name (2+ letters) 🙂",
+        };
       }
       return { ok: true as const, value: v };
     }
@@ -892,15 +936,21 @@ function NomadsChatbot() {
     if (key === "phone") {
       const norm = normalizeNomadsPhone(v);
       const digits = norm.replace(/^\+/, "").replace(/\D/g, "");
-      if (digits.length < 10) return { ok: false as const, err: "That phone looks short — re-check it?" };
+      if (digits.length < 10)
+        return { ok: false as const, err: "That phone looks short — re-check it?" };
       // Avoid people pasting emails/words here
-      if (/[a-zA-Z]/.test(norm)) return { ok: false as const, err: "Phone number only here 🙂 (digits with optional +)" };
+      if (/[a-zA-Z]/.test(norm))
+        return {
+          ok: false as const,
+          err: "Phone number only here 🙂 (digits with optional +)",
+        };
       return { ok: true as const, value: norm };
     }
 
     if (key === "bookingRef") {
       if (!v) return { ok: true as const, value: "" };
-      if (v.toLowerCase() === "na" || v.toLowerCase() === "n/a") return { ok: true as const, value: "NA" };
+      if (v.toLowerCase() === "na" || v.toLowerCase() === "n/a")
+        return { ok: true as const, value: "NA" };
 
       // Booking references are typically short alphanumeric strings
       if (!/^[a-zA-Z0-9_-]{4,24}$/.test(v)) {
@@ -913,19 +963,33 @@ function NomadsChatbot() {
     }
 
     if (key === "destination") {
-      if (current.required && !v) return { ok: false as const, err: "Destination can’t be blank 🙂" };
-      if (looksLikePhone(v)) return { ok: false as const, err: "That looks like a phone number — type a destination name 🙂" };
+      if (current.required && !v)
+        return { ok: false as const, err: "Destination can’t be blank 🙂" };
+      if (looksLikePhone(v))
+        return {
+          ok: false as const,
+          err: "That looks like a phone number — type a destination name 🙂",
+        };
       if (!/[a-zA-Z]/.test(v) || v.length < 2) {
-        return { ok: false as const, err: "Type a destination name (e.g., Dubai / Bali / Kashmir) 🙂" };
+        return {
+          ok: false as const,
+          err: "Type a destination name (e.g., Dubai / Bali / Kashmir) 🙂",
+        };
       }
       // Keep it permissive but block pure digits
-      if (/^\d+$/.test(v)) return { ok: false as const, err: "Destination should be words, not just numbers 🙂" };
+      if (/^\d+$/.test(v))
+        return { ok: false as const, err: "Destination should be words, not just numbers 🙂" };
       return { ok: true as const, value: v };
     }
 
     if (key === "dates") {
-      if (current.required && !v) return { ok: false as const, err: "Dates can’t be blank 🙂" };
-      if (looksLikePhone(v)) return { ok: false as const, err: "That looks like a phone number — type dates (e.g., 10–14 Mar) 🙂" };
+      if (current.required && !v)
+        return { ok: false as const, err: "Dates can’t be blank 🙂" };
+      if (looksLikePhone(v))
+        return {
+          ok: false as const,
+          err: "That looks like a phone number — type dates (e.g., 10–14 Mar) 🙂",
+        };
 
       // Accept "10-14 Mar", "March 10", "10/03/2026", "next weekend", etc.
       const hasDigit = /\d/.test(v);
@@ -933,22 +997,34 @@ function NomadsChatbot() {
       const hasRelative = /(today|tomorrow|weekend|next|this|coming)/i.test(v);
 
       if (!(monthLike(v) || hasRelative || (hasDigit && (hasDatePunct || v.length >= 4)))) {
-        return { ok: false as const, err: "Give dates like “10–14 Mar”, “March 10”, or “next weekend” 🙂" };
+        return {
+          ok: false as const,
+          err: "Give dates like “10–14 Mar”, “March 10”, or “next weekend” 🙂",
+        };
       }
       return { ok: true as const, value: v };
     }
 
     if (key === "details") {
-      if (current.required && !v) return { ok: false as const, err: "Quick one — please add a short message 🙂" };
+      if (current.required && !v)
+        return { ok: false as const, err: "Quick one — please add a short message 🙂" };
       const cleaned = v.replace(/\s+/g, " ").trim();
-      if (cleaned.length < 6) return { ok: false as const, err: "A bit more detail please (at least ~6 characters) 🙂" };
+      if (cleaned.length < 6)
+        return {
+          ok: false as const,
+          err: "A bit more detail please (at least ~6 characters) 🙂",
+        };
       if (/^(hi|hello|hey|test)$/i.test(cleaned)) {
-        return { ok: false as const, err: "Tell me what you want (enquiry/change/cancel details) 🙂" };
+        return {
+          ok: false as const,
+          err: "Tell me what you want (enquiry/change/cancel details) 🙂",
+        };
       }
       return { ok: true as const, value: v };
     }
 
-    if (current.required && !v) return { ok: false as const, err: "Quick one — this can’t be blank 🙂" };
+    if (current.required && !v)
+      return { ok: false as const, err: "Quick one — this can’t be blank 🙂" };
     return { ok: true as const, value: v || "" };
   };
 
@@ -980,8 +1056,14 @@ function NomadsChatbot() {
     setInput("");
     setState({});
     setMsgs([
-      { from: "bot", text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)" },
-      { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" },
+      {
+        from: "bot",
+        text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)",
+      },
+      {
+        from: "bot",
+        text: "1) New enquiry  2) Change reservation  3) Cancel reservation",
+      },
     ]);
     // reopen with a fresh state if user clicks chat again
     setTimeout(() => setOpen(true), 0);
@@ -1007,7 +1089,12 @@ function NomadsChatbot() {
               <button onClick={reset} className="text-xs opacity-90 hover:opacity-100" type="button">
                 Reset
               </button>
-              <button onClick={() => setOpen(false)} className="text-lg leading-none" aria-label="Close chat" type="button">
+              <button
+                onClick={() => setOpen(false)}
+                className="text-lg leading-none"
+                aria-label="Close chat"
+                type="button"
+              >
                 ×
               </button>
             </div>
@@ -1015,10 +1102,15 @@ function NomadsChatbot() {
 
           <div className="h-[320px] overflow-y-auto px-4 py-3 space-y-3">
             {msgs.map((m, idx) => (
-              <div key={idx} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+              <div
+                key={idx}
+                className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}
+              >
                 <div
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                    m.from === "user" ? "bg-black text-white" : "bg-gray-100 text-gray-900"
+                    m.from === "user"
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-900"
                   }`}
                 >
                   {m.text}
@@ -1038,7 +1130,11 @@ function NomadsChatbot() {
                 placeholder="Type here…"
                 className="flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-black/30"
               />
-              <button onClick={send} className="rounded-xl px-4 py-2 bg-black text-white text-sm hover:opacity-90" type="button">
+              <button
+                onClick={send}
+                className="rounded-xl px-4 py-2 bg-black text-white text-sm hover:opacity-90"
+                type="button"
+              >
                 Send
               </button>
             </div>
@@ -1183,7 +1279,9 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredDestinations = destinations.filter((dest) => dest.category === activeCategory);
+  const filteredDestinations = destinations.filter(
+    (dest) => dest.category === activeCategory
+  );
 
   const handleDestinationClick = (destinationName: string) => {
     setSelectedDestination(destinationName);
@@ -1218,19 +1316,37 @@ export default function Home() {
         }`}
       >
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto rounded-md shadow-sm" />
-            <span className="font-bold tracking-tighter text-lg sm:text-2xl">The Nomads Co.</span>
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <img
+              src={nomadsLogo}
+              alt="The Nomads Co."
+              className="h-10 w-auto rounded-md shadow-sm"
+            />
+            <span className="font-bold tracking-tighter text-lg sm:text-2xl">
+              The Nomads Co.
+            </span>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollToSection("about")} className="text-sm font-medium hover:text-blue-600 transition-colors">
+            <button
+              onClick={() => scrollToSection("about")}
+              className="text-sm font-medium hover:text-blue-600 transition-colors"
+            >
               About
             </button>
-            <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium hover:text-blue-600 transition-colors">
+            <button
+              onClick={() => scrollToSection("destinations")}
+              className="text-sm font-medium hover:text-blue-600 transition-colors"
+            >
               Destinations
             </button>
-            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium hover:text-blue-600 transition-colors">
+            <button
+              onClick={() => scrollToSection("reviews")}
+              className="text-sm font-medium hover:text-blue-600 transition-colors"
+            >
               Reviews
             </button>
             <button
@@ -1241,7 +1357,11 @@ export default function Home() {
             </button>
           </div>
 
-          <button className="md:hidden z-50 p-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+          <button
+            className="md:hidden z-50 p-2 text-gray-900"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
             {isMenuOpen ? (
               <X size={28} />
             ) : (
@@ -1322,7 +1442,12 @@ export default function Home() {
                   index === heroActiveIndex ? "scale-[1.03]" : "scale-100"
                 }`}
               >
-                <OptimizedImage src={img.url} alt={img.label} priority={index === 0} className="w-full h-full object-cover" />
+                <OptimizedImage
+                  src={img.url}
+                  alt={img.label}
+                  priority={index === 0}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {/* Soft overlays for legibility */}
@@ -1331,7 +1456,9 @@ export default function Home() {
               {/* Minimal location pill */}
               <div className="absolute bottom-14 md:bottom-16 left-1/2 -translate-x-1/2 text-white z-20">
                 <div className="px-4 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 shadow-sm">
-                  <span className="text-sm md:text-base font-semibold tracking-wide drop-shadow">{img.label}</span>
+                  <span className="text-sm md:text-base font-semibold tracking-wide drop-shadow">
+                    {img.label}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1346,7 +1473,9 @@ export default function Home() {
                   onClick={() => setHeroActiveIndex(index)}
                   aria-label={`Show ${img.label}`}
                   className={`h-2.5 rounded-full transition-all duration-300 ${
-                    index === heroActiveIndex ? "w-8 bg-white" : "w-2.5 bg-white/60 hover:bg-white"
+                    index === heroActiveIndex
+                      ? "w-8 bg-white"
+                      : "w-2.5 bg-white/60 hover:bg-white"
                   }`}
                 />
               ))}
@@ -1354,7 +1483,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hero Text Content Below Carousel (Reverted to previous file details + colors) */}
+        {/* Hero Text Content Below Carousel */}
         <div className="container mx-auto px-4 md:px-8 py-16 md:py-20 text-center relative z-10">
           <RevealOnScroll>
             <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#E6E8EF] rounded-full shadow-sm">
@@ -1364,45 +1493,41 @@ export default function Home() {
               </span>
             </div>
 
+            {/* FORMAT FIX ONLY (content unchanged) */}
             <h1
-              className="text-4xl sm:text-5xl lg:text-6xl leading-[1.2] mb-8 text-[#1F2328]"
+              className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl leading-tight sm:leading-[1.1] mb-8 text-[#1F2328]"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 fontWeight: 500,
                 letterSpacing: "-0.02em",
               }}
             >
-              Discover the world <br /> with{" "}
+              Discover the world{" "}
+              <span className="block sm:inline">with </span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">
                 The Nomads Co.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg leading-relaxed text-[#1F2328]/70 mb-10 max-w-xl mx-auto" style={{ letterSpacing: "0.01em" }}>
-              At The Nomads Co., we believe that travel is not just about visiting new places, but about the stories you create and the memories you
-              cherish forever. Whether you dream of walking through ancient streets, relaxing on pristine beaches, or exploring vibrant cultures, we
-              are here to craft the perfect journey just for you. Sit back, relax, and let us handle every detail while you focus on the magic of
-              discovery.
+            <p
+              className="text-base sm:text-lg leading-relaxed text-[#1F2328]/70 mb-10 max-w-xl mx-auto"
+              style={{ letterSpacing: "0.01em" }}
+            >
+              At The Nomads Co., we believe that travel is not just about visiting
+              new places, but about the stories you create and the memories you
+              cherish forever. Whether you dream of walking through ancient
+              streets, relaxing on pristine beaches, or exploring vibrant
+              cultures, we are here to craft the perfect journey just for you.
+              Sit back, relax, and let us handle every detail while you focus on
+              the magic of discovery.
             </p>
 
-            <div className="mt-4 flex items-center justify-center gap-4 text-sm text-[#1F2328]/60">
-              <div className="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500"
-                  >
-                    Use
-                  </div>
-                ))}
-              </div>
-              <p>Trusted by 1000+ happy families</p>
-            </div>
+            {/* DELETED: Trusted by 1000+ happy families */}
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* Founder Section (Change no content, just delete the trustFeatures block + reformat spacing) */}
+      {/* Founder Section (format updated; content unchanged; deleted extra portion earlier) */}
       <section id="about" className="py-20 px-6 sm:px-12 bg-[#FAFAF8] relative">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative group">
@@ -1414,20 +1539,28 @@ export default function Home() {
             />
           </div>
 
-          <div>
-            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-4 block">The Founder</span>
-            <h2 className="text-4xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {/* FORMAT FIX ONLY */}
+          <div className="md:pl-2">
+            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-4 block">
+              The Founder
+            </span>
+            <h2
+              className="text-3xl sm:text-4xl font-bold text-[#1F2328] mb-5"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
               Meet Kirti Shah
             </h2>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
-              Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every
-              trip to ensure you are safe, comfortable, and having the time of your life.
+            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed mb-5 max-w-xl">
+              Kirti believes that travel should be happy, not stressful. That's why
+              she treats every client like family, personally overseeing every trip
+              to ensure you are safe, comfortable, and having the time of your life.
             </p>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-              With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.
+            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">
+              With over 10 years of experience, we handle visas, flights, and bookings,
+              offering luxury stays at best-value prices with 24/7 support.
             </p>
 
-            {/* Deleted portion requested: trustFeatures grid */}
+            {/* Deleted portion requested earlier: trustFeatures grid */}
           </div>
         </div>
       </section>
@@ -1439,15 +1572,21 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">
               WHAT WE DO
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Key Services Offered</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Key Services Offered
+            </h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((service, index) => (
               <RevealOnScroll key={index} className={`delay-${index * 100}`}>
                 <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full border border-gray-100">
-                  <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">{service.icon}</div>
+                  <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+                    {service.icon}
+                  </div>
                   <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                  <p className="text-gray-600 leading-relaxed">
+                    {service.description}
+                  </p>
                 </div>
               </RevealOnScroll>
             ))}
@@ -1455,7 +1594,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations Trigger Section (white background instead of blue/green overlay) */}
+      {/* Destinations Trigger Section (white background as requested earlier) */}
       <section id="destinations" className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
@@ -1463,23 +1602,25 @@ export default function Home() {
               onClick={() => setShowDestinations(true)}
               className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-white border border-gray-100"
             >
-              {/* removed gradient overlay */}
               <img
                 src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80"
                 alt="World Travel"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              {/* subtle white veil for readability on white section */}
               <div className="absolute inset-0 bg-white/70 z-10" />
 
               <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-[#1F2328]">
                 <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
-                <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">Explore Trending Destinations</h2>
+                <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                  Explore Trending Destinations
+                </h2>
                 <p className="text-lg md:text-xl text-[#1F2328]/70 max-w-2xl mb-8">
-                  Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.
+                  Discover our handpicked selection of the world's most captivating
+                  spots, from international hotspots to hidden gems across India.
                 </p>
                 <button className="px-8 py-3 bg-[#1F2328] text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
-                  Discover Now <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                  Discover Now{" "}
+                  <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
                 </button>
               </div>
             </div>
@@ -1490,11 +1631,19 @@ export default function Home() {
       {/* Destinations Popup */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex animate-active-up">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDestinations(false)}></div>
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowDestinations(false)}
+          ></div>
           <div className="absolute inset-0 md:inset-10 bg-white md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
             <div className="p-6 md:p-8 border-b flex justify-between items-center bg-gray-50">
-              <h3 className="text-2xl md:text-3xl font-bold">Choose Your Adventure</h3>
-              <button onClick={() => setShowDestinations(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+              <h3 className="text-2xl md:text-3xl font-bold">
+                Choose Your Adventure
+              </h3>
+              <button
+                onClick={() => setShowDestinations(false)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -1505,7 +1654,9 @@ export default function Home() {
                     key={category}
                     onClick={() => setActiveCategory(category)}
                     className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${
-                      activeCategory === category ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                      activeCategory === category
+                        ? "bg-white text-blue-600 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     {category}{" "}
@@ -1533,15 +1684,22 @@ export default function Home() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="absolute bottom-4 left-4 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                         {dest.tags.slice(0, 2).map((tag, index) => (
-                          <span key={index} className="text-xs font-bold text-white bg-white/20 backdrop-blur-md px-2 py-1 rounded-full">
+                          <span
+                            key={index}
+                            className="text-xs font-bold text-white bg-white/20 backdrop-blur-md px-2 py-1 rounded-full"
+                          >
                             {tag}
                           </span>
                         ))}
                       </div>
                     </div>
                     <div className="p-5">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">{dest.title}</h4>
-                      <p className="text-gray-600 text-sm line-clamp-2">{dest.description}</p>
+                      <h4 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                        {dest.title}
+                      </h4>
+                      <p className="text-gray-600 text-sm line-clamp-2">
+                        {dest.description}
+                      </p>
                       <div className="mt-4 pt-4 border-t flex justify-between items-center text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                         <span>Quick View & Plan</span>
                         <ChevronDown className="w-4 h-4 -rotate-90" />
@@ -1562,7 +1720,9 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">
               TESTIMONIALS
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Loved by Travelers</h2>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              Loved by Travelers
+            </h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
@@ -1589,15 +1749,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section (Reverted to previous file: exact details + colors) */}
-      <section id="contact" className="py-20 px-6 sm:px-12 bg-[#EEF0FF] relative overflow-hidden">
+      {/* Contact Section */}
+      <section
+        id="contact"
+        className="py-20 px-6 sm:px-12 bg-[#EEF0FF] relative overflow-hidden"
+      >
         <div className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24">
           {/* Contact Info */}
           <div className="lg:col-span-5 space-y-8">
-            <h2 className="text-4xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2
+              className="text-4xl font-bold text-[#1F2328]"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
               Start Your Journey
             </h2>
-            <p className="text-lg text-[#1F2328]/70">We are ready to craft your perfect trip. Reach out to us directly or fill the form.</p>
+            <p className="text-lg text-[#1F2328]/70">
+              We are ready to craft your perfect trip. Reach out to us directly or
+              fill the form.
+            </p>
 
             <div className="space-y-6">
               <a href="tel:+919924399335" className="flex items-center gap-4 group">
@@ -1605,18 +1774,27 @@ export default function Home() {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-[#1F2328]/50 font-bold">Call / WhatsApp</div>
-                  <div className="text-lg font-medium text-[#1F2328]">+91 9924399335</div>
+                  <div className="text-sm text-[#1F2328]/50 font-bold">
+                    Call / WhatsApp
+                  </div>
+                  <div className="text-lg font-medium text-[#1F2328]">
+                    +91 9924399335
+                  </div>
                 </div>
               </a>
 
-              <a href="mailto:thenomadsco@gmail.com" className="flex items-center gap-4 group">
+              <a
+                href="mailto:thenomadsco@gmail.com"
+                className="flex items-center gap-4 group"
+              >
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform">
                   <Mail size={24} />
                 </div>
                 <div>
                   <div className="text-sm text-[#1F2328]/50 font-bold">Email</div>
-                  <div className="text-lg font-medium text-[#1F2328]">thenomadsco@gmail.com</div>
+                  <div className="text-lg font-medium text-[#1F2328]">
+                    thenomadsco@gmail.com
+                  </div>
                 </div>
               </a>
 
@@ -1625,8 +1803,12 @@ export default function Home() {
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-[#1F2328]/50 font-bold">Location</div>
-                  <div className="text-lg font-medium text-[#1F2328]">Vadodara, Gujarat, India</div>
+                  <div className="text-sm text-[#1F2328]/50 font-bold">
+                    Location
+                  </div>
+                  <div className="text-lg font-medium text-[#1F2328]">
+                    Vadodara, Gujarat, India
+                  </div>
                 </div>
               </div>
             </div>
@@ -1634,7 +1816,11 @@ export default function Home() {
 
           {/* Form */}
           <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-[2.5rem] shadow-xl">
-            <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-6">
+            <form
+              action="https://formsubmit.co/thenomadsco@gmail.com"
+              method="POST"
+              className="space-y-6"
+            >
               <input type="hidden" name="_subject" value="New Website Inquiry" />
               <input type="hidden" name="_captcha" value="false" />
 
@@ -1673,7 +1859,9 @@ export default function Home() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#1F2328]">Destination</label>
+                  <label className="text-sm font-bold text-[#1F2328]">
+                    Destination
+                  </label>
                   <input
                     type="text"
                     name="destination"
@@ -1686,7 +1874,9 @@ export default function Home() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#1F2328]">Any specific requirements?</label>
+                <label className="text-sm font-bold text-[#1F2328]">
+                  Any specific requirements?
+                </label>
                 <textarea
                   name="message"
                   rows={4}
@@ -1706,14 +1896,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer - remove "Made with love in India" completely */}
+      {/* Footer (Removed "Made with love in India" completely) */}
       <footer className="relative z-10 bg-black text-white py-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <span className="text-3xl font-bold text-white mb-6 block">The Nomads Co.</span>
+              <span className="text-3xl font-bold text-white mb-6 block">
+                The Nomads Co.
+              </span>
               <p className="text-gray-300 pr-6 leading-relaxed mb-8">
-                Crafting unforgettable, personalized travel experiences. Your journey, our expertise. Let's explore the world together.
+                Crafting unforgettable, personalized travel experiences. Your journey,
+                our expertise. Let's explore the world together.
               </p>
               <div className="flex space-x-4">
                 <a
@@ -1744,22 +1937,34 @@ export default function Home() {
               <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
               <ul className="space-y-3 font-medium text-gray-400">
                 <li>
-                  <button onClick={() => scrollToSection("about")} className="hover:text-blue-400 transition-colors">
+                  <button
+                    onClick={() => scrollToSection("about")}
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     About Us
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("destinations")} className="hover:text-blue-400 transition-colors">
+                  <button
+                    onClick={() => scrollToSection("destinations")}
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     Destinations
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("reviews")} className="hover:text-blue-400 transition-colors">
+                  <button
+                    onClick={() => scrollToSection("reviews")}
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     Reviews
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("contact")} className="hover:text-blue-400 transition-colors">
+                  <button
+                    onClick={() => scrollToSection("contact")}
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     Contact
                   </button>
                 </li>
@@ -1782,8 +1987,10 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 font-medium">
-            <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
-            {/* removed "Made with love in India" */}
+            <p className="text-sm">
+              © {new Date().getFullYear()} The Nomads Co. All rights reserved.
+            </p>
+            {/* Removed "Made with love in India" */}
           </div>
         </div>
       </footer>

@@ -4,6 +4,14 @@ import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
 
+// --- HEADERS ---
+export function headers() {
+  return {
+    "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+    "X-Content-Type-Options": "nosniff",
+  };
+}
+
 // --- META ---
 export function meta({}: Route.MetaArgs) {
   const title = "The Nomads Co. | Curated Journeys";

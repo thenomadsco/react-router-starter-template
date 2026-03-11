@@ -23,14 +23,14 @@ export function meta({}: Route.MetaArgs) {
     { title },
     { name: "description", content: description },
 
-    // Preload the LCP hero image — eliminates render-blocking delay
+    // Preload the LCP hero image — browser fetches it before React mounts
     {
       tagName: "link",
       rel: "preload",
       as: "image",
       href: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70",
       imageSrcSet:
-        "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=640&q=70 640w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70 1080w",
+        "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=640&q=70 640w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70 1080w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1920&q=70 1920w",
       imageSizes: "100vw",
       fetchPriority: "high",
     },
@@ -1462,7 +1462,7 @@ export default function Home() {
       {/* Hero Section - Redesigned Edge-to-Edge Carousel */}
       <section className="relative pt-[72px] md:pt-[88px] w-full bg-white">
         {/* Full Width Carousel */}
-        <div className="w-full relative h-[50vh] md:h-[65vh] lg:h-[75vh] overflow-hidden">
+        <div className="w-full relative h-[50vh] md:h-[65vh] lg:h-[75vh] overflow-hidden bg-gray-900">
           {heroImages.map((img, index) => (
             <div
               key={index}
@@ -1475,10 +1475,18 @@ export default function Home() {
                   index === heroActiveIndex ? "scale-[1.03]" : "scale-100"
                 }`}
               >
-                <OptimizedImage
+                {/* Plain <img> — no React state wrapper, no JS overhead for LCP */}
+                <img
                   src={img.url}
+                  srcSet={`${img.url.replace("w=1080", "w=640")} 640w, ${img.url} 1080w, ${img.url.replace("w=1080", "w=1920")} 1920w`}
+                  sizes="100vw"
                   alt={img.label}
-                  priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
+                  // @ts-ignore
+                  fetchpriority={index === 0 ? "high" : "low"}
+                  width={1080}
+                  height={720}
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -8,7 +8,6 @@ import type { Route } from "./+types/home";
 export function headers() {
   return {
     "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-    "X-Content-Type-Options": "nosniff",
   };
 }
 
@@ -23,14 +22,19 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title },
     { name: "description", content: description },
-    // Preload LCP hero image
+
+    // Preload the LCP hero image — eliminates render-blocking delay
     {
       tagName: "link",
       rel: "preload",
       as: "image",
-      href: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1200&q=65",
+      href: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70",
+      imageSrcSet:
+        "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=640&q=70 640w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70 1080w",
+      imageSizes: "100vw",
       fetchPriority: "high",
     },
+
     // Social previews
     { property: "og:title", content: title },
     { property: "og:description", content: description },
@@ -243,44 +247,25 @@ function Send(props: any) {
 }
 
 // --- HELPER COMPONENTS ---
-// Returns a smaller Unsplash URL for destination cards (lazy, below fold)
-function thumbSrc(src: string): string {
-  if (src.includes("unsplash.com")) {
-    return src
-      .replace(/[?&]w=\d+/, "")
-      .replace(/[?&]q=\d+/, "")
-      .replace(/[?&]fm=[a-z]+/, "")
-      + (src.includes("?") ? "&" : "?") + "auto=format&fit=crop&fm=webp&w=480&q=55";
-  }
-  // Wikimedia: reduce to 480
-  if (src.includes("wikimedia.org")) {
-    return src.replace(/width=\d+/, "width=480");
-  }
-  return src;
-}
-
 const OptimizedImage = ({
   src,
   alt,
   className,
   priority = false,
-  thumb = false,
 }: {
   src: string;
   alt: string;
   className?: string;
   priority?: boolean;
-  thumb?: boolean;
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
 
   const handleLoad = () => setIsLoaded(true);
   const handleError = () => setError(true);
-
   const finalSrc = error
-    ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=50&w=600"
-    : thumb ? thumbSrc(src) : src;
+    ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=55&w=600"
+    : src;
 
   return (
     <div className={`relative overflow-hidden bg-gray-100 ${className ?? ""}`}>
@@ -289,8 +274,8 @@ const OptimizedImage = ({
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
-        // @ts-ignore
-        fetchpriority={priority ? "high" : undefined}
+        // @ts-ignore – fetchpriority is valid but not all TS defs include it
+        fetchpriority={priority ? "high" : "auto"}
         onLoad={handleLoad}
         onError={handleError}
         className={`w-full h-full object-cover transition-opacity duration-500 ${
@@ -304,42 +289,26 @@ const OptimizedImage = ({
   );
 };
 
-// Single shared IntersectionObserver for all reveal animations
-const RevealContext = React.createContext<((el: Element, cb: () => void) => () => void) | null>(null);
-
-function RevealProvider({ children }: { children: React.ReactNode }) {
-  const callbacksRef = useRef<Map<Element, () => void>>(new Map());
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
+// Single shared IntersectionObserver — avoids creating one per section
+const revealCallbacks = new Map<Element, () => void>();
+let sharedObserver: IntersectionObserver | null = null;
+function getObserver() {
+  if (typeof window === "undefined") return null;
+  if (!sharedObserver) {
+    sharedObserver = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const cb = callbacksRef.current.get(entry.target);
-            if (cb) {
-              cb();
-              callbacksRef.current.delete(entry.target);
-              observerRef.current?.unobserve(entry.target);
-            }
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            revealCallbacks.get(e.target)?.();
+            revealCallbacks.delete(e.target);
+            sharedObserver?.unobserve(e.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
     );
-    return () => observerRef.current?.disconnect();
-  }, []);
-
-  const observe = (el: Element, cb: () => void) => {
-    callbacksRef.current.set(el, cb);
-    observerRef.current?.observe(el);
-    return () => {
-      callbacksRef.current.delete(el);
-      observerRef.current?.unobserve(el);
-    };
-  };
-
-  return <RevealContext.Provider value={observe}>{children}</RevealContext.Provider>;
+  }
+  return sharedObserver;
 }
 
 const RevealOnScroll = ({
@@ -351,18 +320,22 @@ const RevealOnScroll = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const observe = React.useContext(RevealContext);
 
   useEffect(() => {
-    if (!ref.current || !observe) return;
-    return observe(ref.current, () => setIsVisible(true));
-  }, [observe]);
+    const el = ref.current;
+    if (!el) return;
+    const obs = getObserver();
+    if (!obs) { setIsVisible(true); return; }
+    revealCallbacks.set(el, () => setIsVisible(true));
+    obs.observe(el);
+    return () => { revealCallbacks.delete(el); obs.unobserve(el); };
+  }, []);
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      className={`transition-all duration-700 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       } ${className}`}
     >
       {children}
@@ -373,15 +346,15 @@ const RevealOnScroll = ({
 // --- DATASETS ---
 const heroImages = [
   {
-    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1200&q=65",
+    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70",
     label: "Taj Mahal, India",
   },
   {
-    url: "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=1200&q=65",
+    url: "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=1080&q=70",
     label: "Santorini, Greece",
   },
   {
-    url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=1200&q=65",
+    url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=1080&q=70",
     label: "Eiffel Tower, Paris",
   },
 ];
@@ -435,7 +408,7 @@ const destinations: Destination[] = [
     title: "Bali, Indonesia",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Tropical", "Beaches", "Culture"],
     description: "Island of Gods with serene beaches and vibrant culture.",
   },
@@ -453,7 +426,7 @@ const destinations: Destination[] = [
     title: "Dubai, UAE",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Luxury", "City", "Desert"],
     description: "Futuristic architecture, luxury shopping, and desert safaris.",
   },
@@ -462,7 +435,7 @@ const destinations: Destination[] = [
     title: "Singapore",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["City", "Family", "Modern"],
     description: "A blend of nature and modernity in a global metropolis.",
   },
@@ -471,7 +444,7 @@ const destinations: Destination[] = [
     title: "Thailand",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Beaches", "Culture", "Nightlife"],
     description: "Vibrant street life, ornate temples, and tropical beaches.",
   },
@@ -480,7 +453,7 @@ const destinations: Destination[] = [
     title: "Vietnam",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Nature", "Culture", "Food"],
     description: "Bustling cities, serene limestone islands, and rich history.",
   },
@@ -498,7 +471,7 @@ const destinations: Destination[] = [
     title: "Bhutan",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Mountains", "Culture", "Peace"],
     description: "The last great Himalayan kingdom, shrouded in mystery.",
   },
@@ -507,7 +480,7 @@ const destinations: Destination[] = [
     title: "Europe (Schengen)",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["History", "Culture", "Romance"],
     description:
       "Explore diverse cultures, history, and architecture across Europe.",
@@ -517,7 +490,7 @@ const destinations: Destination[] = [
     title: "Australia",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Adventure", "Wildlife", "Beaches"],
     description:
       "The Great Barrier Reef, outback adventures, and vibrant cities.",
@@ -527,7 +500,7 @@ const destinations: Destination[] = [
     title: "New Zealand",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Adventure", "Nature", "Landscapes"],
     description: "Stunning natural landscapes, from mountains to fjords.",
   },
@@ -536,7 +509,7 @@ const destinations: Destination[] = [
     title: "Japan",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Culture", "Modern", "Food"],
     description:
       "A seamless blend of ancient traditions and cutting-edge technology.",
@@ -546,7 +519,7 @@ const destinations: Destination[] = [
     title: "South Korea",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Culture", "City", "Food"],
     description: "Dynamic cities, ancient palaces, and trendy pop culture.",
   },
@@ -555,7 +528,7 @@ const destinations: Destination[] = [
     title: "Turkey",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["History", "Culture", "Landscapes"],
     description:
       "Where East meets West, featuring rich history and unique landscapes.",
@@ -584,7 +557,7 @@ const destinations: Destination[] = [
     title: "Kenya",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Wildlife", "Safari", "Nature"],
     description: "Home of the Great Migration and iconic African wildlife.",
   },
@@ -605,7 +578,7 @@ const destinations: Destination[] = [
     title: "Kashmir",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Mountains", "Nature", "Romance"],
     description: "Paradise on Earth with stunning valleys and Dal Lake.",
   },
@@ -614,7 +587,7 @@ const destinations: Destination[] = [
     title: "Leh-Ladakh",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Adventure", "Mountains", "Road Trip"],
     description: "Stark mountain landscapes, monasteries, and high passes.",
   },
@@ -642,7 +615,7 @@ const destinations: Destination[] = [
     title: "Rajasthan",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["History", "Culture", "Desert"],
     description: "Royal palaces, vibrant culture, and vast desert landscapes.",
   },
@@ -651,7 +624,7 @@ const destinations: Destination[] = [
     title: "Goa",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Beaches", "Nightlife", "Relaxation"],
     description: "Sun, sand, beaches, and a relaxed coastal vibe.",
   },
@@ -660,7 +633,7 @@ const destinations: Destination[] = [
     title: "Kerala",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=55",
+      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Nature", "Backwaters", "Wellness"],
     description: "God's Own Country with tranquil backwaters and lush greenery.",
   },
@@ -1317,22 +1290,18 @@ export default function Home() {
     }
   };
 
-  // Pause carousel when tab is not visible to avoid wasted work
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
+    let id: ReturnType<typeof setInterval>;
     const start = () => {
-      interval = setInterval(() => {
-        setHeroActiveIndex((prev) => (prev + 1) % heroImages.length);
-      }, 5000);
+      id = setInterval(
+        () => setHeroActiveIndex((p) => (p + 1) % heroImages.length),
+        5000
+      );
     };
-    const stop = () => { if (interval) clearInterval(interval); };
-    const onVisibility = () => document.hidden ? stop() : start();
+    const onVis = () => (document.hidden ? clearInterval(id) : start());
     start();
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => {
-      stop();
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => { clearInterval(id); document.removeEventListener("visibilitychange", onVis); };
   }, []);
 
   useEffect(() => {
@@ -1362,10 +1331,9 @@ export default function Home() {
   };
 
   return (
-    <RevealProvider>
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
-      {/* Static background gradient - no animated blobs (perf) */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-50" />
+      {/* Static gradient background — no animated blobs (eliminates forced reflow/repaint) */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-60" />
 
       {/* Navigation */}
       <nav
@@ -1511,7 +1479,7 @@ export default function Home() {
                   src={img.url}
                   alt={img.label}
                   priority={index === 0}
-                  className="w-full h-full"
+                  className="w-full h-full object-cover"
                 />
               </div>
 
@@ -1672,12 +1640,12 @@ export default function Home() {
               className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-white border border-gray-100"
             >
               <img
-                src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1200&q=60"
+                src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65"
                 alt="World Travel"
                 loading="lazy"
                 decoding="async"
-                width={1200}
-                height={600}
+                width={1080}
+                height={540}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-white/70 z-10" />
@@ -1752,7 +1720,6 @@ export default function Home() {
                       <OptimizedImage
                         src={dest.image}
                         alt={dest.title}
-                        thumb={true}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -2072,6 +2039,5 @@ export default function Home() {
       {/* Chatbot (DO NOT CHANGE) */}
       <NomadsChatbot />
     </div>
-    </RevealProvider>
   );
 }

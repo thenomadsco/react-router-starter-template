@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
@@ -15,7 +15,14 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title },
     { name: "description", content: description },
-
+    // Preload LCP hero image
+    {
+      tagName: "link",
+      rel: "preload",
+      as: "image",
+      href: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1200&q=65",
+      fetchPriority: "high",
+    },
     // Social previews
     { property: "og:title", content: title },
     { property: "og:description", content: description },
@@ -228,15 +235,20 @@ function Send(props: any) {
 }
 
 // --- HELPER COMPONENTS ---
-// Builds a srcset for Unsplash images at multiple widths
-function unsplashSrcSet(src: string, quality = 60): string {
-  // Only apply to Unsplash images
-  if (!src.includes("unsplash.com")) return "";
-  const base = src.replace(/[?&](w|q|auto|fm|fit|crop)=[^&]*/g, "").replace(/[?&]+$/, "");
-  const widths = [400, 800, 1200, 1600];
-  return widths
-    .map((w) => `${base}?auto=format&fit=crop&fm=webp&q=${quality}&w=${w} ${w}w`)
-    .join(", ");
+// Returns a smaller Unsplash URL for destination cards (lazy, below fold)
+function thumbSrc(src: string): string {
+  if (src.includes("unsplash.com")) {
+    return src
+      .replace(/[?&]w=\d+/, "")
+      .replace(/[?&]q=\d+/, "")
+      .replace(/[?&]fm=[a-z]+/, "")
+      + (src.includes("?") ? "&" : "?") + "auto=format&fit=crop&fm=webp&w=480&q=55";
+  }
+  // Wikimedia: reduce to 480
+  if (src.includes("wikimedia.org")) {
+    return src.replace(/width=\d+/, "width=480");
+  }
+  return src;
 }
 
 const OptimizedImage = ({
@@ -244,37 +256,36 @@ const OptimizedImage = ({
   alt,
   className,
   priority = false,
+  thumb = false,
 }: {
   src: string;
   alt: string;
   className?: string;
   priority?: boolean;
+  thumb?: boolean;
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
 
   const handleLoad = () => setIsLoaded(true);
   const handleError = () => setError(true);
-  const finalSrc = error
-    ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=55&w=800"
-    : src;
 
-  const srcSet = !error ? unsplashSrcSet(src) : "";
+  const finalSrc = error
+    ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=50&w=600"
+    : thumb ? thumbSrc(src) : src;
 
   return (
     <div className={`relative overflow-hidden bg-gray-100 ${className ?? ""}`}>
       <img
         src={finalSrc}
-        srcSet={srcSet || undefined}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
-        // @ts-ignore – fetchpriority is valid HTML but not yet in all TS defs
-        fetchpriority={priority ? "high" : "low"}
+        // @ts-ignore
+        fetchpriority={priority ? "high" : undefined}
         onLoad={handleLoad}
         onError={handleError}
-        className={`w-full h-full object-cover transition-opacity duration-700 ${
+        className={`w-full h-full object-cover transition-opacity duration-500 ${
           isLoaded ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -285,6 +296,44 @@ const OptimizedImage = ({
   );
 };
 
+// Single shared IntersectionObserver for all reveal animations
+const RevealContext = React.createContext<((el: Element, cb: () => void) => () => void) | null>(null);
+
+function RevealProvider({ children }: { children: React.ReactNode }) {
+  const callbacksRef = useRef<Map<Element, () => void>>(new Map());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const cb = callbacksRef.current.get(entry.target);
+            if (cb) {
+              cb();
+              callbacksRef.current.delete(entry.target);
+              observerRef.current?.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  const observe = (el: Element, cb: () => void) => {
+    callbacksRef.current.set(el, cb);
+    observerRef.current?.observe(el);
+    return () => {
+      callbacksRef.current.delete(el);
+      observerRef.current?.unobserve(el);
+    };
+  };
+
+  return <RevealContext.Provider value={observe}>{children}</RevealContext.Provider>;
+}
+
 const RevealOnScroll = ({
   children,
   className = "",
@@ -294,29 +343,18 @@ const RevealOnScroll = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const observe = React.useContext(RevealContext);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => {
-      if (ref.current) observer.unobserve(ref.current);
-    };
-  }, []);
+    if (!ref.current || !observe) return;
+    return observe(ref.current, () => setIsVisible(true));
+  }, [observe]);
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      className={`transition-all duration-700 transform ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       } ${className}`}
     >
       {children}
@@ -389,7 +427,7 @@ const destinations: Destination[] = [
     title: "Bali, Indonesia",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Tropical", "Beaches", "Culture"],
     description: "Island of Gods with serene beaches and vibrant culture.",
   },
@@ -398,7 +436,7 @@ const destinations: Destination[] = [
     title: "Maldives",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480",
     tags: ["Honeymoon", "Luxury", "Beaches"],
     description: "Overwater villas and crystal clear turquoise lagoons.",
   },
@@ -407,7 +445,7 @@ const destinations: Destination[] = [
     title: "Dubai, UAE",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Luxury", "City", "Desert"],
     description: "Futuristic architecture, luxury shopping, and desert safaris.",
   },
@@ -416,7 +454,7 @@ const destinations: Destination[] = [
     title: "Singapore",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["City", "Family", "Modern"],
     description: "A blend of nature and modernity in a global metropolis.",
   },
@@ -425,7 +463,7 @@ const destinations: Destination[] = [
     title: "Thailand",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Beaches", "Culture", "Nightlife"],
     description: "Vibrant street life, ornate temples, and tropical beaches.",
   },
@@ -434,7 +472,7 @@ const destinations: Destination[] = [
     title: "Vietnam",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Nature", "Culture", "Food"],
     description: "Bustling cities, serene limestone islands, and rich history.",
   },
@@ -443,7 +481,7 @@ const destinations: Destination[] = [
     title: "Sri Lanka",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=480",
     tags: ["Nature", "Wildlife", "Beaches"],
     description: "Diverse landscapes, wildlife, and ancient Buddhist ruins.",
   },
@@ -452,7 +490,7 @@ const destinations: Destination[] = [
     title: "Bhutan",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Mountains", "Culture", "Peace"],
     description: "The last great Himalayan kingdom, shrouded in mystery.",
   },
@@ -461,7 +499,7 @@ const destinations: Destination[] = [
     title: "Europe (Schengen)",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["History", "Culture", "Romance"],
     description:
       "Explore diverse cultures, history, and architecture across Europe.",
@@ -471,7 +509,7 @@ const destinations: Destination[] = [
     title: "Australia",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Adventure", "Wildlife", "Beaches"],
     description:
       "The Great Barrier Reef, outback adventures, and vibrant cities.",
@@ -481,7 +519,7 @@ const destinations: Destination[] = [
     title: "New Zealand",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Adventure", "Nature", "Landscapes"],
     description: "Stunning natural landscapes, from mountains to fjords.",
   },
@@ -490,7 +528,7 @@ const destinations: Destination[] = [
     title: "Japan",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Culture", "Modern", "Food"],
     description:
       "A seamless blend of ancient traditions and cutting-edge technology.",
@@ -500,7 +538,7 @@ const destinations: Destination[] = [
     title: "South Korea",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Culture", "City", "Food"],
     description: "Dynamic cities, ancient palaces, and trendy pop culture.",
   },
@@ -509,7 +547,7 @@ const destinations: Destination[] = [
     title: "Turkey",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["History", "Culture", "Landscapes"],
     description:
       "Where East meets West, featuring rich history and unique landscapes.",
@@ -519,7 +557,7 @@ const destinations: Destination[] = [
     title: "USA",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_South_Rim_at_Sunset.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_South_Rim_at_Sunset.jpg?width=480",
     tags: ["City", "Nature", "Diverse"],
     description:
       "Diverse experiences from bustling metropolises to vast national parks.",
@@ -529,7 +567,7 @@ const destinations: Destination[] = [
     title: "South Africa",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=480",
     tags: ["Wildlife", "Adventure", "Nature"],
     description: "Safari adventures, stunning coastlines, and vibrant culture.",
   },
@@ -538,7 +576,7 @@ const destinations: Destination[] = [
     title: "Kenya",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Wildlife", "Safari", "Nature"],
     description: "Home of the Great Migration and iconic African wildlife.",
   },
@@ -547,7 +585,7 @@ const destinations: Destination[] = [
     title: "Tanzania",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=480",
     tags: ["Wildlife", "Safari", "Beaches"],
     description:
       "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches.",
@@ -559,7 +597,7 @@ const destinations: Destination[] = [
     title: "Kashmir",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Mountains", "Nature", "Romance"],
     description: "Paradise on Earth with stunning valleys and Dal Lake.",
   },
@@ -568,7 +606,7 @@ const destinations: Destination[] = [
     title: "Leh-Ladakh",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Adventure", "Mountains", "Road Trip"],
     description: "Stark mountain landscapes, monasteries, and high passes.",
   },
@@ -577,7 +615,7 @@ const destinations: Destination[] = [
     title: "Himachal Pradesh",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=480",
     tags: ["Mountains", "Nature", "Adventure"],
     description: "Scenic hill stations, pine forests, and snow-capped peaks.",
   },
@@ -586,7 +624,7 @@ const destinations: Destination[] = [
     title: "Uttarakhand",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=480",
     tags: ["Mountains", "Spiritual", "Nature"],
     description:
       "Land of Gods, featuring pilgrimage sites and Himalayan vistas.",
@@ -596,7 +634,7 @@ const destinations: Destination[] = [
     title: "Rajasthan",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["History", "Culture", "Desert"],
     description: "Royal palaces, vibrant culture, and vast desert landscapes.",
   },
@@ -605,7 +643,7 @@ const destinations: Destination[] = [
     title: "Goa",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Beaches", "Nightlife", "Relaxation"],
     description: "Sun, sand, beaches, and a relaxed coastal vibe.",
   },
@@ -614,7 +652,7 @@ const destinations: Destination[] = [
     title: "Kerala",
     category: "India",
     image:
-      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=600&q=60",
+      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=55",
     tags: ["Nature", "Backwaters", "Wellness"],
     description: "God's Own Country with tranquil backwaters and lush greenery.",
   },
@@ -623,7 +661,7 @@ const destinations: Destination[] = [
     title: "Andaman Islands",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Radhanagar_Beach%2C_Andaman_1.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Radhanagar_Beach%2C_Andaman_1.jpg?width=480",
     tags: ["Beaches", "Islands", "Adventure"],
     description: "Pristine beaches, clear waters, and water sports.",
   },
@@ -632,7 +670,7 @@ const destinations: Destination[] = [
     title: "North East India",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Kaziranga_National_Park_%2C_Assam.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Kaziranga_National_Park_%2C_Assam.jpg?width=480",
     tags: ["Nature", "Culture", "Offbeat"],
     description: "Unexplored beauty, tribal culture, and biodiversity.",
   },
@@ -641,7 +679,7 @@ const destinations: Destination[] = [
     title: "Sikkim",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Kanchenjunga_from_Zuluk%2C_Sikkim.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Kanchenjunga_from_Zuluk%2C_Sikkim.jpg?width=480",
     tags: ["Mountains", "Nature", "Monasteries"],
     description: "Home to Kanchenjunga, scenic landscapes, and monasteries.",
   },
@@ -650,7 +688,7 @@ const destinations: Destination[] = [
     title: "Meghalaya",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=480",
     tags: ["Nature", "Waterfalls", "Offbeat"],
     description:
       "Abode of Clouds, known for living root bridges and waterfalls.",
@@ -660,7 +698,7 @@ const destinations: Destination[] = [
     title: "Arunachal Pradesh",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Tawang_Monastery%2C_Arunachal_Pradesh.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Tawang_Monastery%2C_Arunachal_Pradesh.jpg?width=480",
     tags: ["Mountains", "Culture", "Adventure"],
     description: "Land of the Dawn-Lit Mountains with rich tribal heritage.",
   },
@@ -669,7 +707,7 @@ const destinations: Destination[] = [
     title: "Karnataka",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_karnataka.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_karnataka.jpg?width=480",
     tags: ["History", "Nature", "Culture"],
     description: "Heritage sites like Hampi, coffee plantations in Coorg.",
   },
@@ -678,7 +716,7 @@ const destinations: Destination[] = [
     title: "Tamil Nadu",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi_Amman_Temple%2C_Madurai.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi_Amman_Temple%2C_Madurai.jpg?width=480",
     tags: ["Culture", "Temples", "Beaches"],
     description: "Land of temples, rich culture, and coastal beauty.",
   },
@@ -687,7 +725,7 @@ const destinations: Destination[] = [
     title: "Pondicherry",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Beach_Promenade%2C_Pondicherry%2C_India.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Beach_Promenade%2C_Pondicherry%2C_India.jpg?width=480",
     tags: ["Beaches", "French Colony", "Relaxation"],
     description: "A touch of French culture on the Indian coast.",
   },
@@ -696,7 +734,7 @@ const destinations: Destination[] = [
     title: "West Bengal",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Victoria_Memorial_Kolkata.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Victoria_Memorial_Kolkata.jpg?width=480",
     tags: ["Culture", "History", "Mountains"],
     description:
       "Cultural richness of Kolkata to the tea gardens of Darjeeling.",
@@ -706,7 +744,7 @@ const destinations: Destination[] = [
     title: "Odisha",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Konark_sun_temple%2C_Odisha.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Konark_sun_temple%2C_Odisha.jpg?width=480",
     tags: ["Culture", "Temples", "Beaches"],
     description: "Known for its ancient temples, beaches, and tribal culture.",
   },
@@ -715,7 +753,7 @@ const destinations: Destination[] = [
     title: "Gujarat",
     category: "India",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Rann_of_Kutch.jpg?width=600",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Rann_of_Kutch.jpg?width=480",
     tags: ["Culture", "Wildlife", "White Desert"],
     description: "Rann of Kutch, Asiatic Lions, and vibrant traditions.",
   },
@@ -1271,11 +1309,22 @@ export default function Home() {
     }
   };
 
+  // Pause carousel when tab is not visible to avoid wasted work
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroActiveIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => {
+      interval = setInterval(() => {
+        setHeroActiveIndex((prev) => (prev + 1) % heroImages.length);
+      }, 5000);
+    };
+    const stop = () => { if (interval) clearInterval(interval); };
+    const onVisibility = () => document.hidden ? stop() : start();
+    start();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   useEffect(() => {
@@ -1305,14 +1354,10 @@ export default function Home() {
   };
 
   return (
+    <RevealProvider>
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
-      {/* Background Elements */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-50"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
+      {/* Static background gradient - no animated blobs (perf) */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-50" />
 
       {/* Navigation */}
       <nav
@@ -1333,7 +1378,8 @@ export default function Home() {
               width={40}
               height={40}
               loading="eager"
-              fetchPriority="high"
+              // @ts-ignore
+              fetchpriority="high"
               className="h-10 w-auto rounded-md shadow-sm"
             />
             <span className="font-bold tracking-tighter text-lg sm:text-2xl">
@@ -1457,7 +1503,7 @@ export default function Home() {
                   src={img.url}
                   alt={img.label}
                   priority={index === 0}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
                 />
               </div>
 
@@ -1698,6 +1744,7 @@ export default function Home() {
                       <OptimizedImage
                         src={dest.image}
                         alt={dest.title}
+                        thumb={true}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -2017,5 +2064,6 @@ export default function Home() {
       {/* Chatbot (DO NOT CHANGE) */}
       <NomadsChatbot />
     </div>
+    </RevealProvider>
   );
 }

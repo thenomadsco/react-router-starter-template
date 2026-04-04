@@ -389,7 +389,7 @@ const destinations: Destination[] = [
     title: "Maldives",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480",
+      "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Honeymoon", "Luxury", "Beaches"],
     description: "Overwater villas and crystal clear turquoise lagoons.",
   },
@@ -434,7 +434,7 @@ const destinations: Destination[] = [
     title: "Sri Lanka",
     category: "International",
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=480",
+      "https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&fm=webp&w=480&q=60",
     tags: ["Nature", "Wildlife", "Beaches"],
     description: "Diverse landscapes, wildlife, and ancient Buddhist ruins.",
   },

@@ -10,24 +10,15 @@ import type { Route } from "./+types/root";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
-	// Preconnect to Google Fonts origin — eliminates DNS + TCP handshake from critical path
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
 		rel: "preconnect",
 		href: "https://fonts.gstatic.com",
 		crossOrigin: "anonymous",
 	},
-	// Inter: only the weights actually used (300,400,500,600,700,800)
-	// NOT the full variable range 100..900 — saves ~60% of font payload
 	{
 		rel: "stylesheet",
-		href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap",
-	},
-	// Playfair Display: used for headings in home.tsx — load it so headings don't FOUT
-	// Only weight 500 and 700 are used
-	{
-		rel: "stylesheet",
-		href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap",
+		href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap",
 	},
 ];
 

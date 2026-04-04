@@ -3,6 +3,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
+import EarthScene from "../components/EarthScene";
+import { BentoServices } from "../components/BentoServices";
+
 
 // --- HEADERS ---
 export function headers() {
@@ -268,7 +271,7 @@ const OptimizedImage = ({
     : src;
 
   return (
-    <div className={`relative overflow-hidden bg-gray-100 ${className ?? ""}`}>
+    <div className={`relative overflow-hidden bg-[#111] ${className ?? ""}`}>
       <img
         src={finalSrc}
         alt={alt}
@@ -283,7 +286,7 @@ const OptimizedImage = ({
         }`}
       />
       {!isLoaded && !error && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        <div className="absolute inset-0 bg-[#1a1a1a] animate-pulse" />
       )}
     </div>
   );
@@ -334,9 +337,9 @@ const RevealOnScroll = ({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      } ${className}`}
+      className={`${className} ${
+        isVisible ? "animate-fade-up" : "opacity-0"
+      }`}
     >
       {children}
     </div>
@@ -359,38 +362,7 @@ const heroImages = [
   },
 ];
 
-const keyServices = [
-  {
-    icon: <Plane className="w-8 h-8 text-blue-600" />,
-    title: "Visa & Flight Support",
-    description: "Hassle-free documentation and booking assistance.",
-  },
-  {
-    icon: <MapIcon className="w-8 h-8 text-blue-600" />,
-    title: "End-to-End Planning",
-    description: "From itinerary creation to returning home safely.",
-  },
-  {
-    icon: <Shield className="w-8 h-8 text-blue-600" />,
-    title: "Verified Premium Stays",
-    description: "Handpicked 4 & 5 star accommodations for comfort.",
-  },
-  {
-    icon: <Headphones className="w-8 h-8 text-blue-600" />,
-    title: "24/7 On-Trip Support",
-    description: "Always just a message away whenever you need us.",
-  },
-  {
-    icon: <Compass className="w-8 h-8 text-blue-600" />,
-    title: "Curated Local Experiences",
-    description: "Authentic activities beyond standard tourist traps.",
-  },
-  {
-    icon: <SlidersHorizontal className="w-8 h-8 text-blue-600" />,
-    title: "Flexible Itineraries",
-    description: "Plans that adapt to your pace and preferences.",
-  },
-];
+
 
 type Destination = {
   id: number;
@@ -989,7 +961,7 @@ function NomadsChatbot() {
     }
 
     if (key === "destination") {
-      if (current.required && !v)
+      if ((current as any).required && !v)
         return { ok: false as const, err: "Destination can’t be blank 🙂" };
       if (looksLikePhone(v))
         return {
@@ -1009,7 +981,7 @@ function NomadsChatbot() {
     }
 
     if (key === "dates") {
-      if (current.required && !v)
+      if ((current as any).required && !v)
         return { ok: false as const, err: "Dates can’t be blank 🙂" };
       if (looksLikePhone(v))
         return {
@@ -1032,7 +1004,7 @@ function NomadsChatbot() {
     }
 
     if (key === "details") {
-      if (current.required && !v)
+      if ((current as any).required && !v)
         return { ok: false as const, err: "Quick one — please add a short message 🙂" };
       const cleaned = v.replace(/\s+/g, " ").trim();
       if (cleaned.length < 6)
@@ -1049,7 +1021,7 @@ function NomadsChatbot() {
       return { ok: true as const, value: v };
     }
 
-    if (current.required && !v)
+    if ((current as any).required && !v)
       return { ok: false as const, err: "Quick one — this can’t be blank 🙂" };
     return { ok: true as const, value: v || "" };
   };
@@ -1108,7 +1080,7 @@ function NomadsChatbot() {
           <span className="hidden sm:inline">Chat</span>
         </button>
       ) : (
-        <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden border border-black/10">
+        <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-[#0a0a0a] overflow-hidden border border-black/10">
           <div className="flex items-center justify-between px-4 py-3 bg-black text-white">
             <div className="text-sm font-semibold">Nomads Assistant</div>
             <div className="flex items-center gap-2">
@@ -1136,7 +1108,7 @@ function NomadsChatbot() {
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
                     m.from === "user"
                       ? "bg-black text-white"
-                      : "bg-gray-100 text-gray-900"
+                      : "bg-[#111] text-white"
                   }`}
                 >
                   {m.text}
@@ -1174,9 +1146,9 @@ function NomadsChatbot() {
               >
                 Send on WhatsApp ✅
               </a>
-              <details className="text-xs text-gray-600">
+              <details className="text-xs text-gray-400">
                 <summary className="cursor-pointer">Preview message</summary>
-                <pre className="whitespace-pre-wrap mt-2 bg-gray-50 p-2 rounded-xl border border-black/5">
+                <pre className="whitespace-pre-wrap mt-2 bg-black p-2 rounded-xl border border-black/5">
 {whatsappText}
                 </pre>
               </details>
@@ -1331,19 +1303,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
-      {/* Static gradient background — no animated blobs (eliminates forced reflow/repaint) */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-60" />
-
+    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+      <style>{`
+        @keyframes fadeUp {
+          0% { opacity: 0; transform: translateY(30px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+          animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+      `}</style>
       {/* Navigation */}
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-md py-4 shadow-sm border-b border-gray-100"
-            : "bg-white/50 backdrop-blur-sm py-6"
+            ? "bg-black/80 backdrop-blur-md py-4 shadow-sm border-b border-white/10"
+            : "bg-transparent py-6"
         }`}
       >
-        <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
+        <div className="w-full px-6 md:px-12 flex justify-between items-center">
           <div
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -1358,40 +1341,41 @@ export default function Home() {
               fetchpriority="high"
               className="h-10 w-auto rounded-md shadow-sm"
             />
-            <span className="font-bold tracking-tighter text-lg sm:text-2xl">
-              The Nomads Co.
-            </span>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-12">
             <button
               onClick={() => scrollToSection("about")}
-              className="text-sm font-medium hover:text-blue-600 transition-colors"
+              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
+              
             >
               About
             </button>
             <button
               onClick={() => scrollToSection("destinations")}
-              className="text-sm font-medium hover:text-blue-600 transition-colors"
+              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
+              
             >
               Destinations
             </button>
             <button
               onClick={() => scrollToSection("reviews")}
-              className="text-sm font-medium hover:text-blue-600 transition-colors"
+              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
+              
             >
               Reviews
             </button>
             <button
               onClick={() => scrollToSection("contact")}
-              className="px-6 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              className="px-8 py-2.5 bg-white text-black text-xs font-bold tracking-widest uppercase rounded-full hover:bg-gray-200 hover:text-black transition-all shadow-md hover:shadow-lg"
+              
             >
               Plan My Trip
             </button>
           </div>
 
           <button
-            className="md:hidden z-50 p-2 text-gray-900"
+            className="md:hidden z-50 p-2 text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -1408,10 +1392,10 @@ export default function Home() {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6">
+          <div className="fixed inset-0 z-[100] bg-black flex flex-col pt-24 px-6">
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="absolute top-6 right-6 text-3xl font-light text-gray-900"
+              className="absolute top-6 right-6 text-3xl font-light text-white"
               aria-label="Close menu"
             >
               ×
@@ -1423,7 +1407,7 @@ export default function Home() {
                   scrollToSection("about");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-gray-900"
+                className="text-2xl font-semibold text-white"
               >
                 About
               </button>
@@ -1432,7 +1416,7 @@ export default function Home() {
                   scrollToSection("destinations");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-gray-900"
+                className="text-2xl font-semibold text-white"
               >
                 Destinations
               </button>
@@ -1441,7 +1425,7 @@ export default function Home() {
                   scrollToSection("reviews");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-gray-900"
+                className="text-2xl font-semibold text-white"
               >
                 Reviews
               </button>
@@ -1450,7 +1434,7 @@ export default function Home() {
                   scrollToSection("contact");
                   setIsMenuOpen(false);
                 }}
-                className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors"
+                className="px-8 py-3 bg-white text-black text-lg font-medium rounded-full shadow-md hover:bg-gray-200 hover:text-black transition-colors"
               >
                 Plan My Trip
               </button>
@@ -1459,120 +1443,16 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Hero Section - Redesigned Edge-to-Edge Carousel */}
-      <section className="relative pt-[72px] md:pt-[88px] w-full bg-white">
-        {/* Full Width Carousel */}
-        <div className="w-full relative h-[50vh] md:h-[65vh] lg:h-[75vh] overflow-hidden bg-gray-900">
-          {heroImages.map((img, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === heroActiveIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-              }`}
-            >
-              <div
-                className={`absolute inset-0 transition-transform duration-[1400ms] ease-out ${
-                  index === heroActiveIndex ? "scale-[1.03]" : "scale-100"
-                }`}
-              >
-                {/* Plain <img> — no React state wrapper, no JS overhead for LCP */}
-                <img
-                  src={img.url}
-                  srcSet={`${img.url.replace("w=1080", "w=640")} 640w, ${img.url} 1080w, ${img.url.replace("w=1080", "w=1920")} 1920w`}
-                  sizes="100vw"
-                  alt={img.label}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding={index === 0 ? "sync" : "async"}
-                  // @ts-ignore
-                  fetchpriority={index === 0 ? "high" : "low"}
-                  width={1080}
-                  height={720}
-                  className="w-full h-full object-cover"
-                />
-              </div>
 
-              {/* Soft overlays for legibility */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/55" />
+      {/* 3D Earth Hero Section */}
+      <EarthScene />
 
-              {/* Minimal location pill */}
-              <div className="absolute bottom-14 md:bottom-16 left-1/2 -translate-x-1/2 text-white z-20">
-                <div className="px-4 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 shadow-sm">
-                  <span className="text-sm md:text-base font-semibold tracking-wide drop-shadow">
-                    {img.label}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Simple dot indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-black/25 backdrop-blur-md border border-white/10">
-              {heroImages.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setHeroActiveIndex(index)}
-                  aria-label={`Show ${img.label}`}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    index === heroActiveIndex
-                      ? "w-8 bg-white"
-                      : "w-2.5 bg-white/60 hover:bg-white"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Text Content Below Carousel */}
-        <div className="container mx-auto px-4 md:px-8 py-16 md:py-20 text-center relative z-10">
-          <RevealOnScroll>
-            <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#E6E8EF] rounded-full shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#02A551] animate-pulse" />
-              <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">
-                Premium Travel Experts
-              </span>
-            </div>
-
-            {/* FORMAT FIX ONLY (content unchanged) */}
-            <h1
-              className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl leading-tight sm:leading-[1.1] mb-8 text-[#1F2328]"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 500,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Discover the world{" "}
-              <span className="block sm:inline">with </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">
-                The Nomads Co.
-              </span>
-            </h1>
-
-            <p
-              className="text-base sm:text-lg leading-relaxed text-[#1F2328]/70 mb-10 max-w-xl mx-auto"
-              style={{ letterSpacing: "0.01em" }}
-            >
-              At The Nomads Co., we believe that travel is not just about visiting
-              new places, but about the stories you create and the memories you
-              cherish forever. Whether you dream of walking through ancient
-              streets, relaxing on pristine beaches, or exploring vibrant
-              cultures, we are here to craft the perfect journey just for you.
-              Sit back, relax, and let us handle every detail while you focus on
-              the magic of discovery.
-            </p>
-
-            {/* DELETED: Trusted by 1000+ happy families */}
-          </RevealOnScroll>
-        </div>
-      </section>
 
       {/* Founder Section (format updated; content unchanged; deleted extra portion earlier) */}
-      <section id="about" className="py-20 px-6 sm:px-12 bg-[#FAFAF8] relative">
-        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section id="about" className="py-20 px-6 sm:px-12 bg-[#0a0a0a] relative">
+        <RevealOnScroll className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative group">
-            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
+            <div className="absolute inset-0 bg-[#0a0a0a] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
             <img
               src={kirtiProfile}
               alt="Kirti Shah"
@@ -1586,66 +1466,49 @@ export default function Home() {
 
           {/* FORMAT FIX ONLY */}
           <div className="md:pl-2">
-            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-4 block">
+            <span className="text-white font-bold text-xs uppercase tracking-widest mb-4 block">
               The Founder
             </span>
-            <h2
-              className="text-3xl sm:text-4xl font-bold text-[#1F2328] mb-5"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <h2 className="text-3xl sm:text-4xl font-light text-white mb-5 uppercase tracking-[0.1em]">
               Meet Kirti Shah
             </h2>
-            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed mb-5 max-w-xl">
+            <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-5 max-w-xl">
               Kirti believes that travel should be happy, not stressful. That's why
               she treats every client like family, personally overseeing every trip
               to ensure you are safe, comfortable, and having the time of your life.
             </p>
-            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-xl">
               With over 10 years of experience, we handle visas, flights, and bookings,
               offering luxury stays at best-value prices with 24/7 support.
             </p>
 
             {/* Deleted portion requested earlier: trustFeatures grid */}
           </div>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* Key Services Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-black">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">
+            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-white text-sm font-semibold tracking-wider mb-4">
               WHAT WE DO
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase text-white">
               Key Services Offered
             </h2>
           </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {keyServices.map((service, index) => (
-              <RevealOnScroll key={index} className={`delay-${index * 100}`}>
-                <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full border border-gray-100">
-                  <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
+          <BentoServices />
         </div>
       </section>
 
       {/* Destinations Trigger Section (white background as requested earlier) */}
-      <section id="destinations" className="py-24 bg-white">
+      <section id="destinations" className="py-24 bg-[#0a0a0a]">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
             <div
               onClick={() => setShowDestinations(true)}
-              className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-white border border-gray-100"
+              className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-[#0a0a0a] border border-white/10"
             >
               <img
                 src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65"
@@ -1656,18 +1519,18 @@ export default function Home() {
                 height={540}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-white/70 z-10" />
+              <div className="absolute inset-0 bg-[#0a0a0a]/70 z-10" />
 
-              <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-[#1F2328]">
+              <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-white">
                 <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
-                <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                <h2 className="text-4xl md:text-6xl font-light tracking-[0.15em] mb-6 uppercase">
                   Explore Trending Destinations
                 </h2>
-                <p className="text-lg md:text-xl text-[#1F2328]/70 max-w-2xl mb-8">
+                <p className="text-lg md:text-xl text-white/70 max-w-2xl mb-8">
                   Discover our handpicked selection of the world's most captivating
                   spots, from international hotspots to hidden gems across India.
                 </p>
-                <button className="px-8 py-3 bg-[#1F2328] text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
+                <button className="px-8 py-3 bg-[#1a1a1a] text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
                   Discover Now{" "}
                   <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
                 </button>
@@ -1684,28 +1547,28 @@ export default function Home() {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowDestinations(false)}
           ></div>
-          <div className="absolute inset-0 md:inset-10 bg-white md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
-            <div className="p-6 md:p-8 border-b flex justify-between items-center bg-gray-50">
+          <div className="absolute inset-0 md:inset-10 bg-[#0a0a0a] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
+            <div className="p-6 md:p-8 border-b flex justify-between items-center bg-black">
               <h3 className="text-2xl md:text-3xl font-bold">
                 Choose Your Adventure
               </h3>
               <button
                 onClick={() => setShowDestinations(false)}
-                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                className="p-2 hover:bg-[#1a1a1a] rounded-full transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="flex justify-center p-6 bg-white z-10 border-b border-gray-100 shadow-sm">
-              <div className="inline-flex bg-gray-100 rounded-full p-1.5">
+            <div className="flex justify-center p-6 bg-[#0a0a0a] z-10 border-b border-white/10 shadow-sm">
+              <div className="inline-flex bg-[#111] rounded-full p-1.5">
                 {["International", "India"].map((category) => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
                     className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${
                       activeCategory === category
-                        ? "bg-white text-blue-600 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
+                        ? "bg-[#0a0a0a] text-white shadow-sm"
+                        : "text-gray-400 hover:text-white"
                     }`}
                   >
                     {category}{" "}
@@ -1716,12 +1579,12 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-black">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredDestinations.map((dest) => (
                   <div
                     key={dest.id}
-                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
+                    className="group bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
                     onClick={() => handleDestinationClick(dest.title)}
                   >
                     <div className="relative h-56 overflow-hidden">
@@ -1735,7 +1598,7 @@ export default function Home() {
                         {dest.tags.slice(0, 2).map((tag, index) => (
                           <span
                             key={index}
-                            className="text-xs font-bold text-white bg-white/20 backdrop-blur-md px-2 py-1 rounded-full"
+                            className="text-xs font-bold text-white bg-[#0a0a0a]/20 backdrop-blur-md px-2 py-1 rounded-full"
                           >
                             {tag}
                           </span>
@@ -1743,13 +1606,13 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-5">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                      <h4 className="text-xl font-bold mb-2 group-hover:text-white transition-colors">
                         {dest.title}
                       </h4>
-                      <p className="text-gray-600 text-sm line-clamp-2">
+                      <p className="text-gray-400 text-sm line-clamp-2">
                         {dest.description}
                       </p>
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-white font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                         <span>Quick View & Plan</span>
                         <ChevronDown className="w-4 h-4 -rotate-90" />
                       </div>
@@ -1763,10 +1626,10 @@ export default function Home() {
       )}
 
       {/* Testimonials (no profile pictures) */}
-      <section id="reviews" className="py-24 relative bg-blue-50/50">
+      <section id="reviews" className="py-24 relative bg-[#0a0a0a]">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">
+            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-white text-sm font-semibold tracking-wider mb-4">
               TESTIMONIALS
             </span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
@@ -1776,13 +1639,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
               <RevealOnScroll key={testimonial.id} className={`delay-${index * 100}`}>
-                <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all h-full flex flex-col relative overflow-hidden border border-gray-100">
+                <div className="bg-[#0a0a0a] p-8 rounded-2xl shadow-sm hover:shadow-md transition-all h-full flex flex-col relative overflow-hidden border border-white/10">
                   <div className="flex items-center space-x-1 text-yellow-400 mb-6">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-700 leading-relaxed italic mb-8 flex-grow whitespace-pre-line">
+                  <p className="text-gray-300 leading-relaxed italic mb-8 flex-grow whitespace-pre-line">
                     "{testimonial.text}"
                   </p>
                   <div>
@@ -1801,32 +1664,29 @@ export default function Home() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-20 px-6 sm:px-12 bg-[#EEF0FF] relative overflow-hidden"
+        className="py-20 px-6 sm:px-12 bg-[#0a0a0a] relative overflow-hidden"
       >
-        <div className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24">
+        <RevealOnScroll className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24">
           {/* Contact Info */}
           <div className="lg:col-span-5 space-y-8">
-            <h2
-              className="text-4xl font-bold text-[#1F2328]"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <h2 className="text-4xl font-light text-white uppercase tracking-[0.2em] mb-4">
               Start Your Journey
             </h2>
-            <p className="text-lg text-[#1F2328]/70">
+            <p className="text-lg text-white/70">
               We are ready to craft your perfect trip. Reach out to us directly or
               fill the form.
             </p>
 
             <div className="space-y-6">
               <a href="tel:+919924399335" className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#2D3191] shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
                   <Phone size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-[#1F2328]/50 font-bold">
+                  <div className="text-sm text-white/50 font-bold">
                     Call / WhatsApp
                   </div>
-                  <div className="text-lg font-medium text-[#1F2328]">
+                  <div className="text-lg font-medium text-white">
                     +91 9924399335
                   </div>
                 </div>
@@ -1836,26 +1696,26 @@ export default function Home() {
                 href="mailto:thenomadsco@gmail.com"
                 className="flex items-center gap-4 group"
               >
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform">
                   <Mail size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-[#1F2328]/50 font-bold">Email</div>
-                  <div className="text-lg font-medium text-[#1F2328]">
+                  <div className="text-sm text-white/50 font-bold">Email</div>
+                  <div className="text-lg font-medium text-white">
                     thenomadsco@gmail.com
                   </div>
                 </div>
               </a>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#B45309] shadow-sm">
+                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-[#B45309] shadow-sm">
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-[#1F2328]/50 font-bold">
+                  <div className="text-sm text-white/50 font-bold">
                     Location
                   </div>
-                  <div className="text-lg font-medium text-[#1F2328]">
+                  <div className="text-lg font-medium text-white">
                     Vadodara, Gujarat, India
                   </div>
                 </div>
@@ -1864,7 +1724,7 @@ export default function Home() {
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-[2.5rem] shadow-xl">
+          <div className="lg:col-span-7 bg-[#0a0a0a] p-8 sm:p-10 rounded-[2.5rem] shadow-xl">
             <form
               action="https://formsubmit.co/thenomadsco@gmail.com"
               method="POST"
@@ -1875,22 +1735,22 @@ export default function Home() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#1F2328]">Name</label>
+                  <label className="text-sm font-bold text-white">Name</label>
                   <input
                     type="text"
                     name="name"
                     required
-                    className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
                     placeholder="Your Name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#1F2328]">Phone</label>
+                  <label className="text-sm font-bold text-white">Phone</label>
                   <input
                     type="tel"
                     name="phone"
                     required
-                    className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -1898,17 +1758,17 @@ export default function Home() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#1F2328]">Email</label>
+                  <label className="text-sm font-bold text-white">Email</label>
                   <input
                     type="email"
                     name="email"
                     required
-                    className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
                     placeholder="you@example.com"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#1F2328]">
+                  <label className="text-sm font-bold text-white">
                     Destination
                   </label>
                   <input
@@ -1916,38 +1776,38 @@ export default function Home() {
                     name="destination"
                     value={selectedDestination}
                     readOnly={!!selectedDestination}
-                    className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
                     placeholder="Where do you want to go?"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-[#1F2328]">
+                <label className="text-sm font-bold text-white">
                   Any specific requirements?
                 </label>
                 <textarea
                   name="message"
                   rows={4}
-                  className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none text-[#1F2328] placeholder:text-gray-500 resize-none"
+                  className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500 resize-none"
                   placeholder="Travel dates, number of people, budget..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all shadow-lg flex items-center justify-center gap-2"
+                className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all shadow-lg flex items-center justify-center gap-2"
               >
                 Send Enquiry <Send size={18} />
               </button>
-            </form>
+      </form>
           </div>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* Footer (Removed "Made with love in India" completely) */}
       <footer className="relative z-10 bg-black text-white py-16">
-        <div className="container mx-auto px-4 md:px-8">
+        <RevealOnScroll className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
               <span className="text-3xl font-bold text-white mb-6 block">
@@ -1962,7 +1822,7 @@ export default function Home() {
                   href="https://www.instagram.com/thenomadsco/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-white text-black hover:text-white transition-all"
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
@@ -1970,13 +1830,13 @@ export default function Home() {
                   href="https://www.facebook.com/Thenomadsco/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-white text-black hover:text-white transition-all"
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
                 <a
                   href="mailto:thenomadsco@gmail.com"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-white text-black hover:text-white transition-all"
                 >
                   <Mail className="w-5 h-5" />
                 </a>
@@ -1988,7 +1848,7 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("about")}
-                    className="hover:text-blue-400 transition-colors"
+                    className="hover:text-gray-300 transition-colors"
                   >
                     About Us
                   </button>
@@ -1996,7 +1856,7 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("destinations")}
-                    className="hover:text-blue-400 transition-colors"
+                    className="hover:text-gray-300 transition-colors"
                   >
                     Destinations
                   </button>
@@ -2004,7 +1864,7 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("reviews")}
-                    className="hover:text-blue-400 transition-colors"
+                    className="hover:text-gray-300 transition-colors"
                   >
                     Reviews
                   </button>
@@ -2012,7 +1872,7 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("contact")}
-                    className="hover:text-blue-400 transition-colors"
+                    className="hover:text-gray-300 transition-colors"
                   >
                     Contact
                   </button>
@@ -2023,25 +1883,19 @@ export default function Home() {
               <h4 className="text-lg font-bold text-white mb-6">Legal</h4>
               <ul className="space-y-3 font-medium text-gray-400">
                 <li>
-                  <Link to="/privacypolicy" className="hover:text-blue-400 transition-colors">
+                  <Link to="/privacypolicy" className="hover:text-gray-300 transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="hover:text-blue-400 transition-colors">
+                  <Link to="/terms" className="hover:text-gray-300 transition-colors">
                     Terms of Service
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 font-medium">
-            <p className="text-sm">
-              © {new Date().getFullYear()} The Nomads Co. All rights reserved.
-            </p>
-            {/* Removed "Made with love in India" */}
-          </div>
-        </div>
+        </RevealOnScroll>
       </footer>
 
       {/* Chatbot (DO NOT CHANGE) */}

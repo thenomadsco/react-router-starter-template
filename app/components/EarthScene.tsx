@@ -540,7 +540,7 @@ export default function EarthScene() {
   }, [searchQuery]);
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden" id="earth-container">
+    <div className="relative w-full h-screen bg-[#f2f2f5] overflow-hidden" id="earth-container">
 
       <style>{`
         @keyframes fadeUp {
@@ -567,8 +567,8 @@ export default function EarthScene() {
         className={`absolute left-0 w-full flex flex-col items-center justify-start z-20 top-[2vh] pointer-events-none`}
       >
         <div className={`flex flex-col items-center mb-4 animate-fade-up stagger-1`}>
-          <h1 className="text-white text-4xl md:text-6xl lg:text-[72px] font-thin tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] pointer-events-auto" >
-            Nomads Co
+          <h1 className="text-black text-4xl md:text-6xl lg:text-[72px] font-thin tracking-[0.2em] uppercase pointer-events-auto" >
+            The Nomads Co.
           </h1>
         </div>
 
@@ -584,24 +584,24 @@ export default function EarthScene() {
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             placeholder="SEARCH DESTINATIONS (E.G. JAPAN)..."
 
-            className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/50 border border-white/20 rounded-full px-6 py-4 lg:py-4 focus:outline-none focus:border-white/50 transition-colors shadow-inner uppercase tracking-[0.2em] font-light text-xs md:text-sm"
+            className="w-full bg-[#f0f0f5]/80 backdrop-blur-md text-black placeholder-black/30 border border-black/5 rounded-full px-6 py-4 lg:py-4 focus:outline-none focus:border-black/20 transition-colors shadow-sm uppercase tracking-[0.2em] font-light text-xs md:text-sm"
           />
           {/* Dropdown */}
           {showDropdown && searchQuery && (
-            <div className="absolute top-full left-0 w-full mt-2 bg-black/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden z-30 max-h-60 overflow-y-auto custom-scrollbar">
+            <div className="absolute top-full left-0 w-full mt-2 bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-2xl overflow-hidden z-30 max-h-60 overflow-y-auto custom-scrollbar">
               {filteredMarkers.length > 0 ? (
                 filteredMarkers.map(m => (
                   <button
                     key={m.name}
                     onMouseDown={() => handleSelect(m)}
 
-                    className="w-full text-left px-6 py-4 text-white hover:bg-white/10 transition-colors uppercase tracking-[0.2em] font-light text-xs md:text-sm border-b border-white/10 last:border-0"
+                    className="w-full text-left px-6 py-4 text-black hover:bg-black/5 transition-colors uppercase tracking-[0.2em] font-light text-xs md:text-sm border-b border-gray-50 last:border-0"
                   >
                     {m.name}
                   </button>
                 ))
               ) : (
-                <div className="p-4 text-center text-slate-400 text-xs tracking-widest uppercase font-light" >
+                <div className="p-4 text-center text-gray-400 text-xs tracking-widest uppercase font-light" >
                   No destinations found.
                 </div>
               )}
@@ -638,8 +638,8 @@ export default function EarthScene() {
                 <div
                   key={i}
                   className={`
-                    ${isFirst 
-                      ? 'w-64 h-48 md:w-[26rem] md:h-64 xl:w-[32rem] xl:h-80 -rotate-1' 
+                    ${isFirst
+                      ? 'w-64 h-48 md:w-[26rem] md:h-64 xl:w-[32rem] xl:h-80 -rotate-1'
                       : 'w-48 h-64 md:w-64 md:h-[28rem] xl:w-80 xl:h-[34rem] rotate-2 translate-x-12'}
                     rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer 
                     relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95
@@ -669,8 +669,8 @@ export default function EarthScene() {
                 <div
                   key={i}
                   className={`
-                    ${isFirst 
-                      ? 'w-56 h-56 md:w-72 md:h-72 xl:w-[22rem] xl:h-[22rem] rotate-3 -translate-x-8' 
+                    ${isFirst
+                      ? 'w-56 h-56 md:w-72 md:h-72 xl:w-[22rem] xl:h-[22rem] rotate-3 -translate-x-8'
                       : 'w-64 h-44 md:w-[24rem] md:h-56 xl:w-[28rem] xl:h-64 -rotate-2'}
                     rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer
                     relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95

@@ -9,8 +9,8 @@
 html,
 body {
 	font-family: 'Montserrat', sans-serif !important;
-	@apply bg-black text-white;
-	color-scheme: dark;
+	@apply bg-[#f2f2f5] text-[#1F2328];
+	color-scheme: light;
 }
 
 .dark\:bg-dot-white\/\[0\.2\] {

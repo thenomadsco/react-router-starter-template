@@ -30,7 +30,7 @@ const customStyles = `
 
 export default function ContactUsPage() {
   return (
-    <div className="min-h-screen bg-white antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191] pb-24 sm:pb-0">
+    <div className="min-h-screen bg-[#f2f2f5] antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191] pb-24 sm:pb-0">
       <style>{customStyles}</style>
       <Navigation />
 
@@ -52,18 +52,15 @@ export default function ContactUsPage() {
           {/* Founder Block */}
           <div className="order-2 md:order-1 relative group">
             <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-            <img 
-              src={kirtiProfile} 
-              alt="Kirti Shah" 
+            <img
+              src={kirtiProfile}
+              alt="Kirti Shah"
               className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-lg transition-transform duration-500 group-hover:-translate-y-2"
             />
           </div>
           <div className="order-1 md:order-2">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E7F7EF] text-[#02A551] text-xs font-bold uppercase tracking-widest mb-6">
-              The Founder
-            </div>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#1F2328] mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Meet Kirti Shah
+              Meet the founder: Kirti Shah
             </h2>
             <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6">
               Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.
@@ -104,9 +101,9 @@ export default function ContactUsPage() {
           <div className="relative group">
             <div className="absolute inset-0 bg-[#F7F6F1] rounded-[2.5rem] -rotate-3 transition-transform duration-500 group-hover:-rotate-6" />
             <div className="relative bg-white p-12 rounded-[2.5rem] shadow-lg flex items-center justify-center border border-[#E6E8EF] aspect-square transition-transform duration-500 group-hover:-translate-y-2">
-              <img 
-                src={nomadsLogo} 
-                alt="The Nomads Co. Logo" 
+              <img
+                src={nomadsLogo}
+                alt="The Nomads Co. Logo"
                 className="w-48 h-auto"
               />
             </div>
@@ -117,7 +114,7 @@ export default function ContactUsPage() {
       {/* CONTACT FORM & INFO SECTION */}
       <section className="py-20 px-6 sm:px-12 bg-white border-t border-[#E6E8EF]">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          
+
           {/* Contact Details */}
           <div className="space-y-10">
             <div>

@@ -15,7 +15,7 @@ export function headers() {
 }
 
 // --- META ---
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   const title = "The Nomads Co. | Curated Journeys";
   const description = "Personalized premium travel planning by Kirti Shah.";
   const url = "https://thenomadsco.in";
@@ -277,13 +277,12 @@ const OptimizedImage = ({
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
-        // @ts-ignore – fetchpriority is valid but not all TS defs include it
-        fetchpriority={priority ? "high" : "auto"}
+        // @ts-ignore – fetchPriority is valid but not all TS defs include it
+        fetchPriority={priority ? "high" : "auto"}
         onLoad={handleLoad}
         onError={handleError}
-        className={`w-full h-full object-cover transition-opacity duration-500 ${
-          isLoaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"
+          }`}
       />
       {!isLoaded && !error && (
         <div className="absolute inset-0 bg-[#1a1a1a] animate-pulse" />
@@ -337,9 +336,8 @@ const RevealOnScroll = ({
   return (
     <div
       ref={ref}
-      className={`${className} ${
-        isVisible ? "animate-fade-up" : "opacity-0"
-      }`}
+      className={`${className} ${isVisible ? "animate-fade-up" : "opacity-0"
+        }`}
     >
       {children}
     </div>
@@ -836,18 +834,18 @@ function NomadsChatbot() {
       prompt: string;
       required?: boolean;
     }> = [
-      {
-        key: "intent",
-        prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).",
-        required: true,
-      },
-      { key: "name", prompt: "What’s your name?", required: true },
-      {
-        key: "phone",
-        prompt: "Phone number? (WhatsApp preferred)",
-        required: true,
-      },
-    ];
+        {
+          key: "intent",
+          prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).",
+          required: true,
+        },
+        { key: "name", prompt: "What’s your name?", required: true },
+        {
+          key: "phone",
+          prompt: "Phone number? (WhatsApp preferred)",
+          required: true,
+        },
+      ];
 
     const intent = state.intent;
     if (!intent) return base;
@@ -1105,11 +1103,10 @@ function NomadsChatbot() {
                 className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                    m.from === "user"
+                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "user"
                       ? "bg-black text-white"
                       : "bg-[#111] text-white"
-                  }`}
+                    }`}
                 >
                   {m.text}
                 </div>
@@ -1149,7 +1146,7 @@ function NomadsChatbot() {
               <details className="text-xs text-gray-400">
                 <summary className="cursor-pointer">Preview message</summary>
                 <pre className="whitespace-pre-wrap mt-2 bg-black p-2 rounded-xl border border-black/5">
-{whatsappText}
+                  {whatsappText}
                 </pre>
               </details>
             </div>
@@ -1303,7 +1300,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#f2f2f5] text-black font-sans overflow-x-hidden">
       <style>{`
         @keyframes fadeUp {
           0% { opacity: 0; transform: translateY(30px); }
@@ -1320,11 +1317,10 @@ export default function Home() {
       `}</style>
       {/* Navigation */}
       <nav
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-black/80 backdrop-blur-md py-4 shadow-sm border-b border-white/10"
+        className={`fixed w-full z-50 transition-all duration-300 ${scrolled
+            ? "bg-[#f2f2f5]/90 backdrop-blur-md py-4 shadow-sm border-b border-gray-100"
             : "bg-transparent py-6"
-        }`}
+          }`}
       >
         <div className="w-full px-6 md:px-12 flex justify-between items-center">
           <div
@@ -1338,7 +1334,7 @@ export default function Home() {
               height={40}
               loading="eager"
               // @ts-ignore
-              fetchpriority="high"
+              fetchPriority="high"
               className="h-10 w-auto rounded-md shadow-sm"
             />
           </div>
@@ -1346,36 +1342,38 @@ export default function Home() {
           <div className="hidden md:flex items-center space-x-12">
             <button
               onClick={() => scrollToSection("about")}
-              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
-              
+              className="text-gray-900 text-sm font-medium tracking-tight hover:text-black transition-colors"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection("destinations")}
-              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
-              
+              className="text-gray-900 text-sm font-medium tracking-tight hover:text-black transition-colors"
             >
               Destinations
             </button>
             <button
               onClick={() => scrollToSection("reviews")}
-              className="text-white text-sm font-thin tracking-[0.2em] uppercase hover:text-gray-300 transition-colors"
-              
+              className="text-gray-900 text-sm font-medium tracking-tight hover:text-black transition-colors"
             >
               Reviews
             </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="px-8 py-2.5 bg-white text-black text-xs font-bold tracking-widest uppercase rounded-full hover:bg-gray-200 hover:text-black transition-all shadow-md hover:shadow-lg"
-              
+            <Link
+              to="/contactus"
+              className="text-gray-900 text-sm font-medium tracking-tight hover:text-black transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              to="/contactus"
+              className="px-8 py-2.5 bg-black text-white text-xs font-bold tracking-widest uppercase rounded-full hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
             >
               Plan My Trip
-            </button>
+            </Link>
           </div>
 
           <button
-            className="md:hidden z-50 p-2 text-white"
+            className="md:hidden z-50 p-2 text-black"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -1392,10 +1390,10 @@ export default function Home() {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 z-[100] bg-black flex flex-col pt-24 px-6">
+          <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6">
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="absolute top-6 right-6 text-3xl font-light text-white"
+              className="absolute top-6 right-6 text-3xl font-light text-black"
               aria-label="Close menu"
             >
               ×
@@ -1407,7 +1405,7 @@ export default function Home() {
                   scrollToSection("about");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-white"
+                className="text-2xl font-semibold text-black"
               >
                 About
               </button>
@@ -1416,7 +1414,7 @@ export default function Home() {
                   scrollToSection("destinations");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-white"
+                className="text-2xl font-semibold text-black"
               >
                 Destinations
               </button>
@@ -1425,19 +1423,17 @@ export default function Home() {
                   scrollToSection("reviews");
                   setIsMenuOpen(false);
                 }}
-                className="text-2xl font-semibold text-white"
+                className="text-2xl font-semibold text-black"
               >
                 Reviews
               </button>
-              <button
-                onClick={() => {
-                  scrollToSection("contact");
-                  setIsMenuOpen(false);
-                }}
-                className="px-8 py-3 bg-white text-black text-lg font-medium rounded-full shadow-md hover:bg-gray-200 hover:text-black transition-colors"
+              <Link
+                to="/contactus"
+                onClick={() => setIsMenuOpen(false)}
+                className="px-8 py-3 bg-black text-white text-lg font-medium rounded-full shadow-md hover:bg-gray-800 transition-colors"
               >
                 Plan My Trip
-              </button>
+              </Link>
             </div>
           </div>
         )}
@@ -1449,10 +1445,10 @@ export default function Home() {
 
 
       {/* Founder Section (format updated; content unchanged; deleted extra portion earlier) */}
-      <section id="about" className="py-20 px-6 sm:px-12 bg-[#0a0a0a] relative">
+      <section id="about" className="py-20 px-6 sm:px-12 bg-[#f2f2f5] relative">
         <RevealOnScroll className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative group">
-            <div className="absolute inset-0 bg-[#0a0a0a] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
+            <div className="absolute inset-0 bg-[#ececed] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
             <img
               src={kirtiProfile}
               alt="Kirti Shah"
@@ -1466,18 +1462,15 @@ export default function Home() {
 
           {/* FORMAT FIX ONLY */}
           <div className="md:pl-2">
-            <span className="text-white font-bold text-xs uppercase tracking-widest mb-4 block">
-              The Founder
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-light text-white mb-5 uppercase tracking-[0.1em]">
-              Meet Kirti Shah
+            <h2 className="text-3xl sm:text-4xl font-light text-black mb-6 uppercase tracking-[0.05em]">
+              Meet the founder: Kirti Shah
             </h2>
-            <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-5 max-w-xl">
+            <p className="text-base sm:text-lg text-black/70 leading-relaxed mb-5 max-w-xl">
               Kirti believes that travel should be happy, not stressful. That's why
               she treats every client like family, personally overseeing every trip
               to ensure you are safe, comfortable, and having the time of your life.
             </p>
-            <p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-black/70 leading-relaxed max-w-xl">
               With over 10 years of experience, we handle visas, flights, and bookings,
               offering luxury stays at best-value prices with 24/7 support.
             </p>
@@ -1488,13 +1481,10 @@ export default function Home() {
       </section>
 
       {/* Key Services Section */}
-      <section className="py-20 bg-black">
+      <section className="py-20 bg-[#f2f2f5]">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-white text-sm font-semibold tracking-wider mb-4">
-              WHAT WE DO
-            </span>
-            <h2 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase text-white">
+            <h2 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase text-black">
               Key Services Offered
             </h2>
           </RevealOnScroll>
@@ -1502,13 +1492,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations Trigger Section (white background as requested earlier) */}
-      <section id="destinations" className="py-24 bg-[#0a0a0a]">
+      {/* Destinations Trigger Section */}
+      <section id="destinations" className="py-24 bg-[#f2f2f5]">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
             <div
               onClick={() => setShowDestinations(true)}
-              className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-[#0a0a0a] border border-white/10"
+              className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-[#f2f2f5] border border-black/5"
             >
               <img
                 src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65"
@@ -1519,18 +1509,18 @@ export default function Home() {
                 height={540}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-[#0a0a0a]/70 z-10" />
+              <div className="absolute inset-0 bg-[#f2f2f5]/40 z-10" />
 
-              <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-white">
+              <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-black">
                 <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
                 <h2 className="text-4xl md:text-6xl font-light tracking-[0.15em] mb-6 uppercase">
                   Explore Trending Destinations
                 </h2>
-                <p className="text-lg md:text-xl text-white/70 max-w-2xl mb-8">
+                <p className="text-lg md:text-xl text-black/70 max-w-2xl mb-8">
                   Discover our handpicked selection of the world's most captivating
                   spots, from international hotspots to hidden gems across India.
                 </p>
-                <button className="px-8 py-3 bg-[#1a1a1a] text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
+                <button className="px-8 py-3 bg-black text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">
                   Discover Now{" "}
                   <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
                 </button>
@@ -1547,29 +1537,28 @@ export default function Home() {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowDestinations(false)}
           ></div>
-          <div className="absolute inset-0 md:inset-10 bg-[#0a0a0a] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
-            <div className="p-6 md:p-8 border-b flex justify-between items-center bg-black">
-              <h3 className="text-2xl md:text-3xl font-bold">
+          <div className="absolute inset-0 md:inset-10 bg-white md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
+            <div className="p-6 md:p-8 border-b flex justify-between items-center bg-white">
+              <h3 className="text-2xl md:text-3xl font-bold text-black">
                 Choose Your Adventure
               </h3>
               <button
                 onClick={() => setShowDestinations(false)}
-                className="p-2 hover:bg-[#1a1a1a] rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-black"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="flex justify-center p-6 bg-[#0a0a0a] z-10 border-b border-white/10 shadow-sm">
-              <div className="inline-flex bg-[#111] rounded-full p-1.5">
+            <div className="flex justify-center p-6 bg-white z-10 border-b border-gray-100 shadow-sm">
+              <div className="inline-flex bg-gray-50 rounded-full p-1.5 border border-gray-100">
                 {["International", "India"].map((category) => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${
-                      activeCategory === category
-                        ? "bg-[#0a0a0a] text-white shadow-sm"
-                        : "text-gray-400 hover:text-white"
-                    }`}
+                    className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${activeCategory === category
+                        ? "bg-black text-white shadow-sm"
+                        : "text-gray-500 hover:text-black"
+                      }`}
                   >
                     {category}{" "}
                     <span className="ml-2 text-xs opacity-70">
@@ -1579,12 +1568,12 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-black">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-white">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredDestinations.map((dest) => (
                   <div
                     key={dest.id}
-                    className="group bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1 border border-gray-100"
                     onClick={() => handleDestinationClick(dest.title)}
                   >
                     <div className="relative h-56 overflow-hidden">
@@ -1593,12 +1582,12 @@ export default function Home() {
                         alt={dest.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="absolute bottom-4 left-4 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                         {dest.tags.slice(0, 2).map((tag, index) => (
                           <span
                             key={index}
-                            className="text-xs font-bold text-white bg-[#0a0a0a]/20 backdrop-blur-md px-2 py-1 rounded-full"
+                            className="text-xs font-bold text-white bg-black/40 backdrop-blur-md px-2 py-1 rounded-full"
                           >
                             {tag}
                           </span>
@@ -1606,13 +1595,13 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-5">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-white transition-colors">
+                      <h4 className="text-xl font-bold mb-2 text-black group-hover:text-black transition-colors">
                         {dest.title}
                       </h4>
-                      <p className="text-gray-400 text-sm line-clamp-2">
+                      <p className="text-gray-500 text-sm line-clamp-2">
                         {dest.description}
                       </p>
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-white font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-black font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                         <span>Quick View & Plan</span>
                         <ChevronDown className="w-4 h-4 -rotate-90" />
                       </div>
@@ -1626,30 +1615,30 @@ export default function Home() {
       )}
 
       {/* Testimonials (no profile pictures) */}
-      <section id="reviews" className="py-24 relative bg-[#0a0a0a]">
+      <section id="reviews" className="py-24 relative bg-[#f2f2f5]">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-white text-sm font-semibold tracking-wider mb-4">
+            <span className="inline-block py-1 px-3 rounded-full bg-[#f2f2f5] text-[#1F2328] text-sm font-semibold tracking-wider mb-4 border border-gray-100">
               TESTIMONIALS
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-black">
               Loved by Travelers
             </h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
               <RevealOnScroll key={testimonial.id} className={`delay-${index * 100}`}>
-                <div className="bg-[#0a0a0a] p-8 rounded-2xl shadow-sm hover:shadow-md transition-all h-full flex flex-col relative overflow-hidden border border-white/10">
-                  <div className="flex items-center space-x-1 text-yellow-400 mb-6">
+                <div className="bg-[#fafafc] p-8 rounded-2xl shadow-sm hover:shadow-md transition-all h-full flex flex-col relative overflow-hidden border border-gray-100">
+                  <div className="flex items-center space-x-1 text-yellow-500 mb-6 font-bold">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-300 leading-relaxed italic mb-8 flex-grow whitespace-pre-line">
+                  <p className="text-[#1F2328]/80 leading-relaxed italic mb-8 flex-grow whitespace-pre-line">
                     "{testimonial.text}"
                   </p>
                   <div>
-                    <h4 className="font-bold">{testimonial.name}</h4>
+                    <h4 className="font-bold text-black">{testimonial.name}</h4>
                     {!!testimonial.location && (
                       <p className="text-gray-500 text-sm">{testimonial.location}</p>
                     )}
@@ -1664,29 +1653,29 @@ export default function Home() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-20 px-6 sm:px-12 bg-[#0a0a0a] relative overflow-hidden"
+        className="py-20 px-6 sm:px-12 bg-[#f2f2f5] relative overflow-hidden border-t border-gray-100"
       >
         <RevealOnScroll className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24">
           {/* Contact Info */}
-          <div className="lg:col-span-5 space-y-8">
-            <h2 className="text-4xl font-light text-white uppercase tracking-[0.2em] mb-4">
+          <div className="lg:col-span-5 space-y-8 text-black">
+            <h2 className="text-4xl font-light text-black uppercase tracking-[0.2em] mb-4">
               Start Your Journey
             </h2>
-            <p className="text-lg text-white/70">
+            <p className="text-lg text-gray-600 leading-relaxed">
               We are ready to craft your perfect trip. Reach out to us directly or
               fill the form.
             </p>
 
             <div className="space-y-6">
               <a href="tel:+919924399335" className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-[#fafafc] rounded-xl flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform border border-gray-100 font-bold">
                   <Phone size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-white/50 font-bold">
+                  <div className="text-sm text-gray-500 font-bold">
                     Call / WhatsApp
                   </div>
-                  <div className="text-lg font-medium text-white">
+                  <div className="text-lg font-medium text-black group-hover:text-gray-600 transition-colors">
                     +91 9924399335
                   </div>
                 </div>
@@ -1696,26 +1685,26 @@ export default function Home() {
                 href="mailto:thenomadsco@gmail.com"
                 className="flex items-center gap-4 group"
               >
-                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-[#fafafc] rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform border border-gray-100 font-bold">
                   <Mail size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-white/50 font-bold">Email</div>
-                  <div className="text-lg font-medium text-white">
+                  <div className="text-sm text-gray-500 font-bold">Email</div>
+                  <div className="text-lg font-medium text-black group-hover:text-gray-600 transition-colors">
                     thenomadsco@gmail.com
                   </div>
                 </div>
               </a>
 
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#0a0a0a] rounded-xl flex items-center justify-center text-[#B45309] shadow-sm">
+              <div className="flex items-center gap-4 group">
+                <div className="w-12 h-12 bg-[#fafafc] rounded-xl flex items-center justify-center text-[#B45309] shadow-sm group-hover:scale-110 transition-transform border border-gray-100 font-bold">
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <div className="text-sm text-white/50 font-bold">
+                  <div className="text-sm text-gray-500 font-bold">
                     Location
                   </div>
-                  <div className="text-lg font-medium text-white">
+                  <div className="text-lg font-medium text-black">
                     Vadodara, Gujarat, India
                   </div>
                 </div>
@@ -1724,7 +1713,7 @@ export default function Home() {
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-7 bg-[#0a0a0a] p-8 sm:p-10 rounded-[2.5rem] shadow-xl">
+          <div className="lg:col-span-7 bg-[#fafafc] p-8 sm:p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
             <form
               action="https://formsubmit.co/thenomadsco@gmail.com"
               method="POST"
@@ -1735,22 +1724,22 @@ export default function Home() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-white">Name</label>
+                  <label className="text-sm font-bold text-gray-700">Name</label>
                   <input
                     type="text"
                     name="name"
                     required
-                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:ring-1 focus:ring-black outline-none text-[#1F2328] placeholder:text-gray-400"
                     placeholder="Your Name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-white">Phone</label>
+                  <label className="text-sm font-bold text-gray-700">Phone</label>
                   <input
                     type="tel"
                     name="phone"
                     required
-                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:ring-1 focus:ring-black outline-none text-[#1F2328] placeholder:text-gray-400"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -1758,62 +1747,62 @@ export default function Home() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-white">Email</label>
+                  <label className="text-sm font-bold text-gray-700">Email</label>
                   <input
                     type="email"
                     name="email"
                     required
-                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:ring-1 focus:ring-black outline-none text-[#1F2328] placeholder:text-gray-400"
                     placeholder="you@example.com"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-white">
+                  <label className="text-sm font-bold text-gray-700">
                     Destination
                   </label>
                   <input
                     type="text"
                     name="destination"
                     value={selectedDestination}
-                    readOnly={!!selectedDestination}
-                    className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500"
+                    onChange={(e) => setSelectedDestination(e.target.value)}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:ring-1 focus:ring-black outline-none text-[#1F2328] placeholder:text-gray-400"
                     placeholder="Where do you want to go?"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-white">
+                <label className="text-sm font-bold text-gray-700">
                   Any specific requirements?
                 </label>
                 <textarea
                   name="message"
                   rows={4}
-                  className="w-full px-4 py-3 bg-[#0a0a0a] rounded-xl border border-white/10 focus:ring-1 focus:ring-white/50 outline-none text-white placeholder:text-gray-500 resize-none"
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:ring-1 focus:ring-black outline-none text-[#1F2328] placeholder:text-gray-400 resize-none"
                   placeholder="Travel dates, number of people, budget..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all shadow-lg flex items-center justify-center gap-2"
+                className="w-full py-4 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-lg flex items-center justify-center gap-2"
               >
                 Send Enquiry <Send size={18} />
               </button>
-      </form>
+            </form>
           </div>
         </RevealOnScroll>
       </section>
 
       {/* Footer (Removed "Made with love in India" completely) */}
-      <footer className="relative z-10 bg-black text-white py-16">
+      <footer className="relative z-10 bg-[#fafafc] text-black py-16 border-t border-gray-100">
         <RevealOnScroll className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <span className="text-3xl font-bold text-white mb-6 block">
+              <span className="text-3xl font-bold text-black mb-6 block">
                 The Nomads Co.
               </span>
-              <p className="text-gray-300 pr-6 leading-relaxed mb-8">
+              <p className="text-gray-600 pr-6 leading-relaxed mb-8">
                 Crafting unforgettable, personalized travel experiences. Your journey,
                 our expertise. Let's explore the world together.
               </p>
@@ -1843,12 +1832,12 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
-              <ul className="space-y-3 font-medium text-gray-400">
+              <h4 className="text-lg font-bold text-black mb-6">Quick Links</h4>
+              <ul className="space-y-3 font-medium text-gray-500">
                 <li>
                   <button
                     onClick={() => scrollToSection("about")}
-                    className="hover:text-gray-300 transition-colors"
+                    className="hover:text-black transition-colors"
                   >
                     About Us
                   </button>
@@ -1856,7 +1845,7 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("destinations")}
-                    className="hover:text-gray-300 transition-colors"
+                    className="hover:text-black transition-colors"
                   >
                     Destinations
                   </button>
@@ -1864,31 +1853,31 @@ export default function Home() {
                 <li>
                   <button
                     onClick={() => scrollToSection("reviews")}
-                    className="hover:text-gray-300 transition-colors"
+                    className="hover:text-black transition-colors"
                   >
                     Reviews
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={() => scrollToSection("contact")}
-                    className="hover:text-gray-300 transition-colors"
+                  <Link
+                    to="/contactus"
+                    className="hover:text-black transition-colors"
                   >
                     Contact
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white mb-6">Legal</h4>
-              <ul className="space-y-3 font-medium text-gray-400">
+              <h4 className="text-lg font-bold text-black mb-6">Legal</h4>
+              <ul className="space-y-3 font-medium text-gray-500">
                 <li>
-                  <Link to="/privacypolicy" className="hover:text-gray-300 transition-colors">
+                  <Link to="/privacypolicy" className="hover:text-black transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="hover:text-gray-300 transition-colors">
+                  <Link to="/terms" className="hover:text-black transition-colors">
                     Terms of Service
                   </Link>
                 </li>

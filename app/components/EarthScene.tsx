@@ -231,7 +231,7 @@ const InnerGlobe = ({
       const count = pointPositions.length / 3;
       const white = new THREE.Color("#ffffff");
       const normal = new THREE.Color(pointColor);
-      
+
       const surfaceRadius = radius * 1.001;
       const markerPositions = markers.map((m: any) => {
         const { x, y, z } = lonLatToCartesian(m.location[1], m.location[0], surfaceRadius);
@@ -243,7 +243,7 @@ const InnerGlobe = ({
         const y = pointPositions[i * 3 + 1];
         const z = pointPositions[i * 3 + 2];
         const pVec = new THREE.Vector3(x, y, z);
-        
+
         dummy.position.set(x, y, z);
         dummy.lookAt(x * 2, y * 2, z * 2);
         dummy.updateMatrix();
@@ -379,10 +379,10 @@ export default function EarthScene({ paused = false }: { paused?: boolean }) {
 
   const destinationData: Record<string, { label: string; src: string; size?: 'small' | 'medium' | 'large' }[]> = {
     "GUJARAT": [
-      { label: "White Desert", src: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=80&w=1200", size: "large" },
-      { label: "Statue of Unity", src: "https://images.unsplash.com/photo-1598886367332-90f7d468eb37?q=80&w=1200", size: "small" },
-      { label: "Sun Temple", src: "https://images.unsplash.com/photo-1620202636709-1bb62b4293c3?q=80&w=1200", size: "medium" },
-      { label: "Sasan Gir", src: "https://images.unsplash.com/photo-1594895697620-e2609026210f?q=80&w=1200", size: "small" },
+      { label: "White Desert", src: "https://www.tripsavvy.com/thmb/Yh7C0nh6CKbB5BmhRz3il-V8sm8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-537000923-541774dbe2d44759815fdf0719b04685.jpg", size: "large" },
+      { label: "Statue of Unity", src: "https://upload.wikimedia.org/wikipedia/commons/0/07/Statue_of_Unity.jpg", size: "small" },
+      { label: "Sun Temple", src: "https://assets.architecturaldigest.in/photos/659561d70b94c63c3301b5ba/16:9/w_5472,h_3078,c_limit/22%2010%2013%20ILDL%20MODHERA%20SUN%20TEMPLE%20%C2%A9%20NOUGHTS%20AND%20CROSSES%20103_1.jpg", size: "medium" },
+      { label: "Sasan Gir", src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR96bQBJXLRvtaIlHFTpfQ4VxyycERXWlZfYw&s", size: "small" },
     ],
     "RAJASTHAN": [
       { label: "Hawa Mahal", src: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1200", size: "medium" },
@@ -451,8 +451,8 @@ export default function EarthScene({ paused = false }: { paused?: boolean }) {
       { label: "Aerial", src: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=1000", size: "medium" },
     ],
     "ANDAMAN": [
-      { label: "Radhanagar", src: "https://images.unsplash.com/photo-1589982424001-381a17684074?q=80&w=1000", size: "large" },
-      { label: "Havelock", src: "https://images.unsplash.com/photo-1621644788329-8664ec55447b?q=80&w=1000", size: "medium" },
+      { label: "Radhanagar", src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMgkZcwXynLQ53RY3zAmaXWqG0ZOqRMlGyMA&s", size: "large" },
+      { label: "Havelock", src: "https://hblimg.mmtcdn.com/content/hubble/img/destimg/mmt/destination/m_havelock_tv_destination_img_1_l_813_1446.jpg", size: "medium" },
       { label: "Coral Reefs", src: "https://images.unsplash.com/photo-1546500840-ae38253aba9b?q=80&w=1000", size: "small" },
       { label: "Neil Island", src: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?q=80&w=1000", size: "medium" },
     ],

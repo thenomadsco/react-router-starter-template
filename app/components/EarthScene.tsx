@@ -142,20 +142,21 @@ function pointToMaskUV(x: number, y: number, z: number) {
 // --- COMPONENTS ---
 
 const InnerGlobe = ({
-  radius = 2,
-  pointCount = 20000,
+  radius = 2.0,
+  pointCount = 8000,
   pointSize = 0.035,
   pointColor = "#4ade80", // Natural green
-  globeColor = "#0f172a", // Deep slate blue base
-  rimColor = "#3b82f6",   // Bright blue rim
+  globeColor = "#010413", // Extremely deep navy base
+  rimColor = "#1e3a8a",   // Deep blue rim (darker)
   markers = [],
-  focusOn = null
+  focusOn = null,
+  paused = false
 }: any) => {
   const meshRef = useRef<THREE.Group>(null);
   const instancedRef = useRef<THREE.InstancedMesh>(null);
 
   useFrame((state) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || paused) return;
 
     if (focusOn) {
       // Focus on specific point smoothly, adapting to the camera's orbital position!
@@ -186,7 +187,7 @@ const InnerGlobe = ({
     color: { value: new THREE.Color(rimColor) },
     power: { value: 12.0 },
     coefficient: { value: 0.9 },
-    intensity: { value: 2.0 },
+    intensity: { value: 1.2 },
   }), [rimColor]);
 
   // Generate Points
@@ -228,18 +229,40 @@ const InnerGlobe = ({
     if (instancedRef.current && pointPositions.length > 0) {
       const dummy = new THREE.Object3D();
       const count = pointPositions.length / 3;
+      const white = new THREE.Color("#ffffff");
+      const normal = new THREE.Color(pointColor);
+      
+      const surfaceRadius = radius * 1.001;
+      const markerPositions = markers.map((m: any) => {
+        const { x, y, z } = lonLatToCartesian(m.location[1], m.location[0], surfaceRadius);
+        return new THREE.Vector3(x, y, z);
+      });
+
       for (let i = 0; i < count; i++) {
         const x = pointPositions[i * 3];
         const y = pointPositions[i * 3 + 1];
         const z = pointPositions[i * 3 + 2];
+        const pVec = new THREE.Vector3(x, y, z);
+        
         dummy.position.set(x, y, z);
         dummy.lookAt(x * 2, y * 2, z * 2);
         dummy.updateMatrix();
         instancedRef.current.setMatrixAt(i, dummy.matrix);
+
+        // Check if this hexagon is near a marker
+        let isMarker = false;
+        for (const mPos of markerPositions) {
+          if (pVec.distanceTo(mPos) < 0.15) {
+            isMarker = true;
+            break;
+          }
+        }
+        instancedRef.current.setColorAt(i, isMarker ? white : normal);
       }
       instancedRef.current.instanceMatrix.needsUpdate = true;
+      if (instancedRef.current.instanceColor) instancedRef.current.instanceColor.needsUpdate = true;
     }
-  }, [pointPositions]);
+  }, [pointPositions, markers, pointColor, radius]);
 
   return (
     <group ref={meshRef}>
@@ -273,7 +296,6 @@ const InnerGlobe = ({
         <instancedMesh ref={instancedRef} args={[undefined, undefined, pointPositions.length / 3]}>
           <circleGeometry args={[pointSize, 6]} />
           <meshBasicMaterial
-            color={pointColor}
             side={THREE.DoubleSide}
             blending={THREE.NormalBlending}
             transparent
@@ -284,15 +306,11 @@ const InnerGlobe = ({
         </instancedMesh>
       )}
 
-      {/* Markers */}
+      {/* Labels */}
       {markers.map((marker: any, i: number) => {
         const { x, y, z } = lonLatToCartesian(marker.location[1], marker.location[0], radius * 1.01);
         return (
           <group key={i} position={[x, y, z]}>
-            <mesh>
-              <circleGeometry args={[0.08, 24]} />
-              <meshBasicMaterial color={marker.color} depthTest={false} depthWrite={false} toneMapped={false} />
-            </mesh>
             {focusOn && focusOn[0] === marker.location[0] && focusOn[1] === marker.location[1] && (
               <Html center>
                 <div className="pointer-events-none mt-5 rounded-md bg-white/10 backdrop-blur-md px-3 py-1.5 font-mono text-xs font-bold tracking-wider text-white border border-white/20 whitespace-nowrap uppercase shadow-[0_0_15px_rgba(79,183,255,0.5)]">
@@ -308,7 +326,7 @@ const InnerGlobe = ({
 };
 
 // Sub-component to manage interactive orbital controls
-const InteractionControls = ({ focusOn }: { focusOn: any }) => {
+const InteractionControls = ({ focusOn, paused = false }: { focusOn: any, paused?: boolean }) => {
   const controlsRef = useRef<any>(null);
 
   return (
@@ -316,13 +334,13 @@ const InteractionControls = ({ focusOn }: { focusOn: any }) => {
       ref={controlsRef}
       enableZoom={false}
       enablePan={false}
-      autoRotate={!focusOn}
+      autoRotate={!focusOn && !paused}
       autoRotateSpeed={1.0}
     />
   );
 };
 
-export default function EarthScene() {
+export default function EarthScene({ paused = false }: { paused?: boolean }) {
   const [isClient, setIsClient] = useState(false);
   const [focusOn, setFocusOn] = useState<[number, number] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -564,15 +582,15 @@ export default function EarthScene() {
 
       {/* Intro Overlay & Search Bar */}
       <div
-        className={`absolute left-0 w-full flex flex-col items-center justify-start z-20 top-[2vh] pointer-events-none`}
+        className={`absolute left-0 w-full flex flex-col items-center justify-start z-20 top-[16vh] md:top-[18vh] pointer-events-none transition-opacity duration-500 ${paused ? 'opacity-0' : 'opacity-100'}`}
       >
-        <div className={`flex flex-col items-center mb-4 animate-fade-up stagger-1`}>
-          <h1 className="text-black text-4xl md:text-6xl lg:text-[72px] font-thin tracking-[0.2em] uppercase pointer-events-auto" >
+        <div className={`flex flex-col items-center mb-4 md:mb-6 animate-fade-up stagger-1`}>
+          <h1 className="text-black text-3xl sm:text-4xl md:text-5xl lg:text-[64px] font-thin tracking-[0.15em] sm:tracking-[0.2em] uppercase pointer-events-auto text-center px-4" >
             The Nomads Co.
           </h1>
         </div>
 
-        <div className="relative w-11/12 max-w-2xl shadow-2xl z-30 pointer-events-auto animate-fade-up stagger-2">
+        <div className="relative w-11/12 max-w-lg md:max-w-xl lg:max-w-2xl shadow-xl z-30 pointer-events-auto animate-fade-up stagger-2">
           <input
             type="text"
             value={searchQuery}
@@ -584,7 +602,7 @@ export default function EarthScene() {
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             placeholder="SEARCH DESTINATIONS (E.G. JAPAN)..."
 
-            className="w-full bg-[#f0f0f5]/80 backdrop-blur-md text-black placeholder-black/30 border border-black/5 rounded-full px-6 py-4 lg:py-4 focus:outline-none focus:border-black/20 transition-colors shadow-sm uppercase tracking-[0.2em] font-light text-xs md:text-sm"
+            className="w-full bg-[#f0f0f5]/80 backdrop-blur-md text-black placeholder-black/30 border border-black/5 rounded-full px-6 py-3 md:py-4 lg:py-4 focus:outline-none focus:border-black/20 transition-colors shadow-sm uppercase tracking-[0.2em] font-light text-[10px] sm:text-xs md:text-sm"
           />
           {/* Dropdown */}
           {showDropdown && searchQuery && (
@@ -611,7 +629,7 @@ export default function EarthScene() {
       </div>
 
       {/* 3D Canvas Background */}
-      <div className="absolute inset-0 w-full h-screen z-0 pointer-events-auto translate-y-[10vh]">
+      <div className="absolute inset-0 w-full h-screen z-0 pointer-events-auto translate-y-[25vh] md:translate-y-[20vh]">
         {isClient && (
           <div className="w-full h-full animate-globe stagger-3">
             <Canvas
@@ -620,8 +638,8 @@ export default function EarthScene() {
               camera={{ position: [0, 0, 7.2], fov: 45 }}
               style={{ background: 'transparent' }}
             >
-              <InteractionControls focusOn={focusOn} />
-              <InnerGlobe markers={markers} focusOn={focusOn} />
+              <InteractionControls focusOn={focusOn} paused={paused} />
+              <InnerGlobe markers={markers} focusOn={focusOn} paused={paused} />
             </Canvas>
           </div>
         )}
@@ -630,66 +648,90 @@ export default function EarthScene() {
       {/* Floating Showcase Cards */}
       {focusOn && destinationData[searchQuery.toUpperCase()] && (
         <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
-          {/* Left Cards */}
-          <div className="absolute left-[2vw] lg:left-[4vw] top-1/2 -translate-y-1/2 flex flex-col gap-16 items-start">
-            {destinationData[searchQuery.toUpperCase()].slice(0, 2).map((item: any, i: number) => {
-              const isFirst = i === 0;
-              return (
-                <div
-                  key={i}
-                  className={`
-                    ${isFirst
-                      ? 'w-64 h-48 md:w-[26rem] md:h-64 xl:w-[32rem] xl:h-80 -rotate-1'
-                      : 'w-48 h-64 md:w-64 md:h-[28rem] xl:w-80 xl:h-[34rem] rotate-2 translate-x-12'}
-                    rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer 
-                    relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95
-                  `}
-                  style={{ animationDelay: `${i * 0.3 + 0.6}s`, opacity: 0 }}
-                  onClick={() => {
-                    if (searchQuery.toUpperCase() === "GUJARAT") { window.location.href = "/gujarat"; }
-                  }}
-                >
-                  <img src={item.src} alt={item.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms] ease-out" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
-                  <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-white text-base md:text-xl xl:text-3xl font-extralight tracking-[0.4em] uppercase mb-2">{item.label}</h3>
-                    <div className="h-[2px] w-0 group-hover:w-full bg-white/60 transition-all duration-1000" />
-                    <p className="text-white/40 text-xs uppercase tracking-[0.3em] mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">Experience the magic</p>
-                  </div>
+          {/* Mobile Display: Horizontal Scroll at Bottom */}
+          <div className="md:hidden absolute bottom-10 left-0 w-full overflow-x-auto overflow-y-hidden no-scrollbar py-6 flex gap-6 px-6 snap-x snap-mandatory pointer-events-auto">
+            {destinationData[searchQuery.toUpperCase()].map((item: any, i: number) => (
+              <div
+                key={i}
+                className="w-48 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl animate-fade-up snap-center relative group"
+                style={{ animationDelay: `${i * 0.15 + 0.3}s`, opacity: 0 }}
+                onClick={() => {
+                  if (searchQuery.toUpperCase() === "GUJARAT") { window.location.href = "/gujarat"; }
+                }}
+              >
+                <img src={item.src} alt={item.label} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90" />
+                <div className="absolute inset-x-0 bottom-0 p-5 transform translate-y-2 group-active:translate-y-0 transition-transform">
+                  <h3 className="text-white text-sm font-extralight tracking-widest uppercase mb-1">{item.label}</h3>
+                  <p className="text-white/40 text-[8px] uppercase tracking-wider">Experience the magic</p>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
 
-          {/* Right Cards */}
-          <div className="absolute right-[2vw] lg:right-[4vw] top-1/2 -translate-y-1/2 flex flex-col gap-16 items-end">
-            {destinationData[searchQuery.toUpperCase()].slice(2, 4).map((item: any, i: number) => {
-              const isFirst = i === 0;
-              return (
-                <div
-                  key={i}
-                  className={`
-                    ${isFirst
-                      ? 'w-56 h-56 md:w-72 md:h-72 xl:w-[22rem] xl:h-[22rem] rotate-3 -translate-x-8'
-                      : 'w-64 h-44 md:w-[24rem] md:h-56 xl:w-[28rem] xl:h-64 -rotate-2'}
-                    rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer
-                    relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95
-                  `}
-                  style={{ animationDelay: `${i * 0.3 + 1.2}s`, opacity: 0 }}
-                  onClick={() => {
-                    if (searchQuery.toUpperCase() === "GUJARAT") { window.location.href = "/gujarat"; }
-                  }}
-                >
-                  <img src={item.src} alt={item.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms] ease-out" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
-                  <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-white text-base md:text-xl xl:text-3xl font-extralight tracking-[0.4em] uppercase mb-2">{item.label}</h3>
-                    <div className="h-[2px] w-0 group-hover:w-full bg-white/60 transition-all duration-1000" />
-                    <p className="text-white/40 text-xs uppercase tracking-[0.3em] mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">Experience the magic</p>
+          {/* Desktop/Tablet Display: Scattered Columns */}
+          <div className="hidden md:flex absolute inset-0 pointer-events-none">
+            {/* Left Cards */}
+            <div className="absolute left-[2vw] lg:left-[4vw] top-[65%] -translate-y-1/2 flex flex-col gap-8 md:gap-12 items-start pt-20">
+              {destinationData[searchQuery.toUpperCase()].slice(0, 2).map((item: any, i: number) => {
+                const isFirst = i === 0;
+                return (
+                  <div
+                    key={i}
+                    className={`
+                      ${isFirst
+                        ? 'md:w-[20rem] md:h-60 xl:w-[24rem] xl:h-72 -rotate-1'
+                        : 'md:w-64 md:h-[24rem] xl:w-72 xl:h-[28rem] rotate-2 translate-x-12'}
+                      rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer 
+                      relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95
+                    `}
+                    style={{ animationDelay: `${i * 0.3 + 0.6}s`, opacity: 0 }}
+                    onClick={() => {
+                      if (searchQuery.toUpperCase() === "GUJARAT") { window.location.href = "/gujarat"; }
+                    }}
+                  >
+                    <img src={item.src} alt={item.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms] ease-out" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
+                    <div className="absolute inset-x-0 bottom-0 p-4 md:p-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <h3 className="text-white text-xs sm:text-base md:text-xl xl:text-3xl font-extralight tracking-[0.2em] md:tracking-[0.4em] uppercase mb-1 md:mb-2">{item.label}</h3>
+                      <div className="h-[1px] md:h-[2px] w-0 group-hover:w-full bg-white/60 transition-all duration-1000" />
+                      <p className="text-white/40 text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">Experience the magic</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+
+            {/* Right Cards */}
+            <div className="absolute right-[2vw] lg:right-[4vw] top-[65%] -translate-y-1/2 flex flex-col gap-8 md:gap-12 items-end pt-20">
+              {destinationData[searchQuery.toUpperCase()].slice(2, 4).map((item: any, i: number) => {
+                const isFirst = i === 0;
+                return (
+                  <div
+                    key={i}
+                    className={`
+                      ${isFirst
+                        ? 'md:w-72 md:h-72 xl:w-[22rem] xl:h-[22rem] rotate-3 -translate-x-8'
+                        : 'md:w-[24rem] md:h-56 xl:w-[28rem] xl:h-64 -rotate-2'}
+                      rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-up pointer-events-auto group cursor-pointer
+                      relative transition-all duration-1000 hover:scale-[1.05] hover:border-white/40 hover:rotate-0 active:scale-95
+                    `}
+                    style={{ animationDelay: `${i * 0.3 + 1.2}s`, opacity: 0 }}
+                    onClick={() => {
+                      if (searchQuery.toUpperCase() === "GUJARAT") { window.location.href = "/gujarat"; }
+                    }}
+                  >
+                    <img src={item.src} alt={item.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms] ease-out" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
+                    <div className="absolute inset-x-0 bottom-0 p-4 md:p-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <h3 className="text-white text-xs sm:text-base md:text-xl xl:text-3xl font-extralight tracking-[0.2em] md:tracking-[0.4em] uppercase mb-1 md:mb-2">{item.label}</h3>
+                      <div className="h-[1px] md:h-[2px] w-0 group-hover:w-full bg-white/60 transition-all duration-1000" />
+                      <p className="text-white/40 text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">Experience the magic</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

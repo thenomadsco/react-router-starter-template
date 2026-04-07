@@ -441,7 +441,7 @@ const destinations: Destination[] = [
     title: "Bhutan",
     category: "International",
     image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=60",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCjUTHb99_bGN-pke_y9JavC4j8pyUa6glWQ&s",
     tags: ["Mountains", "Culture", "Peace"],
     description: "The last great Himalayan kingdom, shrouded in mystery.",
   },
@@ -1281,9 +1281,9 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredDestinations = destinations.filter(
-    (dest) => dest.category === activeCategory
-  );
+  const filteredDestinations = useMemo(() => {
+    return destinations.filter((dest) => dest.category === activeCategory);
+  }, [activeCategory]);
 
   const handleDestinationClick = (destinationName: string) => {
     setSelectedDestination(destinationName);
@@ -1330,16 +1330,16 @@ export default function Home() {
             <img
               src={nomadsLogo}
               alt="The Nomads Co."
-              width={40}
-              height={40}
+              width={60}
+              height={60}
               loading="eager"
               // @ts-ignore
               fetchPriority="high"
-              className="h-10 w-auto rounded-md shadow-sm"
+              className="h-10 sm:h-14 w-auto rounded-md shadow-sm"
             />
           </div>
 
-          <div className="hidden md:flex items-center space-x-12">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-10">
             <button
               onClick={() => scrollToSection("about")}
               className="text-gray-900 text-sm font-medium tracking-tight hover:text-black transition-colors"
@@ -1364,12 +1364,12 @@ export default function Home() {
             >
               Contact
             </Link>
-            <Link
-              to="/contactus"
-              className="px-8 py-2.5 bg-black text-white text-xs font-bold tracking-widest uppercase rounded-full hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="px-6 lg:px-8 py-2.5 bg-black text-white text-[10px] lg:text-xs font-bold tracking-widest uppercase rounded-full hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
             >
               Plan My Trip
-            </Link>
+            </button>
           </div>
 
           <button
@@ -1427,13 +1427,16 @@ export default function Home() {
               >
                 Reviews
               </button>
-              <Link
-                to="/contactus"
-                onClick={() => setIsMenuOpen(false)}
+              <button
+                onClick={() => {
+                  scrollToSection("contact");
+                  setIsMenuOpen(false);
+                }}
                 className="px-8 py-3 bg-black text-white text-lg font-medium rounded-full shadow-md hover:bg-gray-800 transition-colors"
+                type="button"
               >
                 Plan My Trip
-              </Link>
+              </button>
             </div>
           </div>
         )}
@@ -1441,7 +1444,7 @@ export default function Home() {
 
 
       {/* 3D Earth Hero Section */}
-      <EarthScene />
+      <EarthScene paused={showDestinations} />
 
 
       {/* Founder Section (format updated; content unchanged; deleted extra portion earlier) */}
@@ -1513,7 +1516,7 @@ export default function Home() {
 
               <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-black">
                 <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
-                <h2 className="text-4xl md:text-6xl font-light tracking-[0.15em] mb-6 uppercase">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.1em] sm:tracking-[0.15em] mb-6 uppercase">
                   Explore Trending Destinations
                 </h2>
                 <p className="text-lg md:text-xl text-black/70 max-w-2xl mb-8">

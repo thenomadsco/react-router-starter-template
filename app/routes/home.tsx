@@ -229,16 +229,18 @@ function buildNomadsWhatsappText(s: NomadsChatState) {
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
-// Ultra-strict User-Agent detection for Chatbot routing
+// Pure URL Split for the Chatbot
 function nomadsWaLink(text: string) { 
   const encodedText = encodeURIComponent(text);
-  const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isMobile = typeof window !== 'undefined' && 
+    (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
   
   if (isMobile) {
     return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
   } else {
-    // Adding trailing slash to /send/ and app_absent=1 to force bypass desktop OS interception
-    return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
+    // Pure web route
+    return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
   }
 }
 
@@ -343,7 +345,6 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
 
-  // Payload text generation
   const generatePayloadText = () => {
     return `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
     
@@ -354,16 +355,18 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 Can you help me curate some ideas?`;
   };
 
-  // Ultra-strict User-Agent aware WhatsApp generation
+  // Pure URL Split for the Funnel
   const generateWhatsAppLink = () => {
     const encodedText = encodeURIComponent(generatePayloadText());
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = typeof window !== 'undefined' && 
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
     
     if (isMobile) {
       return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
     } else {
-      // Adding trailing slash to /send/ and app_absent=1 to force bypass desktop OS interception
-      return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
+      // Pure web route
+      return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
     }
   };
 

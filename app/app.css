@@ -2,47 +2,15 @@
 
 @theme {
 	--font-sans:
-		"Montserrat", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+		"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
 		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
 body {
-	font-family: 'Montserrat', sans-serif !important;
-	@apply bg-[#f2f2f5] text-[#1F2328];
-	color-scheme: light;
-}
+	@apply bg-white dark:bg-gray-950;
 
-.dark\:bg-dot-white\/\[0\.2\] {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
-  background-size: 24px 24px;
+	@media (prefers-color-scheme: dark) {
+		color-scheme: dark;
+	}
 }
-.bg-dot-black\/\[0\.2\] {
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-

@@ -229,7 +229,7 @@ function buildNomadsWhatsappText(s: NomadsChatState) {
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
-// Updated User-Agent detection for Chatbot routing
+// Ultra-strict User-Agent detection for Chatbot routing
 function nomadsWaLink(text: string) { 
   const encodedText = encodeURIComponent(text);
   const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -237,7 +237,8 @@ function nomadsWaLink(text: string) {
   if (isMobile) {
     return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
   } else {
-    return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
+    // Adding trailing slash to /send/ and app_absent=1 to force bypass desktop OS interception
+    return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
   }
 }
 
@@ -353,7 +354,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 Can you help me curate some ideas?`;
   };
 
-  // User-Agent aware WhatsApp generation
+  // Ultra-strict User-Agent aware WhatsApp generation
   const generateWhatsAppLink = () => {
     const encodedText = encodeURIComponent(generatePayloadText());
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -361,8 +362,8 @@ Can you help me curate some ideas?`;
     if (isMobile) {
       return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
     } else {
-      // Desktop bypass straight to WhatsApp Web
-      return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
+      // Adding trailing slash to /send/ and app_absent=1 to force bypass desktop OS interception
+      return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
     }
   };
 

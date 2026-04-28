@@ -160,7 +160,6 @@ const keyServices = [
   { icon: <SlidersHorizontal className="w-8 h-8 text-blue-600" />, title: "Flexible Itineraries", description: "Plans that adapt to your pace and preferences." },
 ];
 
-// FULL RESTORED DESTINATIONS LIST
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string; };
 
 const destinations: Destination[] = [
@@ -328,32 +327,29 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
   const [travelers, setTravelers] = useState("");
   const [vibe, setVibe] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
 
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
 
-  // 1. Strict formatting & URI encoding
-  const generateWhatsAppLink = () => {
-    const payload = `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
+  // Payload text generation
+  const generatePayloadText = () => {
+    return `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
     
 *Travelers:* ${travelers}
 *Timeline:* ${timeline}
 *Vibe:* ${vibe}
 
-Can you help me curate some ideas? You can reach me at ${phone}.`;
-    
-    // 2. Using the official wa.me smart routing protocol
-    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(payload)}`;
+Can you help me curate some ideas?`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if(!name || !phone) return;
-    
-    // 3 & 4. Synchronous window.open strictly tied to the physical button click (Bypasses all pop-up blockers)
-    window.open(generateWhatsAppLink(), "_blank");
-    onClose();
+  const generateWhatsAppLink = () => {
+    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(generatePayloadText())}`;
+  };
+
+  const generateEmailLink = () => {
+    const plainTextBody = `Hi Kirti,\n\nI'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.\n\nTravelers: ${travelers}\nTimeline: ${timeline}\nVibe: ${vibe}\n\nCan you help me curate some ideas?\n\nBest,\n${name}`;
+    const subject = `New Trip Inquiry: ${dest || "Custom Trip"}`;
+    return `mailto:thenomadsco@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(plainTextBody)}`;
   };
 
   return (
@@ -372,7 +368,9 @@ Can you help me curate some ideas? You can reach me at ${phone}.`;
                 <ArrowLeft className="w-5 h-5" />
               </button>
             )}
-            <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Step {step + 1} of {preselectedDest ? 4 : 5}</span>
+            <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
+              Step {preselectedDest ? step : step + 1} of {preselectedDest ? 4 : 5}
+            </span>
           </div>
           <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
             <X className="w-5 h-5" />
@@ -461,33 +459,40 @@ Can you help me curate some ideas? You can reach me at ${phone}.`;
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Perfect. We know exactly what to do.</h3>
-              <p className="text-gray-500 mb-6">Where should we send your curated itinerary ideas?</p>
+              <p className="text-gray-500 mb-6">Just drop your name below and choose how you'd like to send your inquiry.</p>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-4">
                 <input 
                   type="text" 
-                  required
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your Name"
                   className="w-full text-lg px-5 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none"
                 />
-                <input 
-                  type="tel" 
-                  required
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  placeholder="WhatsApp Number"
-                  className="w-full text-lg px-5 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none"
-                />
-                <button 
-                  type="submit"
-                  disabled={!name || !phone}
-                  className="w-full py-4 mt-2 bg-[#02A551] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
-                >
-                  Send to WhatsApp ✈️
-                </button>
-              </form>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <button 
+                    onClick={() => {
+                      window.open(generateWhatsAppLink(), "_blank");
+                      onClose();
+                    }}
+                    disabled={!name}
+                    className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#1DA851] transition-colors shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
+                  >
+                    WhatsApp 💬
+                  </button>
+                  <button 
+                    onClick={() => {
+                      window.location.href = generateEmailLink();
+                      onClose();
+                    }}
+                    disabled={!name}
+                    className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#242875] transition-colors shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
+                  >
+                    Email ✉️
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -786,7 +791,7 @@ export default function Home() {
               Skip the tedious forms.
             </h3>
             <p className="text-lg text-gray-600 mb-10 max-w-md leading-relaxed">
-              Design your perfect trip in under 60 seconds with our new interactive planner. We'll send curated options directly to your WhatsApp.
+              Design your perfect trip in under 60 seconds with our new interactive planner. We'll send curated options directly to your preferred app.
             </p>
             <button 
               onClick={openGenericFunnel} 

@@ -215,7 +215,7 @@ const testimonials = [
 
 const NOMADS_WHATSAPP_NUMBER_E164 = "919924399335";
 
-// --- EXISTING CHATBOT (Unchanged) ---
+// --- EXISTING CHATBOT ---
 type NomadsIntent = "enquiry" | "change" | "cancel";
 type NomadsChatState = { intent?: NomadsIntent; name?: string; phone?: string; destination?: string; dates?: string; bookingRef?: string; details?: string; };
 type NomadsMsg = { from: "bot" | "user"; text: string };
@@ -229,7 +229,18 @@ function buildNomadsWhatsappText(s: NomadsChatState) {
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
-function nomadsWaLink(text: string) { return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(text)}`; }
+// Updated User-Agent detection for Chatbot routing
+function nomadsWaLink(text: string) { 
+  const encodedText = encodeURIComponent(text);
+  const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
+  } else {
+    return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
+  }
+}
+
 function normalizeNomadsPhone(v: string) { return v.replace(/[^0-9+]/g, ""); }
 
 function NomadsChatbot() {
@@ -342,8 +353,17 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 Can you help me curate some ideas?`;
   };
 
+  // User-Agent aware WhatsApp generation
   const generateWhatsAppLink = () => {
-    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(generatePayloadText())}`;
+    const encodedText = encodeURIComponent(generatePayloadText());
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
+    } else {
+      // Desktop bypass straight to WhatsApp Web
+      return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
+    }
   };
 
   const generateEmailLink = () => {
@@ -759,7 +779,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section (Redesigned completely - No tedious forms) */}
+      {/* Contact Section */}
       <section id="contact" className="py-20 px-6 sm:px-12 bg-[#EEF0FF] relative overflow-hidden">
         <div className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24 items-center">
           {/* Contact Info */}
@@ -782,7 +802,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Interactive Planner CTA (Replaced Form) */}
+          {/* Interactive Planner CTA */}
           <div className="lg:col-span-7 bg-white p-10 sm:p-14 rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center text-center border border-gray-100">
             <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
               <Sparkles className="w-8 h-8" />

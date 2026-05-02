@@ -64,7 +64,6 @@ function Shield(props: any) { return <IconBase {...props}><path d="M12 22s8-4 8-
 function CheckCircle2(props: any) { return <IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>; }
 function Sparkles(props: any) { return <IconBase {...props}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" /></IconBase>; }
 function ArrowLeft(props: any) { return <IconBase {...props}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></IconBase>; }
-function Search(props: any) { return <IconBase {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></IconBase>; }
 
 // --- HELPER COMPONENTS ---
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean; }) => {
@@ -418,12 +417,6 @@ export default function Home() {
   const [showPill, setShowPill] = useState(false);
   const [randomDest, setRandomDest] = useState<Destination | null>(null);
 
-  // Typewriter State for Hero
-  const searchTerms = ["Bali?", "Kashmir?", "Dubai?", "the Maldives?", "Europe?"];
-  const [currentTermIdx, setCurrentTermIdx] = useState(0);
-  const [currentText, setCurrentText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -437,26 +430,6 @@ export default function Home() {
     const t2 = setTimeout(() => setShowPill(false), 12000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
-
-  // Typewriter Logic
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const fullText = searchTerms[currentTermIdx];
-      if (!isDeleting) {
-        setCurrentText(fullText.substring(0, currentText.length + 1));
-        if (currentText === fullText) {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        setCurrentText(fullText.substring(0, currentText.length - 1));
-        if (currentText === "") {
-          setIsDeleting(false);
-          setCurrentTermIdx((prev) => (prev + 1) % searchTerms.length);
-        }
-      }
-    }, isDeleting ? 40 : 100);
-    return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, currentTermIdx]);
 
   const filteredDestinations = destinations.filter((dest) => dest.category === activeCategory);
 
@@ -529,35 +502,51 @@ export default function Home() {
         </div>
       )}
 
-      {/* Redesigned Hero Section (Google Concept) */}
-      <section className="relative pt-[180px] md:pt-[220px] pb-32 w-full bg-[#FAFAF8] overflow-hidden">
+      {/* Redesigned Hero Section (Apple Concept - Asymmetric Gallery) */}
+      <section className="relative pt-[150px] md:pt-[200px] pb-20 md:pb-32 w-full bg-[#FAFAF8] overflow-hidden">
         {/* Soft abstract lighting */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-tr from-blue-100/40 via-transparent to-teal-50/40 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent blur-3xl rounded-full pointer-events-none" />
         
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <RevealOnScroll>
-             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-               Your next chapter begins here.
-             </h1>
-             <p className="text-xl md:text-2xl text-gray-500 mb-16 max-w-2xl mx-auto">
-               Curated, zero-stress premium travel.
-             </p>
-             
-             {/* Interactive Search Input */}
-             <div
-               onClick={openGenericFunnel}
-               className="max-w-2xl mx-auto bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] transition-all duration-300 flex items-center p-2 pl-6 cursor-pointer group hover:-translate-y-1"
-             >
-               <Search className="w-6 h-6 text-gray-400 group-hover:text-[#2D3191] transition-colors" />
-               <div className="flex-1 text-left px-4 text-xl md:text-2xl text-gray-700 h-10 flex items-center">
-                  <span className="opacity-50">Dreaming of </span>
-                  <span className="ml-2 font-medium text-[#1F2328] border-r-2 border-[#2D3191] animate-pulse">{currentText}</span>
-               </div>
-               <button className="bg-[#2D3191] text-white px-8 py-4 rounded-full font-bold shadow-md group-hover:bg-[#242875] transition-colors">
-                 Plan It
-               </button>
-             </div>
-          </RevealOnScroll>
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Left: Typography & CTA */}
+            <div className="lg:col-span-5 lg:pr-8 text-center lg:text-left z-20">
+              <RevealOnScroll>
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight leading-[1.05]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Discover the world, beautifully curated.
+                </h1>
+                <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                  Zero-stress premium travel planning. We handle the details, you collect the memories.
+                </p>
+                <button 
+                  onClick={openGenericFunnel} 
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300"
+                >
+                  Design Your Escape &rarr;
+                </button>
+              </RevealOnScroll>
+            </div>
+
+            {/* Right: Asymmetric Image Gallery */}
+            <div className="lg:col-span-7 relative h-[500px] sm:h-[600px] lg:h-[700px] w-full mt-10 lg:mt-0">
+              {/* Main Tall Image (Right aligned) */}
+              <div className="absolute top-0 right-0 w-3/5 lg:w-[55%] h-[80%] lg:h-[85%] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-10 animate-slide-up-1">
+                <img src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Santorini" className="w-full h-full object-cover" />
+              </div>
+              
+              {/* Wide Horizontal Image (Bottom left overlap) */}
+              <div className="absolute bottom-0 left-0 w-[65%] lg:w-[60%] h-[45%] lg:h-[50%] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] z-20 animate-slide-up-2">
+                <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Kashmir" className="w-full h-full object-cover" />
+              </div>
+
+              {/* Small Square Image (Top left overlap) */}
+              <div className="absolute top-[10%] left-[10%] lg:left-[15%] w-[35%] lg:w-[30%] aspect-square rounded-[2rem] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.1)] z-30 animate-slide-up-3">
+                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=600&q=80" alt="Paris" className="w-full h-full object-cover" />
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -585,7 +574,6 @@ export default function Home() {
       <section className="py-32 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-20">
-            <span className="inline-block text-[#02A551] text-xs font-bold uppercase tracking-widest mb-4">What we do</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Key Services Offered</h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -782,6 +770,14 @@ export default function Home() {
           to { opacity: 1; transform: translateX(0) translateY(0); }
         }
         .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(60px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up-1 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+        .animate-slide-up-2 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards; opacity: 0; }
+        .animate-slide-up-3 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; opacity: 0; }
       `}</style>
     </div>
   );

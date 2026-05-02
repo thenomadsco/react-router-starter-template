@@ -128,6 +128,251 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   );
 };
 
+// --- GLOBE HERO COMPONENT ---
+// Destination coordinates: [lat, lng] for pinned dots on the globe
+const GLOBE_DESTINATIONS = [
+  { name: "Bali",        lat:  -8.34, lng: 115.09 },
+  { name: "Maldives",    lat:   4.17, lng:  73.51 },
+  { name: "Dubai",       lat:  25.20, lng:  55.27 },
+  { name: "Singapore",   lat:   1.35, lng: 103.82 },
+  { name: "Kashmir",     lat:  34.08, lng:  74.79 },
+  { name: "Paris",       lat:  48.86, lng:   2.35 },
+  { name: "Tokyo",       lat:  35.68, lng: 139.69 },
+  { name: "Santorini",   lat:  36.39, lng:  25.46 },
+  { name: "Bali",        lat:  -8.34, lng: 115.09 },
+  { name: "New Zealand", lat: -40.90, lng: 174.89 },
+  { name: "Kenya",       lat:  -1.29, lng:  36.82 },
+  { name: "Turkey",      lat:  39.92, lng:  32.85 },
+];
+
+function latLngToVec3(lat: number, lng: number, radius: number): [number, number, number] {
+  const phi   = (90 - lat)  * (Math.PI / 180);
+  const theta = (lng + 180) * (Math.PI / 180);
+  return [
+    -(radius * Math.sin(phi) * Math.cos(theta)),
+     (radius * Math.cos(phi)),
+     (radius * Math.sin(phi) * Math.sin(theta)),
+  ];
+}
+
+const GlobeHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef  = useRef({ x: 0, y: 0 });
+  const frameRef  = useRef<number>(0);
+  const threeRef  = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Dynamically load Three.js from CDN — no new files, no package install
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+    script.async = true;
+
+    script.onload = () => {
+      const THREE = (window as any).THREE;
+      if (!THREE || !canvasRef.current) return;
+
+      // ── Scene setup ──────────────────────────────────────────────────────────
+      const canvas   = canvasRef.current;
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
+      const scene  = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+      camera.position.set(0, 0, 3.2);
+
+      // ── Globe wireframe ───────────────────────────────────────────────────────
+      const RADIUS = 1;
+      const globeGeo  = new THREE.SphereGeometry(RADIUS, 36, 36);
+      const wireMat   = new THREE.MeshBasicMaterial({
+        color:       0x2D3191,
+        wireframe:   true,
+        transparent: true,
+        opacity:     0.18,
+      });
+      const globe = new THREE.Mesh(globeGeo, wireMat);
+      scene.add(globe);
+
+      // Slightly larger solid sphere as a subtle backing so the globe reads as a volume
+      const backingGeo = new THREE.SphereGeometry(RADIUS * 0.995, 36, 36);
+      const backingMat = new THREE.MeshBasicMaterial({
+        color:       0xEEF1FF,
+        transparent: true,
+        opacity:     0.22,
+        side:        THREE.BackSide,
+      });
+      scene.add(new THREE.Mesh(backingGeo, backingMat));
+
+      // ── Destination dots ──────────────────────────────────────────────────────
+      const dotGroup = new THREE.Group();
+      const dotGeo   = new THREE.SphereGeometry(0.018, 8, 8);
+
+      // Outer glow ring per dot
+      const ringGeo  = new THREE.RingGeometry(0.022, 0.034, 16);
+
+      GLOBE_DESTINATIONS.forEach(({ lat, lng }) => {
+        const [x, y, z] = latLngToVec3(lat, lng, RADIUS + 0.012);
+
+        // Core dot
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0x2D3191, transparent: true, opacity: 0.85 });
+        const dot    = new THREE.Mesh(dotGeo, dotMat);
+        dot.position.set(x, y, z);
+        dotGroup.add(dot);
+
+        // Pulsing ring (we'll animate scale in the loop)
+        const ringMat  = new THREE.MeshBasicMaterial({ color: 0x2D3191, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+        const ring     = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.set(x, y, z);
+        // Orient ring to face outward from globe center
+        ring.lookAt(0, 0, 0);
+        ring.rotateX(Math.PI / 2);
+        dotGroup.add(ring);
+      });
+
+      scene.add(dotGroup);
+
+      // Keep dotGroup in sync with globe rotation
+      globe.add(dotGroup);
+
+      // ── Resize handler ────────────────────────────────────────────────────────
+      const resize = () => {
+        if (!canvasRef.current) return;
+        const w = canvasRef.current.clientWidth;
+        const h = canvasRef.current.clientHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize();
+      window.addEventListener("resize", resize);
+
+      // ── Mouse tracking ────────────────────────────────────────────────────────
+      const onMouseMove = (e: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        // Normalise to [-1, 1]
+        mouseRef.current.x = ((e.clientX - rect.left)  / rect.width)  * 2 - 1;
+        mouseRef.current.y = ((e.clientY - rect.top)   / rect.height) * 2 - 1;
+      };
+      window.addEventListener("mousemove", onMouseMove);
+
+      // ── Animation loop ────────────────────────────────────────────────────────
+      let autoRotY  = 0;
+      let camTargX  = 0;
+      let camTargY  = 0;
+      let camCurrX  = 0;
+      let camCurrY  = 0;
+      const MAX_TILT = 0.14; // radians (~8°)
+      const LERP     = 0.04;
+
+      const animate = (time: number) => {
+        frameRef.current = requestAnimationFrame(animate);
+
+        // Slow auto-rotation
+        autoRotY += 0.0015;
+        globe.rotation.y = autoRotY;
+
+        // Camera parallax from mouse
+        camTargX = -mouseRef.current.y * MAX_TILT;
+        camTargY =  mouseRef.current.x * MAX_TILT;
+        camCurrX += (camTargX - camCurrX) * LERP;
+        camCurrY += (camTargY - camCurrY) * LERP;
+        camera.position.x = Math.sin(camCurrY) * 3.2;
+        camera.position.y = Math.sin(camCurrX) * 3.2;
+        camera.position.z = Math.cos(Math.sqrt(camCurrX ** 2 + camCurrY ** 2)) * 3.2;
+        camera.lookAt(0, 0, 0);
+
+        // Pulse the dot rings
+        const pulse = (Math.sin(time * 0.002) + 1) / 2; // 0 → 1
+        dotGroup.children.forEach((child: any, i: number) => {
+          if (i % 2 === 1) { // every second child is a ring
+            child.scale.setScalar(1 + pulse * 0.5);
+            child.material.opacity = 0.25 - pulse * 0.18;
+          }
+        });
+
+        renderer.render(scene, camera);
+      };
+      frameRef.current = requestAnimationFrame(animate);
+
+      // Store refs for cleanup
+      threeRef.current = { renderer, scene, camera, resize, onMouseMove };
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      cancelAnimationFrame(frameRef.current);
+      if (threeRef.current) {
+        window.removeEventListener("resize",      threeRef.current.resize);
+        window.removeEventListener("mousemove",   threeRef.current.onMouseMove);
+        threeRef.current.renderer.dispose();
+      }
+      // Remove the script tag on unmount to stay clean
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <section className="relative pt-[150px] md:pt-[200px] pb-20 md:pb-32 w-full bg-[#FAFAF8] overflow-hidden">
+      {/* Soft abstract lighting — unchanged */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent blur-3xl rounded-full pointer-events-none" />
+
+      {/* Globe canvas — full bleed, sits behind all content */}
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 1 }}
+      />
+
+      {/* Content — unchanged grid, copy, buttons, images */}
+      <div className="container mx-auto px-4 md:px-8 relative" style={{ zIndex: 2 }}>
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+          {/* Left: Typography & CTA — untouched */}
+          <div className="lg:col-span-5 lg:pr-8 text-center lg:text-left z-20">
+            <RevealOnScroll>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight leading-[1.05]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Discover the world, beautifully curated.
+              </h1>
+              <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Zero-stress premium travel planning. We handle the details, you collect the memories.
+              </p>
+              <button
+                onClick={onPlanTrip}
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300"
+              >
+                Design Your Escape &rarr;
+              </button>
+            </RevealOnScroll>
+          </div>
+
+          {/* Right: Asymmetric Image Gallery — untouched */}
+          <div className="lg:col-span-7 relative h-[500px] sm:h-[600px] lg:h-[700px] w-full mt-10 lg:mt-0">
+            {/* Main Tall Image (Right aligned) */}
+            <div className="absolute top-0 right-0 w-3/5 lg:w-[55%] h-[80%] lg:h-[85%] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-10 animate-slide-up-1">
+              <img src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Santorini" className="w-full h-full object-cover" />
+            </div>
+
+            {/* Wide Horizontal Image (Bottom left overlap) */}
+            <div className="absolute bottom-0 left-0 w-[65%] lg:w-[60%] h-[45%] lg:h-[50%] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] z-20 animate-slide-up-2">
+              <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Kashmir" className="w-full h-full object-cover" />
+            </div>
+
+            {/* Small Square Image (Top left overlap) */}
+            <div className="absolute top-[10%] left-[10%] lg:left-[15%] w-[35%] lg:w-[30%] aspect-square rounded-[2rem] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.1)] z-30 animate-slide-up-3">
+              <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=600&q=80" alt="Paris" className="w-full h-full object-cover" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- DATASETS ---
 const keyServices = [
   { icon: <Plane className="w-8 h-8 text-blue-600" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
@@ -180,7 +425,7 @@ const destinations: Destination[] = [
 ];
 
 const testimonials = [
-  { id: 1, name: "Client Review", location: "", rating: 5, text: `We decided to go on a holiday to Greece.\nWe were 10 of us. The destination was all we were sure of. Rest was chaos.\nIn a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.\nWe the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.\nNeedless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.\nNomads has never failed to be on point to everything, the reminders the information and looking after everyone’s needs. Keep it up Kirti.\nThank you for this and all the ones we will put you through` },
+  { id: 1, name: "Client Review", location: "", rating: 5, text: `We decided to go on a holiday to Greece.\nWe were 10 of us. The destination was all we were sure of. Rest was chaos.\nIn a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.\nWe the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.\nNeedless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.\nNomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti.\nThank you for this and all the ones we will put you through` },
   { id: 2, name: "Client Review", location: "", rating: 5, text: `Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives.\nDespite the short notice, everything was flawlessly planned and perfectly coordinated.\nThe hotels, transfers, and sightseeing were seamless and stress-free.\nMy parents felt well taken care of and absolutely loved the entire experience.\nTruly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨` },
 ];
 
@@ -202,7 +447,7 @@ function buildNomadsWhatsappText(s: NomadsChatState) {
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
-function nomadsWaLink(text: string) { 
+function nomadsWaLink(text: string) {
   const encodedText = encodeURIComponent(text);
   const isMobile = typeof window !== 'undefined' && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
   if (isMobile) return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
@@ -216,10 +461,10 @@ function NomadsChatbot() {
   const [step, setStep] = useState(0);
   const [input, setInput] = useState("");
   const [state, setState] = useState<NomadsChatState>({});
-  const [msgs, setMsgs] = useState<NomadsMsg[]>([{ from: "bot", text: "Hey 👋 I’m Nomads Assistant. What do you want to do today? (1/2/3)" }, { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" }]);
+  const [msgs, setMsgs] = useState<NomadsMsg[]>([{ from: "bot", text: "Hey 👋 I'm Nomads Assistant. What do you want to do today? (1/2/3)" }, { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" }]);
 
   const steps = useMemo(() => {
-    const base: any[] = [{ key: "intent", prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).", required: true }, { key: "name", prompt: "What’s your name?", required: true }, { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true }];
+    const base: any[] = [{ key: "intent", prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).", required: true }, { key: "name", prompt: "What's your name?", required: true }, { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true }];
     const intent = state.intent;
     if (!intent) return base;
     const mid: any[] = [];
@@ -231,9 +476,9 @@ function NomadsChatbot() {
 
   const current = steps[Math.min(step, steps.length - 1)];
   const whatsappText = useMemo(() => buildNomadsWhatsappText(state), [state]);
-  const whatsappUrl = useMemo(() => nomadsWaLink(whatsappText), [whatsappText]);
+  const whatsappUrl  = useMemo(() => nomadsWaLink(whatsappText), [whatsappText]);
 
-  const pushBot = (t: string) => setMsgs((m) => [...m, { from: "bot", text: t }]);
+  const pushBot  = (t: string) => setMsgs((m) => [...m, { from: "bot",  text: t }]);
   const pushUser = (t: string) => setMsgs((m) => [...m, { from: "user", text: t }]);
 
   const validate = (key: string, v: string) => {
@@ -243,9 +488,9 @@ function NomadsChatbot() {
       const intent = (s === "1" || s.includes("enq")) ? "enquiry" : (s === "2" || s.includes("change")) ? "change" : (s === "3" || s.includes("cancel")) ? "cancel" : undefined;
       return intent ? { ok: true, value: intent } : { ok: false, err: "Type 1 for Enquiry, 2 for Change, or 3 for Cancel 🙂" };
     }
-    if (key === "name" && v.length < 2) return { ok: false, err: "Type your name (2+ letters) 🙂" };
-    if (key === "phone" && normalizeNomadsPhone(v).length < 10) return { ok: false, err: "Phone number only here (10+ digits) 🙂" };
-    if (current.required && !v) return { ok: false, err: "This can’t be blank 🙂" };
+    if (key === "name"  && v.length < 2)                          return { ok: false, err: "Type your name (2+ letters) 🙂" };
+    if (key === "phone" && normalizeNomadsPhone(v).length < 10)   return { ok: false, err: "Phone number only here (10+ digits) 🙂" };
+    if (current.required && !v)                                    return { ok: false, err: "This can't be blank 🙂" };
     return { ok: true, value: v };
   };
 
@@ -297,12 +542,12 @@ function NomadsChatbot() {
 }
 
 function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string, onClose: () => void }) {
-  const [step, setStep] = useState(preselectedDest ? 1 : 0);
-  const [dest, setDest] = useState(preselectedDest || "");
+  const [step, setStep]         = useState(preselectedDest ? 1 : 0);
+  const [dest, setDest]         = useState(preselectedDest || "");
   const [timeline, setTimeline] = useState("");
   const [travelers, setTravelers] = useState("");
-  const [vibe, setVibe] = useState("");
-  const [name, setName] = useState("");
+  const [vibe, setVibe]         = useState("");
+  const [name, setName]         = useState("");
 
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
@@ -390,7 +635,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
           )}
         </div>
       </div>
-      
+
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; }
@@ -404,18 +649,18 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 // =================================================================================
 
 export default function Home() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen]         = useState(false);
+  const [scrolled, setScrolled]             = useState(false);
   const [showDestinations, setShowDestinations] = useState(false);
   const [activeCategory, setActiveCategory] = useState("International");
-  
+
   // Funnel State
   const [showFunnel, setShowFunnel] = useState(false);
   const [funnelDest, setFunnelDest] = useState("");
 
   // Glass Pill Hook State
-  const [showPill, setShowPill] = useState(false);
-  const [randomDest, setRandomDest] = useState<Destination | null>(null);
+  const [showPill, setShowPill]       = useState(false);
+  const [randomDest, setRandomDest]   = useState<Destination | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -426,7 +671,7 @@ export default function Home() {
   // Hook Pill Logic
   useEffect(() => {
     setRandomDest(destinations[Math.floor(Math.random() * destinations.length)]);
-    const t1 = setTimeout(() => setShowPill(true), 2000);
+    const t1 = setTimeout(() => setShowPill(true),  2000);
     const t2 = setTimeout(() => setShowPill(false), 12000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
@@ -484,71 +729,26 @@ export default function Home() {
       {/* Floating Glass Hook Pill */}
       {showPill && randomDest && (
         <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
-          <div 
+          <div
             onClick={() => { setShowPill(false); document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' }); }}
             className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all"
           >
-             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner">
-               <img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} />
-             </div>
-             <div>
-               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12}/> Trending</p>
-               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
-             </div>
-             <button onClick={(e) => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900">
-               <X size={14} />
-             </button>
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner">
+              <img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12}/> Trending</p>
+              <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
+            </div>
+            <button onClick={(e) => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900">
+              <X size={14} />
+            </button>
           </div>
         </div>
       )}
 
-      {/* Redesigned Hero Section (Apple Concept - Asymmetric Gallery) */}
-      <section className="relative pt-[150px] md:pt-[200px] pb-20 md:pb-32 w-full bg-[#FAFAF8] overflow-hidden">
-        {/* Soft abstract lighting */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
-            {/* Left: Typography & CTA */}
-            <div className="lg:col-span-5 lg:pr-8 text-center lg:text-left z-20">
-              <RevealOnScroll>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight leading-[1.05]" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Discover the world, beautifully curated.
-                </h1>
-                <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Zero-stress premium travel planning. We handle the details, you collect the memories.
-                </p>
-                <button 
-                  onClick={openGenericFunnel} 
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300"
-                >
-                  Design Your Escape &rarr;
-                </button>
-              </RevealOnScroll>
-            </div>
-
-            {/* Right: Asymmetric Image Gallery */}
-            <div className="lg:col-span-7 relative h-[500px] sm:h-[600px] lg:h-[700px] w-full mt-10 lg:mt-0">
-              {/* Main Tall Image (Right aligned) */}
-              <div className="absolute top-0 right-0 w-3/5 lg:w-[55%] h-[80%] lg:h-[85%] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-10 animate-slide-up-1">
-                <img src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Santorini" className="w-full h-full object-cover" />
-              </div>
-              
-              {/* Wide Horizontal Image (Bottom left overlap) */}
-              <div className="absolute bottom-0 left-0 w-[65%] lg:w-[60%] h-[45%] lg:h-[50%] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] z-20 animate-slide-up-2">
-                <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Kashmir" className="w-full h-full object-cover" />
-              </div>
-
-              {/* Small Square Image (Top left overlap) */}
-              <div className="absolute top-[10%] left-[10%] lg:left-[15%] w-[35%] lg:w-[30%] aspect-square rounded-[2rem] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.1)] z-30 animate-slide-up-3">
-                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=600&q=80" alt="Paris" className="w-full h-full object-cover" />
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      {/* ── GLOBE HERO ────────────────────────────────────────────────────────── */}
+      <GlobeHero onPlanTrip={openGenericFunnel} />
 
       {/* About Section */}
       <section id="about" className="py-32 px-6 sm:px-12 bg-white relative">
@@ -578,11 +778,13 @@ export default function Home() {
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((service, index) => (
-              <RevealOnScroll key={index} className={`delay-${index * 100}`}>
-                <div className="bg-white rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full">
-                  <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{service.icon}</div>
-                  <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{service.title}</h3>
-                  <p className="text-gray-500 leading-relaxed text-lg">{service.description}</p>
+              <RevealOnScroll key={index}>
+                <div className="group p-8 bg-white rounded-[2rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1 border border-gray-100/80">
+                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    {service.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-[#1F2328] mb-3">{service.title}</h3>
+                  <p className="text-gray-500 leading-relaxed">{service.description}</p>
                 </div>
               </RevealOnScroll>
             ))}
@@ -590,78 +792,81 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations Trigger Section */}
+      {/* Destinations Section */}
       <section id="destinations" className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll>
-            <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white">
-              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
-              <div className="absolute inset-0 bg-white/70 z-10" />
-              <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
-                <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
-                <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>Explore Destinations</h2>
-                <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
-                <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
-              </div>
-            </div>
+          <RevealOnScroll className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Where Do You Want To Go?</h2>
+            <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">From serene beaches to majestic mountains, explore our handpicked destinations for every kind of traveller.</p>
           </RevealOnScroll>
+
+          {/* Category Filter */}
+          <div className="flex justify-center gap-4 mb-12">
+            {["International", "India"].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-8 py-3 rounded-full font-semibold text-sm transition-all ${activeCategory === cat ? "bg-[#2D3191] text-white shadow-lg" : "bg-[#FAFAF8] text-gray-600 hover:bg-gray-100"}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Destination Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {(showDestinations ? filteredDestinations : filteredDestinations.slice(0, 8)).map((dest) => (
+              <RevealOnScroll key={dest.id}>
+                <div
+                  onClick={() => handleDestinationClick(dest.title)}
+                  className="group cursor-pointer bg-white rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-1 border border-gray-100"
+                >
+                  <div className="h-48 overflow-hidden">
+                    <img src={dest.image} alt={dest.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-bold text-[#1F2328] text-lg mb-2">{dest.title}</h3>
+                    <p className="text-gray-500 text-sm mb-3 line-clamp-2">{dest.description}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {dest.tags.map((tag) => (
+                        <span key={tag} className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+
+          {filteredDestinations.length > 8 && (
+            <div className="text-center mt-12">
+              <button
+                onClick={() => setShowDestinations(!showDestinations)}
+                className="px-10 py-4 bg-[#1F2328] text-white font-semibold rounded-full hover:bg-black transition-all shadow-lg hover:-translate-y-0.5"
+              >
+                {showDestinations ? "Show Less" : `View All ${filteredDestinations.length} Destinations`}
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Destinations Popup */}
-      {showDestinations && (
-        <div className="fixed inset-0 z-50 flex animate-active-up">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)}></div>
-          <div className="absolute inset-0 md:inset-10 bg-[#FAFAF8] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
-            <div className="p-6 md:p-8 flex justify-between items-center bg-white shadow-sm z-20">
-              <h3 className="text-2xl md:text-3xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Choose Your Adventure</h3>
-              <button onClick={() => setShowDestinations(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-500" /></button>
-            </div>
-            <div className="flex justify-center p-6 bg-white z-10 shadow-sm relative">
-              <div className="inline-flex bg-[#FAFAF8] rounded-full p-1.5 shadow-inner">
-                {["International", "India"].map((category) => (
-                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === category ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}>{category} <span className="ml-2 text-xs opacity-60">({destinations.filter((d) => d.category === category).length})</span></button>
-                ))}
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredDestinations.map((dest) => (
-                  <div key={dest.id} className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-500 cursor-pointer hover:-translate-y-2" onClick={() => handleDestinationClick(dest.title)}>
-                    <div className="relative h-64 overflow-hidden">
-                      <OptimizedImage src={dest.image} alt={dest.title} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      <div className="absolute bottom-5 left-5 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
-                        {dest.tags.slice(0, 2).map((tag, index) => (
-                          <span key={index} className="text-xs font-bold text-white bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full">{tag}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="p-8">
-                      <h4 className="text-2xl font-bold mb-3 text-[#1F2328] group-hover:text-[#2D3191] transition-colors">{dest.title}</h4>
-                      <p className="text-gray-500 leading-relaxed line-clamp-2">{dest.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reviews */}
-      <section id="reviews" className="py-32 relative bg-white">
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
+      {/* Testimonials Section */}
+      <section id="reviews" className="py-32 bg-[#FAFAF8]">
+        <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-20">
-            <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Loved by Travelers</h2>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>What Our Travellers Say</h2>
           </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {testimonials.map((testimonial, index) => (
-              <RevealOnScroll key={testimonial.id} className={`delay-${index * 100}`}>
-                <div className="bg-[#FAFAF8] p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden">
-                  <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(testimonial.rating)].map((_, i) => (<Star key={i} className="w-6 h-6 fill-current" />))}</div>
-                  <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{testimonial.text}"</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {testimonials.map((testimonial) => (
+              <RevealOnScroll key={testimonial.id}>
+                <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100/80">
+                  <div className="flex gap-1 mb-6">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star key={i} size={20} className="text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-[#1F2328]/80 leading-relaxed text-lg mb-8 whitespace-pre-line">{testimonial.text}</p>
                   <div>
                     <h4 className="font-bold text-xl text-[#1F2328]">{testimonial.name}</h4>
                     {!!testimonial.location && <p className="text-gray-500 mt-1">{testimonial.location}</p>}
@@ -680,7 +885,7 @@ export default function Home() {
            <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
         </div>
         <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
-          
+
           {/* WhatsApp Bento */}
           <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500">
@@ -754,9 +959,9 @@ export default function Home() {
 
       {/* Render the new Funnel when state is true */}
       {showFunnel && (
-        <DestinationFunnel 
-          preselectedDest={funnelDest} 
-          onClose={() => setShowFunnel(false)} 
+        <DestinationFunnel
+          preselectedDest={funnelDest}
+          onClose={() => setShowFunnel(false)}
         />
       )}
 
@@ -770,7 +975,7 @@ export default function Home() {
           to { opacity: 1; transform: translateX(0) translateY(0); }
         }
         .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
+
         @keyframes slideUpFade {
           from { opacity: 0; transform: translateY(60px); }
           to { opacity: 1; transform: translateY(0); }

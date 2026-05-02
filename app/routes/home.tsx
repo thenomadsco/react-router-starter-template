@@ -22,26 +22,11 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title },
     { name: "description", content: description },
-
-    // Preload the LCP hero image
-    {
-      tagName: "link",
-      rel: "preload",
-      as: "image",
-      href: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70",
-      imageSrcSet:
-        "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=640&q=70 640w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70 1080w, https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1920&q=70 1920w",
-      imageSizes: "100vw",
-      fetchPriority: "high",
-    },
-
-    // Social previews
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: url },
     { property: "og:image", content: ogImage },
-
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
@@ -79,6 +64,7 @@ function Shield(props: any) { return <IconBase {...props}><path d="M12 22s8-4 8-
 function CheckCircle2(props: any) { return <IconBase {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></IconBase>; }
 function Sparkles(props: any) { return <IconBase {...props}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z" /></IconBase>; }
 function ArrowLeft(props: any) { return <IconBase {...props}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></IconBase>; }
+function Search(props: any) { return <IconBase {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></IconBase>; }
 
 // --- HELPER COMPONENTS ---
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean; }) => {
@@ -87,7 +73,7 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   const finalSrc = error ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=55&w=600" : src;
 
   return (
-    <div className={`relative overflow-hidden bg-gray-100 ${className ?? ""}`}>
+    <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
       <img
         src={finalSrc}
         alt={alt}
@@ -97,9 +83,8 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
         fetchpriority={priority ? "high" : "auto"}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
-        className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+        className={`w-full h-full object-cover transition-opacity duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}`}
       />
-      {!isLoaded && !error && <div className="absolute inset-0 bg-gray-200 animate-pulse" />}
     </div>
   );
 };
@@ -138,19 +123,13 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   }, []);
 
   return (
-    <div ref={ref} className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} ${className}`}>
+    <div ref={ref} className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
     </div>
   );
 };
 
 // --- DATASETS ---
-const heroImages = [
-  { url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&fm=webp&w=1080&q=70", label: "Taj Mahal, India" },
-  { url: "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=1080&q=70", label: "Santorini, Greece" },
-  { url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=1080&q=70", label: "Eiffel Tower, Paris" },
-];
-
 const keyServices = [
   { icon: <Plane className="w-8 h-8 text-blue-600" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
   { icon: <MapIcon className="w-8 h-8 text-blue-600" />, title: "End-to-End Planning", description: "From itinerary creation to returning home safely." },
@@ -163,7 +142,6 @@ const keyServices = [
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string; };
 
 const destinations: Destination[] = [
-  // International
   { id: 1, title: "Bali, Indonesia", category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Tropical", "Beaches", "Culture"], description: "Island of Gods with serene beaches and vibrant culture." },
   { id: 2, title: "Maldives", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480", tags: ["Honeymoon", "Luxury", "Beaches"], description: "Overwater villas and crystal clear turquoise lagoons." },
   { id: 3, title: "Dubai, UAE", category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Luxury", "City", "Desert"], description: "Futuristic architecture, luxury shopping, and desert safaris." },
@@ -182,8 +160,6 @@ const destinations: Destination[] = [
   { id: 16, title: "South Africa", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=480", tags: ["Wildlife", "Adventure", "Nature"], description: "Safari adventures, stunning coastlines, and vibrant culture." },
   { id: 17, title: "Kenya", category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Wildlife", "Safari", "Nature"], description: "Home of the Great Migration and iconic African wildlife." },
   { id: 18, title: "Tanzania", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=480", tags: ["Wildlife", "Safari", "Beaches"], description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
-
-  // India
   { id: 19, title: "Kashmir", category: "India", image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Mountains", "Nature", "Romance"], description: "Paradise on Earth with stunning valleys and Dal Lake." },
   { id: 20, title: "Leh-Ladakh", category: "India", image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Adventure", "Mountains", "Road Trip"], description: "Stark mountain landscapes, monasteries, and high passes." },
   { id: 21, title: "Himachal Pradesh", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=480", tags: ["Mountains", "Nature", "Adventure"], description: "Scenic hill stations, pine forests, and snow-capped peaks." },
@@ -215,7 +191,6 @@ const testimonials = [
 
 const NOMADS_WHATSAPP_NUMBER_E164 = "919924399335";
 
-// --- EXISTING CHATBOT ---
 type NomadsIntent = "enquiry" | "change" | "cancel";
 type NomadsChatState = { intent?: NomadsIntent; name?: string; phone?: string; destination?: string; dates?: string; bookingRef?: string; details?: string; };
 type NomadsMsg = { from: "bot" | "user"; text: string };
@@ -223,25 +198,16 @@ type NomadsMsg = { from: "bot" | "user"; text: string };
 function buildNomadsWhatsappText(s: NomadsChatState) {
   const name = (s.name || "").trim() || "—";
   const phone = (s.phone || "").trim() || "—";
-
   if (s.intent === "enquiry") return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I'd like to enquire about a trip.\n\nDestination: ${s.destination || "—"}\nDates: ${s.dates || "—"}\n\nDetails:\n${s.details || "—"}`;
   if (s.intent === "change") return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to modify my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\nNew Destination: ${s.destination || "—"}\nNew Dates: ${s.dates || "—"}\n\nRequest:\n${s.details || "—"}`;
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
-// Pure URL Split for the Chatbot
 function nomadsWaLink(text: string) { 
   const encodedText = encodeURIComponent(text);
-  const isMobile = typeof window !== 'undefined' && 
-    (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
-  
-  if (isMobile) {
-    return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
-  } else {
-    // Pure web route
-    return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
-  }
+  const isMobile = typeof window !== 'undefined' && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+  if (isMobile) return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
+  return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
 }
 
 function normalizeNomadsPhone(v: string) { return v.replace(/[^0-9+]/g, ""); }
@@ -303,25 +269,25 @@ function NomadsChatbot() {
           <MessageCircle className="w-6 h-6" />
         </button>
       ) : (
-        <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden border border-black/10">
+        <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 bg-black text-white">
             <div className="text-sm font-semibold">Nomads Assistant</div>
             <button onClick={() => setOpen(false)} className="text-lg leading-none">×</button>
           </div>
-          <div className="h-[320px] overflow-y-auto px-4 py-3 space-y-3">
+          <div className="h-[320px] overflow-y-auto px-4 py-3 space-y-3 bg-[#FAFAF8]">
             {msgs.map((m, idx) => (
               <div key={idx} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "user" ? "bg-black text-white" : "bg-gray-100 text-gray-900"}`}>{m.text}</div>
+                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "user" ? "bg-black text-white" : "bg-white border border-gray-100 shadow-sm text-gray-900"}`}>{m.text}</div>
               </div>
             ))}
           </div>
           {current?.key !== "done" ? (
-            <div className="p-3 border-t border-black/10 flex gap-2">
-              <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Type here…" className="flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm outline-none" />
+            <div className="p-3 bg-white flex gap-2 border-t border-gray-100">
+              <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Type here…" className="flex-1 rounded-xl bg-[#FAFAF8] px-4 py-2 text-sm outline-none" />
               <button onClick={send} className="rounded-xl px-4 py-2 bg-black text-white text-sm">Send</button>
             </div>
           ) : (
-            <div className="p-3 border-t border-black/10">
+            <div className="p-3 bg-white border-t border-gray-100">
               <a href={whatsappUrl} target="_blank" rel="noreferrer" className="block text-center rounded-xl px-4 py-3 bg-green-600 text-white text-sm font-semibold">Send on WhatsApp ✅</a>
             </div>
           )}
@@ -331,11 +297,8 @@ function NomadsChatbot() {
   );
 }
 
-// --- NEW: FOOLPROOF INTERACTIVE DESTINATION FUNNEL ---
 function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string, onClose: () => void }) {
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
-  
-  // Funnel Data State
   const [dest, setDest] = useState(preselectedDest || "");
   const [timeline, setTimeline] = useState("");
   const [travelers, setTravelers] = useState("");
@@ -345,29 +308,13 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
 
-  const generatePayloadText = () => {
-    return `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
-    
-*Travelers:* ${travelers}
-*Timeline:* ${timeline}
-*Vibe:* ${vibe}
+  const generatePayloadText = () => `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.\n\n*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan you help me curate some ideas?`;
 
-Can you help me curate some ideas?`;
-  };
-
-  // Pure URL Split for the Funnel
   const generateWhatsAppLink = () => {
     const encodedText = encodeURIComponent(generatePayloadText());
-    const isMobile = typeof window !== 'undefined' && 
-      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
-    
-    if (isMobile) {
-      return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
-    } else {
-      // Pure web route
-      return `https://web.whatsapp.com/send?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}`;
-    }
+    const isMobile = typeof window !== 'undefined' && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    if (isMobile) return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
+    return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
   };
 
   const generateEmailLink = () => {
@@ -378,157 +325,75 @@ Can you help me curate some ideas?`;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-md" onClick={onClose} />
-      
-      {/* Card */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[420px] flex flex-col animate-fade-up border border-gray-100">
-        
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+      <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[420px] flex flex-col animate-fade-up">
+        <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
           <div className="flex items-center gap-2">
             {step > (preselectedDest ? 1 : 0) && (
-              <button onClick={handleBack} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
-                <ArrowLeft className="w-5 h-5" />
-              </button>
+              <button onClick={handleBack} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><ArrowLeft className="w-5 h-5" /></button>
             )}
-            <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
-              Step {preselectedDest ? step : step + 1} of {preselectedDest ? 4 : 5}
-            </span>
+            <span className="text-xs font-bold tracking-widest text-gray-400 uppercase">Step {preselectedDest ? step : step + 1} of {preselectedDest ? 4 : 5}</span>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
-            <X className="w-5 h-5" />
-          </button>
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><X className="w-5 h-5" /></button>
         </div>
 
-        {/* Content Area */}
         <div className="p-8 flex-1 flex flex-col justify-center">
-          
           {step === 0 && !preselectedDest && (
             <div className="animate-fade-up">
-              <h3 className="text-3xl font-bold mb-6 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Where are you dreaming of going?</h3>
-              <input 
-                type="text" 
-                value={dest} 
-                onChange={e => setDest(e.target.value)}
-                placeholder="e.g. Bali, Paris, or 'Not sure yet!'"
-                className="w-full text-lg px-5 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none mb-6"
-                autoFocus
-                onKeyDown={e => e.key === 'Enter' && dest && handleNext()}
-              />
-              <button 
-                onClick={handleNext}
-                disabled={!dest}
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-blue-700 transition-colors"
-              >
-                Continue
-              </button>
+              <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Where are you dreaming of going?</h3>
+              <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="e.g. Bali, Paris, or 'Not sure yet!'" className="w-full text-lg px-6 py-5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none mb-6 shadow-inner" autoFocus onKeyDown={e => e.key === 'Enter' && dest && handleNext()} />
+              <button onClick={handleNext} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#242875] transition-colors shadow-lg">Continue</button>
             </div>
           )}
-
           {step === 1 && (
             <div className="animate-fade-up">
-              <h3 className="text-3xl font-bold mb-6 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>When are you planning to travel?</h3>
+              <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>When are you planning to travel?</h3>
               <div className="space-y-3">
                 {["Within 30 Days", "1-3 Months", "3-6 Months", "Just dreaming for now"].map(opt => (
-                  <button 
-                    key={opt}
-                    onClick={() => { setTimeline(opt); handleNext(); }}
-                    className={`w-full text-left px-6 py-4 rounded-2xl border-2 transition-all font-medium ${timeline === opt ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-100 hover:border-gray-300 text-gray-700'}`}
-                  >
-                    {opt}
-                  </button>
+                  <button key={opt} onClick={() => { setTimeline(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${timeline === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
                 ))}
               </div>
             </div>
           )}
-
           {step === 2 && (
             <div className="animate-fade-up">
-              <h3 className="text-3xl font-bold mb-6 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Who is joining you on this journey?</h3>
+              <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Who is joining you on this journey?</h3>
               <div className="space-y-3">
                 {["Solo Adventure", "Couples Retreat", "Family Vacation", "Group of Friends"].map(opt => (
-                  <button 
-                    key={opt}
-                    onClick={() => { setTravelers(opt); handleNext(); }}
-                    className={`w-full text-left px-6 py-4 rounded-2xl border-2 transition-all font-medium ${travelers === opt ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-100 hover:border-gray-300 text-gray-700'}`}
-                  >
-                    {opt}
-                  </button>
+                  <button key={opt} onClick={() => { setTravelers(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${travelers === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
                 ))}
               </div>
             </div>
           )}
-
           {step === 3 && (
             <div className="animate-fade-up">
-              <h3 className="text-3xl font-bold mb-6 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>What defines your perfect trip?</h3>
+              <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>What defines your perfect trip?</h3>
               <div className="space-y-3">
                 {["Total Relaxation & Beaches", "Adventure & Exploring", "Culture & History", "A mix of everything"].map(opt => (
-                  <button 
-                    key={opt}
-                    onClick={() => { setVibe(opt); handleNext(); }}
-                    className={`w-full text-left px-6 py-4 rounded-2xl border-2 transition-all font-medium ${vibe === opt ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-100 hover:border-gray-300 text-gray-700'}`}
-                  >
-                    {opt}
-                  </button>
+                  <button key={opt} onClick={() => { setVibe(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${vibe === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
                 ))}
               </div>
             </div>
           )}
-
           {step === 4 && (
             <div className="animate-fade-up">
-              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                <CheckCircle2 className="w-6 h-6" />
-              </div>
+              <div className="w-16 h-16 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-6"><CheckCircle2 className="w-8 h-8" /></div>
               <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Perfect. We know exactly what to do.</h3>
-              <p className="text-gray-500 mb-6">Just drop your name below and choose how you'd like to send your inquiry.</p>
-              
+              <p className="text-gray-500 mb-8">Just drop your name below and choose how you'd like to send your inquiry.</p>
               <div className="space-y-4">
-                <input 
-                  type="text" 
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Your Name"
-                  className="w-full text-lg px-5 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none"
-                />
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <button 
-                    onClick={() => {
-                      window.open(generateWhatsAppLink(), "_blank");
-                      onClose();
-                    }}
-                    disabled={!name}
-                    className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#1DA851] transition-colors shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
-                  >
-                    WhatsApp 💬
-                  </button>
-                  <button 
-                    onClick={() => {
-                      window.location.href = generateEmailLink();
-                      onClose();
-                    }}
-                    disabled={!name}
-                    className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#242875] transition-colors shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
-                  >
-                    Email ✉️
-                  </button>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your Name" className="w-full text-lg px-6 py-5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none shadow-inner" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
+                  <button onClick={() => { window.open(generateWhatsAppLink(), "_blank"); onClose(); }} disabled={!name} className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2">WhatsApp 💬</button>
+                  <button onClick={() => { window.location.href = generateEmailLink(); onClose(); }} disabled={!name} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2">Email ✉️</button>
                 </div>
               </div>
             </div>
           )}
-
         </div>
       </div>
       
-      {/* Global Style for Funnel Animation */}
       <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(15px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; }
       `}</style>
     </div>
@@ -544,26 +409,54 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [showDestinations, setShowDestinations] = useState(false);
   const [activeCategory, setActiveCategory] = useState("International");
-  const [heroActiveIndex, setHeroActiveIndex] = useState(0);
   
   // Funnel State
   const [showFunnel, setShowFunnel] = useState(false);
   const [funnelDest, setFunnelDest] = useState("");
 
-  useEffect(() => {
-    let id: ReturnType<typeof setInterval>;
-    const start = () => { id = setInterval(() => setHeroActiveIndex((p) => (p + 1) % heroImages.length), 5000); };
-    const onVis = () => (document.hidden ? clearInterval(id) : start());
-    start();
-    document.addEventListener("visibilitychange", onVis);
-    return () => { clearInterval(id); document.removeEventListener("visibilitychange", onVis); };
-  }, []);
+  // Glass Pill Hook State
+  const [showPill, setShowPill] = useState(false);
+  const [randomDest, setRandomDest] = useState<Destination | null>(null);
+
+  // Typewriter State for Hero
+  const searchTerms = ["Bali?", "Kashmir?", "Dubai?", "the Maldives?", "Europe?"];
+  const [currentTermIdx, setCurrentTermIdx] = useState(0);
+  const [currentText, setCurrentText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Hook Pill Logic
+  useEffect(() => {
+    setRandomDest(destinations[Math.floor(Math.random() * destinations.length)]);
+    const t1 = setTimeout(() => setShowPill(true), 2000);
+    const t2 = setTimeout(() => setShowPill(false), 12000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // Typewriter Logic
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const fullText = searchTerms[currentTermIdx];
+      if (!isDeleting) {
+        setCurrentText(fullText.substring(0, currentText.length + 1));
+        if (currentText === fullText) {
+          setTimeout(() => setIsDeleting(true), 2000);
+        }
+      } else {
+        setCurrentText(fullText.substring(0, currentText.length - 1));
+        if (currentText === "") {
+          setIsDeleting(false);
+          setCurrentTermIdx((prev) => (prev + 1) % searchTerms.length);
+        }
+      }
+    }, isDeleting ? 40 : 100);
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, currentTermIdx]);
 
   const filteredDestinations = destinations.filter((dest) => dest.category === activeCategory);
 
@@ -585,20 +478,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 opacity-60" />
-
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm border-b border-gray-100" : "bg-white/50 backdrop-blur-sm py-6"}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" className="h-10 w-auto rounded-md shadow-sm" />
-            <span className="font-bold tracking-tighter text-lg sm:text-2xl">The Nomads Co.</span>
+            <span className="font-bold tracking-tighter text-lg sm:text-2xl text-[#1F2328]">The Nomads Co.</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollToSection("about")} className="text-sm font-medium hover:text-blue-600 transition-colors">About</button>
-            <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium hover:text-blue-600 transition-colors">Destinations</button>
-            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium hover:text-blue-600 transition-colors">Reviews</button>
-            <button onClick={() => scrollToSection("contact")} className="px-6 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">Plan My Trip</button>
+            <button onClick={() => scrollToSection("about")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">About</button>
+            <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Destinations</button>
+            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Reviews</button>
+            <button onClick={() => scrollToSection("contact")} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">Plan My Trip</button>
           </div>
           <button className="md:hidden z-50 p-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current"></span><span className="block w-4 h-0.5 bg-current"></span><span className="block w-6 h-0.5 bg-current"></span></div>}
@@ -611,64 +502,79 @@ export default function Home() {
               <button onClick={() => scrollToSection("about")} className="text-2xl font-semibold text-gray-900">About</button>
               <button onClick={() => scrollToSection("destinations")} className="text-2xl font-semibold text-gray-900">Destinations</button>
               <button onClick={() => scrollToSection("reviews")} className="text-2xl font-semibold text-gray-900">Reviews</button>
-              <button onClick={() => scrollToSection("contact")} className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors">Plan My Trip</button>
+              <button onClick={() => scrollToSection("contact")} className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors">Plan My Trip</button>
             </div>
           </div>
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-[72px] md:pt-[88px] w-full bg-white">
-        <div className="w-full relative h-[50vh] md:h-[65vh] lg:h-[75vh] overflow-hidden bg-gray-900">
-          {heroImages.map((img, index) => (
-            <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === heroActiveIndex ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-              <div className={`absolute inset-0 transition-transform duration-[1400ms] ease-out ${index === heroActiveIndex ? "scale-[1.03]" : "scale-100"}`}>
-                <img src={img.url} srcSet={`${img.url.replace("w=1080", "w=640")} 640w, ${img.url} 1080w, ${img.url.replace("w=1080", "w=1920")} 1920w`} sizes="100vw" alt={img.label} loading={index === 0 ? "eager" : "lazy"} decoding={index === 0 ? "sync" : "async"} width={1080} height={720} className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/55" />
-              <div className="absolute bottom-14 md:bottom-16 left-1/2 -translate-x-1/2 text-white z-20">
-                <div className="px-4 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 shadow-sm"><span className="text-sm md:text-base font-semibold tracking-wide drop-shadow">{img.label}</span></div>
-              </div>
-            </div>
-          ))}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-black/25 backdrop-blur-md border border-white/10">
-              {heroImages.map((_, index) => (
-                <button key={index} onClick={() => setHeroActiveIndex(index)} className={`h-2.5 rounded-full transition-all duration-300 ${index === heroActiveIndex ? "w-8 bg-white" : "w-2.5 bg-white/60 hover:bg-white"}`} />
-              ))}
-            </div>
+      {/* Floating Glass Hook Pill */}
+      {showPill && randomDest && (
+        <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
+          <div 
+            onClick={() => { setShowPill(false); document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all"
+          >
+             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner">
+               <img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} />
+             </div>
+             <div>
+               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12}/> Trending</p>
+               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
+             </div>
+             <button onClick={(e) => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900">
+               <X size={14} />
+             </button>
           </div>
         </div>
-        <div className="container mx-auto px-4 md:px-8 py-16 md:py-20 text-center relative z-10">
+      )}
+
+      {/* Redesigned Hero Section (Google Concept) */}
+      <section className="relative pt-[180px] md:pt-[220px] pb-32 w-full bg-[#FAFAF8] overflow-hidden">
+        {/* Soft abstract lighting */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-tr from-blue-100/40 via-transparent to-teal-50/40 blur-3xl rounded-full pointer-events-none" />
+        
+        <div className="container mx-auto px-4 relative z-10 text-center">
           <RevealOnScroll>
-            <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#E6E8EF] rounded-full shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#02A551] animate-pulse" />
-              <span className="text-[#1F2328]/80 text-xs font-semibold tracking-widest uppercase">Premium Travel Experts</span>
-            </div>
-            <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl leading-tight sm:leading-[1.1] mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, letterSpacing: "-0.02em" }}>
-              Discover the world <span className="block sm:inline">with </span><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D3191] to-[#242875]">The Nomads Co.</span>
-            </h1>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1F2328]/70 mb-10 max-w-xl mx-auto" style={{ letterSpacing: "0.01em" }}>
-              At The Nomads Co., we believe that travel is not just about visiting new places, but about the stories you create and the memories you cherish forever. Whether you dream of walking through ancient streets, relaxing on pristine beaches, or exploring vibrant cultures, we are here to craft the perfect journey just for you.
-            </p>
+             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+               Your next chapter begins here.
+             </h1>
+             <p className="text-xl md:text-2xl text-gray-500 mb-16 max-w-2xl mx-auto">
+               Curated, zero-stress premium travel.
+             </p>
+             
+             {/* Interactive Search Input */}
+             <div
+               onClick={openGenericFunnel}
+               className="max-w-2xl mx-auto bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] transition-all duration-300 flex items-center p-2 pl-6 cursor-pointer group hover:-translate-y-1"
+             >
+               <Search className="w-6 h-6 text-gray-400 group-hover:text-[#2D3191] transition-colors" />
+               <div className="flex-1 text-left px-4 text-xl md:text-2xl text-gray-700 h-10 flex items-center">
+                  <span className="opacity-50">Dreaming of </span>
+                  <span className="ml-2 font-medium text-[#1F2328] border-r-2 border-[#2D3191] animate-pulse">{currentText}</span>
+               </div>
+               <button className="bg-[#2D3191] text-white px-8 py-4 rounded-full font-bold shadow-md group-hover:bg-[#242875] transition-colors">
+                 Plan It
+               </button>
+             </div>
           </RevealOnScroll>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-6 sm:px-12 bg-[#FAFAF8] relative">
-        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section id="about" className="py-32 px-6 sm:px-12 bg-white relative">
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <div className="relative group">
-            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-            <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-lg" />
+            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-700 group-hover:rotate-6" />
+            <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
           </div>
-          <div className="md:pl-2">
-            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-4 block">The Founder</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#1F2328] mb-5" style={{ fontFamily: "'Playfair Display', serif" }}>Meet Kirti Shah</h2>
-            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed mb-5 max-w-xl">
+          <div className="md:pl-6">
+            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>Meet Kirti Shah</h2>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">
               Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.
             </p>
-            <p className="text-base sm:text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">
               With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.
             </p>
           </div>
@@ -676,19 +582,19 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-32 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">WHAT WE DO</span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Key Services Offered</h2>
+          <RevealOnScroll className="text-center mb-20">
+            <span className="inline-block text-[#02A551] text-xs font-bold uppercase tracking-widest mb-4">What we do</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Key Services Offered</h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((service, index) => (
               <RevealOnScroll key={index} className={`delay-${index * 100}`}>
-                <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full border border-gray-100">
-                  <div className="bg-blue-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">{service.icon}</div>
-                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                <div className="bg-white rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full">
+                  <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{service.icon}</div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{service.title}</h3>
+                  <p className="text-gray-500 leading-relaxed text-lg">{service.description}</p>
                 </div>
               </RevealOnScroll>
             ))}
@@ -697,17 +603,17 @@ export default function Home() {
       </section>
 
       {/* Destinations Trigger Section */}
-      <section id="destinations" className="py-24 bg-white">
+      <section id="destinations" className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
-            <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[2.5rem] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-white border border-gray-100">
-              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white">
+              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
               <div className="absolute inset-0 bg-white/70 z-10" />
-              <div className="relative z-20 py-20 px-8 md:py-28 text-center flex flex-col items-center justify-center text-[#1F2328]">
-                <Compass className="w-16 h-16 mb-6 opacity-80 group-hover:rotate-45 transition-transform duration-500" />
-                <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">Explore Trending Destinations</h2>
-                <p className="text-lg md:text-xl text-[#1F2328]/70 max-w-2xl mb-8">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
-                <button className="px-8 py-3 bg-[#1F2328] text-white font-semibold rounded-full transition-transform group-hover:-translate-y-1 group-hover:shadow-lg flex items-center">Discover Now <ChevronDown className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" /></button>
+              <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
+                <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
+                <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>Explore Destinations</h2>
+                <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
+                <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
               </div>
             </div>
           </RevealOnScroll>
@@ -717,39 +623,35 @@ export default function Home() {
       {/* Destinations Popup */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex animate-active-up">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDestinations(false)}></div>
-          <div className="absolute inset-0 md:inset-10 bg-white md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
-            <div className="p-6 md:p-8 border-b flex justify-between items-center bg-gray-50">
-              <h3 className="text-2xl md:text-3xl font-bold">Choose Your Adventure</h3>
-              <button onClick={() => setShowDestinations(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors"><X className="w-6 h-6" /></button>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)}></div>
+          <div className="absolute inset-0 md:inset-10 bg-[#FAFAF8] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
+            <div className="p-6 md:p-8 flex justify-between items-center bg-white shadow-sm z-20">
+              <h3 className="text-2xl md:text-3xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Choose Your Adventure</h3>
+              <button onClick={() => setShowDestinations(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-500" /></button>
             </div>
-            <div className="flex justify-center p-6 bg-white z-10 border-b border-gray-100 shadow-sm">
-              <div className="inline-flex bg-gray-100 rounded-full p-1.5">
+            <div className="flex justify-center p-6 bg-white z-10 shadow-sm relative">
+              <div className="inline-flex bg-[#FAFAF8] rounded-full p-1.5 shadow-inner">
                 {["International", "India"].map((category) => (
-                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-6 py-2.5 rounded-full text-sm md:text-base font-medium transition-all ${activeCategory === category ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>{category} <span className="ml-2 text-xs opacity-70">({destinations.filter((d) => d.category === category).length})</span></button>
+                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === category ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}>{category} <span className="ml-2 text-xs opacity-60">({destinations.filter((d) => d.category === category).length})</span></button>
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-gray-50">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {filteredDestinations.map((dest) => (
-                  <div key={dest.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1" onClick={() => handleDestinationClick(dest.title)}>
-                    <div className="relative h-56 overflow-hidden">
-                      <OptimizedImage src={dest.image} alt={dest.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div key={dest.id} className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-500 cursor-pointer hover:-translate-y-2" onClick={() => handleDestinationClick(dest.title)}>
+                    <div className="relative h-64 overflow-hidden">
+                      <OptimizedImage src={dest.image} alt={dest.title} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="absolute bottom-5 left-5 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
                         {dest.tags.slice(0, 2).map((tag, index) => (
-                          <span key={index} className="text-xs font-bold text-white bg-white/20 backdrop-blur-md px-2 py-1 rounded-full">{tag}</span>
+                          <span key={index} className="text-xs font-bold text-white bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full">{tag}</span>
                         ))}
                       </div>
                     </div>
-                    <div className="p-5">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">{dest.title}</h4>
-                      <p className="text-gray-600 text-sm line-clamp-2">{dest.description}</p>
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>Design This Trip</span>
-                        <ChevronDown className="w-4 h-4 -rotate-90" />
-                      </div>
+                    <div className="p-8">
+                      <h4 className="text-2xl font-bold mb-3 text-[#1F2328] group-hover:text-[#2D3191] transition-colors">{dest.title}</h4>
+                      <p className="text-gray-500 leading-relaxed line-clamp-2">{dest.description}</p>
                     </div>
                   </div>
                 ))}
@@ -760,21 +662,21 @@ export default function Home() {
       )}
 
       {/* Reviews */}
-      <section id="reviews" className="py-24 relative bg-blue-50/50">
+      <section id="reviews" className="py-32 relative bg-white">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <RevealOnScroll className="text-center mb-16">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold tracking-wider mb-4">TESTIMONIALS</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Loved by Travelers</h2>
+          <RevealOnScroll className="text-center mb-20">
+            <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Loved by Travelers</h2>
           </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {testimonials.map((testimonial, index) => (
               <RevealOnScroll key={testimonial.id} className={`delay-${index * 100}`}>
-                <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all h-full flex flex-col relative overflow-hidden border border-gray-100">
-                  <div className="flex items-center space-x-1 text-yellow-400 mb-6">{[...Array(testimonial.rating)].map((_, i) => (<Star key={i} className="w-5 h-5 fill-current" />))}</div>
-                  <p className="text-gray-700 leading-relaxed italic mb-8 flex-grow whitespace-pre-line">"{testimonial.text}"</p>
+                <div className="bg-[#FAFAF8] p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden">
+                  <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(testimonial.rating)].map((_, i) => (<Star key={i} className="w-6 h-6 fill-current" />))}</div>
+                  <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{testimonial.text}"</p>
                   <div>
-                    <h4 className="font-bold">{testimonial.name}</h4>
-                    {!!testimonial.location && <p className="text-gray-500 text-sm">{testimonial.location}</p>}
+                    <h4 className="font-bold text-xl text-[#1F2328]">{testimonial.name}</h4>
+                    {!!testimonial.location && <p className="text-gray-500 mt-1">{testimonial.location}</p>}
                   </div>
                 </div>
               </RevealOnScroll>
@@ -783,81 +685,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-20 px-6 sm:px-12 bg-[#EEF0FF] relative overflow-hidden">
-        <div className="max-w-[1200px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-          {/* Contact Info */}
-          <div className="lg:col-span-5 space-y-8">
-            <h2 className="text-4xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Start Your Journey</h2>
-            <p className="text-lg text-[#1F2328]/70">We are ready to craft your perfect trip. Reach out to us directly or launch our interactive planner to get started instantly.</p>
-            <div className="space-y-6">
-              <a href="tel:+919924399335" className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#2D3191] shadow-sm group-hover:scale-110 transition-transform"><Phone size={24} /></div>
-                <div><div className="text-sm text-[#1F2328]/50 font-bold">Call / WhatsApp</div><div className="text-lg font-medium text-[#1F2328]">+91 9924399335</div></div>
-              </a>
-              <a href="mailto:thenomadsco@gmail.com" className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#02A551] shadow-sm group-hover:scale-110 transition-transform"><Mail size={24} /></div>
-                <div><div className="text-sm text-[#1F2328]/50 font-bold">Email</div><div className="text-lg font-medium text-[#1F2328]">thenomadsco@gmail.com</div></div>
-              </a>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#B45309] shadow-sm"><MapPin size={24} /></div>
-                <div><div className="text-sm text-[#1F2328]/50 font-bold">Location</div><div className="text-lg font-medium text-[#1F2328]">Vadodara, Gujarat, India</div></div>
-              </div>
-            </div>
+      {/* Contact Section (Redesigned Interactive Bento Grid) */}
+      <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
+        <div className="max-w-[1200px] mx-auto text-center mb-16">
+           <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Let's talk travel.</h2>
+           <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
+        </div>
+        <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
+          
+          {/* WhatsApp Bento */}
+          <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
+             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500">
+               <MessageCircle size={36} />
+             </div>
+             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">WhatsApp</h3>
+             <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-up">Start Chat</h3>
+             <p className="text-gray-500 font-medium">+91 99243 99335</p>
+             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          </a>
+
+          {/* Email Bento */}
+          <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
+             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500">
+               <Mail size={36} />
+             </div>
+             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">Email</h3>
+             <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-up">Write to Us</h3>
+             <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
+             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          </a>
+
+          {/* Location Bento */}
+          <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden">
+             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500 group-hover:animate-bounce">
+               <MapPin size={36} />
+             </div>
+             <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
+             <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br/>India</p>
+             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </div>
 
-          {/* Interactive Planner CTA */}
-          <div className="lg:col-span-7 bg-white p-10 sm:p-14 rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center text-center border border-gray-100">
-            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
-              <Sparkles className="w-8 h-8" />
-            </div>
-            <h3 className="text-3xl md:text-4xl font-bold mb-4 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Skip the tedious forms.
-            </h3>
-            <p className="text-lg text-gray-600 mb-10 max-w-md leading-relaxed">
-              Design your perfect trip in under 60 seconds with our new interactive planner. We'll send curated options directly to your preferred app.
-            </p>
-            <button 
-              onClick={openGenericFunnel} 
-              className="px-10 py-5 bg-[#2D3191] text-white text-lg font-bold rounded-2xl hover:bg-[#242875] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center justify-center gap-3 w-full sm:w-auto"
-            >
-              Launch Interactive Planner
-            </button>
-          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-black text-white py-16">
+      <footer className="relative z-10 bg-[#1F2328] text-white py-20">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
             <div className="col-span-1 md:col-span-2">
-              <span className="text-3xl font-bold text-white mb-6 block">The Nomads Co.</span>
-              <p className="text-gray-300 pr-6 leading-relaxed mb-8">Crafting unforgettable, personalized travel experiences. Your journey, our expertise. Let's explore the world together.</p>
+              <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display', serif" }}>The Nomads Co.</span>
+              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise. Let's explore the world together.</p>
               <div className="flex space-x-4">
-                <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Instagram className="w-5 h-5" /></a>
-                <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Facebook className="w-5 h-5" /></a>
-                <a href="mailto:thenomadsco@gmail.com" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><Mail className="w-5 h-5" /></a>
+                <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Instagram className="w-5 h-5" /></a>
+                <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Facebook className="w-5 h-5" /></a>
+                <a href="mailto:thenomadsco@gmail.com" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Mail className="w-5 h-5" /></a>
               </div>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
-              <ul className="space-y-3 font-medium text-gray-400">
-                <li><button onClick={() => scrollToSection("about")} className="hover:text-blue-400 transition-colors">About Us</button></li>
-                <li><button onClick={() => scrollToSection("destinations")} className="hover:text-blue-400 transition-colors">Destinations</button></li>
-                <li><button onClick={() => scrollToSection("reviews")} className="hover:text-blue-400 transition-colors">Reviews</button></li>
-                <li><button onClick={() => scrollToSection("contact")} className="hover:text-blue-400 transition-colors">Contact</button></li>
+              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
+              <ul className="space-y-4 font-medium text-gray-300">
+                <li><button onClick={() => scrollToSection("about")} className="hover:text-white transition-colors">About Us</button></li>
+                <li><button onClick={() => scrollToSection("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
+                <li><button onClick={() => scrollToSection("reviews")} className="hover:text-white transition-colors">Reviews</button></li>
+                <li><button onClick={() => scrollToSection("contact")} className="hover:text-white transition-colors">Contact</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white mb-6">Legal</h4>
-              <ul className="space-y-3 font-medium text-gray-400">
-                <li><Link to="/privacypolicy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
+              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
+              <ul className="space-y-4 font-medium text-gray-300">
+                <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400 font-medium">
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium">
             <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
           </div>
         </div>
@@ -873,6 +774,15 @@ export default function Home() {
 
       {/* Persistent Chatbot */}
       <NomadsChatbot />
+
+      {/* Global CSS animations */}
+      <style>{`
+        @keyframes floatIn {
+          from { opacity: 0; transform: translateX(40px) translateY(20px); }
+          to { opacity: 1; transform: translateX(0) translateY(0); }
+        }
+        .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      `}</style>
     </div>
   );
 }

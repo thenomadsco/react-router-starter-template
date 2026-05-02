@@ -233,7 +233,7 @@ const destinations: Destination[] = [
   // 7. Sri Lanka — Nine Arch Bridge Ella, lush green
   { id: 7,  title: "Sri Lanka",            category: "International", image: "https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
   // 8. Bhutan — Tiger's Nest monastery, cliff face, mist
-  { id: 8,  title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-1553856622-d1b352e9a873?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
+  { id: 8,  title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-e6x39Tqj0g4?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
   // 9. Europe — Santorini blue domes, warm sunset
   { id: 9,  title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
   // 10. Australia — Great Barrier Reef aerial, vivid coral blue
@@ -253,17 +253,17 @@ const destinations: Destination[] = [
   // 17. Kenya — elephant herd on open savannah, golden grass
   { id: 17, title: "Kenya",                category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
   // 18. Tanzania — Kilimanjaro snow cap above clouds, epic scale
-  { id: 18, title: "Tanzania",             category: "International", image: "https://images.unsplash.com/photo-1621414050946-1f7b5e2b5c62?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+  { id: 18, title: "Tanzania",             category: "International", image: "https://images.unsplash.com/photo-uys-2Zl5GOc?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
 
   // ── INDIA ──────────────────────────────────────────────────────────────────
   // 19. Kashmir — Dal Lake shikara, mirror water, mountains behind
   { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
   // 20. Leh-Ladakh — Pangong Lake electric blue, barren mountains
-  { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
+  { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-j1HzZTv9v8g?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
   // 21. Himachal Pradesh — Spiti Valley, snowy peaks, winding river
   { id: 21, title: "Himachal Pradesh",     category: "India",         image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
   // 22. Uttarakhand — Valley of Flowers, vivid wildflowers, Himalayas
-  { id: 22, title: "Uttarakhand",          category: "India",         image: "https://images.unsplash.com/photo-1585136917228-a2293f76d3a2?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
+  { id: 22, title: "Uttarakhand",          category: "India",         image: "https://images.unsplash.com/photo-szYybMCTjGw?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
   // 23. Rajasthan — Hawa Mahal at golden hour, detailed pink facade
   { id: 23, title: "Rajasthan",            category: "India",         image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
   // 24. Goa — Palolem Beach, calm turquoise water, palm trees
@@ -271,27 +271,29 @@ const destinations: Destination[] = [
   // 25. Kerala — Alleppey backwater houseboat, lush green banks
   { id: 25, title: "Kerala",               category: "India",         image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
   // 26. Andaman — Radhanagar Beach, powder white sand, clear azure water
-  { id: 26, title: "Andaman Islands",      category: "India",         image: "https://images.unsplash.com/photo-1680168357232-84cbc3cda1dc?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
+  { id: 26, title: "Andaman Islands",      category: "India",         image: "https://images.unsplash.com/photo-_Z6zNl5YVUY?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
   // 27. North East — Dzukou Valley, rolling green hills, flower season
   { id: 27, title: "North East India",     category: "India",         image: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
   // 28. Sikkim — Kanchenjunga golden sunrise from Pelling viewpoint
-  { id: 28, title: "Sikkim",               category: "India",         image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
+  { id: 28, title: "Sikkim",               category: "India",         image: "https://images.unsplash.com/photo-4hDi8Ie1o9I?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
   // 29. Meghalaya — Nohkalikai Falls, tallest plunge waterfall, vivid green
   { id: 29, title: "Meghalaya",            category: "India",         image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
   // 30. Arunachal — Tawang monastery, highest Buddhist monastery, snow peaks
-  { id: 30, title: "Arunachal Pradesh",    category: "India",         image: "https://images.unsplash.com/photo-1622397815729-4f78394db31c?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
+  { id: 30, title: "Arunachal Pradesh",    category: "India",         image: "https://images.unsplash.com/photo-_VmyPQFsj5s?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
   // 31. Karnataka — Hampi boulder ruins at sunset, surreal landscape
-  { id: 31, title: "Karnataka",            category: "India",         image: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
+  { id: 31, title: "Karnataka",            category: "India",         image: "https://images.unsplash.com/photo-FQiLg3s5W84?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
   // 32. Tamil Nadu — Meenakshi temple gopuram, vivid sculptures, dusk glow
   { id: 32, title: "Tamil Nadu",           category: "India",         image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
   // 33. Pondicherry — French quarter promenade, colourful colonial facades
-  { id: 33, title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-1616412744698-8d3e7cde87f5?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
+  { id: 33, title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-qhfFZkBJWHo?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
   // 34. West Bengal — Darjeeling tea estate, rolling green hills, mist
-  { id: 34, title: "West Bengal",          category: "India",         image: "https://images.unsplash.com/photo-1544376664-80b17f09d399?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
+  { id: 34, title: "West Bengal",          category: "India",         image: "https://images.unsplash.com/photo-BD49irOLXuU?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
   // 35. Odisha — Konark Sun Temple chariot wheels, intricate stone carvings
-  { id: 35, title: "Odisha",               category: "India",         image: "https://images.unsplash.com/photo-1609767760148-a8a35e0fd19e?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
+  { id: 35, title: "Odisha",               category: "India",         image: "https://images.unsplash.com/photo-d9JyXmiIL1g?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
   // 36. Gujarat — Rann of Kutch, vast white salt desert under full moon
-  { id: 36, title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
+  { id: 36, title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-cSon1ZNHOMs?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
+  // 37. Andhra Pradesh - Scenic Godavari rivers, paddy fields
+  { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://images.unsplash.com/photo-YouYL-HF7_U?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
 const testimonials = [
@@ -518,10 +520,10 @@ export default function Home() {
   const [pastHero,         setPastHero]         = useState(false);
   const [showDestinations, setShowDestinations] = useState(false);
   const [activeCategory,   setActiveCategory]   = useState("International");
-  const [showFunnel,       setShowFunnel]        = useState(false);
-  const [funnelDest,       setFunnelDest]        = useState("");
-  const [showPill,         setShowPill]          = useState(false);
-  const [randomDest,       setRandomDest]        = useState<Destination | null>(null);
+  const [showFunnel,       setShowFunnel]       = useState(false);
+  const [funnelDest,       setFunnelDest]       = useState("");
+  const [showPill,         setShowPill]         = useState(false);
+  const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
 
   useEffect(() => {
     const onScroll = () => { setScrolled(window.scrollY > 50); setPastHero(window.scrollY > 500); };

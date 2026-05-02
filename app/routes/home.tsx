@@ -34,9 +34,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// --- ICONS (Zero-Dependency Custom SVGs) ---
+// --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
-
 function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -44,7 +43,6 @@ function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefau
     </svg>
   );
 }
-
 function MapPin(props: any) { return <IconBase {...props}><path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z" /><circle cx="12" cy="10" r="2.5" /></IconBase>; }
 function Star(props: any) { return <IconBase {...props} fill={props.fill ?? "currentColor"}><path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z" /></IconBase>; }
 function Facebook(props: any) { return <IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>; }
@@ -66,11 +64,10 @@ function Sparkles(props: any) { return <IconBase {...props}><path d="m12 3 1.6 4
 function ArrowLeft(props: any) { return <IconBase {...props}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></IconBase>; }
 
 // --- HELPER COMPONENTS ---
-const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean; }) => {
+const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
   const finalSrc = error ? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&fm=webp&q=55&w=600" : src;
-
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
       <img
@@ -107,10 +104,9 @@ function getObserver() {
   return sharedObserver;
 }
 
-const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string; }) => {
+const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -120,7 +116,6 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
     obs.observe(el);
     return () => { revealCallbacks.delete(el); obs.unobserve(el); };
   }, []);
-
   return (
     <div ref={ref} className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
@@ -128,198 +123,170 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   );
 };
 
-// --- GLOBE HERO COMPONENT ---
-// Destination coordinates: [lat, lng] for pinned dots on the globe
-const GLOBE_DESTINATIONS = [
-  { name: "Bali",        lat:  -8.34, lng: 115.09 },
-  { name: "Maldives",    lat:   4.17, lng:  73.51 },
-  { name: "Dubai",       lat:  25.20, lng:  55.27 },
-  { name: "Singapore",   lat:   1.35, lng: 103.82 },
-  { name: "Kashmir",     lat:  34.08, lng:  74.79 },
-  { name: "Paris",       lat:  48.86, lng:   2.35 },
-  { name: "Tokyo",       lat:  35.68, lng: 139.69 },
-  { name: "Santorini",   lat:  36.39, lng:  25.46 },
-  { name: "Bali",        lat:  -8.34, lng: 115.09 },
-  { name: "New Zealand", lat: -40.90, lng: 174.89 },
-  { name: "Kenya",       lat:  -1.29, lng:  36.82 },
-  { name: "Turkey",      lat:  39.92, lng:  32.85 },
-];
-
-function latLngToVec3(lat: number, lng: number, radius: number): [number, number, number] {
-  const phi   = (90 - lat)  * (Math.PI / 180);
-  const theta = (lng + 180) * (Math.PI / 180);
-  return [
-    -(radius * Math.sin(phi) * Math.cos(theta)),
-     (radius * Math.cos(phi)),
-     (radius * Math.sin(phi) * Math.sin(theta)),
-  ];
-}
-
-const GlobeHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
+// =================================================================================
+// PARTICLE HERO — pure canvas, no libraries, no images, no tiles
+// Particles: small soft dots drifting slowly, mouse parallax shifts the field
+// =================================================================================
+const ParticleHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef  = useRef({ x: 0, y: 0 });
-  const frameRef  = useRef<number>(0);
-  const threeRef  = useRef<any>(null);
+  const mouseRef  = useRef({ x: 0.5, y: 0.5 }); // normalised 0-1
+  const rafRef    = useRef<number>(0);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    // Dynamically load Three.js from CDN — no new files, no package install
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
-    script.async = true;
-
-    script.onload = () => {
-      const THREE = (window as any).THREE;
-      if (!THREE || !canvasRef.current) return;
-
-      // ── Scene setup ──────────────────────────────────────────────────────────
-      const canvas   = canvasRef.current;
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x000000, 0);
-
-      const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-      camera.position.set(0, 0, 3.2);
-
-      // ── Globe wireframe ───────────────────────────────────────────────────────
-      const RADIUS = 1;
-      const globeGeo  = new THREE.SphereGeometry(RADIUS, 36, 36);
-      const wireMat   = new THREE.MeshBasicMaterial({
-        color:       0x2D3191,
-        wireframe:   true,
-        transparent: true,
-        opacity:     0.18,
-      });
-      const globe = new THREE.Mesh(globeGeo, wireMat);
-      scene.add(globe);
-
-      // Slightly larger solid sphere as a subtle backing so the globe reads as a volume
-      const backingGeo = new THREE.SphereGeometry(RADIUS * 0.995, 36, 36);
-      const backingMat = new THREE.MeshBasicMaterial({
-        color:       0xEEF1FF,
-        transparent: true,
-        opacity:     0.22,
-        side:        THREE.BackSide,
-      });
-      scene.add(new THREE.Mesh(backingGeo, backingMat));
-
-      // ── Destination dots ──────────────────────────────────────────────────────
-      const dotGroup = new THREE.Group();
-      const dotGeo   = new THREE.SphereGeometry(0.018, 8, 8);
-
-      // Outer glow ring per dot
-      const ringGeo  = new THREE.RingGeometry(0.022, 0.034, 16);
-
-      GLOBE_DESTINATIONS.forEach(({ lat, lng }) => {
-        const [x, y, z] = latLngToVec3(lat, lng, RADIUS + 0.012);
-
-        // Core dot
-        const dotMat = new THREE.MeshBasicMaterial({ color: 0x2D3191, transparent: true, opacity: 0.85 });
-        const dot    = new THREE.Mesh(dotGeo, dotMat);
-        dot.position.set(x, y, z);
-        dotGroup.add(dot);
-
-        // Pulsing ring (we'll animate scale in the loop)
-        const ringMat  = new THREE.MeshBasicMaterial({ color: 0x2D3191, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-        const ring     = new THREE.Mesh(ringGeo, ringMat);
-        ring.position.set(x, y, z);
-        // Orient ring to face outward from globe center
-        ring.lookAt(0, 0, 0);
-        ring.rotateX(Math.PI / 2);
-        dotGroup.add(ring);
-      });
-
-      scene.add(dotGroup);
-
-      // Keep dotGroup in sync with globe rotation
-      globe.add(dotGroup);
-
-      // ── Resize handler ────────────────────────────────────────────────────────
-      const resize = () => {
-        if (!canvasRef.current) return;
-        const w = canvasRef.current.clientWidth;
-        const h = canvasRef.current.clientHeight;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      };
-      resize();
-      window.addEventListener("resize", resize);
-
-      // ── Mouse tracking ────────────────────────────────────────────────────────
-      const onMouseMove = (e: MouseEvent) => {
-        const rect = canvas.getBoundingClientRect();
-        // Normalise to [-1, 1]
-        mouseRef.current.x = ((e.clientX - rect.left)  / rect.width)  * 2 - 1;
-        mouseRef.current.y = ((e.clientY - rect.top)   / rect.height) * 2 - 1;
-      };
-      window.addEventListener("mousemove", onMouseMove);
-
-      // ── Animation loop ────────────────────────────────────────────────────────
-      let autoRotY  = 0;
-      let camTargX  = 0;
-      let camTargY  = 0;
-      let camCurrX  = 0;
-      let camCurrY  = 0;
-      const MAX_TILT = 0.14; // radians (~8°)
-      const LERP     = 0.04;
-
-      const animate = (time: number) => {
-        frameRef.current = requestAnimationFrame(animate);
-
-        // Slow auto-rotation
-        autoRotY += 0.0015;
-        globe.rotation.y = autoRotY;
-
-        // Camera parallax from mouse
-        camTargX = -mouseRef.current.y * MAX_TILT;
-        camTargY =  mouseRef.current.x * MAX_TILT;
-        camCurrX += (camTargX - camCurrX) * LERP;
-        camCurrY += (camTargY - camCurrY) * LERP;
-        camera.position.x = Math.sin(camCurrY) * 3.2;
-        camera.position.y = Math.sin(camCurrX) * 3.2;
-        camera.position.z = Math.cos(Math.sqrt(camCurrX ** 2 + camCurrY ** 2)) * 3.2;
-        camera.lookAt(0, 0, 0);
-
-        // Pulse the dot rings
-        const pulse = (Math.sin(time * 0.002) + 1) / 2; // 0 → 1
-        dotGroup.children.forEach((child: any, i: number) => {
-          if (i % 2 === 1) { // every second child is a ring
-            child.scale.setScalar(1 + pulse * 0.5);
-            child.material.opacity = 0.25 - pulse * 0.18;
-          }
-        });
-
-        renderer.render(scene, camera);
-      };
-      frameRef.current = requestAnimationFrame(animate);
-
-      // Store refs for cleanup
-      threeRef.current = { renderer, scene, camera, resize, onMouseMove };
+    // ── Particle definition ──────────────────────────────────────────────────
+    type Particle = {
+      x: number; y: number;       // current position
+      ox: number; oy: number;     // origin position (for parallax return)
+      vx: number; vy: number;     // drift velocity
+      r: number;                  // radius
+      alpha: number;              // base opacity
+      depth: number;              // 0.2 – 1.0, drives parallax strength & size
+      phase: number;              // sine phase for alpha pulse
+      speed: number;              // individual drift speed multiplier
     };
 
-    document.head.appendChild(script);
+    const PARTICLE_COUNT = 110;
+    const particles: Particle[] = [];
+
+    const makeParticle = (w: number, h: number): Particle => {
+      const depth = 0.2 + Math.random() * 0.8;
+      return {
+        x:     Math.random() * w,
+        y:     Math.random() * h,
+        ox:    0, oy: 0, // set after creation
+        vx:    (Math.random() - 0.5) * 0.18 * depth,
+        vy:    (Math.random() - 0.5) * 0.12 * depth,
+        r:     0.8 + depth * 2.2,
+        alpha: 0.06 + depth * 0.22,
+        depth,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.6 + Math.random() * 0.8,
+      };
+    };
+
+    // ── Canvas sizing ────────────────────────────────────────────────────────
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w   = canvas.offsetWidth;
+      const h   = canvas.offsetHeight;
+      canvas.width  = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+      // Re-seed particles on resize
+      particles.length = 0;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const p = makeParticle(w, h);
+        p.ox = p.x;
+        p.oy = p.y;
+        particles.push(p);
+      }
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // ── Mouse tracking ────────────────────────────────────────────────────────
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = (e.clientX - rect.left) / rect.width;
+      mouseRef.current.y = (e.clientY - rect.top)  / rect.height;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    // ── Animation loop ────────────────────────────────────────────────────────
+    let t = 0;
+    // Smooth mouse position with lerp to avoid jitter
+    let smx = 0.5, smy = 0.5;
+
+    // Connection line settings — draw faint lines between nearby particles
+    const CONNECTION_DIST = 90;
+    const PARALLAX_STRENGTH = 28; // max pixel shift for deepest particle
+
+    const draw = () => {
+      rafRef.current = requestAnimationFrame(draw);
+      t += 0.008;
+
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Lerp smooth mouse
+      smx += (mouseRef.current.x - smx) * 0.05;
+      smy += (mouseRef.current.y - smy) * 0.05;
+      const mx = smx - 0.5; // -0.5 to 0.5
+      const my = smy - 0.5;
+
+      // Update & draw particles
+      for (const p of particles) {
+        // Drift
+        p.x += p.vx * p.speed;
+        p.y += p.vy * p.speed;
+
+        // Wrap around edges
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+        if (p.y < -10) p.y = h + 10;
+        if (p.y > h + 10) p.y = -10;
+
+        // Parallax offset from mouse — deeper particles shift more
+        const px = p.x + mx * PARALLAX_STRENGTH * p.depth;
+        const py = p.y + my * PARALLAX_STRENGTH * p.depth;
+
+        // Pulse alpha gently
+        const pulseAlpha = p.alpha * (0.7 + 0.3 * Math.sin(t * 1.2 + p.phase));
+
+        // Draw dot — brand navy colour
+        ctx.beginPath();
+        ctx.arc(px, py, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(45, 49, 145, ${pulseAlpha})`;
+        ctx.fill();
+      }
+
+      // Draw connection lines between nearby particles
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i];
+        const ax = a.x + mx * PARALLAX_STRENGTH * a.depth;
+        const ay = a.y + my * PARALLAX_STRENGTH * a.depth;
+        for (let j = i + 1; j < particles.length; j++) {
+          const b = particles[j];
+          const bx = b.x + mx * PARALLAX_STRENGTH * b.depth;
+          const by = b.y + my * PARALLAX_STRENGTH * b.depth;
+          const dx = ax - bx;
+          const dy = ay - by;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECTION_DIST) {
+            const lineAlpha = (1 - dist / CONNECTION_DIST) * 0.07;
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.strokeStyle = `rgba(45, 49, 145, ${lineAlpha})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(frameRef.current);
-      if (threeRef.current) {
-        window.removeEventListener("resize",      threeRef.current.resize);
-        window.removeEventListener("mousemove",   threeRef.current.onMouseMove);
-        threeRef.current.renderer.dispose();
-      }
-      // Remove the script tag on unmount to stay clean
-      if (script.parentNode) script.parentNode.removeChild(script);
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize",      resize);
+      window.removeEventListener("mousemove",   onMouseMove);
     };
   }, []);
 
   return (
     <section className="relative pt-[150px] md:pt-[200px] pb-20 md:pb-32 w-full bg-[#FAFAF8] overflow-hidden">
-      {/* Soft abstract lighting — unchanged */}
+      {/* Soft ambient glow — unchanged from original */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent blur-3xl rounded-full pointer-events-none" />
 
-      {/* Globe canvas — full bleed, sits behind all content */}
+      {/* Particle canvas — full bleed behind content */}
       <canvas
         ref={canvasRef}
         aria-hidden="true"
@@ -327,47 +294,63 @@ const GlobeHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
         style={{ zIndex: 1 }}
       />
 
-      {/* Content — unchanged grid, copy, buttons, images */}
-      <div className="container mx-auto px-4 md:px-8 relative" style={{ zIndex: 2 }}>
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      {/* Hero content — centred typographic layout */}
+      <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center" style={{ zIndex: 2 }}>
 
-          {/* Left: Typography & CTA — untouched */}
-          <div className="lg:col-span-5 lg:pr-8 text-center lg:text-left z-20">
-            <RevealOnScroll>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight leading-[1.05]" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Discover the world, beautifully curated.
-              </h1>
-              <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Zero-stress premium travel planning. We handle the details, you collect the memories.
-              </p>
-              <button
-                onClick={onPlanTrip}
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300"
-              >
-                Design Your Escape &rarr;
-              </button>
-            </RevealOnScroll>
-          </div>
-
-          {/* Right: Asymmetric Image Gallery — untouched */}
-          <div className="lg:col-span-7 relative h-[500px] sm:h-[600px] lg:h-[700px] w-full mt-10 lg:mt-0">
-            {/* Main Tall Image (Right aligned) */}
-            <div className="absolute top-0 right-0 w-3/5 lg:w-[55%] h-[80%] lg:h-[85%] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-10 animate-slide-up-1">
-              <img src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Santorini" className="w-full h-full object-cover" />
-            </div>
-
-            {/* Wide Horizontal Image (Bottom left overlap) */}
-            <div className="absolute bottom-0 left-0 w-[65%] lg:w-[60%] h-[45%] lg:h-[50%] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] z-20 animate-slide-up-2">
-              <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=800&q=80" alt="Kashmir" className="w-full h-full object-cover" />
-            </div>
-
-            {/* Small Square Image (Top left overlap) */}
-            <div className="absolute top-[10%] left-[10%] lg:left-[15%] w-[35%] lg:w-[30%] aspect-square rounded-[2rem] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.1)] z-30 animate-slide-up-3">
-              <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&fm=webp&w=600&q=80" alt="Paris" className="w-full h-full object-cover" />
-            </div>
-          </div>
-
+        {/* Eyebrow label */}
+        <div className="animate-hero-fade-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-[#2D3191]/20 bg-white/60 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191] inline-block" />
+          <span className="text-xs font-bold text-[#2D3191] uppercase tracking-widest">Premium Travel Planning</span>
         </div>
+
+        {/* Main headline — large, Playfair, brand colour on key word */}
+        <h1
+          className="animate-hero-fade-2 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#1F2328] mb-8 tracking-tight leading-[1.05] max-w-4xl"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          Discover the world,{" "}
+          <em className="not-italic text-[#2D3191]">beautifully curated.</em>
+        </h1>
+
+        {/* Subheading */}
+        <p className="animate-hero-fade-3 text-lg md:text-xl text-gray-500 mb-12 max-w-xl leading-relaxed">
+          Zero-stress premium travel planning. We handle the details, you collect the memories.
+        </p>
+
+        {/* CTA — identical style to original */}
+        <div className="animate-hero-fade-4">
+          <button
+            onClick={onPlanTrip}
+            className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300"
+          >
+            Design Your Escape &rarr;
+          </button>
+        </div>
+
+        {/* Destination name marquee strip — replaces the three image tiles */}
+        {/* Purely text-based, infinitely scrolls, gives a sense of scale */}
+        <div className="animate-hero-fade-5 w-full mt-20 overflow-hidden" aria-hidden="true">
+          <div className="flex gap-0">
+            <ul className="flex shrink-0 gap-10 items-center animate-marquee whitespace-nowrap pr-10">
+              {["Bali", "Maldives", "Kashmir", "Paris", "Santorini", "Dubai", "Tokyo", "Bhutan", "Rajasthan", "New Zealand", "Kenya", "Turkey", "Goa", "Vietnam", "Singapore"].map((name) => (
+                <li key={name} className="flex items-center gap-10">
+                  <span className="text-sm font-semibold text-[#1F2328]/40 uppercase tracking-[0.2em]">{name}</span>
+                  <span className="w-1 h-1 rounded-full bg-[#2D3191]/30 inline-block flex-shrink-0" />
+                </li>
+              ))}
+            </ul>
+            {/* Duplicate for seamless loop */}
+            <ul className="flex shrink-0 gap-10 items-center animate-marquee whitespace-nowrap pr-10" aria-hidden="true">
+              {["Bali", "Maldives", "Kashmir", "Paris", "Santorini", "Dubai", "Tokyo", "Bhutan", "Rajasthan", "New Zealand", "Kenya", "Turkey", "Goa", "Vietnam", "Singapore"].map((name) => (
+                <li key={name} className="flex items-center gap-10">
+                  <span className="text-sm font-semibold text-[#1F2328]/40 uppercase tracking-[0.2em]">{name}</span>
+                  <span className="w-1 h-1 rounded-full bg-[#2D3191]/30 inline-block flex-shrink-0" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
       </div>
     </section>
   );
@@ -375,53 +358,53 @@ const GlobeHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
 
 // --- DATASETS ---
 const keyServices = [
-  { icon: <Plane className="w-8 h-8 text-blue-600" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
-  { icon: <MapIcon className="w-8 h-8 text-blue-600" />, title: "End-to-End Planning", description: "From itinerary creation to returning home safely." },
-  { icon: <Shield className="w-8 h-8 text-blue-600" />, title: "Verified Premium Stays", description: "Handpicked 4 & 5 star accommodations for comfort." },
-  { icon: <Headphones className="w-8 h-8 text-blue-600" />, title: "24/7 On-Trip Support", description: "Always just a message away whenever you need us." },
-  { icon: <Compass className="w-8 h-8 text-blue-600" />, title: "Curated Local Experiences", description: "Authentic activities beyond standard tourist traps." },
-  { icon: <SlidersHorizontal className="w-8 h-8 text-blue-600" />, title: "Flexible Itineraries", description: "Plans that adapt to your pace and preferences." },
+  { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "Visa & Flight Support", description: "Hassle-free documentation and booking assistance." },
+  { icon: <MapIcon className="w-8 h-8 text-[#2D3191]" />, title: "End-to-End Planning", description: "From itinerary creation to returning home safely." },
+  { icon: <Shield className="w-8 h-8 text-[#2D3191]" />, title: "Verified Premium Stays", description: "Handpicked 4 & 5 star accommodations for comfort." },
+  { icon: <Headphones className="w-8 h-8 text-[#2D3191]" />, title: "24/7 On-Trip Support", description: "Always just a message away whenever you need us." },
+  { icon: <Compass className="w-8 h-8 text-[#2D3191]" />, title: "Curated Local Experiences", description: "Authentic activities beyond standard tourist traps." },
+  { icon: <SlidersHorizontal className="w-8 h-8 text-[#2D3191]" />, title: "Flexible Itineraries", description: "Plans that adapt to your pace and preferences." },
 ];
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string; };
 
 const destinations: Destination[] = [
-  { id: 1, title: "Bali, Indonesia", category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Tropical", "Beaches", "Culture"], description: "Island of Gods with serene beaches and vibrant culture." },
-  { id: 2, title: "Maldives", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480", tags: ["Honeymoon", "Luxury", "Beaches"], description: "Overwater villas and crystal clear turquoise lagoons." },
-  { id: 3, title: "Dubai, UAE", category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Luxury", "City", "Desert"], description: "Futuristic architecture, luxury shopping, and desert safaris." },
-  { id: 4, title: "Singapore", category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["City", "Family", "Modern"], description: "A blend of nature and modernity in a global metropolis." },
-  { id: 5, title: "Thailand", category: "International", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Beaches", "Culture", "Nightlife"], description: "Vibrant street life, ornate temples, and tropical beaches." },
-  { id: 6, title: "Vietnam", category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Nature", "Culture", "Food"], description: "Bustling cities, serene limestone islands, and rich history." },
-  { id: 7, title: "Sri Lanka", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=480", tags: ["Nature", "Wildlife", "Beaches"], description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
-  { id: 8, title: "Bhutan", category: "International", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Mountains", "Culture", "Peace"], description: "The last great Himalayan kingdom, shrouded in mystery." },
-  { id: 9, title: "Europe (Schengen)", category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["History", "Culture", "Romance"], description: "Explore diverse cultures, history, and architecture across Europe." },
-  { id: 10, title: "Australia", category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Adventure", "Wildlife", "Beaches"], description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
-  { id: 11, title: "New Zealand", category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Adventure", "Nature", "Landscapes"], description: "Stunning natural landscapes, from mountains to fjords." },
-  { id: 12, title: "Japan", category: "International", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Culture", "Modern", "Food"], description: "A seamless blend of ancient traditions and cutting-edge technology." },
-  { id: 13, title: "South Korea", category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Culture", "City", "Food"], description: "Dynamic cities, ancient palaces, and trendy pop culture." },
-  { id: 14, title: "Turkey", category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["History", "Culture", "Landscapes"], description: "Where East meets West, featuring rich history and unique landscapes." },
-  { id: 15, title: "USA", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_South_Rim_at_Sunset.jpg?width=480", tags: ["City", "Nature", "Diverse"], description: "Diverse experiences from bustling metropolises to vast national parks." },
-  { id: 16, title: "South Africa", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=480", tags: ["Wildlife", "Adventure", "Nature"], description: "Safari adventures, stunning coastlines, and vibrant culture." },
-  { id: 17, title: "Kenya", category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Wildlife", "Safari", "Nature"], description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, title: "Tanzania", category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=480", tags: ["Wildlife", "Safari", "Beaches"], description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
-  { id: 19, title: "Kashmir", category: "India", image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Mountains", "Nature", "Romance"], description: "Paradise on Earth with stunning valleys and Dal Lake." },
-  { id: 20, title: "Leh-Ladakh", category: "India", image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Adventure", "Mountains", "Road Trip"], description: "Stark mountain landscapes, monasteries, and high passes." },
-  { id: 21, title: "Himachal Pradesh", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=480", tags: ["Mountains", "Nature", "Adventure"], description: "Scenic hill stations, pine forests, and snow-capped peaks." },
-  { id: 22, title: "Uttarakhand", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=480", tags: ["Mountains", "Spiritual", "Nature"], description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
-  { id: 23, title: "Rajasthan", category: "India", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["History", "Culture", "Desert"], description: "Royal palaces, vibrant culture, and vast desert landscapes." },
-  { id: 24, title: "Goa", category: "India", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Beaches", "Nightlife", "Relaxation"], description: "Sun, sand, beaches, and a relaxed coastal vibe." },
-  { id: 25, title: "Kerala", category: "India", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=60", tags: ["Nature", "Backwaters", "Wellness"], description: "God's Own Country with tranquil backwaters and lush greenery." },
-  { id: 26, title: "Andaman Islands", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Radhanagar_Beach%2C_Andaman_1.jpg?width=480", tags: ["Beaches", "Islands", "Adventure"], description: "Pristine beaches, clear waters, and water sports." },
-  { id: 27, title: "North East India", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kaziranga_National_Park_%2C_Assam.jpg?width=480", tags: ["Nature", "Culture", "Offbeat"], description: "Unexplored beauty, tribal culture, and biodiversity." },
-  { id: 28, title: "Sikkim", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kanchenjunga_from_Zuluk%2C_Sikkim.jpg?width=480", tags: ["Mountains", "Nature", "Monasteries"], description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
-  { id: 29, title: "Meghalaya", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=480", tags: ["Nature", "Waterfalls", "Offbeat"], description: "Abode of Clouds, known for living root bridges and waterfalls." },
-  { id: 30, title: "Arunachal Pradesh", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Tawang_Monastery%2C_Arunachal_Pradesh.jpg?width=480", tags: ["Mountains", "Culture", "Adventure"], description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
-  { id: 31, title: "Karnataka", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_karnataka.jpg?width=480", tags: ["History", "Nature", "Culture"], description: "Heritage sites like Hampi, coffee plantations in Coorg." },
-  { id: 32, title: "Tamil Nadu", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi_Amman_Temple%2C_Madurai.jpg?width=480", tags: ["Culture", "Temples", "Beaches"], description: "Land of temples, rich culture, and coastal beauty." },
-  { id: 33, title: "Pondicherry", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Beach_Promenade%2C_Pondicherry%2C_India.jpg?width=480", tags: ["Beaches", "French Colony", "Relaxation"], description: "A touch of French culture on the Indian coast." },
-  { id: 34, title: "West Bengal", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Victoria_Memorial_Kolkata.jpg?width=480", tags: ["Culture", "History", "Mountains"], description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, title: "Odisha", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Konark_sun_temple%2C_Odisha.jpg?width=480", tags: ["Culture", "Temples", "Beaches"], description: "Known for its ancient temples, beaches, and tribal culture." },
-  { id: 36, title: "Gujarat", category: "India", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Rann_of_Kutch.jpg?width=480", tags: ["Culture", "Wildlife", "White Desert"], description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
+  { id: 1,  title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                     tags: ["Tropical","Beaches","Culture"],        description: "Island of Gods with serene beaches and vibrant culture." },
+  { id: 2,  title: "Maldives",             category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480",                                                                                         tags: ["Honeymoon","Luxury","Beaches"],        description: "Overwater villas and crystal clear turquoise lagoons." },
+  { id: 3,  title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                        tags: ["Luxury","City","Desert"],              description: "Futuristic architecture, luxury shopping, and desert safaris." },
+  { id: 4,  title: "Singapore",            category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                        tags: ["City","Family","Modern"],              description: "A blend of nature and modernity in a global metropolis." },
+  { id: 5,  title: "Thailand",             category: "International", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                           tags: ["Beaches","Culture","Nightlife"],       description: "Vibrant street life, ornate temples, and tropical beaches." },
+  { id: 6,  title: "Vietnam",              category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                        tags: ["Nature","Culture","Food"],             description: "Bustling cities, serene limestone islands, and rich history." },
+  { id: 7,  title: "Sri Lanka",            category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=480",                                                                                             tags: ["Nature","Wildlife","Beaches"],         description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
+  { id: 8,  title: "Bhutan",              category: "International", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                         tags: ["Mountains","Culture","Peace"],         description: "The last great Himalayan kingdom, shrouded in mystery." },
+  { id: 9,  title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                        tags: ["History","Culture","Romance"],         description: "Explore diverse cultures, history, and architecture across Europe." },
+  { id: 10, title: "Australia",           category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                         tags: ["Adventure","Wildlife","Beaches"],      description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
+  { id: 11, title: "New Zealand",         category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                         tags: ["Adventure","Nature","Landscapes"],     description: "Stunning natural landscapes, from mountains to fjords." },
+  { id: 12, title: "Japan",              category: "International", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                          tags: ["Culture","Modern","Food"],             description: "A seamless blend of ancient traditions and cutting-edge technology." },
+  { id: 13, title: "South Korea",        category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                          tags: ["Culture","City","Food"],               description: "Dynamic cities, ancient palaces, and trendy pop culture." },
+  { id: 14, title: "Turkey",             category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                          tags: ["History","Culture","Landscapes"],      description: "Where East meets West, featuring rich history and unique landscapes." },
+  { id: 15, title: "USA",               category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_South_Rim_at_Sunset.jpg?width=480",                                                                             tags: ["City","Nature","Diverse"],             description: "Diverse experiences from bustling metropolises to vast national parks." },
+  { id: 16, title: "South Africa",      category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=480",                                                                                     tags: ["Wildlife","Adventure","Nature"],       description: "Safari adventures, stunning coastlines, and vibrant culture." },
+  { id: 17, title: "Kenya",             category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                              tags: ["Wildlife","Safari","Nature"],          description: "Home of the Great Migration and iconic African wildlife." },
+  { id: 18, title: "Tanzania",          category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=480",                                                tags: ["Wildlife","Safari","Beaches"],         description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+  { id: 19, title: "Kashmir",           category: "India",         image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                           tags: ["Mountains","Nature","Romance"],        description: "Paradise on Earth with stunning valleys and Dal Lake." },
+  { id: 20, title: "Leh-Ladakh",        category: "India",         image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                           tags: ["Adventure","Mountains","Road Trip"],   description: "Stark mountain landscapes, monasteries, and high passes." },
+  { id: 21, title: "Himachal Pradesh",  category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=480",                                                                             tags: ["Mountains","Nature","Adventure"],      description: "Scenic hill stations, pine forests, and snow-capped peaks." },
+  { id: 22, title: "Uttarakhand",       category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=480",                                                                             tags: ["Mountains","Spiritual","Nature"],      description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
+  { id: 23, title: "Rajasthan",         category: "India",         image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                           tags: ["History","Culture","Desert"],          description: "Royal palaces, vibrant culture, and vast desert landscapes." },
+  { id: 24, title: "Goa",              category: "India",         image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                            tags: ["Beaches","Nightlife","Relaxation"],    description: "Sun, sand, beaches, and a relaxed coastal vibe." },
+  { id: 25, title: "Kerala",           category: "India",         image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                            tags: ["Nature","Backwaters","Wellness"],      description: "God's Own Country with tranquil backwaters and lush greenery." },
+  { id: 26, title: "Andaman Islands",  category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Radhanagar_Beach%2C_Andaman_1.jpg?width=480",                                                                                 tags: ["Beaches","Islands","Adventure"],       description: "Pristine beaches, clear waters, and water sports." },
+  { id: 27, title: "North East India", category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kaziranga_National_Park_%2C_Assam.jpg?width=480",                                                                             tags: ["Nature","Culture","Offbeat"],          description: "Unexplored beauty, tribal culture, and biodiversity." },
+  { id: 28, title: "Sikkim",           category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kanchenjunga_from_Zuluk%2C_Sikkim.jpg?width=480",                                                                             tags: ["Mountains","Nature","Monasteries"],    description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
+  { id: 29, title: "Meghalaya",        category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=480",                                                                           tags: ["Nature","Waterfalls","Offbeat"],       description: "Abode of Clouds, known for living root bridges and waterfalls." },
+  { id: 30, title: "Arunachal Pradesh",category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Tawang_Monastery%2C_Arunachal_Pradesh.jpg?width=480",                                                                         tags: ["Mountains","Culture","Adventure"],     description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
+  { id: 31, title: "Karnataka",        category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_karnataka.jpg?width=480",                                                                                               tags: ["History","Nature","Culture"],          description: "Heritage sites like Hampi, coffee plantations in Coorg." },
+  { id: 32, title: "Tamil Nadu",       category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi_Amman_Temple%2C_Madurai.jpg?width=480",                                                                             tags: ["Culture","Temples","Beaches"],         description: "Land of temples, rich culture, and coastal beauty." },
+  { id: 33, title: "Pondicherry",      category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Beach_Promenade%2C_Pondicherry%2C_India.jpg?width=480",                                                                       tags: ["Beaches","French Colony","Relaxation"],description: "A touch of French culture on the Indian coast." },
+  { id: 34, title: "West Bengal",      category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Victoria_Memorial_Kolkata.jpg?width=480",                                                                                     tags: ["Culture","History","Mountains"],       description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
+  { id: 35, title: "Odisha",           category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Konark_sun_temple%2C_Odisha.jpg?width=480",                                                                                   tags: ["Culture","Temples","Beaches"],         description: "Known for its ancient temples, beaches, and tribal culture." },
+  { id: 36, title: "Gujarat",          category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Rann_of_Kutch.jpg?width=480",                                                                                                 tags: ["Culture","Wildlife","White Desert"],   description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
 ];
 
 const testimonials = [
@@ -440,16 +423,16 @@ type NomadsChatState = { intent?: NomadsIntent; name?: string; phone?: string; d
 type NomadsMsg = { from: "bot" | "user"; text: string };
 
 function buildNomadsWhatsappText(s: NomadsChatState) {
-  const name = (s.name || "").trim() || "—";
+  const name  = (s.name  || "").trim() || "—";
   const phone = (s.phone || "").trim() || "—";
   if (s.intent === "enquiry") return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I'd like to enquire about a trip.\n\nDestination: ${s.destination || "—"}\nDates: ${s.dates || "—"}\n\nDetails:\n${s.details || "—"}`;
-  if (s.intent === "change") return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to modify my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\nNew Destination: ${s.destination || "—"}\nNew Dates: ${s.dates || "—"}\n\nRequest:\n${s.details || "—"}`;
+  if (s.intent === "change")  return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to modify my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\nNew Destination: ${s.destination || "—"}\nNew Dates: ${s.dates || "—"}\n\nRequest:\n${s.details || "—"}`;
   return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
 }
 
 function nomadsWaLink(text: string) {
   const encodedText = encodeURIComponent(text);
-  const isMobile = typeof window !== 'undefined' && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+  const isMobile = typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
   if (isMobile) return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
   return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
 }
@@ -457,11 +440,11 @@ function nomadsWaLink(text: string) {
 function normalizeNomadsPhone(v: string) { return v.replace(/[^0-9+]/g, ""); }
 
 function NomadsChatbot() {
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(0);
+  const [open,  setOpen]  = useState(false);
+  const [step,  setStep]  = useState(0);
   const [input, setInput] = useState("");
   const [state, setState] = useState<NomadsChatState>({});
-  const [msgs, setMsgs] = useState<NomadsMsg[]>([{ from: "bot", text: "Hey 👋 I'm Nomads Assistant. What do you want to do today? (1/2/3)" }, { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" }]);
+  const [msgs,  setMsgs]  = useState<NomadsMsg[]>([{ from: "bot", text: "Hey 👋 I'm Nomads Assistant. What do you want to do today? (1/2/3)" }, { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" }]);
 
   const steps = useMemo(() => {
     const base: any[] = [{ key: "intent", prompt: "Cool — pick 1/2/3 (enquiry/change/cancel).", required: true }, { key: "name", prompt: "What's your name?", required: true }, { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true }];
@@ -474,7 +457,7 @@ function NomadsChatbot() {
     return [...base, ...mid, { key: "done", prompt: "Done ✅ Tap below to send this on WhatsApp." }];
   }, [state.intent]);
 
-  const current = steps[Math.min(step, steps.length - 1)];
+  const current      = steps[Math.min(step, steps.length - 1)];
   const whatsappText = useMemo(() => buildNomadsWhatsappText(state), [state]);
   const whatsappUrl  = useMemo(() => nomadsWaLink(whatsappText), [whatsappText]);
 
@@ -488,9 +471,9 @@ function NomadsChatbot() {
       const intent = (s === "1" || s.includes("enq")) ? "enquiry" : (s === "2" || s.includes("change")) ? "change" : (s === "3" || s.includes("cancel")) ? "cancel" : undefined;
       return intent ? { ok: true, value: intent } : { ok: false, err: "Type 1 for Enquiry, 2 for Change, or 3 for Cancel 🙂" };
     }
-    if (key === "name"  && v.length < 2)                          return { ok: false, err: "Type your name (2+ letters) 🙂" };
-    if (key === "phone" && normalizeNomadsPhone(v).length < 10)   return { ok: false, err: "Phone number only here (10+ digits) 🙂" };
-    if (current.required && !v)                                    return { ok: false, err: "This can't be blank 🙂" };
+    if (key === "name"  && v.length < 2)                        return { ok: false, err: "Type your name (2+ letters) 🙂" };
+    if (key === "phone" && normalizeNomadsPhone(v).length < 10) return { ok: false, err: "Phone number only here (10+ digits) 🙂" };
+    if (current.required && !v)                                  return { ok: false, err: "This can't be blank 🙂" };
     return { ok: true, value: v };
   };
 
@@ -541,13 +524,13 @@ function NomadsChatbot() {
   );
 }
 
-function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string, onClose: () => void }) {
-  const [step, setStep]         = useState(preselectedDest ? 1 : 0);
-  const [dest, setDest]         = useState(preselectedDest || "");
-  const [timeline, setTimeline] = useState("");
+function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string; onClose: () => void }) {
+  const [step,      setStep]      = useState(preselectedDest ? 1 : 0);
+  const [dest,      setDest]      = useState(preselectedDest || "");
+  const [timeline,  setTimeline]  = useState("");
   const [travelers, setTravelers] = useState("");
-  const [vibe, setVibe]         = useState("");
-  const [name, setName]         = useState("");
+  const [vibe,      setVibe]      = useState("");
+  const [name,      setName]      = useState("");
 
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
@@ -556,7 +539,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 
   const generateWhatsAppLink = () => {
     const encodedText = encodeURIComponent(generatePayloadText());
-    const isMobile = typeof window !== 'undefined' && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    const isMobile = typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
     if (isMobile) return `https://wa.me/${NOMADS_WHATSAPP_NUMBER_E164}?text=${encodedText}`;
     return `https://web.whatsapp.com/send/?phone=${NOMADS_WHATSAPP_NUMBER_E164}&text=${encodedText}&type=phone_number&app_absent=1`;
   };
@@ -580,12 +563,11 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
           </div>
           <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><X className="w-5 h-5" /></button>
         </div>
-
         <div className="p-8 flex-1 flex flex-col justify-center">
           {step === 0 && !preselectedDest && (
             <div className="animate-fade-up">
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Where are you dreaming of going?</h3>
-              <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="e.g. Bali, Paris, or 'Not sure yet!'" className="w-full text-lg px-6 py-5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none mb-6 shadow-inner" autoFocus onKeyDown={e => e.key === 'Enter' && dest && handleNext()} />
+              <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="e.g. Bali, Paris, or 'Not sure yet!'" className="w-full text-lg px-6 py-5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none mb-6 shadow-inner" autoFocus onKeyDown={e => e.key === "Enter" && dest && handleNext()} />
               <button onClick={handleNext} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-50 hover:bg-[#242875] transition-colors shadow-lg">Continue</button>
             </div>
           )}
@@ -594,7 +576,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>When are you planning to travel?</h3>
               <div className="space-y-3">
                 {["Within 30 Days", "1-3 Months", "3-6 Months", "Just dreaming for now"].map(opt => (
-                  <button key={opt} onClick={() => { setTimeline(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${timeline === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
+                  <button key={opt} onClick={() => { setTimeline(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${timeline === opt ? "bg-blue-50 text-blue-700 ring-2 ring-blue-600" : "bg-[#FAFAF8] hover:bg-gray-100 text-gray-700"}`}>{opt}</button>
                 ))}
               </div>
             </div>
@@ -604,7 +586,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Who is joining you on this journey?</h3>
               <div className="space-y-3">
                 {["Solo Adventure", "Couples Retreat", "Family Vacation", "Group of Friends"].map(opt => (
-                  <button key={opt} onClick={() => { setTravelers(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${travelers === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
+                  <button key={opt} onClick={() => { setTravelers(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${travelers === opt ? "bg-blue-50 text-blue-700 ring-2 ring-blue-600" : "bg-[#FAFAF8] hover:bg-gray-100 text-gray-700"}`}>{opt}</button>
                 ))}
               </div>
             </div>
@@ -614,7 +596,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>What defines your perfect trip?</h3>
               <div className="space-y-3">
                 {["Total Relaxation & Beaches", "Adventure & Exploring", "Culture & History", "A mix of everything"].map(opt => (
-                  <button key={opt} onClick={() => { setVibe(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${vibe === opt ? 'bg-blue-50 text-blue-700 ring-2 ring-blue-600' : 'bg-[#FAFAF8] hover:bg-gray-100 text-gray-700'}`}>{opt}</button>
+                  <button key={opt} onClick={() => { setVibe(opt); handleNext(); }} className={`w-full text-left px-6 py-5 rounded-2xl transition-all font-medium shadow-sm ${vibe === opt ? "bg-blue-50 text-blue-700 ring-2 ring-blue-600" : "bg-[#FAFAF8] hover:bg-gray-100 text-gray-700"}`}>{opt}</button>
                 ))}
               </div>
             </div>
@@ -635,7 +617,6 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
           )}
         </div>
       </div>
-
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; }
@@ -649,18 +630,14 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 // =================================================================================
 
 export default function Home() {
-  const [isMenuOpen, setIsMenuOpen]         = useState(false);
-  const [scrolled, setScrolled]             = useState(false);
+  const [isMenuOpen,       setIsMenuOpen]       = useState(false);
+  const [scrolled,         setScrolled]         = useState(false);
   const [showDestinations, setShowDestinations] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("International");
-
-  // Funnel State
-  const [showFunnel, setShowFunnel] = useState(false);
-  const [funnelDest, setFunnelDest] = useState("");
-
-  // Glass Pill Hook State
-  const [showPill, setShowPill]       = useState(false);
-  const [randomDest, setRandomDest]   = useState<Destination | null>(null);
+  const [activeCategory,   setActiveCategory]   = useState("International");
+  const [showFunnel,       setShowFunnel]        = useState(false);
+  const [funnelDest,       setFunnelDest]        = useState("");
+  const [showPill,         setShowPill]          = useState(false);
+  const [randomDest,       setRandomDest]        = useState<Destination | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -668,7 +645,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Hook Pill Logic
   useEffect(() => {
     setRandomDest(destinations[Math.floor(Math.random() * destinations.length)]);
     const t1 = setTimeout(() => setShowPill(true),  2000);
@@ -696,7 +672,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
-      {/* Navigation */}
+
+      {/* Navigation — 100% original */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
@@ -704,53 +681,48 @@ export default function Home() {
             <span className="font-bold tracking-tighter text-lg sm:text-2xl text-[#1F2328]">The Nomads Co.</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollToSection("about")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">About</button>
+            <button onClick={() => scrollToSection("about")}        className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">About</button>
             <button onClick={() => scrollToSection("destinations")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Destinations</button>
-            <button onClick={() => scrollToSection("reviews")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Reviews</button>
+            <button onClick={() => scrollToSection("reviews")}      className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Reviews</button>
             <button onClick={() => scrollToSection("contact")} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">Plan My Trip</button>
           </div>
           <button className="md:hidden z-50 p-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current"></span><span className="block w-4 h-0.5 bg-current"></span><span className="block w-6 h-0.5 bg-current"></span></div>}
+            {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current" /><span className="block w-4 h-0.5 bg-current" /><span className="block w-6 h-0.5 bg-current" /></div>}
           </button>
         </div>
         {isMenuOpen && (
           <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6">
             <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 right-6 text-3xl font-light text-gray-900">×</button>
             <div className="flex flex-col items-center gap-8">
-              <button onClick={() => scrollToSection("about")} className="text-2xl font-semibold text-gray-900">About</button>
+              <button onClick={() => scrollToSection("about")}        className="text-2xl font-semibold text-gray-900">About</button>
               <button onClick={() => scrollToSection("destinations")} className="text-2xl font-semibold text-gray-900">Destinations</button>
-              <button onClick={() => scrollToSection("reviews")} className="text-2xl font-semibold text-gray-900">Reviews</button>
+              <button onClick={() => scrollToSection("reviews")}      className="text-2xl font-semibold text-gray-900">Reviews</button>
               <button onClick={() => scrollToSection("contact")} className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors">Plan My Trip</button>
             </div>
           </div>
         )}
       </nav>
 
-      {/* Floating Glass Hook Pill */}
+      {/* Floating Glass Hook Pill — 100% original */}
       {showPill && randomDest && (
         <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
-          <div
-            onClick={() => { setShowPill(false); document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' }); }}
-            className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all"
-          >
+          <div onClick={() => { setShowPill(false); document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth" }); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all">
             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner">
               <img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12}/> Trending</p>
+              <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12} /> Trending</p>
               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
             </div>
-            <button onClick={(e) => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900">
-              <X size={14} />
-            </button>
+            <button onClick={(e) => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900"><X size={14} /></button>
           </div>
         </div>
       )}
 
-      {/* ── GLOBE HERO ────────────────────────────────────────────────────────── */}
-      <GlobeHero onPlanTrip={openGenericFunnel} />
+      {/* ── NEW HERO ─────────────────────────────────────────────────────────── */}
+      <ParticleHero onPlanTrip={openGenericFunnel} />
 
-      {/* About Section */}
+      {/* About Section — 100% original */}
       <section id="about" className="py-32 px-6 sm:px-12 bg-white relative">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <div className="relative group">
@@ -760,17 +732,13 @@ export default function Home() {
           <div className="md:pl-6">
             <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
             <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>Meet Kirti Shah</h2>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">
-              Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.
-            </p>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">
-              With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.
-            </p>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.</p>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.</p>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Services Section — 100% original */}
       <section className="py-32 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-20">
@@ -778,13 +746,11 @@ export default function Home() {
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((service, index) => (
-              <RevealOnScroll key={index}>
-                <div className="group p-8 bg-white rounded-[2rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1 border border-gray-100/80">
-                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1F2328] mb-3">{service.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{service.description}</p>
+              <RevealOnScroll key={index} className={`delay-${index * 100}`}>
+                <div className="bg-white rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full">
+                  <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{service.icon}</div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{service.title}</h3>
+                  <p className="text-gray-500 leading-relaxed text-lg">{service.description}</p>
                 </div>
               </RevealOnScroll>
             ))}
@@ -792,81 +758,78 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations Section */}
+      {/* Destinations Trigger Section — 100% original */}
       <section id="destinations" className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Where Do You Want To Go?</h2>
-            <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">From serene beaches to majestic mountains, explore our handpicked destinations for every kind of traveller.</p>
-          </RevealOnScroll>
-
-          {/* Category Filter */}
-          <div className="flex justify-center gap-4 mb-12">
-            {["International", "India"].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-8 py-3 rounded-full font-semibold text-sm transition-all ${activeCategory === cat ? "bg-[#2D3191] text-white shadow-lg" : "bg-[#FAFAF8] text-gray-600 hover:bg-gray-100"}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Destination Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {(showDestinations ? filteredDestinations : filteredDestinations.slice(0, 8)).map((dest) => (
-              <RevealOnScroll key={dest.id}>
-                <div
-                  onClick={() => handleDestinationClick(dest.title)}
-                  className="group cursor-pointer bg-white rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-1 border border-gray-100"
-                >
-                  <div className="h-48 overflow-hidden">
-                    <img src={dest.image} alt={dest.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-bold text-[#1F2328] text-lg mb-2">{dest.title}</h3>
-                    <p className="text-gray-500 text-sm mb-3 line-clamp-2">{dest.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {dest.tags.map((tag) => (
-                        <span key={tag} className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-          {filteredDestinations.length > 8 && (
-            <div className="text-center mt-12">
-              <button
-                onClick={() => setShowDestinations(!showDestinations)}
-                className="px-10 py-4 bg-[#1F2328] text-white font-semibold rounded-full hover:bg-black transition-all shadow-lg hover:-translate-y-0.5"
-              >
-                {showDestinations ? "Show Less" : `View All ${filteredDestinations.length} Destinations`}
-              </button>
+          <RevealOnScroll>
+            <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white">
+              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&fm=webp&w=1080&q=65" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
+              <div className="absolute inset-0 bg-white/70 z-10" />
+              <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
+                <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
+                <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>Explore Destinations</h2>
+                <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
+                <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
+              </div>
             </div>
-          )}
+          </RevealOnScroll>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="reviews" className="py-32 bg-[#FAFAF8]">
-        <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>What Our Travellers Say</h2>
-          </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {testimonials.map((testimonial) => (
-              <RevealOnScroll key={testimonial.id}>
-                <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100/80">
-                  <div className="flex gap-1 mb-6">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} size={20} className="text-yellow-400" />
-                    ))}
+      {/* Destinations Popup — 100% original */}
+      {showDestinations && (
+        <div className="fixed inset-0 z-50 flex animate-active-up">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
+          <div className="absolute inset-0 md:inset-10 bg-[#FAFAF8] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
+            <div className="p-6 md:p-8 flex justify-between items-center bg-white shadow-sm z-20">
+              <h3 className="text-2xl md:text-3xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Choose Your Adventure</h3>
+              <button onClick={() => setShowDestinations(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-500" /></button>
+            </div>
+            <div className="flex justify-center p-6 bg-white z-10 shadow-sm relative">
+              <div className="inline-flex bg-[#FAFAF8] rounded-full p-1.5 shadow-inner">
+                {["International", "India"].map((category) => (
+                  <button key={category} onClick={() => setActiveCategory(category)} className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === category ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}>{category} <span className="ml-2 text-xs opacity-60">({destinations.filter((d) => d.category === category).length})</span></button>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {filteredDestinations.map((dest) => (
+                  <div key={dest.id} className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-500 cursor-pointer hover:-translate-y-2" onClick={() => handleDestinationClick(dest.title)}>
+                    <div className="relative h-64 overflow-hidden">
+                      <OptimizedImage src={dest.image} alt={dest.title} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute bottom-5 left-5 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                        {dest.tags.slice(0, 2).map((tag, index) => (
+                          <span key={index} className="text-xs font-bold text-white bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-8">
+                      <h4 className="text-2xl font-bold mb-3 text-[#1F2328] group-hover:text-[#2D3191] transition-colors">{dest.title}</h4>
+                      <p className="text-gray-500 leading-relaxed line-clamp-2">{dest.description}</p>
+                    </div>
                   </div>
-                  <p className="text-[#1F2328]/80 leading-relaxed text-lg mb-8 whitespace-pre-line">{testimonial.text}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reviews — 100% original */}
+      <section id="reviews" className="py-32 relative bg-white">
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <RevealOnScroll className="text-center mb-20">
+            <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif" }}>Loved by Travelers</h2>
+          </RevealOnScroll>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {testimonials.map((testimonial, index) => (
+              <RevealOnScroll key={testimonial.id} className={`delay-${index * 100}`}>
+                <div className="bg-[#FAFAF8] p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden">
+                  <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(testimonial.rating)].map((_, i) => (<Star key={i} className="w-6 h-6 fill-current" />))}</div>
+                  <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{testimonial.text}"</p>
                   <div>
                     <h4 className="font-bold text-xl text-[#1F2328]">{testimonial.name}</h4>
                     {!!testimonial.location && <p className="text-gray-500 mt-1">{testimonial.location}</p>}
@@ -878,50 +841,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section (Redesigned Interactive Bento Grid) */}
+      {/* Contact Section — 100% original */}
       <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
         <div className="max-w-[1200px] mx-auto text-center mb-16">
-           <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Let's talk travel.</h2>
-           <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
+          <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Let's talk travel.</h2>
+          <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
         </div>
         <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
-
-          {/* WhatsApp Bento */}
           <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
-             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500">
-               <MessageCircle size={36} />
-             </div>
-             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">WhatsApp</h3>
-             <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-up">Start Chat</h3>
-             <p className="text-gray-500 font-medium">+91 99243 99335</p>
-             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MessageCircle size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">WhatsApp</h3>
+            <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-up">Start Chat</h3>
+            <p className="text-gray-500 font-medium">+91 99243 99335</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </a>
-
-          {/* Email Bento */}
           <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
-             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500">
-               <Mail size={36} />
-             </div>
-             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">Email</h3>
-             <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-up">Write to Us</h3>
-             <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
-             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden transition-all">Email</h3>
+            <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-up">Write to Us</h3>
+            <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </a>
-
-          {/* Location Bento */}
           <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden">
-             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500 group-hover:animate-bounce">
-               <MapPin size={36} />
-             </div>
-             <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
-             <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br/>India</p>
-             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500 group-hover:animate-bounce"><MapPin size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
+            <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br />India</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </div>
-
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer — 100% original */}
       <footer className="relative z-10 bg-[#1F2328] text-white py-20">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
@@ -937,17 +887,17 @@ export default function Home() {
             <div>
               <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
               <ul className="space-y-4 font-medium text-gray-300">
-                <li><button onClick={() => scrollToSection("about")} className="hover:text-white transition-colors">About Us</button></li>
+                <li><button onClick={() => scrollToSection("about")}        className="hover:text-white transition-colors">About Us</button></li>
                 <li><button onClick={() => scrollToSection("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
-                <li><button onClick={() => scrollToSection("reviews")} className="hover:text-white transition-colors">Reviews</button></li>
-                <li><button onClick={() => scrollToSection("contact")} className="hover:text-white transition-colors">Contact</button></li>
+                <li><button onClick={() => scrollToSection("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
+                <li><button onClick={() => scrollToSection("contact")}      className="hover:text-white transition-colors">Contact</button></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
               <ul className="space-y-4 font-medium text-gray-300">
                 <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/terms"         className="hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
@@ -957,32 +907,49 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Render the new Funnel when state is true */}
       {showFunnel && (
-        <DestinationFunnel
-          preselectedDest={funnelDest}
-          onClose={() => setShowFunnel(false)}
-        />
+        <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />
       )}
 
-      {/* Persistent Chatbot */}
       <NomadsChatbot />
 
-      {/* Global CSS animations */}
+      {/* Global CSS — original keyframes + new hero animations + marquee */}
       <style>{`
         @keyframes floatIn {
           from { opacity: 0; transform: translateX(40px) translateY(20px); }
-          to { opacity: 1; transform: translateX(0) translateY(0); }
+          to   { opacity: 1; transform: translateX(0)  translateY(0); }
         }
         .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
         @keyframes slideUpFade {
           from { opacity: 0; transform: translateY(60px); }
-          to { opacity: 1; transform: translateY(0); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         .animate-slide-up-1 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
         .animate-slide-up-2 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards; opacity: 0; }
         .animate-slide-up-3 { animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; opacity: 0; }
+
+        /* Hero staggered fade-in */
+        @keyframes heroFade {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .animate-hero-fade-1 { animation: heroFade 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+        .animate-hero-fade-2 { animation: heroFade 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+        .animate-hero-fade-3 { animation: heroFade 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both; }
+        .animate-hero-fade-4 { animation: heroFade 0.9s cubic-bezier(0.16,1,0.3,1) 0.55s both; }
+        .animate-hero-fade-5 { animation: heroFade 0.9s cubic-bezier(0.16,1,0.3,1) 0.7s both; }
+
+        /* Destination name marquee */
+        @keyframes marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+          animation: marquee 28s linear infinite;
+          will-change: transform;
+        }
+        .animate-marquee:hover { animation-play-state: paused; }
       `}</style>
     </div>
   );

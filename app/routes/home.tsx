@@ -217,42 +217,81 @@ const keyServices = [
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string };
 const destinations: Destination[] = [
-  { id: 1,  title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                    tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
-  { id: 2,  title: "Maldives",             category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/MaldivesBungalows.jpg?width=480",                                                                                        tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
-  { id: 3,  title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                       tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
-  { id: 4,  title: "Singapore",            category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                       tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
-  { id: 5,  title: "Thailand",             category: "International", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                          tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
-  { id: 6,  title: "Vietnam",              category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                       tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
-  { id: 7,  title: "Sri Lanka",            category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Srilanka_ella.jpg?width=480",                                                                                            tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
-  { id: 8,  title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
-  { id: 9,  title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                       tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
-  { id: 10, title: "Australia",            category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
-  { id: 11, title: "New Zealand",          category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
-  { id: 12, title: "Japan",               category: "International", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                       tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
-  { id: 13, title: "South Korea",          category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Culture","City","Food"],                description: "Dynamic cities, ancient palaces, and trendy pop culture." },
-  { id: 14, title: "Turkey",               category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
-  { id: 15, title: "USA",                  category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_South_Rim_at_Sunset.jpg?width=480",                                                                        tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
-  { id: 16, title: "South Africa",         category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/Table_mountain_cape_town.jpg?width=480",                                                                                tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
-  { id: 17, title: "Kenya",                category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                         tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, title: "Tanzania",             category: "International", image: "https://commons.wikimedia.org/wiki/Special:FilePath/004_Sunrise_at_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg?width=480",                                           tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
-  { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
-  { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
-  { id: 21, title: "Himachal Pradesh",     category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Spiti_Valley%2C_Himachal_Pradesh.jpg?width=480",                                                                        tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
-  { id: 22, title: "Uttarakhand",          category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Valley_of_flowers%2C_Uttarakhand.jpg?width=480",                                                                        tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
-  { id: 23, title: "Rajasthan",            category: "India",         image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
-  { id: 24, title: "Goa",                  category: "India",         image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe." },
-  { id: 25, title: "Kerala",               category: "India",         image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=480&q=60",                                                                      tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
-  { id: 26, title: "Andaman Islands",      category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Radhanagar_Beach%2C_Andaman_1.jpg?width=480",                                                                           tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
-  { id: 27, title: "North East India",     category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kaziranga_National_Park_%2C_Assam.jpg?width=480",                                                                       tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
-  { id: 28, title: "Sikkim",               category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kanchenjunga_from_Zuluk%2C_Sikkim.jpg?width=480",                                                                       tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
-  { id: 29, title: "Meghalaya",            category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/The_Living_Root_Bridge%2C_Meghalaya.jpg?width=480",                                                                     tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
-  { id: 30, title: "Arunachal Pradesh",    category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Tawang_Monastery%2C_Arunachal_Pradesh.jpg?width=480",                                                                   tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
-  { id: 31, title: "Karnataka",            category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_karnataka.jpg?width=480",                                                                                         tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
-  { id: 32, title: "Tamil Nadu",           category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi_Amman_Temple%2C_Madurai.jpg?width=480",                                                                       tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
-  { id: 33, title: "Pondicherry",          category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Beach_Promenade%2C_Pondicherry%2C_India.jpg?width=480",                                                                 tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
-  { id: 34, title: "West Bengal",          category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Victoria_Memorial_Kolkata.jpg?width=480",                                                                               tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, title: "Odisha",               category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Konark_sun_temple%2C_Odisha.jpg?width=480",                                                                             tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
-  { id: 36, title: "Gujarat",              category: "India",         image: "https://commons.wikimedia.org/wiki/Special:FilePath/Rann_of_Kutch.jpg?width=480",                                                                                           tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
+  // ── INTERNATIONAL ──────────────────────────────────────────────────────────
+  // 1. Bali — iconic Tegallalang rice terraces, warm golden hour
+  { id: 1,  title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
+  // 2. Maldives — crystal overwater bungalows, turquoise lagoon
+  { id: 2,  title: "Maldives",             category: "International", image: "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
+  // 3. Dubai — Burj Khalifa & skyline at dusk
+  { id: 3,  title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
+  // 4. Singapore — Gardens by the Bay supertrees at night
+  { id: 4,  title: "Singapore",            category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
+  // 5. Thailand — Phi Phi Islands turquoise coves, dramatic cliffs
+  { id: 5,  title: "Thailand",             category: "International", image: "https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
+  // 6. Vietnam — Halong Bay emerald waters and karst pillars
+  { id: 6,  title: "Vietnam",              category: "International", image: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
+  // 7. Sri Lanka — Nine Arch Bridge Ella, lush green
+  { id: 7,  title: "Sri Lanka",            category: "International", image: "https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
+  // 8. Bhutan — Tiger's Nest monastery, cliff face, mist
+  { id: 8,  title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-1553856622-d1b352e9a873?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
+  // 9. Europe — Santorini blue domes, warm sunset
+  { id: 9,  title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
+  // 10. Australia — Great Barrier Reef aerial, vivid coral blue
+  { id: 10, title: "Australia",            category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
+  // 11. New Zealand — Milford Sound mirror fjord at sunrise
+  { id: 11, title: "New Zealand",          category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
+  // 12. Japan — Mount Fuji with cherry blossoms, perfect pink frame
+  { id: 12, title: "Japan",                category: "International", image: "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
+  // 13. South Korea — Gyeongbokgung Palace, vivid traditional colours
+  { id: 13, title: "South Korea",          category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","City","Food"],                description: "Dynamic cities, ancient palaces, and trendy pop culture." },
+  // 14. Turkey — Cappadocia hot air balloons at golden sunrise
+  { id: 14, title: "Turkey",               category: "International", image: "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
+  // 15. USA — Grand Canyon vast red canyon walls at sunset
+  { id: 15, title: "USA",                  category: "International", image: "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
+  // 16. South Africa — Cape Town aerial, Table Mountain over city and ocean
+  { id: 16, title: "South Africa",         category: "International", image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
+  // 17. Kenya — elephant herd on open savannah, golden grass
+  { id: 17, title: "Kenya",                category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
+  // 18. Tanzania — Kilimanjaro snow cap above clouds, epic scale
+  { id: 18, title: "Tanzania",             category: "International", image: "https://images.unsplash.com/photo-1621414050946-1f7b5e2b5c62?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+
+  // ── INDIA ──────────────────────────────────────────────────────────────────
+  // 19. Kashmir — Dal Lake shikara, mirror water, mountains behind
+  { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
+  // 20. Leh-Ladakh — Pangong Lake electric blue, barren mountains
+  { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
+  // 21. Himachal Pradesh — Spiti Valley, snowy peaks, winding river
+  { id: 21, title: "Himachal Pradesh",     category: "India",         image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
+  // 22. Uttarakhand — Valley of Flowers, vivid wildflowers, Himalayas
+  { id: 22, title: "Uttarakhand",          category: "India",         image: "https://images.unsplash.com/photo-1585136917228-a2293f76d3a2?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
+  // 23. Rajasthan — Hawa Mahal at golden hour, detailed pink facade
+  { id: 23, title: "Rajasthan",            category: "India",         image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
+  // 24. Goa — Palolem Beach, calm turquoise water, palm trees
+  { id: 24, title: "Goa",                  category: "India",         image: "https://images.unsplash.com/photo-1614082242765-7c98ca0f3df3?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe." },
+  // 25. Kerala — Alleppey backwater houseboat, lush green banks
+  { id: 25, title: "Kerala",               category: "India",         image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
+  // 26. Andaman — Radhanagar Beach, powder white sand, clear azure water
+  { id: 26, title: "Andaman Islands",      category: "India",         image: "https://images.unsplash.com/photo-1680168357232-84cbc3cda1dc?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
+  // 27. North East — Dzukou Valley, rolling green hills, flower season
+  { id: 27, title: "North East India",     category: "India",         image: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
+  // 28. Sikkim — Kanchenjunga golden sunrise from Pelling viewpoint
+  { id: 28, title: "Sikkim",               category: "India",         image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
+  // 29. Meghalaya — Nohkalikai Falls, tallest plunge waterfall, vivid green
+  { id: 29, title: "Meghalaya",            category: "India",         image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
+  // 30. Arunachal — Tawang monastery, highest Buddhist monastery, snow peaks
+  { id: 30, title: "Arunachal Pradesh",    category: "India",         image: "https://images.unsplash.com/photo-1622397815729-4f78394db31c?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
+  // 31. Karnataka — Hampi boulder ruins at sunset, surreal landscape
+  { id: 31, title: "Karnataka",            category: "India",         image: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
+  // 32. Tamil Nadu — Meenakshi temple gopuram, vivid sculptures, dusk glow
+  { id: 32, title: "Tamil Nadu",           category: "India",         image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
+  // 33. Pondicherry — French quarter promenade, colourful colonial facades
+  { id: 33, title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-1616412744698-8d3e7cde87f5?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
+  // 34. West Bengal — Darjeeling tea estate, rolling green hills, mist
+  { id: 34, title: "West Bengal",          category: "India",         image: "https://images.unsplash.com/photo-1544376664-80b17f09d399?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
+  // 35. Odisha — Konark Sun Temple chariot wheels, intricate stone carvings
+  { id: 35, title: "Odisha",               category: "India",         image: "https://images.unsplash.com/photo-1609767760148-a8a35e0fd19e?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
+  // 36. Gujarat — Rann of Kutch, vast white salt desert under full moon
+  { id: 36, title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&fm=webp&w=600&q=75",  tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
 ];
 
 const testimonials = [
@@ -610,19 +649,49 @@ export default function Home() {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 md:p-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
-                  <div key={dest.id} className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-500 cursor-pointer hover:-translate-y-2" onClick={() => handleDestClick(dest.title)}>
-                    <div className="relative h-64 overflow-hidden">
-                      <OptimizedImage src={dest.image} alt={dest.title} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="absolute bottom-5 left-5 flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
-                        {dest.tags.slice(0, 2).map((tag, i) => <span key={i} className="text-xs font-bold text-white bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full">{tag}</span>)}
-                      </div>
+                  <div
+                    key={dest.id}
+                    onClick={() => handleDestClick(dest.title)}
+                    className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
+                    style={{ aspectRatio: "3/4" }}
+                  >
+                    {/* Full-bleed image */}
+                    <OptimizedImage
+                      src={dest.image}
+                      alt={dest.title}
+                      className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110"
+                    />
+
+                    {/* Always-on bottom gradient — ensures title is always readable */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+                    {/* Tags — top left, always visible */}
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-10">
+                      {dest.tags.slice(0, 2).map((tag, i) => (
+                        <span key={i} className="text-[10px] font-bold text-white bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 uppercase tracking-wide">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                    <div className="p-8">
-                      <h4 className="text-2xl font-bold mb-3 text-[#1F2328] group-hover:text-[#2D3191] transition-colors">{dest.title}</h4>
-                      <p className="text-gray-500 leading-relaxed line-clamp-2">{dest.description}</p>
+
+                    {/* Plan this trip pill — appears on hover top right */}
+                    <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F2328] bg-white px-3 py-1.5 rounded-full shadow-md">
+                        Plan this trip →
+                      </span>
+                    </div>
+
+                    {/* Bottom content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                      {/* Title always visible */}
+                      <h4 className="text-lg font-bold text-white leading-tight mb-1 drop-shadow-sm">{dest.title}</h4>
+
+                      {/* Description slides up on hover */}
+                      <p className="text-white/75 text-xs leading-relaxed max-h-0 overflow-hidden group-hover:max-h-12 transition-all duration-500 ease-out">
+                        {dest.description}
+                      </p>
                     </div>
                   </div>
                 ))}

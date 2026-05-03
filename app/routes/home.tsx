@@ -269,87 +269,6 @@ function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iP
 function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
 function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋 I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋 I'd love to plan a trip. Can you help me?`), "_blank"); }
 
-type NomadsIntent = "enquiry" | "change" | "cancel";
-type ChatState = { intent?: NomadsIntent; name?: string; phone?: string; destination?: string; dates?: string; bookingRef?: string; details?: string };
-type Msg = { from: "bot" | "user"; text: string };
-
-function buildWAText(s: ChatState) {
-  const name = ((s.name || "").trim() || "—"), phone = ((s.phone || "").trim() || "—");
-  if (s.intent === "enquiry") return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I'd like to enquire about a trip.\n\nDestination: ${s.destination || "—"}\nDates: ${s.dates || "—"}\n\nDetails:\n${s.details || "—"}`;
-  if (s.intent === "change")  return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to modify my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\nNew Destination: ${s.destination || "—"}\nNew Dates: ${s.dates || "—"}\n\nRequest:\n${s.details || "—"}`;
-  return `Hi The Nomads Co 👋\nI'm ${name} (${phone}). I want to cancel my reservation.\n\nBooking Ref: ${s.bookingRef || "—"}\n\nReason / Notes:\n${s.details || "—"}`;
-}
-
-function NomadsChatbot() {
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(0);
-  const [input, setInput] = useState("");
-  const [state, setState] = useState<ChatState>({});
-  const [msgs, setMsgs] = useState<Msg[]>([{ from: "bot", text: "Hey 👋 I'm Nomads Assistant. What do you want to do today? (1/2/3)" }, { from: "bot", text: "1) New enquiry  2) Change reservation  3) Cancel reservation" }]);
-
-  const steps = useMemo(() => {
-    const base: any[] = [{ key: "intent", prompt: "Cool — pick 1/2/3.", required: true }, { key: "name", prompt: "What's your name?", required: true }, { key: "phone", prompt: "Phone number? (WhatsApp preferred)", required: true }];
-    const intent = state.intent; if (!intent) return base;
-    const mid: any[] = [];
-    if (intent === "change" || intent === "cancel") mid.push({ key: "bookingRef", prompt: "Booking reference? If not, type NA." });
-    if (intent === "enquiry" || intent === "change") { mid.push({ key: "destination", prompt: "Which destination?", required: true }); mid.push({ key: "dates", prompt: "What dates? (approx is fine)", required: true }); }
-    mid.push({ key: "details", prompt: "Tell me what you want in 1–2 lines.", required: true });
-    return [...base, ...mid, { key: "done", prompt: "Done ✅ Tap below to send on WhatsApp." }];
-  }, [state.intent]);
-
-  const cur = steps[Math.min(step, steps.length - 1)];
-  const waText = useMemo(() => buildWAText(state), [state]);
-  const waUrl = useMemo(() => waLink(waText), [waText]);
-  const pb = (t: string) => setMsgs(m => [...m, { from: "bot", text: t }]);
-  const pu = (t: string) => setMsgs(m => [...m, { from: "user", text: t }]);
-
-  const validate = (key: string, v: string) => {
-    v = v.trim();
-    if (key === "intent") { const s = v.toLowerCase(); const i = (s === "1" || s.includes("enq")) ? "enquiry" : (s === "2" || s.includes("change")) ? "change" : (s === "3" || s.includes("cancel")) ? "cancel" : undefined; return i ? { ok: true, value: i } : { ok: false, err: "Type 1, 2, or 3 🙂" }; }
-    if (key === "name" && v.length < 2) return { ok: false, err: "Type your name (2+ letters) 🙂" };
-    if (key === "phone" && v.replace(/[^0-9+]/g, "").length < 10) return { ok: false, err: "10+ digit number only 🙂" };
-    if (cur.required && !v) return { ok: false, err: "This can't be blank 🙂" };
-    return { ok: true, value: v };
-  };
-
-  const send = () => {
-    if (!cur || cur.key === "done" || !input.trim()) return;
-    pu(input.trim()); const res = validate(cur.key, input); setInput("");
-    if (!res.ok) return pb(res.err);
-    setState(p => ({ ...p, [cur.key]: res.value })); const next = step + 1; setStep(next);
-    if (steps[next]?.prompt) pb(steps[next].prompt);
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
-      {!open ? (
-        <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-full bg-black text-white font-extrabold px-5 py-4 shadow-2xl hover:-translate-y-1 transition-all"><MessageCircle className="w-6 h-6" /></button>
-      ) : (
-        <div className="w-[320px] sm:w-[360px] rounded-2xl shadow-2xl bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 bg-black text-white"><div className="text-sm font-semibold">Nomads Assistant</div><button onClick={() => setOpen(false)} className="text-lg leading-none">×</button></div>
-          <div className="h-[320px] overflow-y-auto px-4 py-3 space-y-3 bg-[#FAFAF8]">
-            {msgs.map((m, i) => (
-              <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "user" ? "bg-black text-white" : "bg-white border border-gray-100 shadow-sm text-gray-900"}`}>{m.text}</div>
-              </div>
-            ))}
-          </div>
-          {cur?.key !== "done" ? (
-            <div className="p-3 bg-white flex gap-2 border-t border-gray-100">
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Type here…" className="flex-1 rounded-xl bg-[#FAFAF8] px-4 py-2 text-sm outline-none" />
-              <button onClick={send} className="rounded-xl px-4 py-2 bg-black text-white text-sm">Send</button>
-            </div>
-          ) : (
-            <div className="p-3 bg-white border-t border-gray-100">
-              <a href={waUrl} target="_blank" rel="noreferrer" className="block text-center rounded-xl px-4 py-3 bg-green-600 text-white text-sm font-semibold">Send on WhatsApp ✅</a>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string; onClose: () => void }) {
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
   const [dest, setDest] = useState(preselectedDest || "");
@@ -501,6 +420,17 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
   const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
   const goToDestinations= () => document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth" });
@@ -527,17 +457,17 @@ export default function Home() {
             {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current" /><span className="block w-4 h-0.5 bg-current" /><span className="block w-6 h-0.5 bg-current" /></div>}
           </button>
         </div>
-        {isMenuOpen && (
-          <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6">
-            <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 right-6 text-3xl font-light text-gray-900">×</button>
-            <div className="flex flex-col items-center gap-8">
-              <button onClick={() => scrollTo("about")}        className="text-2xl font-semibold text-gray-900">About</button>
-              <button onClick={() => scrollTo("destinations")} className="text-2xl font-semibold text-gray-900">Destinations</button>
-              <button onClick={() => scrollTo("reviews")}      className="text-2xl font-semibold text-gray-900">Reviews</button>
-              <button onClick={() => { setIsMenuOpen(false); goToDestinations(); }} className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors">Plan My Trip</button>
-            </div>
+        
+        {/* Animated Mobile Menu Overlay */}
+        <div className={`fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6 transition-all duration-500 ease-in-out ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+          <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 right-6 text-3xl font-light text-[#02A551] hover:scale-110 transition-transform">×</button>
+          <div className={`flex flex-col items-center gap-8 transition-all duration-500 delay-100 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
+            <button onClick={() => scrollTo("about")}        className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">About</button>
+            <button onClick={() => scrollTo("destinations")} className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">Destinations</button>
+            <button onClick={() => scrollTo("reviews")}      className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">Reviews</button>
+            <button onClick={() => { setIsMenuOpen(false); goToDestinations(); }} className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors mt-4">Plan My Trip</button>
           </div>
-        )}
+        </div>
       </nav>
 
       {/* Sticky bottom bar */}
@@ -799,7 +729,6 @@ export default function Home() {
       </footer>
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />}
-      <NomadsChatbot />
 
       <style>{`
         @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }

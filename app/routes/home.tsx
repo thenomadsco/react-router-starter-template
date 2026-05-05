@@ -127,7 +127,7 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-// Cinematic Glass Window Hero (Crash-Proof Version, Marquee Removed)
+// Cinematic Glass Window Hero (Marquee Removed)
 const CinematicHero = ({ onExplore }: { onExplore: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
   
@@ -428,6 +428,8 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
+  // Removed the buggy body overflow manipulation here completely.
+
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
   const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
   const goToDestinations= () => document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth" });
@@ -451,21 +453,51 @@ export default function Home() {
             <button onClick={goToDestinations} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
           <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current" /><span className="block w-4 h-0.5 bg-current" /><span className="block w-6 h-0.5 bg-current" /></div>}
+            <div className="space-y-1.5">
+              <span className="block w-6 h-0.5 bg-current" />
+              <span className="block w-4 h-0.5 bg-current ml-auto" />
+              <span className="block w-6 h-0.5 bg-current" />
+            </div>
           </button>
         </div>
+      </nav>
+
+      {/* NEW: App-Style Slide-Out Mobile Drawer */}
+      <div 
+        className={`fixed inset-0 z-[100] transition-opacity duration-500 md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+      >
+        {/* Darkened/Blurred Backdrop - click to close */}
+        <div 
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+          onClick={() => setIsMenuOpen(false)} 
+        />
         
-        {/* Animated Mobile Menu Overlay */}
-        <div className={`fixed inset-0 z-[100] bg-white flex flex-col pt-24 px-6 transition-all duration-500 ease-in-out ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-          <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 right-6 text-3xl font-light text-[#02A551] hover:scale-110 transition-transform">×</button>
-          <div className={`flex flex-col items-center gap-8 transition-all duration-500 delay-100 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-            <button onClick={() => scrollTo("about")}        className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">About</button>
-            <button onClick={() => scrollTo("destinations")} className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">Destinations</button>
-            <button onClick={() => scrollTo("reviews")}      className="text-2xl font-semibold text-[#2D3191] hover:text-[#02A551] transition-colors">Reviews</button>
-            <button onClick={() => { setIsMenuOpen(false); goToDestinations(); }} className="px-8 py-3 bg-[#2D3191] text-white text-lg font-medium rounded-full shadow-md hover:bg-[#242875] transition-colors mt-4">Plan My Trip</button>
+        {/* Slide-out Panel */}
+        <div 
+          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+        >
+          {/* Header */}
+          <div className="p-6 flex justify-end">
+            <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-gray-900 transition-colors">
+              <X size={28} />
+            </button>
+          </div>
+          
+          {/* Main Links */}
+          <div className="flex-1 flex flex-col px-8 py-4 gap-8 overflow-y-auto">
+            <button onClick={() => scrollTo("about")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">About</button>
+            <button onClick={() => scrollTo("destinations")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
+            <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
+          </div>
+          
+          {/* Footer Action */}
+          <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
+            <button onClick={() => { setIsMenuOpen(false); goToDestinations(); }} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
+              Plan My Trip <ArrowRight size={18} />
+            </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Sticky bottom bar */}
       <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 md:hidden ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>

@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
-import heroImage1 from "./image_01fb9b.png";
 import type { Route } from "./+types/home";
 
 export function headers() {
@@ -88,11 +87,11 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
 const CinematicHero = ({ onExplore }: { onExplore: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
   
+  // External URLs are now used here. Replace these with your unique generated content URLs when ready!
   const backgrounds = [
-    heroImage1,
-    // Add additional local images here to complete the crossfade effect
-    // "/hero-image-2.jpg", 
-    // "/hero-image-3.jpg"
+    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80", // Maldives Vibe
+    "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1920&q=80", // Paris Vibe
+    "https://images.unsplash.com/photo-1643449416258-5c8e7ec598b1?auto=format&fit=crop&w=1920&q=80"  // Kashmir Vibe
   ];
 
   useEffect(() => {

@@ -1,7 +1,8 @@
 import { Link } from "react-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
+import heroImage1 from "./image_01fb9b.png";
 import type { Route } from "./+types/home";
 
 export function headers() {
@@ -83,94 +84,97 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   return <div ref={ref} className={`transition-all duration-1000 ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>{children}</div>;
 };
 
-// Particle Hero
-const ParticleHero = ({ onExplore }: { onExplore: () => void }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const rafRef = useRef<number>(0);
+// Cinematic Glass Window Hero
+const CinematicHero = ({ onExplore }: { onExplore: () => void }) => {
+  const [currentBg, setCurrentBg] = useState(0);
+  
+  const backgrounds = [
+    heroImage1,
+    // Add additional local images here to complete the crossfade effect
+    // "/hero-image-2.jpg", 
+    // "/hero-image-3.jpg"
+  ];
 
   useEffect(() => {
-    const canvas = canvasRef.current; if (!canvas) return;
-    const ctx = canvas.getContext("2d"); if (!ctx) return;
-    type P = { x: number; y: number; vx: number; vy: number; r: number; alpha: number; depth: number; phase: number; speed: number };
-    const pts: P[] = [];
-    const make = (w: number, h: number): P => {
-      const d = 0.2 + Math.random() * 0.8;
-      return { x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .18 * d, vy: (Math.random() - .5) * .12 * d, r: .8 + d * 2.2, alpha: .06 + d * .22, depth: d, phase: Math.random() * Math.PI * 2, speed: .6 + Math.random() * .8 };
-    };
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr; ctx.scale(dpr, dpr);
-      pts.length = 0; for (let i = 0; i < 100; i++) pts.push(make(w, h));
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    const onMM = (e: MouseEvent) => { const r = canvas.getBoundingClientRect(); mouseRef.current = { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }; };
-    window.addEventListener("mousemove", onMM);
-    let t = 0, smx = .5, smy = .5;
-    const CDIST = 90, PAR = 28;
-    const draw = () => {
-      rafRef.current = requestAnimationFrame(draw); t += .008;
-      const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
-      smx += (mouseRef.current.x - smx) * .05; smy += (mouseRef.current.y - smy) * .05;
-      const mx = smx - .5, my = smy - .5;
-      for (const p of pts) {
-        p.x += p.vx * p.speed; p.y += p.vy * p.speed;
-        if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
-        if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
-        const px = p.x + mx * PAR * p.depth, py = p.y + my * PAR * p.depth;
-        const a = p.alpha * (.7 + .3 * Math.sin(t * 1.2 + p.phase));
-        ctx.beginPath(); ctx.arc(px, py, p.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(45,49,145,${a})`; ctx.fill();
-      }
-      for (let i = 0; i < pts.length; i++) {
-        const a = pts[i], ax = a.x + mx * PAR * a.depth, ay = a.y + my * PAR * a.depth;
-        for (let j = i + 1; j < pts.length; j++) {
-          const b = pts[j], bx = b.x + mx * PAR * b.depth, by = b.y + my * PAR * b.depth;
-          const d = Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2);
-          if (d < CDIST) { ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.strokeStyle = `rgba(45,49,145,${(1 - d / CDIST) * .07})`; ctx.lineWidth = .6; ctx.stroke(); }
-        }
-      }
-    };
-    rafRef.current = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(rafRef.current); window.removeEventListener("resize", resize); window.removeEventListener("mousemove", onMM); };
-  }, []);
+    if (backgrounds.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+    }, 6000); 
+    return () => clearInterval(timer);
+  }, [backgrounds.length]);
 
   return (
-    <section className="relative pt-[150px] md:pt-[200px] pb-20 md:pb-32 w-full bg-[#FAFAF8] overflow-hidden">
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent blur-3xl rounded-full pointer-events-none" />
-      <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }} />
-      <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center" style={{ zIndex: 2 }}>
-        <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-[#2D3191]/20 bg-white/60 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#2D3191] inline-block" />
-          <span className="text-xs font-bold text-[#2D3191] uppercase tracking-widest">Personal Travel Planning by Kirti Shah</span>
+    <section className="relative min-h-[95vh] flex items-center justify-center w-full bg-[#1F2328] overflow-hidden">
+      {/* Background Images with Crossfade & Zoom */}
+      {backgrounds.map((bg, idx) => (
+        <div
+          key={idx}
+          className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+            idx === currentBg ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+        >
+          <img
+            src={bg}
+            alt="Beautiful travel destination"
+            loading={idx === 0 ? "eager" : "lazy"}
+            className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${
+              idx === currentBg ? "scale-105" : "scale-100"
+            }`}
+          />
         </div>
-        <h1 className="animate-hero-2 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#1F2328] mb-6 tracking-tight leading-[1.05] max-w-4xl" style={{ fontFamily: "'Playfair Display',serif" }}>
-          Discover the world, <em className="not-italic text-[#2D3191]">beautifully curated.</em>
+      ))}
+
+      {/* Cinematic Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1F2328]/95 via-[#1F2328]/40 to-black/20 z-10 pointer-events-none" />
+
+      {/* Content */}
+      <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center z-20 pt-32 pb-10">
+        
+        {/* Glassmorphism Top Badge */}
+        <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-300 inline-block animate-pulse" />
+          <span className="text-xs font-bold text-white uppercase tracking-widest">Personal Travel Planning by Kirti Shah</span>
+        </div>
+
+        {/* Main Typography */}
+        <h1 className="animate-hero-2 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-[1.05] max-w-4xl drop-shadow-xl" style={{ fontFamily: "'Playfair Display',serif" }}>
+          Discover the world, <em className="not-italic text-blue-200">beautifully curated.</em>
         </h1>
-        <p className="animate-hero-3 text-lg md:text-xl text-gray-500 mb-10 max-w-xl leading-relaxed">
+        
+        <p className="animate-hero-3 text-lg md:text-xl text-white/80 mb-12 max-w-xl leading-relaxed drop-shadow-md">
           Zero-stress premium travel planning. We handle every detail — you collect the memories.
         </p>
+
+        {/* Floating Ticket CTA */}
         <div className="animate-hero-4">
-          <button onClick={onExplore} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_30px_rgba(45,49,145,0.3)] hover:bg-[#242875] hover:shadow-[0_15px_40px_rgba(45,49,145,0.4)] hover:-translate-y-1 transition-all duration-300">
+          <button onClick={onExplore} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
             Design Your Escape &rarr;
           </button>
         </div>
-        <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-12">
-          <div className="flex items-center gap-1.5"><div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-yellow-400" />)}</div><span className="text-sm font-semibold text-[#1F2328]/70">5.0 rated</span></div>
-          <span className="text-[#1F2328]/20 hidden sm:block">|</span><span className="text-sm font-semibold text-[#1F2328]/70">500+ trips planned</span>
-          <span className="text-[#1F2328]/20 hidden sm:block">|</span><span className="text-sm font-semibold text-[#1F2328]/70">10+ years experience</span>
-          <span className="text-[#1F2328]/20 hidden sm:block">|</span><span className="text-sm font-semibold text-[#1F2328]/70">24/7 on-trip support</span>
+
+        {/* Glassmorphism Stats */}
+        <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-16 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+          <div className="flex items-center gap-1.5">
+            <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-yellow-400" />)}</div>
+            <span className="text-sm font-semibold text-white">5.0 rated</span>
+          </div>
+          <span className="text-white/30 hidden sm:block">|</span>
+          <span className="text-sm font-semibold text-white/90">500+ trips planned</span>
+          <span className="text-white/30 hidden sm:block">|</span>
+          <span className="text-sm font-semibold text-white/90">10+ years experience</span>
+          <span className="text-white/30 hidden sm:block">|</span>
+          <span className="text-sm font-semibold text-white/90">24/7 on-trip support</span>
         </div>
-        <div className="animate-hero-5 w-full mt-16 overflow-hidden" aria-hidden="true">
+
+        {/* Marquee with Translucent Text */}
+        <div className="animate-hero-5 w-full mt-16 overflow-hidden" aria-hidden="true" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
           <div className="flex gap-0">
             {[0, 1].map(k => (
               <ul key={k} className={`flex shrink-0 gap-10 items-center whitespace-nowrap pr-10 ${k === 1 ? "animate-marquee2" : "animate-marquee"}`} aria-hidden={k === 1}>
                 {["Bali", "Maldives", "Kashmir", "Paris", "Santorini", "Dubai", "Tokyo", "Bhutan", "Rajasthan", "New Zealand", "Kenya", "Turkey", "Goa", "Vietnam", "Singapore"].map(n => (
                   <li key={n} className="flex items-center gap-10">
-                    <span className="text-sm font-semibold text-[#1F2328]/35 uppercase tracking-[0.2em]">{n}</span>
-                    <span className="w-1 h-1 rounded-full bg-[#2D3191]/25 inline-block flex-shrink-0" />
+                    <span className="text-sm font-semibold text-white/40 uppercase tracking-[0.2em] drop-shadow-md">{n}</span>
+                    <span className="w-1 h-1 rounded-full bg-white/20 inline-block flex-shrink-0" />
                   </li>
                 ))}
               </ul>
@@ -445,15 +449,15 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" className="h-10 w-auto rounded-md shadow-sm" />
-            <span className="font-bold tracking-tighter text-lg sm:text-2xl text-[#1F2328]">The Nomads Co.</span>
+            <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={() => scrollTo("about")}        className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">About</button>
-            <button onClick={() => scrollTo("destinations")} className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Destinations</button>
-            <button onClick={() => scrollTo("reviews")}      className="text-sm font-medium text-[#1F2328] hover:text-blue-600 transition-colors">Reviews</button>
-            <button onClick={goToDestinations} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">Plan My Trip</button>
+            <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
+            <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
+            <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
+            <button onClick={goToDestinations} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
-          <button className="md:hidden z-50 p-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={28} /> : <div className="space-y-1.5"><span className="block w-6 h-0.5 bg-current" /><span className="block w-4 h-0.5 bg-current" /><span className="block w-6 h-0.5 bg-current" /></div>}
           </button>
         </div>
@@ -504,7 +508,7 @@ export default function Home() {
       )}
 
       {/* 1. Hero */}
-      <ParticleHero onExplore={goToDestinations} />
+      <CinematicHero onExplore={goToDestinations} />
 
       {/* 2. Social proof strip — right after hero */}
       <SocialProofStrip onWhatsApp={handleWA} />

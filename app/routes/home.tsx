@@ -127,8 +127,8 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-// Cinematic Glass Window Hero (Marquee Removed)
-const CinematicHero = ({ onExplore }: { onExplore: () => void }) => {
+// Cinematic Glass Window Hero (Marquee Removed, Action Oriented)
+const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
   
   // 1. Initialize with hardcoded strings so it NEVER crashes on load.
@@ -209,9 +209,9 @@ const CinematicHero = ({ onExplore }: { onExplore: () => void }) => {
           Zero-stress premium travel planning. We handle every detail — you collect the memories.
         </p>
 
-        {/* Floating Ticket CTA */}
+        {/* Floating Ticket CTA - Now triggers the Action Funnel */}
         <div className="animate-hero-4">
-          <button onClick={onExplore} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
+          <button onClick={onPlanTrip} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
             Design Your Escape &rarr;
           </button>
         </div>
@@ -428,13 +428,23 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  // Removed the buggy body overflow manipulation here completely.
-
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
+  
+  // Browsing Action
   const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
-  const goToDestinations= () => document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth" });
+  
+  // Smooth Scroll Helper
   const scrollTo        = (id: string) => { setIsMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
+  
   const handleWA        = () => openWhatsApp();
+
+  // UX Upgrade: The Master Action Hook
+  // This instantly closes any menus, wipes pre-selected locations, and opens the trip builder
+  const handlePlanMyTrip = () => {
+    setIsMenuOpen(false);
+    setFunnelDest(""); 
+    setShowFunnel(true);
+  };
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
@@ -448,9 +458,14 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
+            
+            {/* The Window Shopper Link */}
             <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
+            
             <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
-            <button onClick={goToDestinations} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
+            
+            {/* The Ready Buyer CTA */}
+            <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
           <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <div className="space-y-1.5">
@@ -462,47 +477,44 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* NEW: App-Style Slide-Out Mobile Drawer */}
+      {/* App-Style Slide-Out Mobile Drawer */}
       <div 
         className={`fixed inset-0 z-[100] transition-opacity duration-500 md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
-        {/* Darkened/Blurred Backdrop - click to close */}
         <div 
           className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
           onClick={() => setIsMenuOpen(false)} 
         />
         
-        {/* Slide-out Panel */}
         <div 
           className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
         >
-          {/* Header */}
           <div className="p-6 flex justify-end">
             <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-gray-900 transition-colors">
               <X size={28} />
             </button>
           </div>
           
-          {/* Main Links */}
           <div className="flex-1 flex flex-col px-8 py-4 gap-8 overflow-y-auto">
             <button onClick={() => scrollTo("about")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">About</button>
             <button onClick={() => scrollTo("destinations")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
             <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
           </div>
           
-          {/* Footer Action */}
           <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
-            <button onClick={() => { setIsMenuOpen(false); goToDestinations(); }} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
+            {/* The Ready Buyer Mobile CTA */}
+            <button onClick={handlePlanMyTrip} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
               Plan My Trip <ArrowRight size={18} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Sticky bottom bar */}
+      {/* Sticky bottom bar - Mobile */}
       <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 md:hidden ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3 justify-end">
-          <button onClick={goToDestinations} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Explore Destinations</button>
+          {/* Shifted focus from "Explore" to "Plan" */}
+          <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
           <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp</button>
         </div>
       </div>
@@ -512,7 +524,8 @@ export default function Home() {
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-8 py-3 flex items-center gap-4 justify-between">
           <p className="text-sm font-semibold text-[#1F2328]">Ready to travel?</p>
           <div className="flex gap-3">
-            <button onClick={goToDestinations} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Explore Destinations</button>
+            {/* Shifted focus from "Explore" to "Plan" */}
+            <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
             <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp Kirti</button>
           </div>
         </div>
@@ -521,7 +534,8 @@ export default function Home() {
       {/* Glass pill hook */}
       {showPill && randomDest && (
         <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
-          <div onClick={() => { setShowPill(false); goToDestinations(); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative">
+          {/* UX UPGRADE: Clicking this now directly opens the funnel with the location pre-selected */}
+          <div onClick={() => { setShowPill(false); handleDestClick(randomDest.title); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative">
             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner"><img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} /></div>
             <div>
               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12} /> Trending</p>
@@ -533,7 +547,7 @@ export default function Home() {
       )}
 
       {/* 1. Hero */}
-      <CinematicHero onExplore={goToDestinations} />
+      <CinematicHero onPlanTrip={handlePlanMyTrip} />
 
       {/* 2. Social proof strip — right after hero */}
       <SocialProofStrip onWhatsApp={handleWA} />

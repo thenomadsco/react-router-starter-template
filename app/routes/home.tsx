@@ -1,3 +1,4 @@
+// test.tsx
 import { Link } from "react-router";
 import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
@@ -46,17 +47,51 @@ function CheckCircle2(p: any)     { return <IconBase {...p}><circle cx="12" cy="
 function Sparkles(p: any)         { return <IconBase {...p}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z"/></IconBase>; }
 function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></IconBase>; }
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></IconBase>; }
-function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
+function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
+
+// Helper: Dynamically strip heavy parameters and create responsive paths
+const getResponsiveUrls = (url: string) => {
+  if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
+  
+  let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
+  baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
+  
+  if (baseUrl.endsWith("?") || baseUrl.endsWith("&")) baseUrl = baseUrl.slice(0, -1);
+  const sep = baseUrl.includes("?") ? "&" : "?";
+  
+  return {
+    src: `${baseUrl}${sep}w=800&q=75`,
+    srcSet: `${baseUrl}${sep}w=400&q=75 400w, ${baseUrl}${sep}w=800&q=75 800w, ${baseUrl}${sep}w=1200&q=75 1200w`
+  };
+};
 
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState(false);
-  const finalSrc = err ? "https://placehold.co/600x800/FF0000/FFFFFF?text=IMAGE+ERROR" : src;
+  
+  const { src: optimizedSrc, srcSet } = getResponsiveUrls(src);
+  const finalSrc = err ? "https://placehold.co/600x800/FF0000/FFFFFF?text=IMAGE+ERROR" : optimizedSrc;
+  
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
-      <img src={finalSrc} alt={alt} loading={priority ? "eager" : "lazy"} decoding={priority ? "sync" : "async"}
-        onLoad={() => setLoaded(true)} onError={() => setErr(true)}
-        className={`w-full h-full object-cover transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`} />
+      {/* Premium Shimmer Skeleton - Shows while loading */}
+      {!loaded && !err && (
+        <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
+          <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
+        </div>
+      )}
+      
+      <img 
+        src={finalSrc} 
+        srcSet={srcSet}
+        sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, 1200px"
+        alt={alt} 
+        loading={priority ? "eager" : "lazy"} 
+        decoding={priority ? "sync" : "async"}
+        onLoad={() => setLoaded(true)} 
+        onError={() => setErr(true)}
+        className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
+      />
     </div>
   );
 };
@@ -127,18 +162,15 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-// Cinematic Glass Window Hero (Marquee Removed, Action Oriented)
 const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
   
-  // 1. Initialize with hardcoded strings so it NEVER crashes on load.
   const [backgrounds, setBackgrounds] = useState<string[]>([
-    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80", // Bali
-    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80", // Maldives
-    "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80"  // Dubai
+    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80", 
+    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80", 
+    "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80"  
   ]);
 
-  // 2. Safely grab random images only after the component has securely mounted.
   useEffect(() => {
     try {
       if (typeof destinations === 'undefined' || !Array.isArray(destinations)) return;
@@ -158,7 +190,6 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
     }
   }, []);
 
-  // 3. Handle the smooth crossfade timer
   useEffect(() => {
     if (backgrounds.length <= 1) return;
     const timer = setInterval(() => {
@@ -169,7 +200,6 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
 
   return (
     <section className="relative min-h-[95vh] flex items-center justify-center w-full bg-[#1F2328] overflow-hidden">
-      {/* Background Images with Crossfade & Zoom */}
       {backgrounds.map((bg, idx) => (
         <div
           key={`${bg}-${idx}`}
@@ -188,19 +218,14 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
         </div>
       ))}
 
-      {/* Cinematic Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#1F2328]/95 via-[#1F2328]/40 to-black/20 z-10 pointer-events-none" />
 
-      {/* Content */}
       <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center z-20 pt-32 pb-10">
-        
-        {/* Glassmorphism Top Badge */}
         <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-300 inline-block animate-pulse" />
           <span className="text-xs font-bold text-white uppercase tracking-widest">Personal Travel Planning by Kirti Shah</span>
         </div>
 
-        {/* Main Typography */}
         <h1 className="animate-hero-2 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-[1.05] max-w-4xl drop-shadow-xl" style={{ fontFamily: "'Playfair Display',serif" }}>
           Discover the world, <em className="not-italic text-blue-200">beautifully curated.</em>
         </h1>
@@ -209,14 +234,12 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
           Zero-stress premium travel planning. We handle every detail — you collect the memories.
         </p>
 
-        {/* Floating Ticket CTA - Now triggers the Action Funnel */}
         <div className="animate-hero-4">
           <button onClick={onPlanTrip} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
             Design Your Escape &rarr;
           </button>
         </div>
 
-        {/* Glassmorphism Stats */}
         <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-16 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
           <div className="flex items-center gap-1.5">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-yellow-400" />)}</div>
@@ -414,6 +437,9 @@ export default function Home() {
   const [funnelDest,       setFunnelDest]       = useState("");
   const [showPill,         setShowPill]         = useState(false);
   const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
+  
+  // Ref to ensure we only preload once
+  const preloadedRef = useRef(false);
 
   useEffect(() => {
     const onScroll = () => { setScrolled(window.scrollY > 50); setPastHero(window.scrollY > 500); };
@@ -430,20 +456,28 @@ export default function Home() {
 
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
   
-  // Browsing Action
   const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
-  
-  // Smooth Scroll Helper
   const scrollTo        = (id: string) => { setIsMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
-  
   const handleWA        = () => openWhatsApp();
 
-  // UX Upgrade: The Master Action Hook
-  // This instantly closes any menus, wipes pre-selected locations, and opens the trip builder
   const handlePlanMyTrip = () => {
     setIsMenuOpen(false);
     setFunnelDest(""); 
     setShowFunnel(true);
+  };
+
+  // Intent-based Preloading function
+  const handlePreloadImages = () => {
+    if (preloadedRef.current || typeof window === "undefined") return;
+    preloadedRef.current = true;
+    
+    // Preload the first few images of the active category so they are instant
+    const toPreload = destinations.filter(d => d.category === activeCategory).slice(0, 8);
+    toPreload.forEach(dest => {
+      const img = new Image();
+      const { src } = getResponsiveUrls(dest.image);
+      img.src = src; 
+    });
   };
 
   return (
@@ -458,13 +492,8 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
-            
-            {/* The Window Shopper Link */}
             <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
-            
             <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
-            
-            {/* The Ready Buyer CTA */}
             <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
           <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -477,32 +506,18 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* App-Style Slide-Out Mobile Drawer */}
-      <div 
-        className={`fixed inset-0 z-[100] transition-opacity duration-500 md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-      >
-        <div 
-          className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
-          onClick={() => setIsMenuOpen(false)} 
-        />
-        
-        <div 
-          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
-        >
+      <div className={`fixed inset-0 z-[100] transition-opacity duration-500 md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
+        <div className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div className="p-6 flex justify-end">
-            <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-gray-900 transition-colors">
-              <X size={28} />
-            </button>
+            <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-gray-900 transition-colors"><X size={28} /></button>
           </div>
-          
           <div className="flex-1 flex flex-col px-8 py-4 gap-8 overflow-y-auto">
             <button onClick={() => scrollTo("about")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">About</button>
             <button onClick={() => scrollTo("destinations")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
             <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
           </div>
-          
           <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
-            {/* The Ready Buyer Mobile CTA */}
             <button onClick={handlePlanMyTrip} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
               Plan My Trip <ArrowRight size={18} />
             </button>
@@ -510,33 +525,27 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Sticky bottom bar - Mobile */}
       <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 md:hidden ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3 justify-end">
-          {/* Shifted focus from "Explore" to "Plan" */}
           <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
           <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp</button>
         </div>
       </div>
 
-      {/* Desktop sticky bar */}
       <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 hidden md:block ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-8 py-3 flex items-center gap-4 justify-between">
           <p className="text-sm font-semibold text-[#1F2328]">Ready to travel?</p>
           <div className="flex gap-3">
-            {/* Shifted focus from "Explore" to "Plan" */}
             <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
             <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp Kirti</button>
           </div>
         </div>
       </div>
 
-      {/* Glass pill hook */}
       {showPill && randomDest && (
         <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
-          {/* UX UPGRADE: Clicking this now directly opens the funnel with the location pre-selected */}
           <div onClick={() => { setShowPill(false); handleDestClick(randomDest.title); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative">
-            <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner"><img src={randomDest.image} className="w-full h-full object-cover" alt={randomDest.title} /></div>
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner"><img src={getResponsiveUrls(randomDest.image).src} className="w-full h-full object-cover" alt={randomDest.title} /></div>
             <div>
               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12} /> Trending</p>
               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
@@ -549,14 +558,19 @@ export default function Home() {
       {/* 1. Hero */}
       <CinematicHero onPlanTrip={handlePlanMyTrip} />
 
-      {/* 2. Social proof strip — right after hero */}
+      {/* 2. Social proof strip */}
       <SocialProofStrip onWhatsApp={handleWA} />
 
-      {/* 3. Destinations — primary conversion point */}
+      {/* 3. Destinations */}
       <section id="destinations" className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
-            <div onClick={() => setShowDestinations(true)} className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white">
+            <div 
+              onClick={() => setShowDestinations(true)} 
+              onMouseEnter={handlePreloadImages}
+              onTouchStart={handlePreloadImages}
+              className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white"
+            >
               <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
               <div className="absolute inset-0 bg-white/70 z-10" />
               <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
@@ -582,7 +596,13 @@ export default function Home() {
             <div className="flex justify-center p-6 bg-white z-10 shadow-sm relative">
               <div className="inline-flex bg-[#FAFAF8] rounded-full p-1.5 shadow-inner">
                 {["International", "India"].map(cat => (
-                  <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === cat ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}>{cat} <span className="ml-2 text-xs opacity-60">({destinations.filter(d => d.category === cat).length})</span></button>
+                  <button 
+                    key={cat} 
+                    onClick={() => { setActiveCategory(cat); preloadedRef.current = false; handlePreloadImages(); }} 
+                    className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === cat ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+                  >
+                    {cat} <span className="ml-2 text-xs opacity-60">({destinations.filter(d => d.category === cat).length})</span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -595,17 +615,8 @@ export default function Home() {
                     className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
                     style={{ aspectRatio: "3/4" }}
                   >
-                    {/* Full-bleed image */}
-                    <OptimizedImage
-                      src={dest.image}
-                      alt={dest.title}
-                      className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110"
-                    />
-
-                    {/* Always-on bottom gradient — ensures title is always readable */}
+                    <OptimizedImage src={dest.image} alt={dest.title} className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-
-                    {/* Tags — top left, always visible */}
                     <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-10">
                       {dest.tags.slice(0, 2).map((tag, i) => (
                         <span key={i} className="text-[10px] font-bold text-white bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 uppercase tracking-wide">
@@ -613,20 +624,13 @@ export default function Home() {
                         </span>
                       ))}
                     </div>
-
-                    {/* Plan this trip pill — appears on hover top right */}
                     <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F2328] bg-white px-3 py-1.5 rounded-full shadow-md">
                         Plan this trip →
                       </span>
                     </div>
-
-                    {/* Bottom content */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                      {/* Title always visible */}
                       <h4 className="text-lg font-bold text-white leading-tight mb-1 drop-shadow-sm">{dest.title}</h4>
-
-                      {/* Description slides up on hover */}
                       <p className="text-white/75 text-xs leading-relaxed max-h-0 overflow-hidden group-hover:max-h-12 transition-all duration-500 ease-out">
                         {dest.description}
                       </p>
@@ -639,7 +643,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 4. About Kirti */}
+      {/* 4. About */}
       <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <div className="relative group">
@@ -732,7 +736,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. Closing CTA — last emotional beat */}
+      {/* 8. Closing CTA */}
       <ClosingCTA onWhatsApp={handleWA} />
 
       {/* Footer */}
@@ -786,6 +790,10 @@ export default function Home() {
 
         @keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
         .animate-fade-in-up { animation: fadeInUp .4s ease-out forwards; }
+        
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
       `}</style>
     </div>
   );

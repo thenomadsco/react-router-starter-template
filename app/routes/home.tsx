@@ -45,6 +45,7 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
+// Helper: Dynamically strip heavy parameters and create responsive paths
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
@@ -57,106 +58,6 @@ const getResponsiveUrls = (url: string) => {
   };
 };
 
-// ----------------------------------------------------------------------
-// 🚀 ENGINE 1: MAIN PAGE SMOOTH SCROLL (Window Level)
-// ----------------------------------------------------------------------
-const SmoothScrollWrapper = ({ children }: { children: React.ReactNode }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [pageHeight, setPageHeight] = useState(0);
-
-  useEffect(() => {
-    const updateHeight = () => { if (containerRef.current) setPageHeight(containerRef.current.getBoundingClientRect().height); };
-    updateHeight();
-    const resizeObserver = new ResizeObserver(() => updateHeight());
-    if (containerRef.current) resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  useEffect(() => {
-    let currentY = 0;
-    let targetY = window.scrollY;
-    let rafId: number;
-    const ease = 0.08;
-
-    const animate = () => {
-      targetY = window.scrollY;
-      currentY = currentY + (targetY - currentY) * ease;
-      if (Math.abs(targetY - currentY) > 0.05 && containerRef.current) {
-        containerRef.current.style.transform = `translate3d(0, -${currentY}px, 0)`;
-      }
-      rafId = requestAnimationFrame(animate);
-    };
-    animate();
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
-  return (
-    <>
-      <div style={{ height: pageHeight }} className="opacity-0 pointer-events-none" />
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div ref={containerRef} className="pointer-events-auto transform-gpu" style={{ willChange: "transform" }}>
-          {children}
-        </div>
-      </div>
-    </>
-  );
-};
-
-// ----------------------------------------------------------------------
-// 🚀 ENGINE 2: MODAL POPUP SMOOTH SCROLL (Nested Offset Matrix)
-// ----------------------------------------------------------------------
-const SmoothModalScrollWrapper = ({ children, resetDependency }: { children: React.ReactNode, resetDependency: string }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const currentY = useRef(0);
-
-  // Instantly reset scroll to top when changing categories
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-      currentY.current = 0;
-      if (containerRef.current) containerRef.current.style.transform = `translate3d(0, 0, 0)`;
-    }
-  }, [resetDependency]);
-
-  useEffect(() => {
-    let rafId: number;
-    const ease = 0.08;
-
-    const animate = () => {
-      if (scrollRef.current && containerRef.current) {
-        const targetY = scrollRef.current.scrollTop;
-        currentY.current = currentY.current + (targetY - currentY.current) * ease;
-        
-        // The mathematical magic: Cancel out the browser's native scroll rendering, 
-        // and replace it locally with our smooth mathematical curve.
-        const offset = targetY - currentY.current;
-        
-        if (Math.abs(targetY - currentY.current) > 0.05) {
-          containerRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
-        } else {
-          containerRef.current.style.transform = `translate3d(0, 0, 0)`;
-        }
-      }
-      rafId = requestAnimationFrame(animate);
-    };
-    animate();
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
-  return (
-    <div 
-      ref={scrollRef} 
-      className="flex-1 overflow-y-auto overflow-x-hidden relative hide-scrollbar"
-      style={{ WebkitOverflowScrolling: 'touch' }}
-    >
-      <div ref={containerRef} className="w-full transform-gpu p-6 md:p-10 min-h-full">
-        {children}
-      </div>
-    </div>
-  );
-};
-
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState(false);
@@ -165,6 +66,7 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
+      {/* Premium Shimmer Skeleton - Shows while loading */}
       {!loaded && !err && (
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
@@ -195,23 +97,16 @@ function getObs() {
   );
   return sharedObs;
 }
-
 const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const [vis, setVis] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const obs = getObs(); if (!obs) { setVis(true); return; }
     revealCbs.set(el, () => setVis(true)); obs.observe(el);
     return () => { revealCbs.delete(el); obs.unobserve(el); };
   }, []);
-
-  return (
-    <div ref={ref} className={`transform-gpu transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div ref={ref} className={`transition-all duration-1000 ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>{children}</div>;
 };
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string };
@@ -293,7 +188,7 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-[#1F2328]/95 via-[#1F2328]/40 to-black/20 z-10 pointer-events-none" />
       <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center z-20 pt-32 pb-10">
-        <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)] transform-gpu">
+        <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-300 inline-block animate-pulse" />
           <span className="text-xs font-bold text-white uppercase tracking-widest">Personal Travel Planning by Kirti Shah</span>
         </div>
@@ -303,12 +198,12 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
         <p className="animate-hero-3 text-lg md:text-xl text-white/80 mb-12 max-w-xl leading-relaxed drop-shadow-md">
           Zero-stress premium travel planning. We handle every detail — you collect the memories.
         </p>
-        <div className="animate-hero-4 transform-gpu">
+        <div className="animate-hero-4">
           <button onClick={onPlanTrip} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
             Design Your Escape &rarr;
           </button>
         </div>
-        <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-16 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md transform-gpu">
+        <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-16 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
           <div className="flex items-center gap-1.5">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-yellow-400" />)}</div>
             <span className="text-sm font-semibold text-white">5.0 rated</span>
@@ -339,7 +234,7 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
           </div>
           <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={20} className="text-yellow-400" />)}</div>
-            <button onClick={onWhatsApp} className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-bold rounded-full shadow-lg hover:bg-[#1DA851] hover:-translate-y-0.5 transition-all text-sm whitespace-nowrap transform-gpu">
+            <button onClick={onWhatsApp} className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-bold rounded-full shadow-lg hover:bg-[#1DA851] hover:-translate-y-0.5 transition-all text-sm whitespace-nowrap">
               <MessageCircle size={16} /> Chat with Kirti
             </button>
           </div>
@@ -391,8 +286,8 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md transform-gpu" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up transform-gpu">
+      <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up">
         <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
           <div className="flex items-center gap-2">
             {step > (preselectedDest ? 1 : 0) && <button onClick={back} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><ArrowLeft className="w-5 h-5" /></button>}
@@ -477,10 +372,10 @@ const ClosingCTA = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Your next trip is one message away.</h2>
         <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto">No forms, no waiting. Kirti personally handles every inquiry and replies fast.</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={onWhatsApp} className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] text-white font-bold rounded-full shadow-lg hover:bg-[#1DA851] hover:-translate-y-0.5 transition-all text-lg transform-gpu">
+          <button onClick={onWhatsApp} className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] text-white font-bold rounded-full shadow-lg hover:bg-[#1DA851] hover:-translate-y-0.5 transition-all text-lg">
             <MessageCircle size={22} /> WhatsApp Kirti now
           </button>
-          <a href="mailto:thenomadsco@gmail.com" className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all text-lg border border-white/20 transform-gpu">
+          <a href="mailto:thenomadsco@gmail.com" className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all text-lg border border-white/20">
             <Mail size={22} /> Send an email
           </a>
         </div>
@@ -502,7 +397,7 @@ export default function Home() {
   
   const preloadedRef = useRef(false);
 
-  // We rewrite the scroll listener to use passive rendering so it NEVER blocks the main thread
+  // Pure native scroll listener optimized with requestAnimationFrame
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -547,7 +442,6 @@ export default function Home() {
     });
   };
 
-  // Because the page is physically translated via JS, we must mathematically calculate anchor link scrolling
   const scrollTo = (id: string) => {
     setIsMenuOpen(false);
     const element = document.getElementById(id);
@@ -560,8 +454,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
 
-      {/* FIXED UI ELEMENTS (These sit outside the scrolling engine so they don't break) */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 transform-gpu ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
+      {/* Nav */}
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" className="h-10 w-auto rounded-md shadow-sm" />
@@ -571,7 +465,7 @@ export default function Home() {
             <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
             <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
             <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
-            <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20 transform-gpu">Plan My Trip</button>
+            <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
           <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <div className="space-y-1.5">
@@ -584,8 +478,8 @@ export default function Home() {
       </nav>
 
       <div className={`fixed inset-0 z-[100] transition-opacity duration-500 md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transform-gpu" onClick={() => setIsMenuOpen(false)} />
-        <div className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out transform-gpu ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
+        <div className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div className="p-6 flex justify-end">
             <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-gray-900 transition-colors"><X size={28} /></button>
           </div>
@@ -595,32 +489,32 @@ export default function Home() {
             <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
           </div>
           <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
-            <button onClick={handlePlanMyTrip} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2 transform-gpu">
+            <button onClick={handlePlanMyTrip} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
               Plan My Trip <ArrowRight size={18} />
             </button>
           </div>
         </div>
       </div>
 
-      <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 md:hidden transform-gpu ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 md:hidden ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3 justify-end">
-          <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md transform-gpu">Plan My Trip</button>
-          <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5 transform-gpu"><MessageCircle size={14} /> WhatsApp</button>
+          <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
+          <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp</button>
         </div>
       </div>
 
-      <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 hidden md:block transform-gpu ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-500 hidden md:block ${pastHero ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}>
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-8 py-3 flex items-center gap-4 justify-between">
           <p className="text-sm font-semibold text-[#1F2328]">Ready to travel?</p>
           <div className="flex gap-3">
-            <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md transform-gpu">Plan My Trip</button>
-            <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5 transform-gpu"><MessageCircle size={14} /> WhatsApp Kirti</button>
+            <button onClick={handlePlanMyTrip} className="px-5 py-2.5 bg-[#2D3191] text-white text-sm font-bold rounded-full hover:bg-[#242875] transition-all shadow-md">Plan My Trip</button>
+            <button onClick={handleWA} className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-bold rounded-full hover:bg-[#1DA851] transition-all shadow-md flex items-center gap-1.5"><MessageCircle size={14} /> WhatsApp Kirti</button>
           </div>
         </div>
       </div>
 
       {showPill && randomDest && (
-        <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in transform-gpu">
+        <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
           <div onClick={() => { setShowPill(false); handleDestClick(randomDest.title); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative">
             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner"><img src={getResponsiveUrls(randomDest.image).src} className="w-full h-full object-cover" alt={randomDest.title} /></div>
             <div>
@@ -632,176 +526,39 @@ export default function Home() {
         </div>
       )}
 
-      {/* 🚀 THE SMOOTH SCROLL ENGINE */}
-      <SmoothScrollWrapper>
+      {/* 1. Hero */}
+      <CinematicHero onPlanTrip={handlePlanMyTrip} />
 
-        {/* 1. Hero */}
-        <CinematicHero onPlanTrip={handlePlanMyTrip} />
+      {/* 2. Social proof strip */}
+      <SocialProofStrip onWhatsApp={handleWA} />
 
-        {/* 2. Social proof strip */}
-        <SocialProofStrip onWhatsApp={handleWA} />
-
-        {/* 3. Destinations */}
-        <section id="destinations" className="py-32 bg-white">
-          <div className="container mx-auto px-4 md:px-8">
-            <RevealOnScroll>
-              <div 
-                onClick={() => setShowDestinations(true)} 
-                onMouseEnter={handlePreloadImages}
-                onTouchStart={handlePreloadImages}
-                className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white transform-gpu"
-              >
-                <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
-                <div className="absolute inset-0 bg-white/70 z-10" />
-                <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
-                  <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
-                  <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Explore Destinations</h2>
-                  <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
-                  <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
-                </div>
-              </div>
-            </RevealOnScroll>
-          </div>
-        </section>
-
-        {/* 4. About */}
-        <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
-          <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
-            <div className="relative group transform-gpu">
-              <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-700 group-hover:rotate-6" />
-              <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
-            </div>
-            <div className="md:pl-6">
-              <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Meet Kirti Shah</h2>
-              <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.</p>
-              <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.</p>
-              <button onClick={handleWA} className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] transition-all shadow-md text-sm hover:-translate-y-0.5 transform-gpu">
-                <MessageCircle size={16} /> Chat with Kirti
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. Services */}
-        <section className="py-32 bg-white">
-          <div className="container mx-auto px-4 md:px-8">
-            <RevealOnScroll className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Key Services Offered</h2>
-            </RevealOnScroll>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {keyServices.map((s, i) => (
-                <RevealOnScroll key={i}>
-                  <div className="bg-[#FAFAF8] rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full transform-gpu">
-                    <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{s.icon}</div>
-                    <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{s.title}</h3>
-                    <p className="text-gray-500 leading-relaxed text-lg">{s.description}</p>
-                  </div>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 6. Reviews */}
-        <section id="reviews" className="py-32 relative bg-[#FAFAF8]">
-          <div className="container mx-auto px-4 md:px-8 relative z-10">
-            <RevealOnScroll className="text-center mb-20">
-              <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Loved by Travelers</h2>
-            </RevealOnScroll>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {testimonials.map((t) => (
-                <RevealOnScroll key={t.id}>
-                  <div className="bg-white p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden transform-gpu">
-                    <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-6 h-6 fill-current" />)}</div>
-                    <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{t.text}"</p>
-                    <div>
-                      <h4 className="font-bold text-xl text-[#1F2328]">{t.name}</h4>
-                      {!!t.location && <p className="text-gray-500 mt-1">{t.location}</p>}
-                    </div>
-                  </div>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 7. Contact */}
-        <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
-          <div className="max-w-[1200px] mx-auto text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Let's talk travel.</h2>
-            <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
-          </div>
-          <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
-            <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
-              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MessageCircle size={36} /></div>
-              <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">WhatsApp</h3>
-              <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-in-up">Start Chat</h3>
-              <p className="text-gray-500 font-medium">+91 99243 99335</p>
-              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-            </a>
-            <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
-              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
-              <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
-              <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
-              <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
-              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-            </a>
-            <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden transform-gpu">
-              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MapPin size={36} /></div>
-              <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
-              <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br />India</p>
-              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-            </div>
-          </div>
-        </section>
-
-        {/* 8. Closing CTA */}
-        <ClosingCTA onWhatsApp={handleWA} />
-
-        {/* Footer */}
-        <footer className="relative z-10 bg-[#111418] text-white py-20">
-          <div className="container mx-auto px-4 md:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
-              <div className="col-span-1 md:col-span-2">
-                <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
-                <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise.</p>
-                <div className="flex space-x-4">
-                  <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Instagram className="w-5 h-5" /></a>
-                  <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Facebook className="w-5 h-5" /></a>
-                  <a href="mailto:thenomadsco@gmail.com" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Mail className="w-5 h-5" /></a>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
-                <ul className="space-y-4 font-medium text-gray-300">
-                  <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
-                  <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
-                  <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
-                  <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
-                <ul className="space-y-4 font-medium text-gray-300">
-                  <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                  <li><Link to="/terms"         className="hover:text-white transition-colors">Terms of Service</Link></li>
-                </ul>
+      {/* 3. Destinations */}
+      <section id="destinations" className="py-32 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <RevealOnScroll>
+            <div 
+              onClick={() => setShowDestinations(true)} 
+              onMouseEnter={handlePreloadImages}
+              onTouchStart={handlePreloadImages}
+              className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white"
+            >
+              <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
+              <div className="absolute inset-0 bg-white/70 z-10" />
+              <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
+                <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
+                <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Explore Destinations</h2>
+                <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
+                <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
               </div>
             </div>
-            <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium">
-              <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+          </RevealOnScroll>
+        </div>
+      </section>
 
-      </SmoothScrollWrapper>
-
-      {/* 🚀 THE POPUP MODAL (Now completely smooth and buttery) */}
+      {/* Destinations popup */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-md transform-gpu" onClick={() => setShowDestinations(false)} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
           <div className="absolute inset-0 md:inset-10 bg-[#FAFAF8] md:rounded-[2rem] overflow-hidden flex flex-col shadow-2xl z-10">
             <div className="p-6 md:p-8 flex justify-between items-center bg-white shadow-sm z-20">
               <h3 className="text-2xl md:text-3xl font-bold text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Choose Your Adventure</h3>
@@ -813,22 +570,20 @@ export default function Home() {
                   <button 
                     key={cat} 
                     onClick={() => { setActiveCategory(cat); preloadedRef.current = false; handlePreloadImages(); }} 
-                    className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === cat ? "bg-white text-[#2D3191] shadow-md transform-gpu scale-100" : "text-gray-500 hover:text-gray-900"}`}
+                    className={`px-8 py-3 rounded-full text-sm md:text-base font-bold transition-all ${activeCategory === cat ? "bg-white text-[#2D3191] shadow-md" : "text-gray-500 hover:text-gray-900"}`}
                   >
                     {cat} <span className="ml-2 text-xs opacity-60">({destinations.filter(d => d.category === cat).length})</span>
                   </button>
                 ))}
               </div>
             </div>
-            
-            {/* The new engine handles the interior grid scroll */}
-            <SmoothModalScrollWrapper resetDependency={activeCategory}>
+            <div className="flex-1 overflow-y-auto p-6 md:p-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
                   <div
                     key={dest.id}
                     onClick={() => handleDestClick(dest.title)}
-                    className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black transform-gpu"
+                    className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
                     style={{ aspectRatio: "3/4" }}
                   >
                     <OptimizedImage src={dest.image} alt={dest.title} className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110" />
@@ -854,10 +609,142 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-            </SmoothModalScrollWrapper>
+            </div>
           </div>
         </div>
       )}
+
+      {/* 4. About */}
+      <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-700 group-hover:rotate-6" />
+            <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
+          </div>
+          <div className="md:pl-6">
+            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Meet Kirti Shah</h2>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.</p>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.</p>
+            <button onClick={handleWA} className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] transition-all shadow-md text-sm hover:-translate-y-0.5">
+              <MessageCircle size={16} /> Chat with Kirti
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Services */}
+      <section className="py-32 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <RevealOnScroll className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Key Services Offered</h2>
+          </RevealOnScroll>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {keyServices.map((s, i) => (
+              <RevealOnScroll key={i}>
+                <div className="bg-[#FAFAF8] rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full">
+                  <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{s.icon}</div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{s.title}</h3>
+                  <p className="text-gray-500 leading-relaxed text-lg">{s.description}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Reviews */}
+      <section id="reviews" className="py-32 relative bg-[#FAFAF8]">
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <RevealOnScroll className="text-center mb-20">
+            <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Loved by Travelers</h2>
+          </RevealOnScroll>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {testimonials.map((t) => (
+              <RevealOnScroll key={t.id}>
+                <div className="bg-white p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden">
+                  <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-6 h-6 fill-current" />)}</div>
+                  <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{t.text}"</p>
+                  <div>
+                    <h4 className="font-bold text-xl text-[#1F2328]">{t.name}</h4>
+                    {!!t.location && <p className="text-gray-500 mt-1">{t.location}</p>}
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Contact */}
+      <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
+        <div className="max-w-[1200px] mx-auto text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Let's talk travel.</h2>
+          <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
+        </div>
+        <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
+          <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MessageCircle size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">WhatsApp</h3>
+            <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-in-up">Start Chat</h3>
+            <p className="text-gray-500 font-medium">+91 99243 99335</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          </a>
+          <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block">
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
+            <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
+            <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          </a>
+          <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden">
+            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MapPin size={36} /></div>
+            <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
+            <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br />India</p>
+            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Closing CTA */}
+      <ClosingCTA onWhatsApp={handleWA} />
+
+      {/* Footer */}
+      <footer className="relative z-10 bg-[#111418] text-white py-20">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+            <div className="col-span-1 md:col-span-2">
+              <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
+              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise.</p>
+              <div className="flex space-x-4">
+                <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Instagram className="w-5 h-5" /></a>
+                <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Facebook className="w-5 h-5" /></a>
+                <a href="mailto:thenomadsco@gmail.com" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Mail className="w-5 h-5" /></a>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
+              <ul className="space-y-4 font-medium text-gray-300">
+                <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
+                <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
+                <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
+                <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
+              <ul className="space-y-4 font-medium text-gray-300">
+                <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms"         className="hover:text-white transition-colors">Terms of Service</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium">
+            <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />}
 
@@ -878,10 +765,6 @@ export default function Home() {
         @keyframes shimmer {
           100% { transform: translateX(100%); }
         }
-
-        /* Essential for the nested smooth scroll illusion */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

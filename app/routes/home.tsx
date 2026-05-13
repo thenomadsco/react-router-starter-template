@@ -9,6 +9,26 @@ export function headers() {
   return { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" };
 }
 
+// 🚀 FIX 1: Fix Render Blocking & LCP Discovery (Solves the 7.8s delay)
+export function links() {
+  return [
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+    { 
+      rel: "preload", 
+      as: "image", 
+      href: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=640&q=75&fm=webp",
+      media: "(max-width: 768px)"
+    },
+    { 
+      rel: "preload", 
+      as: "image", 
+      href: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=75&fm=webp",
+      media: "(min-width: 769px)"
+    }
+  ];
+}
+
 export function meta({}: Route.MetaArgs) {
   const title = "The Nomads Co. | Curated Journeys";
   const description = "Personalized premium travel planning by Kirti Shah.";
@@ -45,17 +65,19 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
-// Helper: Dynamically strip heavy parameters and create responsive paths tailored for the grid
+// 🚀 FIX 2: Modern Image Format (WebP) Injection
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
+  baseUrl = baseUrl.replace(/&fm=\w+/g, "").replace(/\?fm=\w+&/g, "?").replace(/fm=\w+/g, "");
   if (baseUrl.endsWith("?") || baseUrl.endsWith("&")) baseUrl = baseUrl.slice(0, -1);
   const sep = baseUrl.includes("?") ? "&" : "?";
   
+  // Appends &fm=webp to drastically drop payload size
   return {
-    src: `${baseUrl}${sep}w=600&q=75`, // Base source fallback
-    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w` // Highly optimized for mobile
+    src: `${baseUrl}${sep}w=600&q=75&fm=webp`, 
+    srcSet: `${baseUrl}${sep}w=400&q=70&fm=webp 400w, ${baseUrl}${sep}w=600&q=75&fm=webp 600w, ${baseUrl}${sep}w=1000&q=75&fm=webp 1000w`
   };
 };
 
@@ -67,7 +89,6 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
-      {/* Premium Shimmer Skeleton - Shows while loading */}
       {!loaded && !err && (
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
@@ -79,10 +100,10 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
         sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 1000px"
         alt={alt} 
         loading={priority ? "eager" : "lazy"} 
+        {...(priority ? { fetchPriority: "high" } : {})}
         decoding={priority ? "sync" : "async"}
         onLoad={() => setLoaded(true)} 
         onError={() => setErr(true)}
-        // Hardware accelerated isolation so scrolling doesn't force image repaints
         style={{ transform: "translateZ(0)" }}
         className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
       />
@@ -163,19 +184,19 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-// 🚀 FIX: Static initial backgrounds so LCP Image is fully discoverable by the HTML parser instantly.
+// 🚀 FIX 3: Static background array to allow HTML parser to discover the LCP image instantly
 const INITIAL_BGS = [
   {
-    src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=75",
-    srcSet: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=75 1920w"
+    src: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=75&fm=webp",
+    srcSet: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=640&q=75&fm=webp 640w, https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=75&fm=webp 1920w"
   },
   {
-    src: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=75",
-    srcSet: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=75 1920w"
+    src: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=75&fm=webp",
+    srcSet: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=640&q=75&fm=webp 640w, https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=75&fm=webp 1920w"
   },
   {
-    src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=75",
-    srcSet: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=75 1920w"
+    src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=75&fm=webp",
+    srcSet: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=75&fm=webp 640w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=75&fm=webp 1920w"
   }
 ];
 
@@ -197,7 +218,6 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
             sizes="100vw"
             alt="Beautiful travel destination" 
             loading={idx === 0 ? "eager" : "lazy"} 
-            // 🚀 FIX: Enforce Highest Priority for the first image to drastically improve LCP mobile score
             {...(idx === 0 ? { fetchPriority: "high" } : {})}
             className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} 
           />
@@ -474,7 +494,6 @@ export default function Home() {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            {/* 🚀 FIX: Hardcoded width and height explicitly set for logo (Prevents Cumulative Layout Shift) */}
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" decoding="async" className="h-10 w-auto rounded-md shadow-sm" />
             <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
           </div>
@@ -559,10 +578,10 @@ export default function Home() {
               onTouchStart={handlePreloadImages}
               className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white"
             >
-              {/* 🚀 FIX: Massive Banner Issue. Now uses a srcset that only downloads the 640px image on mobile instead of 3000px */}
+              {/* 🚀 FIX: Massive Banner Issue. Now uses WebP srcset that only downloads the 640px image on mobile instead of 3000px */}
               <img 
-                src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=800&q=75" 
-                srcSet="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=1920&q=75 1920w"
+                src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=800&q=75&fm=webp" 
+                srcSet="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=640&q=75&fm=webp 640w, https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=1920&q=75&fm=webp 1920w"
                 sizes="(max-width: 768px) 640px, 1920px"
                 alt="World Travel" 
                 loading="lazy" 
@@ -581,7 +600,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations popup */}
+      {/* 🚀 MODAL: Render isolated to fix scrolling jank */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
@@ -603,18 +622,13 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            
-            {/* 🚀 FIX: CSS containment and GPU isolation. This stops the grid scroll from repainting the blurred backdrop underneath it */}
-            <div 
-              className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" 
-              style={{ WebkitOverflowScrolling: 'touch', transform: 'translateZ(0)', contain: 'strict' }}
-            >
+            <div className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
                   <div
                     key={dest.id}
                     onClick={() => handleDestClick(dest.title)}
-                    // 🚀 FIX: content-visibility allows the browser to completely skip rendering cards that are off-screen
+                    // 🚀 FIX: CSS Containment allows the browser to skip rendering cards that are off-screen
                     className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
                     style={{ aspectRatio: "3/4", contentVisibility: "auto", contain: "paint layout style" }}
                   >

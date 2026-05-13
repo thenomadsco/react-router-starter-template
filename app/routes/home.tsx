@@ -45,7 +45,6 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
-// Helper: Dynamically strip heavy parameters and create responsive paths
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
@@ -66,7 +65,6 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
-      {/* Premium Shimmer Skeleton - Shows while loading */}
       {!loaded && !err && (
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
@@ -78,6 +76,8 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
         sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, 1200px"
         alt={alt} 
         loading={priority ? "eager" : "lazy"} 
+        // 🚀 Fix for LCP Mobile Score: Tell browser to prioritize this image if eager
+        {...(priority ? { fetchPriority: "high" } : {})}
         decoding={priority ? "sync" : "async"}
         onLoad={() => setLoaded(true)} 
         onError={() => setErr(true)}
@@ -97,16 +97,23 @@ function getObs() {
   );
   return sharedObs;
 }
+
 const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const [vis, setVis] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const obs = getObs(); if (!obs) { setVis(true); return; }
     revealCbs.set(el, () => setVis(true)); obs.observe(el);
     return () => { revealCbs.delete(el); obs.unobserve(el); };
   }, []);
-  return <div ref={ref} className={`transition-all duration-1000 ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>{children}</div>;
+
+  return (
+    <div ref={ref} className={`transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
+      {children}
+    </div>
+  );
 };
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string };
@@ -183,7 +190,13 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
     <section className="relative min-h-[95vh] flex items-center justify-center w-full bg-[#1F2328] overflow-hidden">
       {backgrounds.map((bg, idx) => (
         <div key={`${bg}-${idx}`} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentBg ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-          <img src={bg} alt="Beautiful travel destination" loading={idx === 0 ? "eager" : "lazy"} className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} />
+          <img 
+            src={bg} 
+            alt="Beautiful travel destination" 
+            loading={idx === 0 ? "eager" : "lazy"} 
+            {...(idx === 0 ? { fetchPriority: "high" } : {})}
+            className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} 
+          />
         </div>
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-[#1F2328]/95 via-[#1F2328]/40 to-black/20 z-10 pointer-events-none" />
@@ -397,7 +410,6 @@ export default function Home() {
   
   const preloadedRef = useRef(false);
 
-  // Pure native scroll listener optimized with requestAnimationFrame
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -555,7 +567,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations popup */}
+      {/* 🚀 MODAL: Render isolated to fix scrolling jank */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
@@ -577,14 +589,15 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+            <div className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
                   <div
                     key={dest.id}
                     onClick={() => handleDestClick(dest.title)}
+                    // 🚀 The massive fix for modal scroll jank: content-visibility & contain
                     className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
-                    style={{ aspectRatio: "3/4" }}
+                    style={{ aspectRatio: "3/4", contain: "content", contentVisibility: "auto" }}
                   >
                     <OptimizedImage src={dest.image} alt={dest.title} className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
@@ -765,6 +778,9 @@ export default function Home() {
         @keyframes shimmer {
           100% { transform: translateX(100%); }
         }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

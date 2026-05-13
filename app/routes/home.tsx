@@ -45,15 +45,17 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
+// Helper: Dynamically strip heavy parameters and create responsive paths tailored for the grid
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
   if (baseUrl.endsWith("?") || baseUrl.endsWith("&")) baseUrl = baseUrl.slice(0, -1);
   const sep = baseUrl.includes("?") ? "&" : "?";
+  
   return {
-    src: `${baseUrl}${sep}w=800&q=75`,
-    srcSet: `${baseUrl}${sep}w=400&q=75 400w, ${baseUrl}${sep}w=800&q=75 800w, ${baseUrl}${sep}w=1200&q=75 1200w`
+    src: `${baseUrl}${sep}w=600&q=75`, // Base source fallback
+    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w` // Highly optimized for mobile
   };
 };
 
@@ -65,6 +67,7 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
+      {/* Premium Shimmer Skeleton - Shows while loading */}
       {!loaded && !err && (
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
@@ -73,14 +76,14 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
       <img 
         src={finalSrc} 
         srcSet={srcSet}
-        sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, 1200px"
+        sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 1000px"
         alt={alt} 
         loading={priority ? "eager" : "lazy"} 
-        // 🚀 Fix for LCP Mobile Score: Tell browser to prioritize this image if eager
-        {...(priority ? { fetchPriority: "high" } : {})}
         decoding={priority ? "sync" : "async"}
         onLoad={() => setLoaded(true)} 
         onError={() => setErr(true)}
+        // Hardware accelerated isolation so scrolling doesn't force image repaints
+        style={{ transform: "translateZ(0)" }}
         className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
       />
     </div>
@@ -160,40 +163,41 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
+// 🚀 FIX: Static initial backgrounds so LCP Image is fully discoverable by the HTML parser instantly.
+const INITIAL_BGS = [
+  {
+    src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=75",
+    srcSet: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=75 1920w"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=75",
+    srcSet: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=75 1920w"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=75",
+    srcSet: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=75 1920w"
+  }
+];
+
 const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
-  const [backgrounds, setBackgrounds] = useState<string[]>([
-    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80", 
-    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80", 
-    "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80"  
-  ]);
 
   useEffect(() => {
-    try {
-      if (typeof destinations === 'undefined' || !Array.isArray(destinations)) return;
-      const getHighRes = (url?: string) => url ? url.replace("w=600", "w=1920").replace("w=3000", "w=1920") : "";
-      const intlImages = destinations.filter(d => d && d.category === "International" && d.image).map(d => getHighRes(d.image));
-      if (intlImages.length >= 3) {
-        const shuffled = [...intlImages].sort(() => 0.5 - Math.random());
-        setBackgrounds(shuffled.slice(0, 3));
-      }
-    } catch (e) { console.warn("Could not shuffle hero images, using safe defaults.", e); }
-  }, []);
-
-  useEffect(() => {
-    if (backgrounds.length <= 1) return;
-    const timer = setInterval(() => { setCurrentBg((prev) => (prev + 1) % backgrounds.length); }, 6000); 
+    const timer = setInterval(() => { setCurrentBg((prev) => (prev + 1) % INITIAL_BGS.length); }, 6000); 
     return () => clearInterval(timer);
-  }, [backgrounds.length]);
+  }, []);
 
   return (
     <section className="relative min-h-[95vh] flex items-center justify-center w-full bg-[#1F2328] overflow-hidden">
-      {backgrounds.map((bg, idx) => (
-        <div key={`${bg}-${idx}`} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentBg ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
+      {INITIAL_BGS.map((bg, idx) => (
+        <div key={`hero-bg-${idx}`} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentBg ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
           <img 
-            src={bg} 
+            src={bg.src} 
+            srcSet={bg.srcSet}
+            sizes="100vw"
             alt="Beautiful travel destination" 
             loading={idx === 0 ? "eager" : "lazy"} 
+            // 🚀 FIX: Enforce Highest Priority for the first image to drastically improve LCP mobile score
             {...(idx === 0 ? { fetchPriority: "high" } : {})}
             className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} 
           />
@@ -470,7 +474,8 @@ export default function Home() {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" className="h-10 w-auto rounded-md shadow-sm" />
+            {/* 🚀 FIX: Hardcoded width and height explicitly set for logo (Prevents Cumulative Layout Shift) */}
+            <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" decoding="async" className="h-10 w-auto rounded-md shadow-sm" />
             <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
@@ -554,7 +559,16 @@ export default function Home() {
               onTouchStart={handlePreloadImages}
               className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white"
             >
-              <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
+              {/* 🚀 FIX: Massive Banner Issue. Now uses a srcset that only downloads the 640px image on mobile instead of 3000px */}
+              <img 
+                src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=800&q=75" 
+                srcSet="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=1920&q=75 1920w"
+                sizes="(max-width: 768px) 640px, 1920px"
+                alt="World Travel" 
+                loading="lazy" 
+                decoding="async" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" 
+              />
               <div className="absolute inset-0 bg-white/70 z-10" />
               <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
                 <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
@@ -567,7 +581,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🚀 MODAL: Render isolated to fix scrolling jank */}
+      {/* Destinations popup */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
@@ -589,15 +603,20 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
+            
+            {/* 🚀 FIX: CSS containment and GPU isolation. This stops the grid scroll from repainting the blurred backdrop underneath it */}
+            <div 
+              className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" 
+              style={{ WebkitOverflowScrolling: 'touch', transform: 'translateZ(0)', contain: 'strict' }}
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
                   <div
                     key={dest.id}
                     onClick={() => handleDestClick(dest.title)}
-                    // 🚀 The massive fix for modal scroll jank: content-visibility & contain
+                    // 🚀 FIX: content-visibility allows the browser to completely skip rendering cards that are off-screen
                     className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
-                    style={{ aspectRatio: "3/4", contain: "content", contentVisibility: "auto" }}
+                    style={{ aspectRatio: "3/4", contentVisibility: "auto", contain: "paint layout style" }}
                   >
                     <OptimizedImage src={dest.image} alt={dest.title} className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />

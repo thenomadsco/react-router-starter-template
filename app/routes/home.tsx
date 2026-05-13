@@ -45,7 +45,6 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
-// Helper: Dynamically strip heavy parameters and create responsive paths
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
@@ -59,25 +58,17 @@ const getResponsiveUrls = (url: string) => {
 };
 
 // ----------------------------------------------------------------------
-// 🚀 NATIVE FLUID SCROLL WRAPPER (Zero Dependencies)
+// 🚀 ENGINE 1: MAIN PAGE SMOOTH SCROLL (Window Level)
 // ----------------------------------------------------------------------
 const SmoothScrollWrapper = ({ children }: { children: React.ReactNode }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pageHeight, setPageHeight] = useState(0);
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        setPageHeight(containerRef.current.getBoundingClientRect().height);
-      }
-    };
-
+    const updateHeight = () => { if (containerRef.current) setPageHeight(containerRef.current.getBoundingClientRect().height); };
     updateHeight();
-    
-    // Automatically recalculates height if images load or content expands
     const resizeObserver = new ResizeObserver(() => updateHeight());
     if (containerRef.current) resizeObserver.observe(containerRef.current);
-    
     return () => resizeObserver.disconnect();
   }, []);
 
@@ -85,45 +76,86 @@ const SmoothScrollWrapper = ({ children }: { children: React.ReactNode }) => {
     let currentY = 0;
     let targetY = window.scrollY;
     let rafId: number;
-    const ease = 0.08; // The "Apple/Google" fluid inertia multiplier
+    const ease = 0.08;
 
     const animate = () => {
       targetY = window.scrollY;
-      
-      // Math: Linear Interpolation (Lerp) towards the target
       currentY = currentY + (targetY - currentY) * ease;
-      
-      // Move the container using the GPU if there is a difference to render
       if (Math.abs(targetY - currentY) > 0.05 && containerRef.current) {
         containerRef.current.style.transform = `translate3d(0, -${currentY}px, 0)`;
       }
-
       rafId = requestAnimationFrame(animate);
     };
-
     animate();
     return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
     <>
-      {/* 1. The Ghost Block: Invisible div that stretches the browser's native scrollbar to the true height */}
       <div style={{ height: pageHeight }} className="opacity-0 pointer-events-none" />
-      
-      {/* 2. The Render Engine: A fixed container that mathematically slides up/down */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div 
-          ref={containerRef} 
-          className="pointer-events-auto transform-gpu"
-          style={{ willChange: "transform" }}
-        >
+        <div ref={containerRef} className="pointer-events-auto transform-gpu" style={{ willChange: "transform" }}>
           {children}
         </div>
       </div>
     </>
   );
 };
+
 // ----------------------------------------------------------------------
+// 🚀 ENGINE 2: MODAL POPUP SMOOTH SCROLL (Nested Offset Matrix)
+// ----------------------------------------------------------------------
+const SmoothModalScrollWrapper = ({ children, resetDependency }: { children: React.ReactNode, resetDependency: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const currentY = useRef(0);
+
+  // Instantly reset scroll to top when changing categories
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+      currentY.current = 0;
+      if (containerRef.current) containerRef.current.style.transform = `translate3d(0, 0, 0)`;
+    }
+  }, [resetDependency]);
+
+  useEffect(() => {
+    let rafId: number;
+    const ease = 0.08;
+
+    const animate = () => {
+      if (scrollRef.current && containerRef.current) {
+        const targetY = scrollRef.current.scrollTop;
+        currentY.current = currentY.current + (targetY - currentY.current) * ease;
+        
+        // The mathematical magic: Cancel out the browser's native scroll rendering, 
+        // and replace it locally with our smooth mathematical curve.
+        const offset = targetY - currentY.current;
+        
+        if (Math.abs(targetY - currentY.current) > 0.05) {
+          containerRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
+        } else {
+          containerRef.current.style.transform = `translate3d(0, 0, 0)`;
+        }
+      }
+      rafId = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  return (
+    <div 
+      ref={scrollRef} 
+      className="flex-1 overflow-y-auto overflow-x-hidden relative hide-scrollbar"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
+      <div ref={containerRef} className="w-full transform-gpu p-6 md:p-10 min-h-full">
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
@@ -766,7 +798,7 @@ export default function Home() {
 
       </SmoothScrollWrapper>
 
-      {/* Popups must stay outside the smooth scroll engine so they remain fixed to the physical screen */}
+      {/* 🚀 THE POPUP MODAL (Now completely smooth and buttery) */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md transform-gpu" onClick={() => setShowDestinations(false)} />
@@ -788,7 +820,9 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+            
+            {/* The new engine handles the interior grid scroll */}
+            <SmoothModalScrollWrapper resetDependency={activeCategory}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
                   <div
@@ -820,7 +854,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-            </div>
+            </SmoothModalScrollWrapper>
           </div>
         </div>
       )}
@@ -844,6 +878,10 @@ export default function Home() {
         @keyframes shimmer {
           100% { transform: translateX(100%); }
         }
+
+        /* Essential for the nested smooth scroll illusion */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

@@ -24,11 +24,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-function IconBase({ size = 24, className, strokeWidth = 2, fill = "none", children }: any) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
-  );
-}
+function IconBase({ size = 24, className, strokeWidth = 2, fill = "none", children }: any) { return <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>; }
 function MapPin(p: any)           { return <IconBase {...p}><path d="M12 21s6-6.2 6-11a6 6 0 0 0-12 0c0 4.8 6 11 6 11z"/><circle cx="12" cy="10" r="2.5"/></IconBase>; }
 function Star(p: any)             { return <IconBase {...p} fill={p.fill ?? "currentColor"}><path d="M12 3.5 14.7 9l5.8.8-4.2 4.1 1 5.9L12 17l-5.3 2.8 1-5.9L3.5 9.8 9.3 9z"/></IconBase>; }
 function Facebook(p: any)         { return <IconBase {...p}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z"/></IconBase>; }
@@ -46,9 +42,10 @@ function Shield(p: any)           { return <IconBase {...p}><path d="M12 22s8-4 
 function CheckCircle2(p: any)     { return <IconBase {...p}><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></IconBase>; }
 function Sparkles(p: any)         { return <IconBase {...p}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z"/></IconBase>; }
 function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></IconBase>; }
-function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></IconBase>; }
+function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
+// Helper: Dynamically strip heavy parameters and create responsive paths
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
@@ -60,6 +57,73 @@ const getResponsiveUrls = (url: string) => {
     srcSet: `${baseUrl}${sep}w=400&q=75 400w, ${baseUrl}${sep}w=800&q=75 800w, ${baseUrl}${sep}w=1200&q=75 1200w`
   };
 };
+
+// ----------------------------------------------------------------------
+// 🚀 NATIVE FLUID SCROLL WRAPPER (Zero Dependencies)
+// ----------------------------------------------------------------------
+const SmoothScrollWrapper = ({ children }: { children: React.ReactNode }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [pageHeight, setPageHeight] = useState(0);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        setPageHeight(containerRef.current.getBoundingClientRect().height);
+      }
+    };
+
+    updateHeight();
+    
+    // Automatically recalculates height if images load or content expands
+    const resizeObserver = new ResizeObserver(() => updateHeight());
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let currentY = 0;
+    let targetY = window.scrollY;
+    let rafId: number;
+    const ease = 0.08; // The "Apple/Google" fluid inertia multiplier
+
+    const animate = () => {
+      targetY = window.scrollY;
+      
+      // Math: Linear Interpolation (Lerp) towards the target
+      currentY = currentY + (targetY - currentY) * ease;
+      
+      // Move the container using the GPU if there is a difference to render
+      if (Math.abs(targetY - currentY) > 0.05 && containerRef.current) {
+        containerRef.current.style.transform = `translate3d(0, -${currentY}px, 0)`;
+      }
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  return (
+    <>
+      {/* 1. The Ghost Block: Invisible div that stretches the browser's native scrollbar to the true height */}
+      <div style={{ height: pageHeight }} className="opacity-0 pointer-events-none" />
+      
+      {/* 2. The Render Engine: A fixed container that mathematically slides up/down */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div 
+          ref={containerRef} 
+          className="pointer-events-auto transform-gpu"
+          style={{ willChange: "transform" }}
+        >
+          {children}
+        </div>
+      </div>
+    </>
+  );
+};
+// ----------------------------------------------------------------------
 
 const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
@@ -100,7 +164,6 @@ function getObs() {
   return sharedObs;
 }
 
-// 🚀 SCROLL JANK FIX #2: GPU Hardware Acceleration
 const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const [vis, setVis] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -112,13 +175,8 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
     return () => { revealCbs.delete(el); obs.unobserve(el); };
   }, []);
 
-  // Added transform-gpu and style={{ willChange: "opacity, transform" }} to offload rendering to the GPU
   return (
-    <div 
-      ref={ref} 
-      style={{ willChange: vis ? "auto" : "opacity, transform" }}
-      className={`transform-gpu transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
-    >
+    <div ref={ref} className={`transform-gpu transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
     </div>
   );
@@ -170,7 +228,6 @@ const destinations: Destination[] = [
 
 const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
   const [currentBg, setCurrentBg] = useState(0);
-  
   const [backgrounds, setBackgrounds] = useState<string[]>([
     "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80", 
     "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80", 
@@ -413,7 +470,7 @@ export default function Home() {
   
   const preloadedRef = useRef(false);
 
-  // 🚀 SCROLL JANK FIX #1: RequestAnimationFrame + Passive Listener
+  // We rewrite the scroll listener to use passive rendering so it NEVER blocks the main thread
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -426,7 +483,6 @@ export default function Home() {
         ticking = true;
       }
     };
-    // The { passive: true } is crucial: it tells the browser we won't block scrolling
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -440,7 +496,6 @@ export default function Home() {
 
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
   const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
-  const scrollTo        = (id: string) => { setIsMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
   const handleWA        = () => openWhatsApp();
 
   const handlePlanMyTrip = () => {
@@ -460,10 +515,20 @@ export default function Home() {
     });
   };
 
+  // Because the page is physically translated via JS, we must mathematically calculate anchor link scrolling
+  const scrollTo = (id: string) => {
+    setIsMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const targetScroll = window.scrollY + element.getBoundingClientRect().top - 100;
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
 
-      {/* Nav */}
+      {/* FIXED UI ELEMENTS (These sit outside the scrolling engine so they don't break) */}
       <nav className={`fixed w-full z-50 transition-all duration-300 transform-gpu ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
@@ -535,36 +600,173 @@ export default function Home() {
         </div>
       )}
 
-      {/* 1. Hero */}
-      <CinematicHero onPlanTrip={handlePlanMyTrip} />
+      {/* 🚀 THE SMOOTH SCROLL ENGINE */}
+      <SmoothScrollWrapper>
 
-      {/* 2. Social proof strip */}
-      <SocialProofStrip onWhatsApp={handleWA} />
+        {/* 1. Hero */}
+        <CinematicHero onPlanTrip={handlePlanMyTrip} />
 
-      {/* 3. Destinations */}
-      <section id="destinations" className="py-32 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll>
-            <div 
-              onClick={() => setShowDestinations(true)} 
-              onMouseEnter={handlePreloadImages}
-              onTouchStart={handlePreloadImages}
-              className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white transform-gpu"
-            >
-              <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
-              <div className="absolute inset-0 bg-white/70 z-10" />
-              <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
-                <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
-                <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Explore Destinations</h2>
-                <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
-                <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
+        {/* 2. Social proof strip */}
+        <SocialProofStrip onWhatsApp={handleWA} />
+
+        {/* 3. Destinations */}
+        <section id="destinations" className="py-32 bg-white">
+          <div className="container mx-auto px-4 md:px-8">
+            <RevealOnScroll>
+              <div 
+                onClick={() => setShowDestinations(true)} 
+                onMouseEnter={handlePreloadImages}
+                onTouchStart={handlePreloadImages}
+                className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white transform-gpu"
+              >
+                <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="World Travel" loading="lazy" decoding="async" width={1080} height={540} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" />
+                <div className="absolute inset-0 bg-white/70 z-10" />
+                <div className="relative z-20 py-24 px-8 md:py-36 text-center flex flex-col items-center justify-center text-[#1F2328]">
+                  <Compass className="w-20 h-20 mb-8 opacity-80 group-hover:rotate-45 transition-transform duration-700 text-[#2D3191]" />
+                  <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Explore Destinations</h2>
+                  <p className="text-xl md:text-2xl text-[#1F2328]/70 max-w-2xl mb-10">Discover our handpicked selection of the world's most captivating spots, from international hotspots to hidden gems across India.</p>
+                  <button className="px-10 py-5 bg-[#1F2328] text-white text-lg font-bold rounded-full transition-transform group-hover:-translate-y-2 shadow-xl flex items-center">Discover Now <ChevronDown className="ml-3 w-5 h-5 group-hover:translate-y-1 transition-transform" /></button>
+                </div>
+              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        {/* 4. About */}
+        <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
+          <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
+            <div className="relative group transform-gpu">
+              <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-700 group-hover:rotate-6" />
+              <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
+            </div>
+            <div className="md:pl-6">
+              <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
+              <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Meet Kirti Shah</h2>
+              <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.</p>
+              <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.</p>
+              <button onClick={handleWA} className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] transition-all shadow-md text-sm hover:-translate-y-0.5 transform-gpu">
+                <MessageCircle size={16} /> Chat with Kirti
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Services */}
+        <section className="py-32 bg-white">
+          <div className="container mx-auto px-4 md:px-8">
+            <RevealOnScroll className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Key Services Offered</h2>
+            </RevealOnScroll>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {keyServices.map((s, i) => (
+                <RevealOnScroll key={i}>
+                  <div className="bg-[#FAFAF8] rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full transform-gpu">
+                    <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{s.icon}</div>
+                    <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{s.title}</h3>
+                    <p className="text-gray-500 leading-relaxed text-lg">{s.description}</p>
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 6. Reviews */}
+        <section id="reviews" className="py-32 relative bg-[#FAFAF8]">
+          <div className="container mx-auto px-4 md:px-8 relative z-10">
+            <RevealOnScroll className="text-center mb-20">
+              <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Loved by Travelers</h2>
+            </RevealOnScroll>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {testimonials.map((t) => (
+                <RevealOnScroll key={t.id}>
+                  <div className="bg-white p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden transform-gpu">
+                    <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-6 h-6 fill-current" />)}</div>
+                    <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{t.text}"</p>
+                    <div>
+                      <h4 className="font-bold text-xl text-[#1F2328]">{t.name}</h4>
+                      {!!t.location && <p className="text-gray-500 mt-1">{t.location}</p>}
+                    </div>
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 7. Contact */}
+        <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
+          <div className="max-w-[1200px] mx-auto text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Let's talk travel.</h2>
+            <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
+          </div>
+          <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
+            <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
+              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MessageCircle size={36} /></div>
+              <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">WhatsApp</h3>
+              <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-in-up">Start Chat</h3>
+              <p className="text-gray-500 font-medium">+91 99243 99335</p>
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            </a>
+            <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
+              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
+              <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
+              <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
+              <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            </a>
+            <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden transform-gpu">
+              <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MapPin size={36} /></div>
+              <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
+              <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br />India</p>
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            </div>
+          </div>
+        </section>
+
+        {/* 8. Closing CTA */}
+        <ClosingCTA onWhatsApp={handleWA} />
+
+        {/* Footer */}
+        <footer className="relative z-10 bg-[#111418] text-white py-20">
+          <div className="container mx-auto px-4 md:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+              <div className="col-span-1 md:col-span-2">
+                <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
+                <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise.</p>
+                <div className="flex space-x-4">
+                  <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Instagram className="w-5 h-5" /></a>
+                  <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Facebook className="w-5 h-5" /></a>
+                  <a href="mailto:thenomadsco@gmail.com" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Mail className="w-5 h-5" /></a>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
+                <ul className="space-y-4 font-medium text-gray-300">
+                  <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
+                  <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
+                  <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
+                  <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
+                <ul className="space-y-4 font-medium text-gray-300">
+                  <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                  <li><Link to="/terms"         className="hover:text-white transition-colors">Terms of Service</Link></li>
+                </ul>
               </div>
             </div>
-          </RevealOnScroll>
-        </div>
-      </section>
+            <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium">
+              <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
 
-      {/* Destinations popup */}
+      </SmoothScrollWrapper>
+
+      {/* Popups must stay outside the smooth scroll engine so they remain fixed to the physical screen */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md transform-gpu" onClick={() => setShowDestinations(false)} />
@@ -622,138 +824,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* 4. About */}
-      <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
-        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
-          <div className="relative group transform-gpu">
-            <div className="absolute inset-0 bg-[#EEF0FF] rounded-[2.5rem] rotate-3 transition-transform duration-700 group-hover:rotate-6" />
-            <img src={kirtiProfile} alt="Kirti Shah" width={600} height={750} loading="lazy" decoding="async" className="relative w-full aspect-[4/5] object-cover rounded-[2.5rem] shadow-xl" />
-          </div>
-          <div className="md:pl-6">
-            <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Meet Kirti Shah</h2>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should be happy, not stressful. That's why she treats every client like family, personally overseeing every trip to ensure you are safe, comfortable, and having the time of your life.</p>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over 10 years of experience, we handle visas, flights, and bookings, offering luxury stays at best-value prices with 24/7 support.</p>
-            <button onClick={handleWA} className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] transition-all shadow-md text-sm hover:-translate-y-0.5 transform-gpu">
-              <MessageCircle size={16} /> Chat with Kirti
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Services */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Key Services Offered</h2>
-          </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {keyServices.map((s, i) => (
-              <RevealOnScroll key={i}>
-                <div className="bg-[#FAFAF8] rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full transform-gpu">
-                  <div className="bg-[#EEF0FF] text-[#2D3191] w-16 h-16 rounded-2xl flex items-center justify-center mb-8">{s.icon}</div>
-                  <h3 className="text-2xl font-bold mb-4 text-[#1F2328]">{s.title}</h3>
-                  <p className="text-gray-500 leading-relaxed text-lg">{s.description}</p>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Reviews */}
-      <section id="reviews" className="py-32 relative bg-[#FAFAF8]">
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <RevealOnScroll className="text-center mb-20">
-            <span className="inline-block text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Testimonials</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Loved by Travelers</h2>
-          </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {testimonials.map((t) => (
-              <RevealOnScroll key={t.id}>
-                <div className="bg-white p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 h-full flex flex-col relative overflow-hidden transform-gpu">
-                  <div className="flex items-center space-x-1 text-yellow-400 mb-8">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-6 h-6 fill-current" />)}</div>
-                  <p className="text-[#1F2328]/80 leading-relaxed italic text-lg mb-10 flex-grow whitespace-pre-line">"{t.text}"</p>
-                  <div>
-                    <h4 className="font-bold text-xl text-[#1F2328]">{t.name}</h4>
-                    {!!t.location && <p className="text-gray-500 mt-1">{t.location}</p>}
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Contact */}
-      <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
-        <div className="max-w-[1200px] mx-auto text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Let's talk travel.</h2>
-          <p className="text-xl text-[#1F2328]/60 max-w-2xl mx-auto">We are ready to craft your perfect trip. Choose how you'd like to reach us.</p>
-        </div>
-        <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-8">
-          <a href="https://wa.me/919924399335" target="_blank" rel="noreferrer" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(37,211,102,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
-            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#25D366] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MessageCircle size={36} /></div>
-            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">WhatsApp</h3>
-            <h3 className="text-2xl font-bold text-[#25D366] mb-2 hidden group-hover:block animate-fade-in-up">Start Chat</h3>
-            <p className="text-gray-500 font-medium">+91 99243 99335</p>
-            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#25D366] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-          </a>
-          <a href="mailto:thenomadsco@gmail.com" className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(45,49,145,0.15)] transition-all duration-500 overflow-hidden cursor-pointer block transform-gpu">
-            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
-            <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
-            <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
-            <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
-            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-          </a>
-          <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden transform-gpu">
-            <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#02A551] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><MapPin size={36} /></div>
-            <h3 className="text-2xl font-bold text-[#1F2328] mb-2">Location</h3>
-            <p className="text-gray-500 font-medium leading-relaxed">Vadodara, Gujarat<br />India</p>
-            <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#02A551] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-          </div>
-        </div>
-      </section>
-
-      {/* 8. Closing CTA */}
-      <ClosingCTA onWhatsApp={handleWA} />
-
-      {/* Footer */}
-      <footer className="relative z-10 bg-[#111418] text-white py-20">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
-            <div className="col-span-1 md:col-span-2">
-              <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
-              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise.</p>
-              <div className="flex space-x-4">
-                <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Instagram className="w-5 h-5" /></a>
-                <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Facebook className="w-5 h-5" /></a>
-                <a href="mailto:thenomadsco@gmail.com" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300 transform-gpu"><Mail className="w-5 h-5" /></a>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Quick Links</h4>
-              <ul className="space-y-4 font-medium text-gray-300">
-                <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
-                <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
-                <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
-                <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-8">Legal</h4>
-              <ul className="space-y-4 font-medium text-gray-300">
-                <li><Link to="/privacypolicy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms"         className="hover:text-white transition-colors">Terms of Service</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium">
-            <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />}
 

@@ -1,4 +1,3 @@
-// test.tsx
 import { Link } from "react-router";
 import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
@@ -45,7 +44,6 @@ function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12
 function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
-// Helper: Dynamically strip heavy parameters and create responsive paths tailored for the grid
 const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
@@ -54,8 +52,8 @@ const getResponsiveUrls = (url: string) => {
   const sep = baseUrl.includes("?") ? "&" : "?";
   
   return {
-    src: `${baseUrl}${sep}w=600&q=75`, // Base source fallback
-    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w` // Highly optimized for mobile
+    src: `${baseUrl}${sep}w=600&q=75`, 
+    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w`
   };
 };
 
@@ -67,7 +65,6 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
   
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
-      {/* Premium Shimmer Skeleton - Shows while loading */}
       {!loaded && !err && (
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#FAFAF8]">
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
@@ -82,7 +79,6 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
         decoding={priority ? "sync" : "async"}
         onLoad={() => setLoaded(true)} 
         onError={() => setErr(true)}
-        // Hardware accelerated isolation so scrolling doesn't force image repaints
         style={{ transform: "translateZ(0)" }}
         className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
       />
@@ -121,7 +117,6 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
 
 type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string };
 const destinations: Destination[] = [
-  // ── INTERNATIONAL ──────────────────────────────────────────────────────────
   { id: 1,  title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80",  tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
   { id: 2,  title: "Maldives",             category: "International", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=600&q=80",  tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
   { id: 3,  title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80",  tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
@@ -141,7 +136,6 @@ const destinations: Destination[] = [
   { id: 17, title: "Kenya",                category: "International", image: "https://unsplash.com/photos/60XLoOgwkfA/download?force=true",                        tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
   { id: 18, title: "Tanzania",             category: "International", image: "https://unsplash.com/photos/qs4E9t0hJc0/download?force=true",                        tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
 
-  // ── INDIA ──────────────────────────────────────────────────────────────────
   { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1643449416258-5c8e7ec598b1?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
   { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1706013997636-29354e064ccc?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
   { id: 21, title: "Himachal Pradesh",     category: "India",         image: "https://images.unsplash.com/photo-1621232082074-1a7750ecc557?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
@@ -163,7 +157,6 @@ const destinations: Destination[] = [
   { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-// 🚀 FIX: Static initial backgrounds so LCP Image is fully discoverable by the HTML parser instantly.
 const INITIAL_BGS = [
   {
     src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=75",
@@ -197,7 +190,6 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
             sizes="100vw"
             alt="Beautiful travel destination" 
             loading={idx === 0 ? "eager" : "lazy"} 
-            // 🚀 FIX: Enforce Highest Priority for the first image to drastically improve LCP mobile score
             {...(idx === 0 ? { fetchPriority: "high" } : {})}
             className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} 
           />
@@ -470,11 +462,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
 
-      {/* Nav */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            {/* 🚀 FIX: Hardcoded width and height explicitly set for logo (Prevents Cumulative Layout Shift) */}
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" decoding="async" className="h-10 w-auto rounded-md shadow-sm" />
             <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
           </div>
@@ -543,13 +533,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* 1. Hero */}
       <CinematicHero onPlanTrip={handlePlanMyTrip} />
-
-      {/* 2. Social proof strip */}
       <SocialProofStrip onWhatsApp={handleWA} />
 
-      {/* 3. Destinations */}
       <section id="destinations" className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll>
@@ -559,7 +545,6 @@ export default function Home() {
               onTouchStart={handlePreloadImages}
               className="group relative overflow-hidden rounded-[3rem] cursor-pointer shadow-2xl hover:shadow-[0_30px_60px_rgb(0,0,0,0.2)] transition-all duration-700 bg-white"
             >
-              {/* 🚀 FIX: Massive Banner Issue. Now uses a srcset that only downloads the 640px image on mobile instead of 3000px */}
               <img 
                 src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=800&q=75" 
                 srcSet="https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=640&q=75 640w, https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&w=1920&q=75 1920w"
@@ -581,7 +566,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Destinations popup */}
       {showDestinations && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setShowDestinations(false)} />
@@ -603,8 +587,6 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            
-            {/* 🚀 FIX: CSS containment and GPU isolation. This stops the grid scroll from repainting the blurred backdrop underneath it */}
             <div 
               className="flex-1 overflow-y-auto p-6 md:p-10 hide-scrollbar" 
               style={{ WebkitOverflowScrolling: 'touch', transform: 'translateZ(0)', contain: 'strict' }}
@@ -614,7 +596,6 @@ export default function Home() {
                   <div
                     key={dest.id}
                     onClick={() => handleDestClick(dest.title)}
-                    // 🚀 FIX: content-visibility allows the browser to completely skip rendering cards that are off-screen
                     className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
                     style={{ aspectRatio: "3/4", contentVisibility: "auto", contain: "paint layout style" }}
                   >
@@ -646,7 +627,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* 4. About */}
       <section id="about" className="py-32 px-6 sm:px-12 bg-[#FAFAF8] relative">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <div className="relative group">
@@ -665,7 +645,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Services */}
       <section className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-20">
@@ -685,7 +664,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. Reviews */}
       <section id="reviews" className="py-32 relative bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <RevealOnScroll className="text-center mb-20">
@@ -709,7 +687,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. Contact */}
       <section id="contact" className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden">
         <div className="max-w-[1200px] mx-auto text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Let's talk travel.</h2>
@@ -739,10 +716,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. Closing CTA */}
-      <ClosingCTA onWhatsApp={handleWA} />
+      <section className="py-20 bg-[#111418] relative z-20 flex justify-center border-t border-white/5">
+        <div className="max-w-2xl w-full mx-auto p-10 rounded-[2.5rem] bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <h3 className="text-3xl font-bold mb-2 text-white" style={{ fontFamily: "'Playfair Display',serif" }}>
+            System Test: AI CRM Pipeline
+          </h3>
+          <p className="text-white/50 mb-8 text-sm">
+            Submit a raw, messy string to test the extraction protocol.
+          </p>
+          <form 
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const rawMessage = formData.get("message");
+              
+              const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/ob8nllnq4qthhq780b47n318hql218cq";
+              
+              try {
+                await fetch(MAKE_WEBHOOK_URL, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ message: rawMessage }),
+                });
+                alert("Payload successfully sent! Check Make.com.");
+                e.currentTarget.reset();
+              } catch (err) {
+                alert("Connection failed. Check console.");
+              }
+            }}
+            className="flex flex-col gap-4"
+          >
+            <textarea 
+              name="message" 
+              required
+              placeholder="e.g. Yo this is Kartik, I need to go to London next month. Budget is around 3 Lakhs. Call me at 9876543210."
+              className="w-full h-36 p-5 bg-black/40 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#2D3191] transition-all resize-none"
+            />
+            <button type="submit" className="self-end px-8 py-4 bg-white text-[#111418] font-bold rounded-full hover:bg-gray-200 transition-all shadow-lg">
+              Initialize Test →
+            </button>
+          </form>
+        </div>
+      </section>
 
-      {/* Footer */}
       <footer className="relative z-10 bg-[#111418] text-white py-20">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">

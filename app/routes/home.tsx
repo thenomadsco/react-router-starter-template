@@ -735,7 +735,7 @@ export default function Home() {
               const formData = new FormData(e.currentTarget);
               const rawMessage = formData.get("message");
               
-              const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/ob8nllnq4qthhq780b47n318hql218cq";
+              const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
               
               try {
                 await fetch(MAKE_WEBHOOK_URL, {

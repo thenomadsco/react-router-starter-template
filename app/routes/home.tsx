@@ -41,7 +41,12 @@ function Shield(p: any)           { return <IconBase {...p}><path d="M12 22s8-4 
 function CheckCircle2(p: any)     { return <IconBase {...p}><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></IconBase>; }
 function Sparkles(p: any)         { return <IconBase {...p}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z"/></IconBase>; }
 function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></IconBase>; }
-function ArrowRight(p: any)       { return <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 19"/></IconBase>; }
+function ArrowRight(p: any) { 
+  return <IconBase {...p}>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+    <polyline points="12 5 19 12 12 19"/>
+  </IconBase>; 
+}
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
 const getResponsiveUrls = (url: string) => {

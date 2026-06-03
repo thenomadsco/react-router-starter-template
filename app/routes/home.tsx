@@ -268,18 +268,8 @@ const keyServices = [
 ];
 
 const testimonials = [
-  { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece.
-We were 10 of us. The destination was all we were sure of. Rest was chaos.
-In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.
-We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.
-Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.
-Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti.
-Thank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives.
-Despite the short notice, everything was flawlessly planned and perfectly coordinated.
-The hotels, transfers, and sightseeing were seamless and stress-free.
-My parents felt well taken care of and absolutely loved the entire experience.
-Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨" },
+  { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
+  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨" }
 ];
 
 const NOMADS_WA = "919924399335";

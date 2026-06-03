@@ -287,6 +287,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
   // Step 4 State additions
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState(""); // NEW
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const next = () => setStep(s => s + 1);
@@ -305,42 +306,20 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
     setVibe("");
     setName("");
     setEmail("");
+    setWhatsapp("");
     setIsSubmitting(false);
     onClose();
   };
 
-  // Manual Backups updated to include the collected email
+  // Manual Backups updated to include the collected data
   const waURL = () => {
-    const body = `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
-
-*Email:* ${email}
-*Travelers:* ${travelers}
-*Timeline:* ${timeline}
-*Vibe:* ${vibe}
-
-Can you help me curate some ideas?`;
+    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
     return waLink(body);
-  };
-
-  const emailURL = () => {
-    const b = `Hi Kirti,
-
-I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
-
-Email: ${email}
-Travelers: ${travelers}
-Timeline: ${timeline}
-Vibe: ${vibe}
-
-Can you help me?
-
-Best, ${name}`;
-    return `mailto:thenomadsco@gmail.com?subject=${encodeURIComponent(`New Trip Inquiry: ${dest || "Custom Trip"}`)}&body=${encodeURIComponent(b)}`;
   };
 
   // Step 4 Validation (Garbage Data Prevention)
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isStep4Valid = name.trim().length > 0 && isEmailValid;
+  const isStep4Valid = name.trim().length > 0 && isEmailValid; // WhatsApp is optional
 
   // The Fetch Action (Ad-Blocker & Network Failsafe built-in)
   const submitToCRM = async () => {
@@ -350,6 +329,7 @@ Best, ${name}`;
     const payload = {
       name: name.trim(),
       email: email.trim(),
+      whatsapp: whatsapp.trim(),
       destination: dest,
       timeline,
       travelers,
@@ -463,18 +443,18 @@ Best, ${name}`;
             </div>
           )}
 
-          {/* New Step 4: The Secure Capture Form */}
+          {/* New Step 4: The Progressive Trust Dual-Capture Form */}
           {step === 4 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-3 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Almost there.</h3>
-              <p className="text-gray-500 mb-6 text-sm">Where should we send your curated itinerary?</p>
+              <p className="text-gray-500 mb-6 text-sm">Where should Kirti send your curated itinerary?</p>
               
               <input 
                 type="text" 
                 value={name} 
                 onChange={e => setName(e.target.value)} 
                 placeholder="Your First Name" 
-                className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner transition-shadow" 
+                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-3 shadow-inner transition-shadow" 
                 autoFocus 
                 disabled={isSubmitting} 
               />
@@ -483,8 +463,17 @@ Best, ${name}`;
                 type="email" 
                 value={email} 
                 onChange={e => setEmail(e.target.value)} 
-                placeholder="Your Email Address" 
-                className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow" 
+                placeholder="Email (For formal itinerary & docs)" 
+                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-3 shadow-inner transition-shadow" 
+                disabled={isSubmitting} 
+              />
+              
+              <input 
+                type="tel" 
+                value={whatsapp} 
+                onChange={e => setWhatsapp(e.target.value)} 
+                placeholder="WhatsApp Number (Optional, for instant replies)" 
+                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow" 
                 disabled={isSubmitting} 
               />
               
@@ -498,29 +487,27 @@ Best, ${name}`;
             </div>
           )}
 
-          {/* New Step 5: Fast-Track Success Hub */}
+          {/* New Step 5: Choose Your Concierge Hub */}
           {step === 5 && (
             <div className="animate-fade-in-up text-center flex flex-col items-center">
               <div className="w-16 h-16 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-5">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Preferences Secured!</h3>
-              <p className="text-gray-500 mb-8 text-sm max-w-[280px]">Your profile is safely logged. Skip the line and message Kirti directly to fast-track your trip details.</p>
+              <p className="text-gray-500 mb-8 text-sm max-w-[280px]">Kirti is reviewing your profile right now. How would you like to proceed?</p>
               
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="flex flex-col gap-3 w-full">
                 <button 
                   onClick={() => { window.open(waURL(), "_blank"); handleClose(); }} 
-                  className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex flex-col items-center justify-center gap-1 text-sm"
+                  className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm"
                 >
-                  <span className="flex items-center gap-1.5"><MessageCircle size={16} /> WhatsApp</span>
-                  <span className="text-[10px] font-normal opacity-90 tracking-wide uppercase">Instant Reply</span>
+                  Chat with Kirti Now 💬
                 </button>
                 <button 
-                  onClick={() => { window.location.href = emailURL(); handleClose(); }} 
-                  className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl hover:bg-[#242875] transition-colors shadow-lg flex flex-col items-center justify-center gap-1 text-sm"
+                  onClick={() => { alert("Thank you! Kirti will reach out via email shortly."); handleClose(); }} 
+                  className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
                 >
-                  <span className="flex items-center gap-1.5"><Mail size={16} /> Email</span>
-                  <span className="text-[10px] font-normal opacity-90 tracking-wide uppercase">We'll reach out</span>
+                  I'll wait for an email ✉️
                 </button>
               </div>
             </div>

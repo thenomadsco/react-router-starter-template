@@ -268,8 +268,18 @@ const keyServices = [
 ];
 
 const testimonials = [
-  { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece.\nWe were 10 of us. The destination was all we were sure of. Rest was chaos.\nIn a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.\nWe the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.\nNeedless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.\nNomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti.\nThank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives.\nDespite the short notice, everything was flawlessly planned and perfectly coordinated.\nThe hotels, transfers, and sightseeing were seamless and stress-free.\nMy parents felt well taken care of and absolutely loved the entire experience.\nTruly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨" },
+  { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece.
+We were 10 of us. The destination was all we were sure of. Rest was chaos.
+In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning.
+We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards.
+Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more.
+Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti.
+Thank you for this and all the ones we will put you through" },
+  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives.
+Despite the short notice, everything was flawlessly planned and perfectly coordinated.
+The hotels, transfers, and sightseeing were seamless and stress-free.
+My parents felt well taken care of and absolutely loved the entire experience.
+Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨" },
 ];
 
 const NOMADS_WA = "919924399335";
@@ -283,33 +293,132 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
   const [timeline, setTimeline] = useState("");
   const [travelers, setTravelers] = useState("");
   const [vibe, setVibe] = useState("");
+  
+  // Step 4 State additions
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
-  const TOTAL = preselectedDest ? 4 : 5;
+  
+  // Calculate display steps (Step 5 is the Success Hub, not an input step)
+  const maxInputSteps = preselectedDest ? 4 : 5;
+  const currentDisplayStep = preselectedDest ? step : step + 1;
 
+  // Modal Memory Cleanup ensures complete state reset if unmounted or closed
+  const handleClose = () => {
+    setStep(preselectedDest ? 1 : 0);
+    setDest(preselectedDest || "");
+    setTimeline("");
+    setTravelers("");
+    setVibe("");
+    setName("");
+    setEmail("");
+    setIsSubmitting(false);
+    onClose();
+  };
+
+  // Manual Backups updated to include the collected email
   const waURL = () => {
-    const body = `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.\n\n*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan you help me curate some ideas?`;
+    const body = `Hi Kirti! 👋 I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
+
+*Email:* ${email}
+*Travelers:* ${travelers}
+*Timeline:* ${timeline}
+*Vibe:* ${vibe}
+
+Can you help me curate some ideas?`;
     return waLink(body);
   };
+
   const emailURL = () => {
-    const b = `Hi Kirti,\n\nI'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.\n\nTravelers: ${travelers}\nTimeline: ${timeline}\nVibe: ${vibe}\n\nCan you help me?\n\nBest, ${name}`;
+    const b = `Hi Kirti,
+
+I'm ${name}. I'd love to plan a trip${dest ? ` to ${dest}` : ""}.
+
+Email: ${email}
+Travelers: ${travelers}
+Timeline: ${timeline}
+Vibe: ${vibe}
+
+Can you help me?
+
+Best, ${name}`;
     return `mailto:thenomadsco@gmail.com?subject=${encodeURIComponent(`New Trip Inquiry: ${dest || "Custom Trip"}`)}&body=${encodeURIComponent(b)}`;
+  };
+
+  // Step 4 Validation (Garbage Data Prevention)
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isStep4Valid = name.trim().length > 0 && isEmailValid;
+
+  // The Fetch Action (Ad-Blocker & Network Failsafe built-in)
+  const submitToCRM = async () => {
+    setIsSubmitting(true);
+    const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
+    
+    const payload = {
+      name: name.trim(),
+      email: email.trim(),
+      destination: dest,
+      timeline,
+      travelers,
+      vibe,
+      source: "React Funnel"
+    };
+
+    try {
+      await fetch(MAKE_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      console.warn("CRM Webhook failed or was blocked. Bypassing safely to Step 5.", err);
+    } finally {
+      setIsSubmitting(false);
+      next(); // Always push them to the Fast-Track Hub even if there's a localized network error
+    }
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={onClose} />
+      <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={handleClose} />
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up">
-        <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
-          <div className="flex items-center gap-2">
-            {step > (preselectedDest ? 1 : 0) && <button onClick={back} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><ArrowLeft className="w-5 h-5" /></button>}
-            <span className="text-xs font-bold tracking-widest text-gray-400 uppercase">Step {preselectedDest ? step : step + 1} of {TOTAL}</span>
+        
+        {/* Dynamic Header: Hide progress bar on Success step (5) */}
+        {step < 5 ? (
+          <>
+            <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
+              <div className="flex items-center gap-2">
+                {step > (preselectedDest ? 1 : 0) && (
+                  <button onClick={back} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                )}
+                <span className="text-xs font-bold tracking-widest text-gray-400 uppercase">
+                  Step {currentDisplayStep} of {maxInputSteps}
+                </span>
+              </div>
+              <button onClick={handleClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="h-1 bg-gray-100">
+              <div 
+                className="h-full bg-[#2D3191] transition-all duration-500" 
+                style={{ width: `${(currentDisplayStep / maxInputSteps) * 100}%` }} 
+              />
+            </div>
+          </>
+        ) : (
+          <div className="px-6 py-4 flex items-center justify-end bg-[#FAFAF8] border-b border-gray-100">
+            <button onClick={handleClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500"><X className="w-5 h-5" /></button>
-        </div>
-        <div className="h-1 bg-gray-100"><div className="h-full bg-[#2D3191] transition-all duration-500" style={{ width: `${((preselectedDest ? step : step + 1) / TOTAL) * 100}%` }} /></div>
+        )}
+
         <div className="p-8 flex-1 flex flex-col justify-center">
           {step === 0 && !preselectedDest && (
             <div className="animate-fade-in-up">
@@ -324,6 +433,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               <button onClick={next} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg">Continue →</button>
             </div>
           )}
+
           {step === 1 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>When are you planning to travel?</h3>
@@ -336,6 +446,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               </div>
             </div>
           )}
+
           {step === 2 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Who is joining you?</h3>
@@ -348,6 +459,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               </div>
             </div>
           )}
+
           {step === 3 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>What's your travel vibe?</h3>
@@ -360,18 +472,70 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
               </div>
             </div>
           )}
+
+          {/* New Step 4: The Secure Capture Form */}
           {step === 4 && (
             <div className="animate-fade-in-up">
-              <div className="w-14 h-14 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-5"><CheckCircle2 className="w-7 h-7" /></div>
-              <h3 className="text-2xl font-bold mb-1 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Perfect. We know exactly what to do.</h3>
-              <p className="text-gray-400 mb-5 text-sm">Just your first name, then hit send.</p>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your first name" className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner" autoFocus />
-              <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => { window.open(waURL(), "_blank"); onClose(); }} disabled={!name} className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">WhatsApp 💬</button>
-                <button onClick={() => { window.location.href = emailURL(); onClose(); }} disabled={!name} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">Email ✉️</button>
+              <h3 className="text-3xl font-bold mb-3 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Almost there.</h3>
+              <p className="text-gray-500 mb-6 text-sm">Where should we send your curated itinerary?</p>
+              
+              <input 
+                type="text" 
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                placeholder="Your First Name" 
+                className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner transition-shadow" 
+                autoFocus 
+                disabled={isSubmitting} 
+              />
+              
+              <input 
+                type="email" 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                placeholder="Your Email Address" 
+                className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow" 
+                disabled={isSubmitting} 
+              />
+              
+              <button 
+                onClick={submitToCRM} 
+                disabled={!isStep4Valid || isSubmitting} 
+                className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
+              >
+                {isSubmitting ? "Securing preferences..." : "Secure My Trip →"}
+              </button>
+            </div>
+          )}
+
+          {/* New Step 5: Fast-Track Success Hub */}
+          {step === 5 && (
+            <div className="animate-fade-in-up text-center flex flex-col items-center">
+              <div className="w-16 h-16 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-5">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Preferences Secured!</h3>
+              <p className="text-gray-500 mb-8 text-sm max-w-[280px]">Your profile is safely logged. Skip the line and message Kirti directly to fast-track your trip details.</p>
+              
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <button 
+                  onClick={() => { window.open(waURL(), "_blank"); handleClose(); }} 
+                  className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex flex-col items-center justify-center gap-1 text-sm"
+                >
+                  <span className="flex items-center gap-1.5"><MessageCircle size={16} /> WhatsApp</span>
+                  <span className="text-[10px] font-normal opacity-90 tracking-wide uppercase">Instant Reply</span>
+                </button>
+                <button 
+                  onClick={() => { window.location.href = emailURL(); handleClose(); }} 
+                  className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl hover:bg-[#242875] transition-colors shadow-lg flex flex-col items-center justify-center gap-1 text-sm"
+                >
+                  <span className="flex items-center gap-1.5"><Mail size={16} /> Email</span>
+                  <span className="text-[10px] font-normal opacity-90 tracking-wide uppercase">We'll reach out</span>
+                </button>
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>

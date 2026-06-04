@@ -326,6 +326,10 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
     setIsSubmitting(true);
     const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
     
+    // 1. Extract query parameters from the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 2. Inject the extracted UTMs into your payload object
     const payload = {
       name: name.trim(),
       email: email.trim(),
@@ -334,7 +338,11 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
       timeline,
       travelers,
       vibe,
-      source: "React Funnel"
+      source: "React Funnel",
+      // Default to "organic" or empty strings if no UTMs are present in the URL
+      utm_source: urlParams.get("utm_source") || "organic", 
+      utm_medium: urlParams.get("utm_medium") || "",
+      utm_campaign: urlParams.get("utm_campaign") || ""
     };
 
     try {

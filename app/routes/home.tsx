@@ -277,27 +277,25 @@ function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iP
 function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
 function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋 I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋 I'd love to plan a trip. Can you help me?`), "_blank"); }
 
-function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string; onClose: () => void }) {
+// Updated function signature to accept utmData
+function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
   const [dest, setDest] = useState(preselectedDest || "");
   const [timeline, setTimeline] = useState("");
   const [travelers, setTravelers] = useState("");
   const [vibe, setVibe] = useState("");
   
-  // Step 4 State additions
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [whatsapp, setWhatsapp] = useState(""); // NEW
+  const [whatsapp, setWhatsapp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
   
-  // Calculate display steps (Step 5 is the Success Hub, not an input step)
   const maxInputSteps = preselectedDest ? 4 : 5;
   const currentDisplayStep = preselectedDest ? step : step + 1;
 
-  // Modal Memory Cleanup ensures complete state reset if unmounted or closed
   const handleClose = () => {
     setStep(preselectedDest ? 1 : 0);
     setDest(preselectedDest || "");
@@ -311,25 +309,19 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
     onClose();
   };
 
-  // Manual Backups updated to include the collected data
   const waURL = () => {
     const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
     return waLink(body);
   };
 
-  // Step 4 Validation (Garbage Data Prevention)
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isStep4Valid = name.trim().length > 0 && isEmailValid; // WhatsApp is optional
+  const isStep4Valid = name.trim().length > 0 && isEmailValid;
 
-  // The Fetch Action (Ad-Blocker & Network Failsafe built-in)
   const submitToCRM = async () => {
     setIsSubmitting(true);
     const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
     
-    // 1. Extract query parameters from the current URL
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // 2. Inject the extracted UTMs into your payload object
+    // Inject the extracted UTMs from the passed prop into the payload object
     const payload = {
       name: name.trim(),
       email: email.trim(),
@@ -339,10 +331,9 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
       travelers,
       vibe,
       source: "React Funnel",
-      // Default to "organic" or empty strings if no UTMs are present in the URL
-      utm_source: urlParams.get("utm_source") || "organic", 
-      utm_medium: urlParams.get("utm_medium") || "",
-      utm_campaign: urlParams.get("utm_campaign") || ""
+      utm_source: utmData.source,
+      utm_medium: utmData.medium,
+      utm_campaign: utmData.campaign
     };
 
     try {
@@ -355,7 +346,7 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
       console.warn("CRM Webhook failed or was blocked. Bypassing safely to Step 5.", err);
     } finally {
       setIsSubmitting(false);
-      next(); // Always push them to the Fast-Track Hub even if there's a localized network error
+      next(); 
     }
   };
 
@@ -364,7 +355,6 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
       <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={handleClose} />
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up">
         
-        {/* Dynamic Header: Hide progress bar on Success step (5) */}
         {step < 5 ? (
           <>
             <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
@@ -451,7 +441,6 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
             </div>
           )}
 
-          {/* New Step 4: The Progressive Trust Dual-Capture Form */}
           {step === 4 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-3 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Almost there.</h3>
@@ -495,7 +484,6 @@ function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: str
             </div>
           )}
 
-          {/* New Step 5: Choose Your Concierge Hub */}
           {step === 5 && (
             <div className="animate-fade-in-up text-center flex flex-col items-center">
               <div className="w-16 h-16 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-5">
@@ -557,8 +545,55 @@ export default function Home() {
   const [funnelDest,       setFunnelDest]       = useState("");
   const [showPill,         setShowPill]         = useState(false);
   const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
+
+  // 1. Initialize UTM State
+  const [utmData, setUtmData] = useState({
+    source: "direct",
+    medium: "none",
+    campaign: "direct_type_in"
+  });
   
   const preloadedRef = useRef(false);
+
+  // 2. On-Mount UTM Capture Logic
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get("utm_source");
+
+    if (utmSource) {
+      // Priority 1: Explicit UTMs
+      setUtmData({
+        source: utmSource,
+        medium: urlParams.get("utm_medium") || "organic",
+        campaign: urlParams.get("utm_campaign") || "organic_visit"
+      });
+    } else if (document.referrer) {
+      // Priority 2: Organic Referrer Auto-Detection
+      try {
+        const referrerUrl = new URL(document.referrer);
+        const hostname = referrerUrl.hostname.toLowerCase();
+
+        if (hostname.includes("instagram.com")) {
+          setUtmData({ source: "instagram", medium: "social", campaign: "organic_visit" });
+        } else if (hostname.includes("facebook.com")) {
+          setUtmData({ source: "facebook", medium: "social", campaign: "organic_visit" });
+        } else if (hostname.includes("t.co") || hostname.includes("twitter.com") || hostname.includes("x.com")) {
+          setUtmData({ source: "x_twitter", medium: "social", campaign: "organic_visit" });
+        } else if (hostname.includes("google.com")) {
+          setUtmData({ source: "google", medium: "search", campaign: "organic_visit" });
+        } else if (hostname.includes("wa.me") || hostname.includes("whatsapp.com")) {
+          setUtmData({ source: "whatsapp", medium: "chat", campaign: "organic_visit" });
+        } else {
+          setUtmData({ source: hostname, medium: "referral", campaign: "organic_visit" });
+        }
+      } catch (e) {
+        // Fallback for invalid referrer URLs
+        console.warn("Could not parse referrer string");
+      }
+    }
+  }, []); // Run once on mount
 
   useEffect(() => {
     let ticking = false;
@@ -948,7 +983,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />}
+      {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} utmData={utmData} />}
 
       <style>{`
         @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }

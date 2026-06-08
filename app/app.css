@@ -49,3 +49,28 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── WordPress block content normalization ────────────────────────────────── */
+/* Resets WordPress-injected block classes so they render consistently with   */
+/* Tailwind Typography (prose) styling inside article.tsx.                    */
+
+.wp-content .wp-block-image { margin-top: 2rem; margin-bottom: 2rem; }
+.wp-content .wp-block-image img { border-radius: 1.5rem; display: block; max-width: 100%; height: auto; }
+.wp-content .wp-block-image figcaption { text-align: center; font-size: 0.875rem; color: #6b7280; margin-top: 0.75rem; font-style: italic; }
+
+.wp-content .wp-block-separator { border: none; border-top: 2px solid #e5e7eb; margin: 2.5rem auto; max-width: 6rem; }
+
+.wp-content .wp-element-button,
+.wp-content .wp-block-button__link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: #2D3191; color: #fff; font-weight: 700; border-radius: 9999px; text-decoration: none; font-size: 0.875rem; transition: background-color 0.2s; }
+.wp-content .wp-element-button:hover,
+.wp-content .wp-block-button__link:hover { background-color: #242875; }
+
+.wp-content .wp-block-pullquote,
+.wp-content .wp-block-quote { border-left: 4px solid #2D3191; padding-left: 1.5rem; margin: 2rem 0; font-style: italic; color: #374151; }
+
+.wp-content figure { margin: 0; }
+.wp-content .aligncenter { display: block; margin-left: auto; margin-right: auto; }
+.wp-content .alignleft  { float: left; margin-right: 1.5rem; margin-bottom: 1rem; }
+.wp-content .alignright { float: right; margin-left: 1.5rem; margin-bottom: 1rem; }
+.wp-content .size-full,
+.wp-content .size-large { max-width: 100%; height: auto; }

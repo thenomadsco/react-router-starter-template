@@ -53,12 +53,13 @@ const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
+  baseUrl = baseUrl.replace(/&fm=[^&]*/g, "").replace(/&auto=[^&]*/g, "");
   if (baseUrl.endsWith("?") || baseUrl.endsWith("&")) baseUrl = baseUrl.slice(0, -1);
   const sep = baseUrl.includes("?") ? "&" : "?";
-  
+
   return {
-    src: `${baseUrl}${sep}w=600&q=75`, 
-    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w`
+    src: `${baseUrl}${sep}w=600&q=75&fm=webp&auto=compress`,
+    srcSet: `${baseUrl}${sep}w=400&q=70&fm=webp&auto=compress 400w, ${baseUrl}${sep}w=600&q=75&fm=webp&auto=compress 600w, ${baseUrl}${sep}w=1000&q=75&fm=webp&auto=compress 1000w`
   };
 };
 

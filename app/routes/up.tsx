@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - Mar",
   heroSlides: [
-    { label: "Varanasi", alt: "Ghats", src: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Agra", alt: "Taj Mahal", src: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Ayodhya", alt: "Ram Mandir", src: "https://images.unsplash.com/photo-1619864273410-634626305a4b?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Lucknow", alt: "Rumi Darwaza", src: "https://images.unsplash.com/photo-1588824367399-c092923cb99c?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Varanasi", alt: "Ghats", src: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Agra", alt: "Taj Mahal", src: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Ayodhya", alt: "Ram Mandir", src: "https://images.unsplash.com/photo-1619864273410-634626305a4b?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Lucknow", alt: "Rumi Darwaza", src: "https://images.unsplash.com/photo-1588824367399-c092923cb99c?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Varanasi", desc: "Arrive in Varanasi, the spiritual capital. Evening visit to Dashashwamedh Ghat to witness the mesmerizing Ganga Aarti, a synchronized ritual of light and chanting." },
@@ -30,7 +30,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -202,7 +202,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

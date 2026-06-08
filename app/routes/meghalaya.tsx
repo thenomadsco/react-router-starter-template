@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - May",
   heroSlides: [
-    { label: "Root Bridge", alt: "Living Root Bridge", src: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Dawki", alt: "Clear River", src: "https://images.unsplash.com/photo-1589379677465-b7787373ae4a?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Falls", alt: "Nohkalikai", src: "https://images.unsplash.com/photo-1627284704386-777579728276?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Shillong", alt: "Cherry Blossom", src: "https://images.unsplash.com/photo-1518182170546-07fa6ee551f0?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Root Bridge", alt: "Living Root Bridge", src: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Dawki", alt: "Clear River", src: "https://images.unsplash.com/photo-1589379677465-b7787373ae4a?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Falls", alt: "Nohkalikai", src: "https://images.unsplash.com/photo-1627284704386-777579728276?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Shillong", alt: "Cherry Blossom", src: "https://images.unsplash.com/photo-1518182170546-07fa6ee551f0?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival & Transfer to Shillong", desc: "Arrive at Guwahati and drive to Shillong, the 'Scotland of the East'. Stop at Umiam Lake (Barapani) for a stunning sunset view. Evening at leisure in Police Bazar." },
@@ -30,7 +30,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -202,7 +202,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Visa Free / On Arrival",
   seasonLabel: "Best: Nov - Apr",
   heroSlides: [
-    { label: "Bangkok", alt: "Wat Arun", src: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Phi Phi", alt: "Islands", src: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1920&auto=format&fit=crop" },
-    { label: "James Bond", alt: "Island", src: "https://images.unsplash.com/photo-1537956965359-3578dd3e846c?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Market", alt: "Floating Market", src: "https://images.unsplash.com/photo-1598971861713-54ad16a75af9?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Bangkok", alt: "Wat Arun", src: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Phi Phi", alt: "Islands", src: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=70&w=1200&auto=format&fit=crop" },
+    { label: "James Bond", alt: "Island", src: "https://images.unsplash.com/photo-1537956965359-3578dd3e846c?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Market", alt: "Floating Market", src: "https://images.unsplash.com/photo-1598971861713-54ad16a75af9?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Bangkok", desc: "Arrive in Bangkok. Transfer to hotel. Evening Chao Phraya River Dinner Cruise with views of illuminated temples." },
@@ -32,7 +32,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -204,7 +204,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

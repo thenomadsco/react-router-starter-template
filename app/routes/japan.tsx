@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Visa Assisted",
   seasonLabel: "Best: Mar - May",
   heroSlides: [
-    { label: "Fuji", alt: "Mt Fuji", src: "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Tokyo", alt: "Shibuya", src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Kyoto", alt: "Shrine", src: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Osaka", alt: "Dotonbori", src: "https://images.unsplash.com/photo-1590253230536-cb65cc7f45b5?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Fuji", alt: "Mt Fuji", src: "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Tokyo", alt: "Shibuya", src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Kyoto", alt: "Shrine", src: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Osaka", alt: "Dotonbori", src: "https://images.unsplash.com/photo-1590253230536-cb65cc7f45b5?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Tokyo", desc: "Arrive in Tokyo. Transfer to hotel. Evening exploration of Shinjuku's neon lights." },
@@ -32,7 +32,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -204,7 +204,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

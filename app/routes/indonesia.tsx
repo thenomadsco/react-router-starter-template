@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,16 +15,16 @@ const PAGE_CONFIG = {
   visaLabel: "Visa on Arrival",
   seasonLabel: "Best: Apr - Oct",
   heroSlides: [
-    { label: "Ubud", alt: "Rice Terraces", src: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Nusa Penida", alt: "Kelingking Beach", src: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Uluwatu", alt: "Temple Cliff", src: "https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Culture", alt: "Temple Gates", src: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Ubud", alt: "Rice Terraces", src: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Nusa Penida", alt: "Kelingking Beach", src: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Uluwatu", alt: "Temple Cliff", src: "https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Culture", alt: "Temple Gates", src: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Bali", desc: "Welcome to the Island of Gods. Transfer to the cultural center of Ubud. Relax at the resort surrounded by rainforests." },
     { day: "02", title: "Ubud & Kintamani", desc: "Visit the Sacred Monkey Forest and Tegalalang Rice Terraces. Swing over the jungle. Lunch with a view of Mount Batur volcano." },
     { day: "03", title: "Waterfalls & Temples", desc: "Visit Tegenungan Waterfall and Tirta Empul (Holy Water Temple). Experience the spiritual side of Bali." },
-    { day: "04", title: "Nusa Penida Island", desc: "Speedboat trip to Nusa Penida. Visit the iconic Kelingking Beach (T-Rex cliff), Broken Beach, and Angel’s Billabong. Return to Bali mainland." },
+    { day: "04", title: "Nusa Penida Island", desc: "Speedboat trip to Nusa Penida. Visit the iconic Kelingking Beach (T-Rex cliff), Broken Beach, and Angelâ€™s Billabong. Return to Bali mainland." },
     { day: "05", title: "Water Sports & Tanah Lot", desc: "Morning water sports at Tanjung Benoa (Banana boat, Jet ski). Sunset visit to the famous Tanah Lot Temple on the rock." },
     { day: "06", title: "Uluwatu & Kecak Dance", desc: "Visit Uluwatu Temple on the cliffs. Watch the mesmerizing Kecak Fire Dance at sunset. Seafood dinner on Jimbaran Bay." },
     { day: "07", title: "Departure", desc: "Last-minute souvenir shopping before transferring to the airport." },
@@ -32,7 +32,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -204,7 +204,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

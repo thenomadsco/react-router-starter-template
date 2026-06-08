@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Nov - Feb",
   heroSlides: [
-    { label: "Kutch", alt: "White Desert", src: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Unity", alt: "Statue of Unity", src: "https://images.unsplash.com/photo-1598886367332-90f7d468eb37?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Modhera", alt: "Sun Temple", src: "https://images.unsplash.com/photo-1620202636709-1bb62b4293c3?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Gir", alt: "Lions", src: "https://images.unsplash.com/photo-1594895697620-e2609026210f?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Kutch", alt: "White Desert", src: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Unity", alt: "Statue of Unity", src: "https://images.unsplash.com/photo-1598886367332-90f7d468eb37?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Modhera", alt: "Sun Temple", src: "https://images.unsplash.com/photo-1620202636709-1bb62b4293c3?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Gir", alt: "Lions", src: "https://images.unsplash.com/photo-1594895697620-e2609026210f?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Ahmedabad", desc: "Arrive in Ahmedabad, India's first UNESCO Heritage City. Visit Sabarmati Ashram and the intricate Adalaj Stepwell. Evening visit to Kankaria Lake or the Sabarmati Riverfront." },
@@ -30,7 +30,7 @@ const PAGE_CONFIG = {
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -202,7 +202,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

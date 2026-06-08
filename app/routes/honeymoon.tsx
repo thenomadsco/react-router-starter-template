@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import nomadsLogo from "./the nomads logo.jpeg";
 
 const PAGE_CONFIG = {
   title: "Honeymoon Specials",
   subtitle: "Begin Your Forever",
-  heroImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1920&auto=format&fit=crop",
+  heroImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=70&w=1200&auto=format&fit=crop",
 };
 
 export default function HoneymoonPage() {
@@ -116,7 +116,7 @@ function Navigation() {
 function Footer() {
   return (
     <footer className="bg-white py-12 px-6 border-t border-[#E6E8EF] text-center">
-      <p className="text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
+      <p className="text-[#1F2328]/50">Â© {new Date().getFullYear()} The Nomads Co.</p>
     </footer>
   );
 }

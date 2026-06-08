@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,24 +15,24 @@ const PAGE_CONFIG = {
   visaLabel: "Schengen Visa",
   seasonLabel: "Best: Apr - Oct",
   heroSlides: [
-    { label: "Paris", alt: "Eiffel Tower", src: "https://images.unsplash.com/photo-1511739001486-6bfe10ce7859?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Riviera", alt: "Nice Coast", src: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Louvre", alt: "Museum", src: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Monaco", alt: "Yachts", src: "https://images.unsplash.com/photo-1559518635-64d550c66042?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Paris", alt: "Eiffel Tower", src: "https://images.unsplash.com/photo-1511739001486-6bfe10ce7859?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Riviera", alt: "Nice Coast", src: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Louvre", alt: "Museum", src: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Monaco", alt: "Yachts", src: "https://images.unsplash.com/photo-1559518635-64d550c66042?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Paris", desc: "Welcome to the City of Light. Transfer to the hotel. Evening Seine River Cruise to see the illuminated monuments including the Eiffel Tower." },
-    { day: "02", title: "Paris Icons", desc: "Visit the Eiffel Tower (2nd floor), Champs-Élysées, and Arc de Triomphe. Afternoon at the Louvre Museum to see the Mona Lisa." },
+    { day: "02", title: "Paris Icons", desc: "Visit the Eiffel Tower (2nd floor), Champs-Ã‰lysÃ©es, and Arc de Triomphe. Afternoon at the Louvre Museum to see the Mona Lisa." },
     { day: "03", title: "Disneyland Paris", desc: "Full day of magic at Disneyland Paris. Enjoy thrilling rides, meet characters, and watch the spectacular parade and fireworks." },
     { day: "04", title: "TGV to Nice", desc: "High-speed train journey to Nice on the French Riviera. Check-in and stroll along the famous Promenade des Anglais at sunset." },
     { day: "05", title: "Eze & Monaco", desc: "Visit the medieval village of Eze and a perfume factory. Continue to the glamorous Principality of Monaco to see the Prince's Palace and Monte Carlo Casino." },
     { day: "06", title: "Nice & Cannes", desc: "Explore the flower markets of Nice. Optional trip to Cannes to walk the red carpet steps. Enjoy a final French dinner by the sea." },
-    { day: "07", title: "Departure", desc: "Transfer to Nice Côte d'Azur Airport for the return flight." },
+    { day: "07", title: "Departure", desc: "Transfer to Nice CÃ´te d'Azur Airport for the return flight." },
   ],
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -204,7 +204,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

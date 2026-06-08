@@ -16,10 +16,12 @@ export function headers() {
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?slug=${params.slug}&_embed&t=${Date.now()}`;
+  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?slug=${params.slug}&_embed`;
 
   try {
-    const response = await fetch(WP_API_URL);
+    const response = await fetch(WP_API_URL, {
+      cf: { cacheTtl: 300, cacheEverything: true }
+    } as any);
     if (!response.ok) throw new Response("Article not found", { status: 404 });
     const posts = await response.json();
     if (posts.length === 0) throw new Response("Not Found", { status: 404 });

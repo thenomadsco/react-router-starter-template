@@ -1,11 +1,11 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 
 const PAGE_CONFIG = {
   title: "Family Vacations",
   subtitle: "Memories for a Lifetime",
-  heroImage: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1920&auto=format&fit=crop",
+  heroImage: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=70&w=1200&auto=format&fit=crop",
 };
 
 export default function FamilyPage() {
@@ -35,7 +35,7 @@ export default function FamilyPage() {
           The Nomads Co. specializes in tailor-made travel itineraries for travelers seeking authentic experiences in India & around the world. Whether you want to concentrate on culture or spend time wildlife-watching, sample a city's hustle and bustle or relax in a secluded beauty spot, we will help you discover the joy of a unique trip designed specifically for you.
         </p>
         <p className="text-lg text-[#1F2328]/70 leading-relaxed">
-          Treat the whole family to an unforgettable holiday of a lifetime. From intimate island resorts to fun-filled adventure parks, we ensure your trip caters to all needs—grandparents, parents, and kids alike.
+          Treat the whole family to an unforgettable holiday of a lifetime. From intimate island resorts to fun-filled adventure parks, we ensure your trip caters to all needsâ€”grandparents, parents, and kids alike.
         </p>
       </section>
 
@@ -49,7 +49,7 @@ export default function FamilyPage() {
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-sm">
               <h3 className="text-xl font-bold text-[#1F2328] mb-3">Relaxed Pace</h3>
-              <p className="text-[#1F2328]/70">Itineraries designed with downtime. No rushing from spot to spot—enjoy quality time together.</p>
+              <p className="text-[#1F2328]/70">Itineraries designed with downtime. No rushing from spot to spotâ€”enjoy quality time together.</p>
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-sm">
               <h3 className="text-xl font-bold text-[#1F2328] mb-3">Safety First</h3>
@@ -120,7 +120,7 @@ function Navigation() {
 function Footer() {
   return (
     <footer className="bg-white py-12 px-6 border-t border-[#E6E8EF] text-center">
-      <p className="text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
+      <p className="text-[#1F2328]/50">Â© {new Date().getFullYear()} The Nomads Co.</p>
     </footer>
   );
 }

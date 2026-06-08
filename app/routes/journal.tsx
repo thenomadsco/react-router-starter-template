@@ -16,9 +16,11 @@ export function headers() {
 }
 
 export async function loader() {
-  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed&t=${Date.now()}`;
+  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed`;
   try {
-    const response = await fetch(WP_API_URL);
+    const response = await fetch(WP_API_URL, {
+      cf: { cacheTtl: 300, cacheEverything: true }
+    } as any);
     if (!response.ok) throw new Error("Failed to fetch journal entries");
     const posts = await response.json();
     return posts.map((post: any) => ({

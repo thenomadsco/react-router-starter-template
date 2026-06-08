@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/home";
 
 // =============================================================================
-// 👇 PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE 👇
+// ðŸ‘‡ PASTE THE SPECIFIC 'PAGE_CONFIG' FOR YOUR DESTINATION HERE ðŸ‘‡
 // =============================================================================
 
 const PAGE_CONFIG = {
@@ -15,23 +15,23 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - Mar",
   heroSlides: [
-    { label: "Jaipur", alt: "Hawa Mahal", src: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Udaipur", alt: "Lake Pichola", src: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Jodhpur", alt: "Blue City", src: "https://images.unsplash.com/photo-1534759869506-644778393527?q=80&w=1920&auto=format&fit=crop" },
-    { label: "Desert", alt: "Camels", src: "https://images.unsplash.com/photo-1522209675870-8438b4df3cb2?q=80&w=1920&auto=format&fit=crop" },
+    { label: "Jaipur", alt: "Hawa Mahal", src: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Udaipur", alt: "Lake Pichola", src: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Jodhpur", alt: "Blue City", src: "https://images.unsplash.com/photo-1534759869506-644778393527?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Desert", alt: "Camels", src: "https://images.unsplash.com/photo-1522209675870-8438b4df3cb2?q=70&w=1200&auto=format&fit=crop" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Jaipur", desc: "Arrive in the Pink City and transfer to the hotel. Visit the City Palace and Jantar Mantar observatory. Evening opportunity to experience authentic Rajasthani culture and cuisine at Chokhi Dhani." },
     { day: "02", title: "Jaipur Sightseeing", desc: "Visit the Hawa Mahal (Palace of Winds) and the majestic Amber Fort. Opt for an elephant ride up the ramparts. Stop by Jal Mahal (Water Palace) for photos. Evening free for shopping in the colorful Johari Bazaar." },
     { day: "03", title: "Jaipur to Jodhpur", desc: "Drive to Jodhpur, the Blue City. Check-in and enjoy evening views of the illuminated Mehrangarh Fort towering over the city." },
     { day: "04", title: "Jodhpur to Udaipur", desc: "Explore Mehrangarh Fort and Jaswant Thada. Proceed to Udaipur, stopping en route at the stunning Ranakpur Jain Temples, known for their intricate marble carvings." },
-    { day: "05", title: "Udaipur – City of Lakes", desc: "Tour the grand City Palace overlooking Lake Pichola and the beautiful Saheliyon Ki Bari. In the evening, enjoy a boat ride on Lake Pichola with views of Jag Mandir and the Lake Palace." },
+    { day: "05", title: "Udaipur â€“ City of Lakes", desc: "Tour the grand City Palace overlooking Lake Pichola and the beautiful Saheliyon Ki Bari. In the evening, enjoy a boat ride on Lake Pichola with views of Jag Mandir and the Lake Palace." },
     { day: "06", title: "Departure", desc: "Transfer to Udaipur Airport for the onward journey, taking along royal memories of forts and palaces." },
   ],
 };
 
 // =============================================================================
-// 👆 END OF CONFIGURATION 👆
+// ðŸ‘† END OF CONFIGURATION ðŸ‘†
 // =============================================================================
 
 export function headers() {
@@ -203,7 +203,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

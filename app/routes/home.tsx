@@ -909,27 +909,6 @@ export default function Home() {
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} utmData={utmData} />}
 
-      <style>{`
-        @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }
-        .animate-float-in { animation: floatIn .8s cubic-bezier(.16,1,.3,1) forwards; }
-
-        @keyframes heroFade { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-        .animate-hero-1 { animation: heroFade .8s cubic-bezier(.16,1,.3,1) .1s both; }
-        .animate-hero-2 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .25s both; }
-        .animate-hero-3 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .4s both; }
-        .animate-hero-4 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .55s both; }
-        .animate-hero-5 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .7s both; }
-
-        @keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
-        .animate-fade-in-up { animation: fadeInUp .4s ease-out forwards; }
-        
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </div>
   );
 }

@@ -16,9 +16,18 @@ export const links: Route.LinksFunction = () => [
 		href: "https://fonts.gstatic.com",
 		crossOrigin: "anonymous",
 	},
+	// Preload moves font CSS into the critical path so it fetches during HTML parsing.
+	// Both families merged into one request (saves a round-trip vs two separate links).
+	// Playfair Display is used for headings across all routes; Inter is the --font-sans
+	// set in app.css. Neither was loaded before, causing headings to flash in serif fallback.
+	{
+		rel: "preload",
+		href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap",
+		as: "style",
+	},
 	{
 		rel: "stylesheet",
-		href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap",
+		href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap",
 	},
 ];
 

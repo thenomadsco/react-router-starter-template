@@ -10,7 +10,8 @@ function ArrowLeft(p: any) {
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?slug=${params.slug}&_embed`;
+  // Timestamp added to the URL to bypass cache and always fetch live data
+  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?slug=${params.slug}&_embed&t=${Date.now()}`;
   
   const response = await fetch(WP_API_URL);
   if (!response.ok) throw new Error("Article not found");

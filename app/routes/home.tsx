@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
@@ -103,18 +103,44 @@ function getObs() {
 }
 
 const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  const [vis, setVis] = useState(false);
+  // Three-state machine to eliminate FOUC:
+  //   "pre"     – SSR / pre-hydration: no animation classes → content is fully visible in
+  //               the server-rendered HTML, so the browser never shows a blank page while
+  //               JavaScript is still downloading on a cold first load.
+  //   "visible" – in viewport: animate to fully visible.
+  //   "hidden"  – below fold: hide and wait for IntersectionObserver.
+  //
+  // useLayoutEffect fires synchronously BEFORE the browser paints.  The transition
+  // "pre → hidden" for below-fold elements therefore happens before the first pixel
+  // is drawn — eliminating the visible→invisible flash that useEffect causes because
+  // useEffect fires *after* paint, leaving a frame where the element is visible.
+  const [state, setState] = useState<"pre" | "visible" | "hidden">("pre");
   const ref = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = getObs(); if (!obs) { setVis(true); return; }
-    revealCbs.set(el, () => setVis(true)); obs.observe(el);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) {
+      setState("visible");
+      return;
+    }
+
+    setState("hidden");
+    const obs = getObs();
+    if (!obs) { setState("visible"); return; }
+    revealCbs.set(el, () => setState("visible"));
+    obs.observe(el);
     return () => { revealCbs.delete(el); obs.unobserve(el); };
   }, []);
 
   return (
-    <div ref={ref} className={`transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
+    <div
+      ref={ref}
+      className={`transition-all duration-1000 ease-out ${
+        state === "hidden" ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
+      } ${className}`}
+    >
       {children}
     </div>
   );

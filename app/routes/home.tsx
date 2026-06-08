@@ -50,6 +50,8 @@ function ArrowRight(p: any) {
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
 const getResponsiveUrls = (url: string) => {
+  // Download links can't be optimised — skip them entirely
+  if (url.includes("/download")) return { src: url, srcSet: undefined };
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
@@ -63,12 +65,12 @@ const getResponsiveUrls = (url: string) => {
   };
 };
 
-const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
+const OptimizedImage = ({ src, alt, className, priority = false, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" }: { src: string; alt: string; className?: string; priority?: boolean; sizes?: string }) => {
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState(false);
   const { src: optimizedSrc, srcSet } = getResponsiveUrls(src);
-  const finalSrc = err ? "https://placehold.co/600x800/FF0000/FFFFFF?text=IMAGE+ERROR" : optimizedSrc;
-  
+  const finalSrc = err ? "https://placehold.co/600x800/1F2328/FAFAF8?text=No+Image" : optimizedSrc;
+
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
       {!loaded && !err && (
@@ -76,17 +78,17 @@ const OptimizedImage = ({ src, alt, className, priority = false }: { src: string
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
         </div>
       )}
-      <img 
-        src={finalSrc} 
+      <img
+        src={finalSrc}
         srcSet={srcSet}
-        sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 1000px"
-        alt={alt} 
-        loading={priority ? "eager" : "lazy"} 
+        sizes={sizes}
+        alt={alt}
+        loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
-        onLoad={() => setLoaded(true)} 
+        onLoad={() => setLoaded(true)}
         onError={() => setErr(true)}
         style={{ transform: "translateZ(0)" }}
-        className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
+        className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`}
       />
     </div>
   );
@@ -165,8 +167,8 @@ const destinations: Destination[] = [
   { id: 14, title: "Turkey",               category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=80",  tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
   { id: 15, title: "USA",                  category: "International", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=600&q=80",  tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
   { id: 16, title: "South Africa",         category: "International", image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=600&q=80",  tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
-  { id: 17, title: "Kenya",                category: "International", image: "https://unsplash.com/photos/60XLoOgwkfA/download?force=true",                        tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, title: "Tanzania",             category: "International", image: "https://unsplash.com/photos/qs4E9t0hJc0/download?force=true",                        tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+  { id: 17, title: "Kenya",                category: "International", image: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80",  tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
+  { id: 18, title: "Tanzania",             category: "International", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=600&q=80",  tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
 
   { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1643449416258-5c8e7ec598b1?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
   { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1706013997636-29354e064ccc?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
@@ -184,9 +186,9 @@ const destinations: Destination[] = [
   { id: 32, title: "Tamil Nadu",           category: "India",         image: "https://images.unsplash.com/photo-1742277296187-1cc2f783d792?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
   { id: 33, title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-1706465416840-85482d841da7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
   { id: 34, title: "West Bengal",          category: "India",         image: "https://plus.unsplash.com/premium_photo-1697730497487-7bda47e4baff?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2VzdCUyMGJlbmdhbHxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, title: "Odisha",               category: "India",         image: "https://unsplash.com/photos/a4KEI6SYy10/download?force=true",                        tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
+  { id: 35, title: "Odisha",               category: "India",         image: "https://images.unsplash.com/photo-1609590981063-d495a2e2d4b6?auto=format&fit=crop&w=600&q=80",  tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
   { id: 36, title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-1670406312373-6d4d1776e4aa?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
-  { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
+  { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=600&q=80",  tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
 const INITIAL_BGS = [

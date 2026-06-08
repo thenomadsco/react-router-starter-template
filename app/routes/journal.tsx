@@ -16,21 +16,30 @@ export function headers() {
 }
 
 export async function loader() {
-  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed`;
+  // 1-minute cache bucket — same URL within a minute can be edge-cached;
+  // fresh enough that new posts appear within 60 s of publishing.
+  const cacheKey = Math.floor(Date.now() / 60000);
+  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed&_t=${cacheKey}`;
   try {
-    const response = await fetch(WP_API_URL, {
-      cf: { cacheTtl: 300, cacheEverything: true }
-    } as any);
+    const response = await fetch(WP_API_URL, { cf: { cacheTtl: 60 } } as any);
     if (!response.ok) throw new Error("Failed to fetch journal entries");
     const posts = await response.json();
-    return posts.map((post: any) => ({
-      id: post.id,
-      slug: post.slug,
-      title: post.title.rendered,
-      excerpt: post.excerpt.rendered.replace(/(<([^>]+)>)/gi, "").substring(0, 120) + "...",
-      imageUrl: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || "/Sikkim.jpg", 
-      date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-    }));
+    return posts.map((post: any) => {
+      const media = post._embedded?.['wp:featuredmedia']?.[0];
+      const sizes = media?.media_details?.sizes;
+      const imageUrl = sizes?.large?.source_url
+        || sizes?.medium_large?.source_url
+        || media?.source_url
+        || "/Sikkim.jpg";
+      return {
+        id: post.id,
+        slug: post.slug,
+        title: post.title.rendered,
+        excerpt: post.excerpt.rendered.replace(/(<([^>]+)>)/gi, "").substring(0, 120) + "...",
+        imageUrl,
+        date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      };
+    });
   } catch (error) { return []; }
 }
 
@@ -90,6 +99,8 @@ export default function Journal() {
                 <img
                   src={post.imageUrl}
                   alt={post.title}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

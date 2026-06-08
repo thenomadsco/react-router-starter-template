@@ -10,7 +10,8 @@ function ArrowLeft(p: any) {
 }
 
 export async function loader() {
-  const WP_API_URL = "https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed";
+  // Timestamp added to the URL to bypass cache and always fetch live data
+  const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed&t=${Date.now()}`;
   try {
     const response = await fetch(WP_API_URL);
     if (!response.ok) throw new Error("Failed to fetch journal entries");

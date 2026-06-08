@@ -97,7 +97,7 @@ export default function Article() {
       <section className="py-20 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8 flex justify-center">
           <article
-            className="prose prose-lg md:prose-xl prose-stone prose-headings:font-bold prose-headings:text-[#1F2328] prose-a:text-[#2D3191] prose-a:no-underline hover:prose-a:underline prose-img:rounded-[2rem] max-w-[800px] w-full wp-content"
+            className="prose prose-lg md:prose-xl prose-stone prose-headings:font-bold prose-headings:text-[#1F2328] prose-p:text-[#1F2328] prose-li:text-[#1F2328] prose-a:text-[#2D3191] prose-a:no-underline hover:prose-a:underline prose-img:rounded-[2rem] max-w-[800px] w-full wp-content"
             style={{
               '--tw-prose-headings': "'Playfair Display', serif",
               '--tw-prose-body': "'Inter', ui-sans-serif, system-ui, sans-serif"

@@ -269,15 +269,14 @@ const keyServices = [
 
 const testimonials = [
   { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 🌴✨" }
+  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! \uD83D\uDE0A \u2728 " }
 ];
 
 const NOMADS_WA = "919924399335";
 function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)); }
 function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
-function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋 I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋 I'd love to plan a trip. Can you help me?`), "_blank"); }
+function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! \uD83D\uDC4B  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! \uD83D\uDC4B  I'd love to plan a trip. Can you help me?`), "_blank"); }
 
-// Updated function signature to accept utmData
 function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
   const [dest, setDest] = useState(preselectedDest || "");
@@ -310,7 +309,7 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
   };
 
   const waURL = () => {
-    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
+    const body = `Hi Kirti! \uD83D\uDC4B  I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
     return waLink(body);
   };
 
@@ -321,7 +320,6 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
     setIsSubmitting(true);
     const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
     
-    // Inject the extracted UTMs from the passed prop into the payload object
     const payload = {
       name: name.trim(),
       email: email.trim(),
@@ -398,7 +396,7 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
                 ))}
               </div>
               <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="Or type any destination…" className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner" onKeyDown={e => e.key === "Enter" && dest && next()} />
-              <button onClick={next} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg">Continue →</button>
+              <button onClick={next} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg">Continue → </button>
             </div>
           )}
 
@@ -479,7 +477,7 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
                 disabled={!isStep4Valid || isSubmitting} 
                 className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
               >
-                {isSubmitting ? "Securing preferences..." : "Secure My Trip →"}
+                {isSubmitting ? "Securing preferences..." : "Secure My Trip → "}
               </button>
             </div>
           )}
@@ -497,13 +495,13 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
                   onClick={() => { window.open(waURL(), "_blank"); handleClose(); }} 
                   className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm"
                 >
-                  Chat with Kirti Now 💬
+                  Chat with Kirti Now \uD83D\uDCAC 
                 </button>
                 <button 
                   onClick={() => { alert("Thank you! Kirti will reach out via email shortly."); handleClose(); }} 
                   className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
                 >
-                  I'll wait for an email ✉️
+                  I'll wait for an email \uD83D\uDCE7 
                 </button>
               </div>
             </div>
@@ -514,26 +512,6 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
     </div>
   );
 }
-
-const ClosingCTA = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
-  <section className="bg-[#1F2328] py-20 px-6">
-    <RevealOnScroll>
-      <div className="max-w-3xl mx-auto text-center">
-        <p className="text-[#2D3191] text-xs font-bold uppercase tracking-widest mb-4">Ready when you are</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display',serif" }}>Your next trip is one message away.</h2>
-        <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto">No forms, no waiting. Kirti personally handles every inquiry and replies fast.</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={onWhatsApp} className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] text-white font-bold rounded-full shadow-lg hover:bg-[#1DA851] hover:-translate-y-0.5 transition-all text-lg">
-            <MessageCircle size={22} /> WhatsApp Kirti now
-          </button>
-          <a href="mailto:thenomadsco@gmail.com" className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all text-lg border border-white/20">
-            <Mail size={22} /> Send an email
-          </a>
-        </div>
-      </div>
-    </RevealOnScroll>
-  </section>
-);
 
 export default function Home() {
   const [isMenuOpen,       setIsMenuOpen]       = useState(false);
@@ -546,7 +524,6 @@ export default function Home() {
   const [showPill,         setShowPill]         = useState(false);
   const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
 
-  // 1. Initialize UTM State
   const [utmData, setUtmData] = useState({
     source: "direct",
     medium: "none",
@@ -555,45 +532,32 @@ export default function Home() {
   
   const preloadedRef = useRef(false);
 
-  // 2. On-Mount UTM Capture Logic
   useEffect(() => {
     if (typeof window === "undefined") return;
-
     const urlParams = new URLSearchParams(window.location.search);
     const utmSource = urlParams.get("utm_source");
 
     if (utmSource) {
-      // Priority 1: Explicit UTMs
       setUtmData({
         source: utmSource,
         medium: urlParams.get("utm_medium") || "organic",
         campaign: urlParams.get("utm_campaign") || "organic_visit"
       });
     } else if (document.referrer) {
-      // Priority 2: Organic Referrer Auto-Detection
       try {
         const referrerUrl = new URL(document.referrer);
         const hostname = referrerUrl.hostname.toLowerCase();
-
-        if (hostname.includes("instagram.com")) {
-          setUtmData({ source: "instagram", medium: "social", campaign: "organic_visit" });
-        } else if (hostname.includes("facebook.com")) {
-          setUtmData({ source: "facebook", medium: "social", campaign: "organic_visit" });
-        } else if (hostname.includes("t.co") || hostname.includes("twitter.com") || hostname.includes("x.com")) {
-          setUtmData({ source: "x_twitter", medium: "social", campaign: "organic_visit" });
-        } else if (hostname.includes("google.com")) {
-          setUtmData({ source: "google", medium: "search", campaign: "organic_visit" });
-        } else if (hostname.includes("wa.me") || hostname.includes("whatsapp.com")) {
-          setUtmData({ source: "whatsapp", medium: "chat", campaign: "organic_visit" });
-        } else {
-          setUtmData({ source: hostname, medium: "referral", campaign: "organic_visit" });
-        }
+        if (hostname.includes("instagram.com")) setUtmData({ source: "instagram", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("facebook.com")) setUtmData({ source: "facebook", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("t.co") || hostname.includes("twitter.com") || hostname.includes("x.com")) setUtmData({ source: "x_twitter", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("google.com")) setUtmData({ source: "google", medium: "search", campaign: "organic_visit" });
+        else if (hostname.includes("wa.me") || hostname.includes("whatsapp.com")) setUtmData({ source: "whatsapp", medium: "chat", campaign: "organic_visit" });
+        else setUtmData({ source: hostname, medium: "referral", campaign: "organic_visit" });
       } catch (e) {
-        // Fallback for invalid referrer URLs
         console.warn("Could not parse referrer string");
       }
     }
-  }, []); // Run once on mount
+  }, []); 
 
   useEffect(() => {
     let ticking = false;
@@ -661,6 +625,7 @@ export default function Home() {
             <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
             <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
             <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
+            <Link to="/journal" className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Journal</Link>
             <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
           </div>
           <button className={`md:hidden z-50 p-2 transition-colors ${isMenuOpen || scrolled ? "text-gray-900" : "text-white"}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -683,6 +648,7 @@ export default function Home() {
             <button onClick={() => scrollTo("about")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">About</button>
             <button onClick={() => scrollTo("destinations")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
             <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
+            <Link to="/journal" className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors" onClick={() => setIsMenuOpen(false)}>Journal</Link>
           </div>
           <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
             <button onClick={handlePlanMyTrip} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
@@ -799,7 +765,7 @@ export default function Home() {
                     </div>
                     <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F2328] bg-white px-3 py-1.5 rounded-full shadow-md">
-                        Plan this trip →
+                        Plan this trip → 
                       </span>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
@@ -905,49 +871,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 bg-[#111418] relative z-20 flex justify-center border-t border-white/5">
-        <div className="max-w-2xl w-full mx-auto p-10 rounded-[2.5rem] bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
-          <h3 className="text-3xl font-bold mb-2 text-white" style={{ fontFamily: "'Playfair Display',serif" }}>
-            System Test: AI CRM Pipeline
-          </h3>
-          <p className="text-white/50 mb-8 text-sm">
-            Submit a raw, messy string to test the extraction protocol.
-          </p>
-          <form 
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const rawMessage = formData.get("message");
-              
-              const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
-              
-              try {
-                await fetch(MAKE_WEBHOOK_URL, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ message: rawMessage }),
-                });
-                alert("Payload successfully sent! Check Make.com.");
-                e.currentTarget.reset();
-              } catch (err) {
-                alert("Connection failed. Check console.");
-              }
-            }}
-            className="flex flex-col gap-4"
-          >
-            <textarea 
-              name="message" 
-              required
-              placeholder="e.g. Yo this is Kartik, I need to go to London next month. Budget is around 3 Lakhs. Call me at 9876543210."
-              className="w-full h-36 p-5 bg-black/40 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-[#2D3191] transition-all resize-none"
-            />
-            <button type="submit" className="self-end px-8 py-4 bg-white text-[#111418] font-bold rounded-full hover:bg-gray-200 transition-all shadow-lg">
-              Initialize Test →
-            </button>
-          </form>
-        </div>
-      </section>
-
       <footer className="relative z-10 bg-[#111418] text-white py-20">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
@@ -966,6 +889,7 @@ export default function Home() {
                 <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
                 <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
                 <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
+                <li><Link to="/journal" className="hover:text-white transition-colors">Journal</Link></li>
                 <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
               </ul>
             </div>

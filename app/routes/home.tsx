@@ -58,8 +58,8 @@ function SlidersHorizontal(p: any){ return <IconBase {...p}><line x1="21" y1="4"
 function Shield(p: any)           { return <IconBase {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></IconBase>; }
 function CheckCircle2(p: any)     { return <IconBase {...p}><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></IconBase>; }
 function Sparkles(p: any)         { return <IconBase {...p}><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="m5 14 .8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z"/></IconBase>; }
-function ArrowLeft(p: any)        { return <IconBase {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></IconBase>; }
-function ArrowRight(p: any) { 
+export function ArrowLeft(p: any) { return <IconBase {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></IconBase>; }
+export function ArrowRight(p: any) { 
   return <IconBase {...p}>
     <line x1="5" y1="12" x2="19" y2="12"/>
     <polyline points="12 5 19 12 12 19"/>
@@ -67,7 +67,7 @@ function ArrowRight(p: any) {
 }
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
-const getResponsiveUrls = (url: string) => {
+export const getResponsiveUrls = (url: string) => {
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
@@ -80,7 +80,7 @@ const getResponsiveUrls = (url: string) => {
   };
 };
 
-const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
+export const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState(false);
   const { src: optimizedSrc, srcSet } = getResponsiveUrls(src);
@@ -138,46 +138,48 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   );
 };
 
-type Destination = { id: number; title: string; category: string; image: string; tags: string[]; description: string };
-const destinations: Destination[] = [
-  { id: 1,  title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80",  tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
-  { id: 2,  title: "Maldives",             category: "International", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=600&q=80",  tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
-  { id: 3,  title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80",  tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
-  { id: 4,  title: "Singapore",            category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=600&q=80",  tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
-  { id: 5,  title: "Thailand",             category: "International", image: "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=600&q=80",  tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
-  { id: 6,  title: "Vietnam",              category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80",                        tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
-  { id: 7,  title: "Sri Lanka",            category: "International", image: "https://images.unsplash.com/photo-1562602833-0f4ab2fc46e3?auto=format&fit=crop&w=600&q=80",  tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
-  { id: 8,  title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-1578556881786-851d4b79cb73?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
-  { id: 9,  title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80",  tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
-  { id: 10, title: "Australia",            category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=600&q=80",  tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
-  { id: 11, title: "New Zealand",          category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=600&q=80",  tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
-  { id: 12, title: "Japan",                category: "International", image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80",  tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
-  { id: 13, title: "South Korea",          category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=600&q=80",                        tags: ["Culture","City","Food"],                description: "Dynamic cities, ancient palaces, and trendy pop culture." },
-  { id: 14, title: "Turkey",               category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=80",  tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
-  { id: 15, title: "USA",                  category: "International", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=600&q=80",  tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
-  { id: 16, title: "South Africa",         category: "International", image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=600&q=80",  tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
-  { id: 17, title: "Kenya",                category: "International", image: "https://unsplash.com/photos/60XLoOgwkfA/download?force=true",                        tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, title: "Tanzania",             category: "International", image: "https://unsplash.com/photos/qs4E9t0hJc0/download?force=true",                        tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+export type Destination = { id: number; slug: string; title: string; category: string; image: string; tags: string[]; description: string };
 
-  { id: 19, title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1643449416258-5c8e7ec598b1?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
-  { id: 20, title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1706013997636-29354e064ccc?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
-  { id: 21, title: "Himachal Pradesh",     category: "India",         image: "https://images.unsplash.com/photo-1621232082074-1a7750ecc557?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
-  { id: 22, title: "Uttarakhand",          category: "India",         image: "https://images.unsplash.com/photo-1742281412128-5832da2ddce3?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
-  { id: 23, title: "Rajasthan",            category: "India",         image: "https://images.unsplash.com/photo-1757168896276-607112de366b?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
-  { id: 24, title: "Goa",                  category: "India",         image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80",  tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe." },
-  { id: 25, title: "Kerala",               category: "India",         image: "https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=600&q=80",  tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
-  { id: 26, title: "Andaman Islands",      category: "India",         image: "https://images.unsplash.com/photo-1709623244452-f690c1fc8f2f?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
-  { id: 27, title: "North East India",     category: "India",         image: "https://images.unsplash.com/photo-1568644577260-0568ed0217e0?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
-  { id: 28, title: "Sikkim",               category: "India",         image: "https://images.unsplash.com/photo-1706465416840-85482d841da7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
-  { id: 29, title: "Meghalaya",            category: "India",         image: "https://images.unsplash.com/photo-1685271567656-84a60da957d9?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
-  { id: 30, title: "Arunachal Pradesh",    category: "India",         image: "https://images.unsplash.com/photo-1648963799576-b225d65eb10c?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
-  { id: 31, title: "Karnataka",            category: "India",         image: "https://plus.unsplash.com/premium_photo-1697730504977-26847b1f1f91?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8a2FybmF0YWthfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
-  { id: 32, title: "Tamil Nadu",           category: "India",         image: "https://images.unsplash.com/photo-1742277296187-1cc2f783d792?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
-  { id: 33, title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-1706465416840-85482d841da7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
-  { id: 34, title: "West Bengal",          category: "India",         image: "https://plus.unsplash.com/premium_photo-1697730497487-7bda47e4baff?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2VzdCUyMGJlbmdhbHxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, title: "Odisha",               category: "India",         image: "https://unsplash.com/photos/a4KEI6SYy10/download?force=true",                        tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
-  { id: 36, title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-1670406312373-6d4d1776e4aa?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
-  { id: 37, title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
+// Exported so destination.tsx can access the central database
+export const destinations: Destination[] = [
+  { id: 1,  slug: "bali",              title: "Bali, Indonesia",      category: "International", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80",  tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
+  { id: 2,  slug: "maldives",          title: "Maldives",             category: "International", image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=600&q=80",  tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
+  { id: 3,  slug: "dubai",             title: "Dubai, UAE",           category: "International", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80",  tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
+  { id: 4,  slug: "singapore",         title: "Singapore",            category: "International", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=600&q=80",  tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
+  { id: 5,  slug: "thailand",          title: "Thailand",             category: "International", image: "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=600&q=80",  tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
+  { id: 6,  slug: "vietnam",           title: "Vietnam",              category: "International", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80",                        tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
+  { id: 7,  slug: "sri-lanka",         title: "Sri Lanka",            category: "International", image: "https://images.unsplash.com/photo-1562602833-0f4ab2fc46e3?auto=format&fit=crop&w=600&q=80",  tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
+  { id: 8,  slug: "bhutan",            title: "Bhutan",               category: "International", image: "https://images.unsplash.com/photo-1578556881786-851d4b79cb73?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
+  { id: 9,  slug: "europe",            title: "Europe (Schengen)",    category: "International", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80",  tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
+  { id: 10, slug: "australia",         title: "Australia",            category: "International", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=600&q=80",  tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
+  { id: 11, slug: "new-zealand",       title: "New Zealand",          category: "International", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=600&q=80",  tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
+  { id: 12, slug: "japan",             title: "Japan",                category: "International", image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80",  tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
+  { id: 13, slug: "south-korea",       title: "South Korea",          category: "International", image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=600&q=80",                        tags: ["Culture","City","Food"],                description: "Dynamic cities, ancient palaces, and trendy pop culture." },
+  { id: 14, slug: "turkey",            title: "Turkey",               category: "International", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=80",  tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
+  { id: 15, slug: "usa",               title: "USA",                  category: "International", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=600&q=80",  tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
+  { id: 16, slug: "south-africa",      title: "South Africa",         category: "International", image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=600&q=80",  tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
+  { id: 17, slug: "kenya",             title: "Kenya",                category: "International", image: "https://unsplash.com/photos/60XLoOgwkfA/download?force=true",                        tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
+  { id: 18, slug: "tanzania",          title: "Tanzania",             category: "International", image: "https://unsplash.com/photos/qs4E9t0hJc0/download?force=true",                        tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+
+  { id: 19, slug: "kashmir",           title: "Kashmir",              category: "India",         image: "https://images.unsplash.com/photo-1643449416258-5c8e7ec598b1?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
+  { id: 20, slug: "leh-ladakh",        title: "Leh-Ladakh",           category: "India",         image: "https://images.unsplash.com/photo-1706013997636-29354e064ccc?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
+  { id: 21, slug: "himachal-pradesh",  title: "Himachal Pradesh",     category: "India",         image: "https://images.unsplash.com/photo-1621232082074-1a7750ecc557?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
+  { id: 22, slug: "uttarakhand",       title: "Uttarakhand",          category: "India",         image: "https://images.unsplash.com/photo-1742281412128-5832da2ddce3?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
+  { id: 23, slug: "rajasthan",         title: "Rajasthan",            category: "India",         image: "https://images.unsplash.com/photo-1757168896276-607112de366b?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
+  { id: 24, slug: "goa",               title: "Goa",                  category: "India",         image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80",  tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe." },
+  { id: 25, slug: "kerala",            title: "Kerala",               category: "India",         image: "https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=600&q=80",  tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
+  { id: 26, slug: "andaman",           title: "Andaman Islands",      category: "India",         image: "https://images.unsplash.com/photo-1709623244452-f690c1fc8f2f?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
+  { id: 27, slug: "north-east-india",  title: "North East India",     category: "India",         image: "https://images.unsplash.com/photo-1568644577260-0568ed0217e0?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
+  { id: 28, slug: "sikkim",            title: "Sikkim",               category: "India",         image: "https://images.unsplash.com/photo-1706465416840-85482d841da7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
+  { id: 29, slug: "meghalaya",         title: "Meghalaya",            category: "India",         image: "https://images.unsplash.com/photo-1685271567656-84a60da957d9?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
+  { id: 30, slug: "arunachal-pradesh", title: "Arunachal Pradesh",    category: "India",         image: "https://images.unsplash.com/photo-1648963799576-b225d65eb10c?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
+  { id: 31, slug: "karnataka",         title: "Karnataka",            category: "India",         image: "https://plus.unsplash.com/premium_photo-1697730504977-26847b1f1f91?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8a2FybmF0YWthfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
+  { id: 32, slug: "tamil-nadu",        title: "Tamil Nadu",           category: "India",         image: "https://images.unsplash.com/photo-1742277296187-1cc2f783d792?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
+  { id: 33, slug: "pondicherry",       title: "Pondicherry",          category: "India",         image: "https://images.unsplash.com/photo-1706465416840-85482d841da7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
+  { id: 34, slug: "west-bengal",       title: "West Bengal",          category: "India",         image: "https://plus.unsplash.com/premium_photo-1697730497487-7bda47e4baff?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2VzdCUyMGJlbmdhbHxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
+  { id: 35, slug: "odisha",            title: "Odisha",               category: "India",         image: "https://unsplash.com/photos/a4KEI6SYy10/download?force=true",                        tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
+  { id: 36, slug: "gujarat",           title: "Gujarat",              category: "India",         image: "https://images.unsplash.com/photo-1670406312373-6d4d1776e4aa?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000",                        tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
+  { id: 37, slug: "andhra-pradesh",    title: "Andhra Pradesh",       category: "India",         image: "https://unsplash.com/photos/eQhFAilXCJ4/download?force=true",                        tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
 const INITIAL_BGS = [
@@ -291,11 +293,11 @@ const testimonials = [
 ];
 
 const NOMADS_WA = "919924399335";
-function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)); }
-function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
-function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋  I'd love to plan a trip. Can you help me?`), "_blank"); }
+export function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)); }
+export function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
+export function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋  I'd love to plan a trip. Can you help me?`), "_blank"); }
 
-function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
+export function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
   const fetcher = useFetcher(); 
   
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
@@ -356,7 +358,8 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
         utm_medium: utmData.medium,
         utm_campaign: utmData.campaign
       },
-      { method: "post" }
+      // Safely point the submission to the homepage action to bypass adblockers
+      { method: "post", action: "/?index" }
     );
   };
 
@@ -595,7 +598,7 @@ export default function Home() {
   }, []);
 
   const filteredDests   = destinations.filter(d => d.category === activeCategory);
-  const handleDestClick = (title: string) => { setShowDestinations(false); setFunnelDest(title); setShowFunnel(true); };
+  const handleDestClick = (slug: string) => { setShowDestinations(false); };
   const handleWA        = () => openWhatsApp();
 
   const handlePlanMyTrip = () => {
@@ -689,14 +692,14 @@ export default function Home() {
 
       {showPill && randomDest && (
         <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
-          <div onClick={() => { setShowPill(false); handleDestClick(randomDest.title); }} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative">
-            <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner"><img src={getResponsiveUrls(randomDest.image).src} className="w-full h-full object-cover" alt={randomDest.title} /></div>
+          <Link to={`/destinations/${randomDest.slug}`} onClick={() => setShowPill(false)} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative block">
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner flex-shrink-0"><img src={getResponsiveUrls(randomDest.image).src} className="w-full h-full object-cover" alt={randomDest.title} /></div>
             <div>
               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12} /> Trending</p>
               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
             </div>
-            <button onClick={e => { e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900"><X size={14} /></button>
-          </div>
+            <button onClick={e => { e.preventDefault(); e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-gray-900"><X size={14} /></button>
+          </Link>
         </div>
       )}
 
@@ -760,10 +763,11 @@ export default function Home() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredDests.map(dest => (
-                  <div
+                  <Link
                     key={dest.id}
-                    onClick={() => handleDestClick(dest.title)}
-                    className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black"
+                    to={`/destinations/${dest.slug}`}
+                    onClick={() => setShowDestinations(false)}
+                    className="group relative rounded-[1.75rem] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-2 bg-black block"
                     style={{ aspectRatio: "3/4", contentVisibility: "auto", contain: "paint layout style" }}
                   >
                     <OptimizedImage src={dest.image} alt={dest.title} className="absolute inset-0 w-full h-full transition-transform duration-[3s] group-hover:scale-110" />
@@ -777,7 +781,7 @@ export default function Home() {
                     </div>
                     <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F2328] bg-white px-3 py-1.5 rounded-full shadow-md">
-                        Plan this trip → 
+                        Explore → 
                       </span>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
@@ -786,7 +790,7 @@ export default function Home() {
                         {dest.description}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -920,6 +924,33 @@ export default function Home() {
       </footer>
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} utmData={utmData} />}
+
+      {/* AI & Search Engine Schema Markup */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "The Nomads Co.",
+        "url": "https://thenomadsco.in",
+        "logo": "https://thenomadsco.in/the-nomads-logo.jpeg",
+        "founder": {
+          "@type": "Person",
+          "name": "Kirti Shah"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vadodara",
+          "addressRegion": "Gujarat",
+          "addressCountry": "IN"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-99243-99335",
+          "contactType": "customer service",
+          "availableLanguage": ["English", "Hindi"]
+        },
+        "priceRange": "$$$",
+        "description": "Premium, zero-stress personalized travel planning and curated international and domestic itineraries."
+      })}} />
 
       <style>{`
         @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }

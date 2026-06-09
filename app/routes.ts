@@ -9,6 +9,7 @@ export default [
   
   // --- Existing Routes ---
   route("contactus", "routes/contactus.tsx"),
+  route("destinations/:slug", "routes/destination.tsx"),
   route("london", "routes/london.tsx"),
   route("switzerland", "routes/switzerland.tsx"),
   route("france", "routes/france.tsx"),

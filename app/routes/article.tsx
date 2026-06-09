@@ -33,11 +33,11 @@ export async function loader({ params }: Route.LoaderArgs) {
 export function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Article Not Found | The Nomads Co." }];
   
-  // Dynamic OpenGraph tags for WhatsApp, LinkedIn, iMessage previews
   const url = `https://thenomadsco.in/journal/${data.slug}`;
   return [
     { title: `${data.title} | The Nomads Co.` },
     { name: "description", content: data.excerpt },
+    { tagName: "link", rel: "canonical", href: url }, // Tells Google this is the master copy
     { property: "og:title", content: data.title },
     { property: "og:description", content: data.excerpt },
     { property: "og:image", content: data.imageUrl },
@@ -48,10 +48,23 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function Article() {
-  const { title, content, imageUrl, date } = useLoaderData<typeof loader>();
+  const { title, content, imageUrl, date, excerpt } = useLoaderData<typeof loader>();
 
   return (
     <div className="min-h-screen bg-white font-sans">
+      
+      {/* Dynamic SEO Article Schema */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "image": imageUrl,
+        "datePublished": new Date(date).toISOString(),
+        "description": excerpt,
+        "author": { "@type": "Person", "name": "Kirti Shah" },
+        "publisher": { "@type": "Organization", "name": "The Nomads Co." }
+      })}} />
+
       <section className="relative h-[60vh] min-h-[500px] flex items-end justify-center w-full bg-[#1F2328] overflow-hidden pb-16">
         {imageUrl && (
           <img src={imageUrl} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-80 scale-105" />

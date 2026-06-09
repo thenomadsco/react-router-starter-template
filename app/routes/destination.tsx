@@ -3,13 +3,12 @@ import { useState, useEffect } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import type { Route } from "./+types/destination";
 
-// Import your central database and shared components from the homepage
+// Import central database and shared components from the homepage
 import { 
   destinations, 
   DestinationFunnel, 
   ArrowLeft, 
   ArrowRight,
-  isMobile,
   waLink
 } from "./home";
 
@@ -24,12 +23,12 @@ export function loader({ params }: Route.LoaderArgs) {
 export function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Not Found | The Nomads Co." }];
   
-  // Dynamic OpenGraph SEO Tags for WhatsApp / LinkedIn previews
   const url = `https://thenomadsco.in/destinations/${data.slug}`;
   const title = `Travel to ${data.title} | The Nomads Co.`;
   return [
     { title: title },
     { name: "description", content: data.description },
+    { tagName: "link", rel: "canonical", href: url }, // Ensures Google indexes this specific destination
     { property: "og:title", content: title },
     { property: "og:description", content: data.description },
     { property: "og:image", content: data.image },

@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Permit Required",
   seasonLabel: "Best: Mar - Jun",
   heroSlides: [
-    { label: "Tsomgo", alt: "Lake", src: "https://images.unsplash.com/photo-1631643171709-626f69ca8be0?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Kanchenjunga", alt: "Mountain", src: "https://images.unsplash.com/photo-1588252277025-27a39d42eb26?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Pelling", alt: "Skywalk", src: "https://images.unsplash.com/photo-1626129883907-275d3c73335e?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Tea", alt: "Temi Garden", src: "https://images.unsplash.com/photo-1622364718420-1da2ce67cb2a?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Tsomgo", alt: "Lake", src: "/images/slides/sikkim-1-800.webp", srcSet: "/images/slides/sikkim-1-800.webp 800w, /images/slides/sikkim-1-1400.webp 1400w" },
+    { label: "Kanchenjunga", alt: "Mountain", src: "/images/slides/sikkim-2-800.webp", srcSet: "/images/slides/sikkim-2-800.webp 800w, /images/slides/sikkim-2-1400.webp 1400w" },
+    { label: "Pelling", alt: "Skywalk", src: "/images/slides/sikkim-3-800.webp", srcSet: "/images/slides/sikkim-3-800.webp 800w, /images/slides/sikkim-3-1400.webp 1400w" },
+    { label: "Tea", alt: "Temi Garden", src: "/images/slides/sikkim-4-800.webp", srcSet: "/images/slides/sikkim-4-800.webp 800w, /images/slides/sikkim-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Gangtok", desc: "Arrive at Bagdogra Airport and drive to Gangtok along the Teesta River. Check-in and spend the evening strolling on the vehicle-free M.G. Marg, full of cafes and shops." },
@@ -87,7 +87,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

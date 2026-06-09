@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "E-Visa Assisted",
   seasonLabel: "Best: Oct - Apr",
   heroSlides: [
-    { label: "Burj Khalifa", alt: "Skyline", src: "https://images.unsplash.com/photo-1512453979798-5ea904ac6605?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Mosque", alt: "Sheikh Zayed", src: "https://images.unsplash.com/photo-1542345097-d86504a557b7?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Desert", alt: "Safari", src: "https://images.unsplash.com/photo-1451337516015-6b6fcd1c9063?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Palm", alt: "Jumeirah", src: "https://images.unsplash.com/photo-1518684079-3c830dcef6c0?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Burj Khalifa", alt: "Skyline", src: "/images/slides/uae-1-800.webp", srcSet: "/images/slides/uae-1-800.webp 800w, /images/slides/uae-1-1400.webp 1400w" },
+    { label: "Mosque", alt: "Sheikh Zayed", src: "/images/slides/uae-2-800.webp", srcSet: "/images/slides/uae-2-800.webp 800w, /images/slides/uae-2-1400.webp 1400w" },
+    { label: "Desert", alt: "Safari", src: "/images/slides/uae-3-800.webp", srcSet: "/images/slides/uae-3-800.webp 800w, /images/slides/uae-3-1400.webp 1400w" },
+    { label: "Palm", alt: "Jumeirah", src: "/images/slides/uae-4-800.webp", srcSet: "/images/slides/uae-4-800.webp 800w, /images/slides/uae-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Dubai", desc: "Arrive and transfer to hotel. Evening Dhow Cruise at Dubai Marina with dinner and skyline views." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

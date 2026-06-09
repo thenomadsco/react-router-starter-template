@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "UK Visa Assisted",
   seasonLabel: "Best: Apr - Sep",
   heroSlides: [
-    { label: "London", alt: "Big Ben & Westminster", src: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Edinburgh", alt: "Edinburgh Castle", src: "https://images.unsplash.com/photo-1541414772555-6c95f4d0fe31?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Highlands", alt: "Scottish Highlands", src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Bath", alt: "Historic Bath", src: "https://images.unsplash.com/photo-1543340713-8e9d6d53ef7e?q=70&w=1200&auto=format&fit=crop" },
+    { label: "London", alt: "Big Ben & Westminster", src: "/images/slides/london-1-800.webp", srcSet: "/images/slides/london-1-800.webp 800w, /images/slides/london-1-1400.webp 1400w" },
+    { label: "Edinburgh", alt: "Edinburgh Castle", src: "/images/slides/london-2-800.webp", srcSet: "/images/slides/london-2-800.webp 800w, /images/slides/london-2-1400.webp 1400w" },
+    { label: "Highlands", alt: "Scottish Highlands", src: "/images/slides/london-3-800.webp", srcSet: "/images/slides/london-3-800.webp 800w, /images/slides/london-3-1400.webp 1400w" },
+    { label: "Bath", alt: "Historic Bath", src: "/images/slides/london-4-800.webp", srcSet: "/images/slides/london-4-800.webp 800w, /images/slides/london-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in London", desc: "Arrive at Heathrow Airport and transfer to the central London hotel. Spend the evening with a relaxed walk along the Thames or visit Covent Garden." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

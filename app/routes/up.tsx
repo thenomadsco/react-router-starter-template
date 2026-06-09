@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - Mar",
   heroSlides: [
-    { label: "Varanasi", alt: "Ghats", src: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Agra", alt: "Taj Mahal", src: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Ayodhya", alt: "Ram Mandir", src: "https://images.unsplash.com/photo-1619864273410-634626305a4b?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Lucknow", alt: "Rumi Darwaza", src: "https://images.unsplash.com/photo-1588824367399-c092923cb99c?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Varanasi", alt: "Ghats", src: "/images/slides/up-1-800.webp", srcSet: "/images/slides/up-1-800.webp 800w, /images/slides/up-1-1400.webp 1400w" },
+    { label: "Agra", alt: "Taj Mahal", src: "/images/slides/up-2-800.webp", srcSet: "/images/slides/up-2-800.webp 800w, /images/slides/up-2-1400.webp 1400w" },
+    { label: "Ayodhya", alt: "Ram Mandir", src: "/images/slides/up-3-800.webp", srcSet: "/images/slides/up-3-800.webp 800w, /images/slides/up-3-1400.webp 1400w" },
+    { label: "Lucknow", alt: "Rumi Darwaza", src: "/images/slides/up-4-800.webp", srcSet: "/images/slides/up-4-800.webp 800w, /images/slides/up-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Varanasi", desc: "Arrive in Varanasi, the spiritual capital. Evening visit to Dashashwamedh Ghat to witness the mesmerizing Ganga Aarti, a synchronized ritual of light and chanting." },
@@ -87,7 +87,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

@@ -4,7 +4,7 @@ import nomadsLogo from "./the nomads logo.jpeg";
 const PAGE_CONFIG = {
   title: "Honeymoon Specials",
   subtitle: "Begin Your Forever",
-  heroImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=70&w=1200&auto=format&fit=crop",
+  heroImage: "/images/slides/honeymoon-hero-800.webp",
 };
 
 export function meta() {
@@ -25,7 +25,7 @@ export default function HoneymoonPage() {
       
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[500px] flex items-end pb-16 px-6 sm:px-12 overflow-hidden">
-        <img src={PAGE_CONFIG.heroImage} alt="Honeymoon" className="absolute inset-0 w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
+        <img src={PAGE_CONFIG.heroImage} alt="Honeymoon" srcSet="/images/slides/honeymoon-hero-800.webp 800w, /images/slides/honeymoon-hero-1400.webp 1400w" sizes="100vw" className="absolute inset-0 w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="relative z-10 max-w-[1400px] mx-auto w-full text-white">
           <span className="px-4 py-2 bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-block">

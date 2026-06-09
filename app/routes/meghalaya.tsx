@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Oct - May",
   heroSlides: [
-    { label: "Root Bridge", alt: "Living Root Bridge", src: "https://images.unsplash.com/photo-1591016422238-63cb5fb5ca50?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Dawki", alt: "Clear River", src: "https://images.unsplash.com/photo-1589379677465-b7787373ae4a?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Falls", alt: "Nohkalikai", src: "https://images.unsplash.com/photo-1627284704386-777579728276?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Shillong", alt: "Cherry Blossom", src: "https://images.unsplash.com/photo-1518182170546-07fa6ee551f0?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Root Bridge", alt: "Living Root Bridge", src: "/images/slides/meghalaya-1-800.webp", srcSet: "/images/slides/meghalaya-1-800.webp 800w, /images/slides/meghalaya-1-1400.webp 1400w" },
+    { label: "Dawki", alt: "Clear River", src: "/images/slides/meghalaya-2-800.webp", srcSet: "/images/slides/meghalaya-2-800.webp 800w, /images/slides/meghalaya-2-1400.webp 1400w" },
+    { label: "Falls", alt: "Nohkalikai", src: "/images/slides/meghalaya-3-800.webp", srcSet: "/images/slides/meghalaya-3-800.webp 800w, /images/slides/meghalaya-3-1400.webp 1400w" },
+    { label: "Shillong", alt: "Cherry Blossom", src: "/images/slides/meghalaya-4-800.webp", srcSet: "/images/slides/meghalaya-4-800.webp 800w, /images/slides/meghalaya-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival & Transfer to Shillong", desc: "Arrive at Guwahati and drive to Shillong, the 'Scotland of the East'. Stop at Umiam Lake (Barapani) for a stunning sunset view. Evening at leisure in Police Bazar." },
@@ -87,7 +87,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

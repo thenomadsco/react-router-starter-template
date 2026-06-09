@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Visa Assisted",
   seasonLabel: "Best: Mar - May",
   heroSlides: [
-    { label: "Fuji", alt: "Mt Fuji", src: "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Tokyo", alt: "Shibuya", src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Kyoto", alt: "Shrine", src: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Osaka", alt: "Dotonbori", src: "https://images.unsplash.com/photo-1590253230536-cb65cc7f45b5?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Fuji", alt: "Mt Fuji", src: "/images/slides/japan-1-800.webp", srcSet: "/images/slides/japan-1-800.webp 800w, /images/slides/japan-1-1400.webp 1400w" },
+    { label: "Tokyo", alt: "Shibuya", src: "/images/slides/japan-2-800.webp", srcSet: "/images/slides/japan-2-800.webp 800w, /images/slides/japan-2-1400.webp 1400w" },
+    { label: "Kyoto", alt: "Shrine", src: "/images/slides/japan-3-800.webp", srcSet: "/images/slides/japan-3-800.webp 800w, /images/slides/japan-3-1400.webp 1400w" },
+    { label: "Osaka", alt: "Dotonbori", src: "/images/slides/japan-4-800.webp", srcSet: "/images/slides/japan-4-800.webp 800w, /images/slides/japan-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Tokyo", desc: "Arrive in Tokyo. Transfer to hotel. Evening exploration of Shinjuku's neon lights." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

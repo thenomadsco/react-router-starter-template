@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Nov - Feb",
   heroSlides: [
-    { label: "Kutch", alt: "White Desert", src: "https://images.unsplash.com/photo-1642841819300-20ed449c02a1?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Unity", alt: "Statue of Unity", src: "https://images.unsplash.com/photo-1598886367332-90f7d468eb37?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Modhera", alt: "Sun Temple", src: "https://images.unsplash.com/photo-1620202636709-1bb62b4293c3?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Gir", alt: "Lions", src: "https://images.unsplash.com/photo-1594895697620-e2609026210f?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Kutch", alt: "White Desert", src: "/images/slides/gujarat-1-800.webp", srcSet: "/images/slides/gujarat-1-800.webp 800w, /images/slides/gujarat-1-1400.webp 1400w" },
+    { label: "Unity", alt: "Statue of Unity", src: "/images/slides/gujarat-2-800.webp", srcSet: "/images/slides/gujarat-2-800.webp 800w, /images/slides/gujarat-2-1400.webp 1400w" },
+    { label: "Modhera", alt: "Sun Temple", src: "/images/slides/gujarat-3-800.webp", srcSet: "/images/slides/gujarat-3-800.webp 800w, /images/slides/gujarat-3-1400.webp 1400w" },
+    { label: "Gir", alt: "Lions", src: "/images/slides/gujarat-4-800.webp", srcSet: "/images/slides/gujarat-4-800.webp 800w, /images/slides/gujarat-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Ahmedabad", desc: "Arrive in Ahmedabad, India's first UNESCO Heritage City. Visit Sabarmati Ashram and the intricate Adalaj Stepwell. Evening visit to Kankaria Lake or the Sabarmati Riverfront." },
@@ -87,7 +87,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

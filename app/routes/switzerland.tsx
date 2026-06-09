@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Schengen Visa",
   seasonLabel: "Best: Apr - Oct",
   heroSlides: [
-    { label: "Matterhorn", alt: "Zermatt", src: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Lucerne", alt: "Chapel Bridge", src: "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Interlaken", alt: "Lakes", src: "https://images.unsplash.com/photo-1498354177663-18012973171d?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Zurich", alt: "City", src: "https://images.unsplash.com/photo-1515488764276-beab7607c1e6?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Matterhorn", alt: "Zermatt", src: "/images/slides/switzerland-1-800.webp", srcSet: "/images/slides/switzerland-1-800.webp 800w, /images/slides/switzerland-1-1400.webp 1400w" },
+    { label: "Lucerne", alt: "Chapel Bridge", src: "/images/slides/switzerland-2-800.webp", srcSet: "/images/slides/switzerland-2-800.webp 800w, /images/slides/switzerland-2-1400.webp 1400w" },
+    { label: "Interlaken", alt: "Lakes", src: "/images/slides/switzerland-3-800.webp", srcSet: "/images/slides/switzerland-3-800.webp 800w, /images/slides/switzerland-3-1400.webp 1400w" },
+    { label: "Zurich", alt: "City", src: "/images/slides/switzerland-4-800.webp", srcSet: "/images/slides/switzerland-4-800.webp 800w, /images/slides/switzerland-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Zurich", desc: "Arrive in Zurich and transfer to the hotel via Swiss Rail. Spend the evening exploring the Old Town (Altstadt) and the lakeside promenade." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

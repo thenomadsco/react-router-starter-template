@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Nov - Feb",
   heroSlides: [
-    { label: "Palolem", alt: "Beach Sunset", src: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Heritage", alt: "Old Goa Church", src: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Fort", alt: "Chapora Fort", src: "https://images.unsplash.com/photo-1596716036814-c36b6339cc90?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Relax", alt: "Palm Trees", src: "https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Palolem", alt: "Beach Sunset", src: "/images/slides/goa-1-800.webp", srcSet: "/images/slides/goa-1-800.webp 800w, /images/slides/goa-1-1400.webp 1400w" },
+    { label: "Heritage", alt: "Old Goa Church", src: "/images/slides/goa-2-800.webp", srcSet: "/images/slides/goa-2-800.webp 800w, /images/slides/goa-2-1400.webp 1400w" },
+    { label: "Fort", alt: "Chapora Fort", src: "/images/slides/goa-3-800.webp", srcSet: "/images/slides/goa-3-800.webp 800w, /images/slides/goa-3-1400.webp 1400w" },
+    { label: "Relax", alt: "Palm Trees", src: "/images/slides/goa-4-800.webp", srcSet: "/images/slides/goa-4-800.webp 800w, /images/slides/goa-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Goa", desc: "Arrive at Dabolim/Mopa Airport and transfer to the hotel. Spend the day relaxing by the pool or heading to Calangute/Baga beach to experience the vibrant shacks and seafood." },
@@ -86,7 +86,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

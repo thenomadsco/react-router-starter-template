@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Schengen Visa",
   seasonLabel: "Best: Apr - Oct",
   heroSlides: [
-    { label: "Rome", alt: "Colosseum", src: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Venice", alt: "Canals", src: "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Florence", alt: "Duomo", src: "https://images.unsplash.com/photo-1543997385-d72db621e25d?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Amalfi", alt: "Coast", src: "https://images.unsplash.com/photo-1533904353181-255e0a3b05f2?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Rome", alt: "Colosseum", src: "/images/slides/italy-1-800.webp", srcSet: "/images/slides/italy-1-800.webp 800w, /images/slides/italy-1-1400.webp 1400w" },
+    { label: "Venice", alt: "Canals", src: "/images/slides/italy-2-800.webp", srcSet: "/images/slides/italy-2-800.webp 800w, /images/slides/italy-2-1400.webp 1400w" },
+    { label: "Florence", alt: "Duomo", src: "/images/slides/italy-3-800.webp", srcSet: "/images/slides/italy-3-800.webp 800w, /images/slides/italy-3-1400.webp 1400w" },
+    { label: "Amalfi", alt: "Coast", src: "/images/slides/italy-4-800.webp", srcSet: "/images/slides/italy-4-800.webp 800w, /images/slides/italy-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Rome", desc: "Arrive in the Eternal City. Transfer to the hotel. Evening walk to the Trevi Fountain and Spanish Steps. Enjoy authentic pizza or pasta." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

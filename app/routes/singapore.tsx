@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "E-Visa Assisted",
   seasonLabel: "Best: All Year",
   heroSlides: [
-    { label: "MBS", alt: "Marina Bay Sands", src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Gardens", alt: "Supertrees", src: "https://images.unsplash.com/photo-1506318137071-a8bcbfd0d8bb?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Sentosa", alt: "Island", src: "https://images.unsplash.com/photo-1552392437-1262d140e69b?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Jewel", alt: "Waterfall", src: "https://images.unsplash.com/photo-1585250325407-30e49f874136?q=70&w=1200&auto=format&fit=crop" },
+    { label: "MBS", alt: "Marina Bay Sands", src: "/images/slides/singapore-1-800.webp", srcSet: "/images/slides/singapore-1-800.webp 800w, /images/slides/singapore-1-1400.webp 1400w" },
+    { label: "Gardens", alt: "Supertrees", src: "/images/slides/singapore-2-800.webp", srcSet: "/images/slides/singapore-2-800.webp 800w, /images/slides/singapore-2-1400.webp 1400w" },
+    { label: "Sentosa", alt: "Island", src: "/images/slides/singapore-3-800.webp", srcSet: "/images/slides/singapore-3-800.webp 800w, /images/slides/singapore-3-1400.webp 1400w" },
+    { label: "Jewel", alt: "Waterfall", src: "/images/slides/singapore-4-800.webp", srcSet: "/images/slides/singapore-4-800.webp 800w, /images/slides/singapore-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival & Night Safari", desc: "Arrive at Changi. Evening Night Safari to spot nocturnal wildlife in their natural habitat." },
@@ -88,7 +88,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

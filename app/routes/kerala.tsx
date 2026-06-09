@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Sep - Mar",
   heroSlides: [
-    { label: "Alleppey", alt: "Backwaters", src: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Munnar", alt: "Tea Gardens", src: "https://images.unsplash.com/photo-1593693397690-362cb9666c64?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Kochi", alt: "Fishing Nets", src: "https://images.unsplash.com/photo-1590636906232-446757c3df90?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Culture", alt: "Kathakali", src: "https://images.unsplash.com/photo-1598188207908-4682c7324748?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Alleppey", alt: "Backwaters", src: "/images/slides/kerala-1-800.webp", srcSet: "/images/slides/kerala-1-800.webp 800w, /images/slides/kerala-1-1400.webp 1400w" },
+    { label: "Munnar", alt: "Tea Gardens", src: "/images/slides/kerala-2-800.webp", srcSet: "/images/slides/kerala-2-800.webp 800w, /images/slides/kerala-2-1400.webp 1400w" },
+    { label: "Kochi", alt: "Fishing Nets", src: "/images/slides/kerala-3-800.webp", srcSet: "/images/slides/kerala-3-800.webp 800w, /images/slides/kerala-3-1400.webp 1400w" },
+    { label: "Culture", alt: "Kathakali", src: "/images/slides/kerala-4-800.webp", srcSet: "/images/slides/kerala-4-800.webp 800w, /images/slides/kerala-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Kochi & Transfer to Munnar", desc: "Arrive at Cochin International Airport and proceed on a scenic 4-hour drive to Munnar. En route, stop at Cheeyappara and Valara waterfalls. Watch the landscape transform from coastal palms to rolling tea gardens." },
@@ -87,7 +87,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

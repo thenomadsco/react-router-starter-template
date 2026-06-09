@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "Visa Free / On Arrival",
   seasonLabel: "Best: Nov - Apr",
   heroSlides: [
-    { label: "Bangkok", alt: "Wat Arun", src: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Phi Phi", alt: "Islands", src: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=70&w=1200&auto=format&fit=crop" },
-    { label: "James Bond", alt: "Island", src: "https://images.unsplash.com/photo-1537956965359-3578dd3e846c?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Market", alt: "Floating Market", src: "https://images.unsplash.com/photo-1598971861713-54ad16a75af9?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Bangkok", alt: "Wat Arun", src: "/images/slides/thailand-1-800.webp", srcSet: "/images/slides/thailand-1-800.webp 800w, /images/slides/thailand-1-1400.webp 1400w" },
+    { label: "Phi Phi", alt: "Islands", src: "/images/slides/thailand-2-800.webp", srcSet: "/images/slides/thailand-2-800.webp 800w, /images/slides/thailand-2-1400.webp 1400w" },
+    { label: "James Bond", alt: "Island", src: "/images/slides/thailand-3-800.webp", srcSet: "/images/slides/thailand-3-800.webp 800w, /images/slides/thailand-3-1400.webp 1400w" },
+    { label: "Market", alt: "Floating Market", src: "/images/slides/thailand-4-800.webp", srcSet: "/images/slides/thailand-4-800.webp 800w, /images/slides/thailand-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Bangkok", desc: "Arrive in Bangkok. Transfer to hotel. Evening Chao Phraya River Dinner Cruise with views of illuminated temples." },
@@ -89,7 +89,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

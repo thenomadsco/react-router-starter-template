@@ -15,10 +15,10 @@ const PAGE_CONFIG = {
   visaLabel: "No Visa Required",
   seasonLabel: "Best: Apr - Oct",
   heroSlides: [
-    { label: "Dal Lake", alt: "Shikara ride on Dal Lake", src: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Gulmarg", alt: "Snow covered Gulmarg", src: "https://images.unsplash.com/photo-1566837945700-30057527ade0?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Pahalgam", alt: "Betaab Valley", src: "https://images.unsplash.com/photo-1595842827763-71775e378393?q=70&w=1200&auto=format&fit=crop" },
-    { label: "Sonamarg", alt: "Thajiwas Glacier", src: "https://images.unsplash.com/photo-1623164034876-47402dc43736?q=70&w=1200&auto=format&fit=crop" },
+    { label: "Dal Lake", alt: "Shikara ride on Dal Lake", src: "/images/slides/kashmir-1-800.webp", srcSet: "/images/slides/kashmir-1-800.webp 800w, /images/slides/kashmir-1-1400.webp 1400w" },
+    { label: "Gulmarg", alt: "Snow covered Gulmarg", src: "/images/slides/kashmir-2-800.webp", srcSet: "/images/slides/kashmir-2-800.webp 800w, /images/slides/kashmir-2-1400.webp 1400w" },
+    { label: "Pahalgam", alt: "Betaab Valley", src: "/images/slides/kashmir-3-800.webp", srcSet: "/images/slides/kashmir-3-800.webp 800w, /images/slides/kashmir-3-1400.webp 1400w" },
+    { label: "Sonamarg", alt: "Thajiwas Glacier", src: "/images/slides/kashmir-4-800.webp", srcSet: "/images/slides/kashmir-4-800.webp 800w, /images/slides/kashmir-4-1400.webp 1400w" },
   ],
   itinerary: [
     { day: "01", title: "Arrival in Srinagar", desc: "Arrive at Srinagar Airport and transfer to a Deluxe Houseboat. Spend the afternoon enjoying a romantic Shikara ride on Dal Lake, witnessing the floating vegetable markets and a golden sunset reflecting off the water." },
@@ -88,7 +88,7 @@ export default function DestinationPage() {
       <section className="relative h-[85vh] min-h-[600px] flex items-end pb-20 px-6 sm:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#2D3191]">
           {slides.map((slide, i) => (
-            <img key={slide.src} src={slide.src} alt={slide.alt} className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+            <img key={slide.src} src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes="100vw" className={["absolute inset-0 w-full h-full object-cover", "transition-[opacity,transform] duration-[1500ms]", "ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform", i === activeSlide ? "opacity-100 scale-[1.05]" : "opacity-0 scale-100"].join(" ")} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

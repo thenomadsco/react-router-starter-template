@@ -3,40 +3,18 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 export default [
   index("routes/home.tsx"),
   
-  // --- Blog Headless Routes ---
+  // --- SEO & Infrastructure ---
+  route("sitemap.xml", "routes/sitemap.xml.ts"),
+  route("robots.txt", "routes/robots.txt.ts"),
+  route("*", "routes/not-found.tsx"), // Smart 404 Page catches broken links
+  
+  // --- Dynamic Routes ---
   route("journal", "routes/journal.tsx"),
   route("journal/:slug", "routes/article.tsx"),
-  
-  // --- Existing Routes ---
-  route("contactus", "routes/contactus.tsx"),
   route("destinations/:slug", "routes/destination.tsx"),
-  route("london", "routes/london.tsx"),
-  route("switzerland", "routes/switzerland.tsx"),
-  route("france", "routes/france.tsx"),
-  route("italy", "routes/italy.tsx"),
-  route("maldives", "routes/maldives.tsx"),
-  route("indonesia", "routes/indonesia.tsx"),
-  route("thailand", "routes/thailand.tsx"),
-  route("vietnam", "routes/vietnam.tsx"),
-  route("uae", "routes/uae.tsx"),
-  route("singapore", "routes/singapore.tsx"),
-  route("japan", "routes/japan.tsx"),
-  route("australia", "routes/australia.tsx"),
+  
+  // --- Existing Static Routes ---
+  route("contactus", "routes/contactus.tsx"),
   route("privacypolicy", "routes/privacypolicy.tsx"),
   route("terms", "routes/terms.tsx"),
-  route("kashmir", "routes/kashmir.tsx"),
-  route("kerala", "routes/kerala.tsx"),
-  route("andaman", "routes/andaman.tsx"),
-  route("ladakh", "routes/ladakh.tsx"),
-  route("goa", "routes/goa.tsx"),
-  route("rajasthan", "routes/rajasthan.tsx"),
-  route("gujarat", "routes/gujarat.tsx"),
-  route("mp", "routes/mp.tsx"),
-  route("up", "routes/up.tsx"),
-  route("himachal", "routes/himachal.tsx"),
-  route("meghalaya", "routes/meghalaya.tsx"),
-  route("sikkim", "routes/sikkim.tsx"),
-  route("family-vacations", "routes/family.tsx"),
-  route("honeymoon-specials", "routes/honeymoon.tsx"),
-  route("friends-adventure", "routes/friends.tsx"),
 ] satisfies RouteConfig;

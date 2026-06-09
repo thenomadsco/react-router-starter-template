@@ -1,11 +1,29 @@
-import { Link } from "react-router";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useFetcher } from "react-router";
+import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.jpeg";
 import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
 
 export function headers() {
-  return { "Cache-Control": "no-store" };
+  return { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const payload = Object.fromEntries(formData);
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
+  
+  try {
+    await fetch(MAKE_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    return { success: true };
+  } catch (err) {
+    console.error("Server-side webhook failed:", err);
+    return { success: false };
+  }
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -50,27 +68,24 @@ function ArrowRight(p: any) {
 function Quote(p: any)            { return <IconBase {...p} fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></IconBase>; }
 
 const getResponsiveUrls = (url: string) => {
-  // Download links can't be optimised — skip them entirely
-  if (url.includes("/download")) return { src: url, srcSet: undefined };
   if (!url.includes("unsplash.com") && !url.includes("unsplash.it")) return { src: url, srcSet: undefined };
   let baseUrl = url.replace(/&w=\d+/g, "").replace(/\?w=\d+&/g, "?").replace(/w=\d+/g, "");
   baseUrl = baseUrl.replace(/&q=\d+/g, "").replace(/\?q=\d+&/g, "?").replace(/q=\d+/g, "");
-  baseUrl = baseUrl.replace(/&fm=[^&]*/g, "").replace(/&auto=[^&]*/g, "");
   if (baseUrl.endsWith("?") || baseUrl.endsWith("&")) baseUrl = baseUrl.slice(0, -1);
   const sep = baseUrl.includes("?") ? "&" : "?";
-
+  
   return {
-    src: `${baseUrl}${sep}w=600&q=75&fm=webp&auto=compress`,
-    srcSet: `${baseUrl}${sep}w=400&q=70&fm=webp&auto=compress 400w, ${baseUrl}${sep}w=600&q=75&fm=webp&auto=compress 600w, ${baseUrl}${sep}w=1000&q=75&fm=webp&auto=compress 1000w`
+    src: `${baseUrl}${sep}w=600&q=75`, 
+    srcSet: `${baseUrl}${sep}w=400&q=70 400w, ${baseUrl}${sep}w=600&q=75 600w, ${baseUrl}${sep}w=1000&q=75 1000w`
   };
 };
 
-const OptimizedImage = ({ src, alt, className, priority = false, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" }: { src: string; alt: string; className?: string; priority?: boolean; sizes?: string }) => {
+const OptimizedImage = ({ src, alt, className, priority = false }: { src: string; alt: string; className?: string; priority?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState(false);
   const { src: optimizedSrc, srcSet } = getResponsiveUrls(src);
-  const finalSrc = err ? "https://placehold.co/600x800/1F2328/FAFAF8?text=No+Image" : optimizedSrc;
-
+  const finalSrc = err ? "https://placehold.co/600x800/FF0000/FFFFFF?text=IMAGE+ERROR" : optimizedSrc;
+  
   return (
     <div className={`relative overflow-hidden bg-[#FAFAF8] ${className ?? ""}`}>
       {!loaded && !err && (
@@ -78,17 +93,17 @@ const OptimizedImage = ({ src, alt, className, priority = false, sizes = "(max-w
           <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-[shimmer_1.5s_infinite]" />
         </div>
       )}
-      <img
-        src={finalSrc}
+      <img 
+        src={finalSrc} 
         srcSet={srcSet}
-        sizes={sizes}
-        alt={alt}
-        loading={priority ? "eager" : "lazy"}
+        sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 1000px"
+        alt={alt} 
+        loading={priority ? "eager" : "lazy"} 
         decoding={priority ? "sync" : "async"}
-        onLoad={() => setLoaded(true)}
+        onLoad={() => setLoaded(true)} 
         onError={() => setErr(true)}
         style={{ transform: "translateZ(0)" }}
-        className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`}
+        className={`w-full h-full object-cover transition-opacity duration-700 relative z-10 ${loaded ? "opacity-100" : "opacity-0"}`} 
       />
     </div>
   );
@@ -106,44 +121,18 @@ function getObs() {
 }
 
 const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  // Three-state machine to eliminate FOUC:
-  //   "pre"     – SSR / pre-hydration: no animation classes → content is fully visible in
-  //               the server-rendered HTML, so the browser never shows a blank page while
-  //               JavaScript is still downloading on a cold first load.
-  //   "visible" – in viewport: animate to fully visible.
-  //   "hidden"  – below fold: hide and wait for IntersectionObserver.
-  //
-  // useLayoutEffect fires synchronously BEFORE the browser paints.  The transition
-  // "pre → hidden" for below-fold elements therefore happens before the first pixel
-  // is drawn — eliminating the visible→invisible flash that useEffect causes because
-  // useEffect fires *after* paint, leaving a frame where the element is visible.
-  const [state, setState] = useState<"pre" | "visible" | "hidden">("pre");
+  const [vis, setVis] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) {
-      setState("visible");
-      return;
-    }
-
-    setState("hidden");
-    const obs = getObs();
-    if (!obs) { setState("visible"); return; }
-    revealCbs.set(el, () => setState("visible"));
-    obs.observe(el);
+  
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = getObs(); if (!obs) { setVis(true); return; }
+    revealCbs.set(el, () => setVis(true)); obs.observe(el);
     return () => { revealCbs.delete(el); obs.unobserve(el); };
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-1000 ease-out ${
-        state === "hidden" ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-      } ${className}`}
-    >
+    <div ref={ref} className={`transition-all duration-1000 ease-out ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
     </div>
   );
@@ -298,15 +287,17 @@ const keyServices = [
 
 const testimonials = [
   { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! \uD83D\uDE0A \u2728 " }
+  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 😊 ✨ " }
 ];
 
 const NOMADS_WA = "919924399335";
 function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)); }
 function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
-function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! \uD83D\uDC4B  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! \uD83D\uDC4B  I'd love to plan a trip. Can you help me?`), "_blank"); }
+function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋  I'd love to plan a trip. Can you help me?`), "_blank"); }
 
 function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
+  const fetcher = useFetcher(); 
+  
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
   const [dest, setDest] = useState(preselectedDest || "");
   const [timeline, setTimeline] = useState("");
@@ -316,7 +307,6 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
@@ -333,48 +323,41 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
     setName("");
     setEmail("");
     setWhatsapp("");
-    setIsSubmitting(false);
     onClose();
   };
 
   const waURL = () => {
-    const body = `Hi Kirti! \uD83D\uDC4B  I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
+    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
     return waLink(body);
   };
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isStep4Valid = name.trim().length > 0 && isEmailValid;
+  const isSubmitting = fetcher.state === "submitting";
 
-  const submitToCRM = async () => {
-    setIsSubmitting(true);
-    const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
-    
-    const payload = {
-      name: name.trim(),
-      email: email.trim(),
-      whatsapp: whatsapp.trim(),
-      destination: dest,
-      timeline,
-      travelers,
-      vibe,
-      source: "React Funnel",
-      utm_source: utmData.source,
-      utm_medium: utmData.medium,
-      utm_campaign: utmData.campaign
-    };
-
-    try {
-      await fetch(MAKE_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } catch (err) {
-      console.warn("CRM Webhook failed or was blocked. Bypassing safely to Step 5.", err);
-    } finally {
-      setIsSubmitting(false);
+  useEffect(() => {
+    if (fetcher.data?.success) {
       next(); 
     }
+  }, [fetcher.data]);
+
+  const submitToCRM = () => {
+    fetcher.submit(
+      {
+        name: name.trim(),
+        email: email.trim(),
+        whatsapp: whatsapp.trim(),
+        destination: dest,
+        timeline,
+        travelers,
+        vibe,
+        source: "React Funnel",
+        utm_source: utmData.source,
+        utm_medium: utmData.medium,
+        utm_campaign: utmData.campaign
+      },
+      { method: "post" }
+    );
   };
 
   return (
@@ -524,13 +507,13 @@ function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedD
                   onClick={() => { window.open(waURL(), "_blank"); handleClose(); }} 
                   className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm"
                 >
-                  Chat with Kirti Now \uD83D\uDCAC 
+                  Chat with Kirti Now 💬
                 </button>
                 <button 
                   onClick={() => { alert("Thank you! Kirti will reach out via email shortly."); handleClose(); }} 
                   className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
                 >
-                  I'll wait for an email \uD83D\uDCE7 
+                  I'll wait for an email 📧
                 </button>
               </div>
             </div>
@@ -938,6 +921,27 @@ export default function Home() {
 
       {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} utmData={utmData} />}
 
+      <style>{`
+        @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }
+        .animate-float-in { animation: floatIn .8s cubic-bezier(.16,1,.3,1) forwards; }
+
+        @keyframes heroFade { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        .animate-hero-1 { animation: heroFade .8s cubic-bezier(.16,1,.3,1) .1s both; }
+        .animate-hero-2 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .25s both; }
+        .animate-hero-3 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .4s both; }
+        .animate-hero-4 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .55s both; }
+        .animate-hero-5 { animation: heroFade .9s cubic-bezier(.16,1,.3,1) .7s both; }
+
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+        .animate-fade-in-up { animation: fadeInUp .4s ease-out forwards; }
+        
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

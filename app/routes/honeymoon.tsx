@@ -7,6 +7,17 @@ const PAGE_CONFIG = {
   heroImage: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=70&w=1200&auto=format&fit=crop",
 };
 
+export function meta() {
+  return [
+    { title: "Honeymoon Specials | The Nomads Co." },
+    { name: "description", content: "Begin your forever with The Nomads Co. Romantic honeymoon packages to Maldives, Switzerland, France, Kerala, and more. Complimentary hotel upgrades included." },
+    { property: "og:title", content: "Honeymoon Specials | The Nomads Co." },
+    { property: "og:description", content: "Curated honeymoon packages with complimentary room upgrades, candlelit dinners, and spa treatments." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ];
+}
+
 export default function HoneymoonPage() {
   return (
     <div className="min-h-screen bg-white antialiased">
@@ -14,7 +25,7 @@ export default function HoneymoonPage() {
       
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[500px] flex items-end pb-16 px-6 sm:px-12 overflow-hidden">
-        <img src={PAGE_CONFIG.heroImage} alt="Honeymoon" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={PAGE_CONFIG.heroImage} alt="Honeymoon" className="absolute inset-0 w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="relative z-10 max-w-[1400px] mx-auto w-full text-white">
           <span className="px-4 py-2 bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-block">
@@ -87,13 +98,13 @@ function EnquiryForm({ subject }: { subject: string }) {
     <section id="enquire" className="py-20 px-6 sm:px-12 bg-[#FAFAF8]">
       <div className="max-w-[800px] mx-auto text-center">
         <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Plan Your Honeymoon</h2>
-        <p className="text-[#1F2328]/60 mb-8">Let us make your first trip as a married couple magical.</p>
+        <p className="text-[#1F2328] mb-8">Let us make your first trip as a married couple magical.</p>
         <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-4 text-left">
           <input type="hidden" name="_subject" value={subject} />
           <input type="hidden" name="_captcha" value="false" />
           <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" name="name" required placeholder="Name" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
-            <input type="tel" name="phone" required placeholder="Phone Number" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
+            <label htmlFor="hm-name" className="sr-only">Full Name</label><input id="hm-name" type="text" name="name" required placeholder="Name" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
+            <label htmlFor="hm-phone" className="sr-only">Phone Number</label><input id="hm-phone" type="tel" name="phone" required placeholder="Phone Number" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
           </div>
           <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all">Get Quote</button>
         </form>

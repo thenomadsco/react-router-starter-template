@@ -25,6 +25,17 @@ export async function loader() {
   } catch (error) { throw new Error("Failed to load journal"); }
 }
 
+export function meta() {
+  return [
+    { title: "The Journal | The Nomads Co." },
+    { name: "description", content: "Travel stories, tips, and behind-the-scenes insights from The Nomads Co. journeys around the world." },
+    { property: "og:title", content: "The Journal | The Nomads Co." },
+    { property: "og:description", content: "Stories, insights, and behind-the-scenes glimpses from our journeys around the globe." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ];
+}
+
 export default function Journal() {
   const posts = useLoaderData<typeof loader>();
   const [scrolled, setScrolled] = useState(false);
@@ -68,7 +79,7 @@ export default function Journal() {
               <img 
                 src={post.imageUrl} 
                 alt={post.title} 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" loading="lazy" decoding="async" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute top-4 left-4 z-10">
@@ -77,9 +88,9 @@ export default function Journal() {
                 </span>
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                <h4 className="text-xl font-bold text-white leading-tight mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>
+                <h2 className="text-xl font-bold text-white leading-tight mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>
                   {post.title}
-                </h4>
+                </h2>
               </div>
             </Link>
           ))}

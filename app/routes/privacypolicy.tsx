@@ -28,6 +28,14 @@ const customStyles = `
   }
 `;
 
+export function meta() {
+  return [
+    { title: "Privacy Policy | The Nomads Co." },
+    { name: "description", content: "Read The Nomads Co. privacy policy to understand how we collect, use, and protect your personal information." },
+    { name: "robots", content: "noindex" },
+  ];
+}
+
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-white antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191] pb-24 sm:pb-0">

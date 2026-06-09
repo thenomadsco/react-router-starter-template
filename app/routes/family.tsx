@@ -8,6 +8,17 @@ const PAGE_CONFIG = {
   heroImage: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=70&w=1200&auto=format&fit=crop",
 };
 
+export function meta() {
+  return [
+    { title: "Family Vacations | The Nomads Co." },
+    { name: "description", content: "Plan the perfect family holiday with The Nomads Co. Kid-friendly stays, relaxed itineraries, and 24/7 support. Tailored trips across India and worldwide." },
+    { property: "og:title", content: "Family Vacations | The Nomads Co." },
+    { property: "og:description", content: "Unforgettable family holidays crafted by The Nomads Co." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ];
+}
+
 export default function FamilyPage() {
   return (
     <div className="min-h-screen bg-white antialiased">
@@ -15,7 +26,7 @@ export default function FamilyPage() {
       
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[500px] flex items-end pb-16 px-6 sm:px-12 overflow-hidden">
-        <img src={PAGE_CONFIG.heroImage} alt="Family Vacation" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={PAGE_CONFIG.heroImage} alt="Family Vacation" className="absolute inset-0 w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="relative z-10 max-w-[1400px] mx-auto w-full text-white">
           <span className="px-4 py-2 bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest rounded-full mb-6 inline-block">
@@ -91,13 +102,13 @@ function EnquiryForm({ subject }: { subject: string }) {
     <section id="enquire" className="py-20 px-6 sm:px-12 bg-[#FAFAF8]">
       <div className="max-w-[800px] mx-auto text-center">
         <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Start Planning</h2>
-        <p className="text-[#1F2328]/60 mb-8">Tell us about your family and we'll craft the perfect trip.</p>
+        <p className="text-[#1F2328] mb-8">Tell us about your family and we'll craft the perfect trip.</p>
         <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-4 text-left">
           <input type="hidden" name="_subject" value={subject} />
           <input type="hidden" name="_captcha" value="false" />
           <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" name="name" required placeholder="Parent's Name" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
-            <input type="tel" name="phone" required placeholder="Phone Number" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
+            <label htmlFor="family-name" className="sr-only">Full Name</label><input id="family-name" type="text" name="name" required placeholder="Parent's Name" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
+            <label htmlFor="family-phone" className="sr-only">Phone Number</label><input id="family-phone" type="tel" name="phone" required placeholder="Phone Number" className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF]" />
           </div>
           <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all">Get Quote</button>
         </form>

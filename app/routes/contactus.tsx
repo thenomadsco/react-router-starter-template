@@ -28,6 +28,17 @@ const customStyles = `
   }
 `;
 
+export function meta() {
+  return [
+    { title: "Contact Us | The Nomads Co." },
+    { name: "description", content: "Get in touch with The Nomads Co. to plan your perfect trip. Talk to Kirti Shah, travel expert with 10+ years of experience crafting extraordinary journeys." },
+    { property: "og:title", content: "Contact Us | The Nomads Co." },
+    { property: "og:description", content: "Reach out to plan your dream holiday. We handle visas, flights, hotels, and everything in between." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ];
+}
+
 export default function ContactUsPage() {
   return (
     <div className="min-h-screen bg-[#f2f2f5] antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191] pb-24 sm:pb-0">
@@ -40,7 +51,7 @@ export default function ContactUsPage() {
           <h1 className="text-4xl sm:text-5xl font-semibold text-[#1F2328] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
             Get in Touch
           </h1>
-          <p className="text-[#1F2328]/60 text-lg max-w-2xl mx-auto">
+          <p className="text-[#1F2328]/70 text-lg max-w-2xl mx-auto">
             Ready to plan your next adventure? We're here to help you craft the perfect itinerary.
           </p>
         </div>
@@ -166,23 +177,23 @@ export default function ContactUsPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
-                  <input type="text" name="name" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="Rahul Sharma" />
+                  <label htmlFor="contact-name" className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label>
+                  <input id="contact-name" type="text" name="name" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="Rahul Sharma" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
-                  <input type="tel" name="phone" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="+91 98765 43210" />
+                  <label htmlFor="contact-phone" className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label>
+                  <input id="contact-phone" type="tel" name="phone" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="+91 98765 43210" />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Email Address</label>
-                <input type="email" name="email" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="rahul@example.com" />
+                <label htmlFor="contact-email" className="text-sm font-semibold ml-1 text-[#1F2328]">Email Address</label>
+                <input id="contact-email" type="email" name="email" required className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="rahul@example.com" />
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-semibold ml-1 text-[#1F2328]">Message</label>
-                <textarea name="message" rows={4} className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none resize-none" placeholder="Tell us about your travel plans..." />
+                <label htmlFor="contact-message" className="text-sm font-semibold ml-1 text-[#1F2328]">Message</label>
+                <textarea id="contact-message" name="message" rows={4} className="w-full px-4 py-3 bg-white rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none resize-none" placeholder="Tell us about your travel plans..." />
               </div>
 
               <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-2 shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2">
@@ -329,9 +340,9 @@ function Footer() {
             <h3 className="text-2xl font-semibold mb-5 text-[#1F2328]" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>The Nomads Co.</h3>
             <p className="text-sm text-[#1F2328]/70 leading-relaxed mb-8">Crafting extraordinary journeys for extraordinary people since 2015.</p>
             <div className="flex gap-3">
-              <a href="https://www.instagram.com/thenomadsco/" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Instagram size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
-              <a href="https://www.facebook.com/Thenomadsco/" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Facebook size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
-              <a href="mailto:thenomadsco@gmail.com" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Mail size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
+              <a href="https://www.instagram.com/thenomadsco/" aria-label="Follow on Instagram" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Instagram size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
+              <a href="https://www.facebook.com/Thenomadsco/" aria-label="Follow on Facebook" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Facebook size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
+              <a href="mailto:thenomadsco@gmail.com" aria-label="Email us" className="w-10 h-10 bg-[#EEF0FF] hover:bg-[#2D3191] rounded-xl flex items-center justify-center group transition-all hover:-translate-y-0.5"><Mail size={18} className="text-[#2D3191] group-hover:text-white transition-colors" /></a>
             </div>
           </div>
           <div>
@@ -344,12 +355,13 @@ function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-[#1F2328]">Newsletter</h4>
             <p className="text-sm text-[#1F2328]/70 mb-4">Get travel inspiration and exclusive deals</p>
             <div className="flex gap-2">
-              <input type="email" placeholder="Your email" className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] text-sm" />
+              <label htmlFor="newsletter-email" className="sr-only">Email address for newsletter</label>
+              <input id="newsletter-email" type="email" placeholder="Your email" className="flex-1 px-4 py-2.5 bg-white border border-[#E6E8EF] text-[#1F2328] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2D3191] text-sm" />
               <button className="px-4 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-xl hover:bg-[#242875] transition-colors">Join</button>
             </div>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/60">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/70">
           <div>© {currentYear} The Nomads Co. All rights reserved.</div>
           <div className="flex gap-6">
             <Link to="/privacypolicy" className="hover:text-[#2D3191] transition-colors">Privacy Policy</Link>

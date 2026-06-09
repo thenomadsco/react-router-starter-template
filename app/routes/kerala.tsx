@@ -36,6 +36,19 @@ const PAGE_CONFIG = {
 export function headers() {
   return { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" };
 }
+export function meta() {
+  const title = `${PAGE_CONFIG.title} Tour Package | The Nomads Co.`;
+  const description = `Explore ${PAGE_CONFIG.title} with The Nomads Co. ${PAGE_CONFIG.badge} destination. ${PAGE_CONFIG.durationLabel}. Get your free custom quote today.`;
+  return [
+    { title },
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ];
+}
+
 
 // --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
@@ -91,7 +104,7 @@ export default function DestinationPage() {
               <div className="flex items-center gap-2"><FileCheck size={20} /> {PAGE_CONFIG.visaLabel}</div>
               <div className="flex items-center gap-2"><Calendar size={20} /> {PAGE_CONFIG.seasonLabel}</div>
             </div>
-            <div className="flex items-center gap-2 mt-8">{slides.map((_, i) => (<button key={i} type="button" onClick={() => setActiveSlide(i)} className={`h-2.5 rounded-full transition-all duration-300 bg-white/40 hover:bg-white/70 ${i === activeSlide ? "w-10 bg-white" : "w-2.5"}`} />))}</div>
+            <div className="flex items-center gap-2 mt-8">{slides.map((_, i) => (<button key={i} type="button" aria-label={`Go to slide ${i + 1}`} onClick={() => setActiveSlide(i)} className={`h-2.5 rounded-full transition-all duration-300 bg-white/40 hover:bg-white/70 ${i === activeSlide ? "w-10 bg-white" : "w-2.5"}`} />))}</div>
           </div>
           <div className="lg:text-right">
             <p className="text-white/80 text-lg mb-6">"Every journey tells a story. Let's write yours."</p>
@@ -133,17 +146,17 @@ export default function DestinationPage() {
       <section id="enquire" className="py-20 px-6 sm:px-12 max-w-[800px] mx-auto scroll-mt-24">
         <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] border border-[#E6E8EF] shadow-xl text-center">
           <h2 className="text-3xl font-bold text-[#1F2328] mb-4">Like this plan?</h2>
-          <p className="text-[#1F2328]/60 mb-8">Get your final quote based on your travel dates.</p>
+          <p className="text-[#1F2328] mb-8">Get your final quote based on your travel dates.</p>
           <form action="https://formsubmit.co/thenomadsco@gmail.com" method="POST" className="space-y-4 text-left">
             <input type="hidden" name="_subject" value={`${PAGE_CONFIG.title} Package Inquiry`} />
             <input type="hidden" name="_captcha" value="false" />
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]">Full Name</label><input type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. Rahul Sharma" /></div>
-              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]">Phone Number</label><input type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. +91 98765 43210" /></div>
+              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]" htmlFor="name">Full Name</label><input id="name" type="text" name="name" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. Rahul Sharma" /></div>
+              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]" htmlFor="phone">Phone Number</label><input id="phone" type="tel" name="phone" required className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] focus:ring-1 focus:ring-[#2D3191] outline-none" placeholder="e.g. +91 98765 43210" /></div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]">Travel Month</label><input type="text" name="travel_dates" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. May 2026" /></div>
-              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]">Travelers</label><input type="text" name="travelers" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. 2 Adults, 1 Child" /></div>
+              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]" htmlFor="travel_dates">Travel Month</label><input id="travel_dates" type="text" name="travel_dates" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. May 2026" /></div>
+              <div className="space-y-1"><label className="text-sm font-semibold ml-1 text-[#1F2328]" htmlFor="travelers">Travelers</label><input id="travelers" type="text" name="travelers" className="w-full px-4 py-3 bg-[#FAFAF8] rounded-xl border border-[#E6E8EF] outline-none" placeholder="e.g. 2 Adults, 1 Child" /></div>
             </div>
             <button type="submit" className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-xl hover:bg-[#242875] transition-all mt-4 shadow-lg hover:-translate-y-0.5">Get My Free Quote</button>
           </form>
@@ -173,7 +186,7 @@ function Navigation() {
              <Link to="/" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
              <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
           </div>
-          <div className="flex items-center justify-end gap-4"><Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">Plan My Trip</Link><button className="lg:hidden p-2" onClick={() => setIsOpen(!isOpen)}><Menu size={24} /></button></div>
+          <div className="flex items-center justify-end gap-4"><Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">Plan My Trip</Link><button className="lg:hidden p-2" aria-label="Open navigation menu" onClick={() => setIsOpen(!isOpen)}><Menu size={24} /></button></div>
         </div>
       </div>
       {isOpen && (
@@ -200,7 +213,7 @@ function Footer() {
       <div className="max-w-[1400px] mx-auto text-center sm:text-left grid grid-cols-1 md:grid-cols-3 gap-10">
         <div><h3 className="text-2xl font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>The Nomads Co.</h3><p className="text-sm text-[#1F2328]/70">Crafting extraordinary journeys since 2015.</p></div>
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
-        <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a><a href="mailto:thenomadsco@gmail.com"><Mail /></a></div></div>
+        <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/" aria-label="Follow on Instagram"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/" aria-label="Follow on Facebook"><Facebook /></a><a href="mailto:thenomadsco@gmail.com" aria-label="Email us"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
           <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>

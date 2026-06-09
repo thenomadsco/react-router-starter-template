@@ -28,6 +28,14 @@ const customStyles = `
   }
 `;
 
+export function meta() {
+  return [
+    { title: "Terms & Conditions | The Nomads Co." },
+    { name: "description", content: "Read the terms and conditions for using The Nomads Co. travel services and website." },
+    { name: "robots", content: "noindex" },
+  ];
+}
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white antialiased selection:bg-[#2D3191]/10 selection:text-[#2D3191] pb-24 sm:pb-0">

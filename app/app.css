@@ -74,3 +74,18 @@ body {
 .wp-content .alignright { float: right; margin-left: 1.5rem; margin-bottom: 1rem; }
 .wp-content .size-full,
 .wp-content .size-large { max-width: 100%; height: auto; }
+
+/* ── Article prose typography ─────────────────────────────────────────────── */
+
+.wp-content.prose {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.wp-content.prose h1,
+.wp-content.prose h2,
+.wp-content.prose h3,
+.wp-content.prose h4,
+.wp-content.prose h5,
+.wp-content.prose h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+}

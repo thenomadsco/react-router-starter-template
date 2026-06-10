@@ -113,7 +113,7 @@ export default function DestinationPage() {
               Design Your Escape <ArrowRight className="w-5 h-5" />
             </button>
             <button 
-              onClick={() => window.open(waLink(`Hi Kirti! ðŸ‘‹ I'm looking at your page for ${dest.title} and would love to plan a trip. Can you help me?`), "_blank")}
+              onClick={() => window.open(waLink(`Hi Kirti! 👋 I'm looking at your page for ${dest.title} and would love to plan a trip. Can you help me?`), "_blank")}
               className="mt-4 text-[#2D3191] font-bold text-sm hover:underline"
             >
               Or chat instantly on WhatsApp

@@ -24,7 +24,7 @@ const PAGE_CONFIG = {
     { day: "01", title: "Arrival in Bali", desc: "Welcome to the Island of Gods. Transfer to the cultural center of Ubud. Relax at the resort surrounded by rainforests." },
     { day: "02", title: "Ubud & Kintamani", desc: "Visit the Sacred Monkey Forest and Tegalalang Rice Terraces. Swing over the jungle. Lunch with a view of Mount Batur volcano." },
     { day: "03", title: "Waterfalls & Temples", desc: "Visit Tegenungan Waterfall and Tirta Empul (Holy Water Temple). Experience the spiritual side of Bali." },
-    { day: "04", title: "Nusa Penida Island", desc: "Speedboat trip to Nusa Penida. Visit the iconic Kelingking Beach (T-Rex cliff), Broken Beach, and Angelâ€™s Billabong. Return to Bali mainland." },
+    { day: "04", title: "Nusa Penida Island", desc: "Speedboat trip to Nusa Penida. Visit the iconic Kelingking Beach (T-Rex cliff), Broken Beach, and Angel’s Billabong. Return to Bali mainland." },
     { day: "05", title: "Water Sports & Tanah Lot", desc: "Morning water sports at Tanjung Benoa (Banana boat, Jet ski). Sunset visit to the famous Tanah Lot Temple on the rock." },
     { day: "06", title: "Uluwatu & Kecak Dance", desc: "Visit Uluwatu Temple on the cliffs. Watch the mesmerizing Kecak Fire Dance at sunset. Seafood dinner on Jimbaran Bay." },
     { day: "07", title: "Departure", desc: "Last-minute souvenir shopping before transferring to the airport." },
@@ -217,7 +217,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/" aria-label="Follow on Instagram"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/" aria-label="Follow on Facebook"><Facebook /></a><a href="mailto:thenomadsco@gmail.com" aria-label="Email us"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

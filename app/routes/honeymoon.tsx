@@ -127,7 +127,7 @@ function Navigation() {
 function Footer() {
   return (
     <footer className="bg-white py-12 px-6 border-t border-[#E6E8EF] text-center">
-      <p className="text-[#1F2328]/50">Â© {new Date().getFullYear()} The Nomads Co.</p>
+      <p className="text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
     </footer>
   );
 }

@@ -293,9 +293,9 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
           <div className="flex-1 text-center md:text-left">
             <Quote size={32} className="text-[#2D3191]/20 mb-4 mx-auto md:mx-0" />
             <p className="text-xl md:text-2xl text-[#1F2328]/80 leading-relaxed italic font-medium mb-4">
-              "Kirti handled everything. We were in holiday mode from day one. She has never failed to be on point â€” the reminders, the information, looking after everyone's needs."
+              “Kirti handled everything. We were in holiday mode from day one. She has never failed to be on point with the reminders, the information, and looking after everyone's needs.”
             </p>
-            <p className="text-sm font-bold text-[#2D3191] uppercase tracking-wider">â€” Greece Group Trip, 10 Travellers</p>
+            <p className=”text-sm font-bold text-[#2D3191] uppercase tracking-wider”>Greece Group Trip, 10 Travellers</p>
           </div>
           <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={20} className="text-yellow-400" />)}</div>
@@ -320,13 +320,13 @@ const keyServices = [
 
 const testimonials = [
   { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! ðŸ˜Š âœ¨ " }
+  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 😊 ✨ " }
 ];
 
 const NOMADS_WA = "919924399335";
 export function isMobile() { return typeof window !== "undefined" && (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)); }
 export function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
-export function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! ðŸ‘‹  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! ðŸ‘‹  I'd love to plan a trip. Can you help me?`), "_blank"); }
+export function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋  I'd love to plan a trip. Can you help me?`), "_blank"); }
 
 export function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
   const fetcher = useFetcher(); 
@@ -360,7 +360,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
   };
 
   const waURL = () => {
-    const body = `Hi Kirti! ðŸ‘‹ I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
+    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
     return waLink(body);
   };
 
@@ -441,8 +441,8 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
                   <button key={d} onClick={() => { setDest(d); setTimeout(next, 150); }} className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${dest === d ? "bg-[#2D3191] text-white border-[#2D3191]" : "bg-[#FAFAF8] text-gray-600 border-gray-200 hover:border-[#2D3191] hover:text-[#2D3191]"}`}>{d}</button>
                 ))}
               </div>
-              <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="Or type any destinationâ€¦" className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner" onKeyDown={e => e.key === "Enter" && dest && next()} />
-              <button onClick={next} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg">Continue â†’ </button>
+              <input type="text" value={dest} onChange={e => setDest(e.target.value)} placeholder="Or type any destination..." className="w-full text-base px-5 py-4 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner" onKeyDown={e => e.key === "Enter" && dest && next()} />
+              <button onClick={next} disabled={!dest} className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg">Continue → </button>
             </div>
           )}
 
@@ -523,7 +523,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
                 disabled={!isStep4Valid || isSubmitting} 
                 className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
               >
-                {isSubmitting ? "Securing preferences..." : "Secure My Trip â†’ "}
+                {isSubmitting ? "Securing preferences..." : "Secure My Trip → "}
               </button>
             </div>
           )}
@@ -541,13 +541,13 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
                   onClick={() => { window.open(waURL(), "_blank"); handleClose(); }} 
                   className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm"
                 >
-                  Chat with Kirti Now ðŸ’¬
+                  Chat with Kirti Now 💬
                 </button>
                 <button 
                   onClick={() => { alert("Thank you! Kirti will reach out via email shortly."); handleClose(); }} 
                   className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
                 >
-                  I'll wait for an email ðŸ“§
+                  I'll wait for an email 📧
                 </button>
               </div>
             </div>
@@ -812,7 +812,7 @@ export default function Home() {
                     </div>
                     <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F2328] bg-white px-3 py-1.5 rounded-full shadow-md">
-                        Explore â†’ 
+                        Explore → 
                       </span>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
@@ -949,7 +949,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-300 font-medium">
-            <p className="text-sm">Â© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
+            <p className="text-sm">© {new Date().getFullYear()} The Nomads Co. All rights reserved.</p>
           </div>
         </div>
       </footer>

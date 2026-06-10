@@ -25,7 +25,7 @@ const PAGE_CONFIG = {
     { day: "02", title: "Jaipur Sightseeing", desc: "Visit the Hawa Mahal (Palace of Winds) and the majestic Amber Fort. Opt for an elephant ride up the ramparts. Stop by Jal Mahal (Water Palace) for photos. Evening free for shopping in the colorful Johari Bazaar." },
     { day: "03", title: "Jaipur to Jodhpur", desc: "Drive to Jodhpur, the Blue City. Check-in and enjoy evening views of the illuminated Mehrangarh Fort towering over the city." },
     { day: "04", title: "Jodhpur to Udaipur", desc: "Explore Mehrangarh Fort and Jaswant Thada. Proceed to Udaipur, stopping en route at the stunning Ranakpur Jain Temples, known for their intricate marble carvings." },
-    { day: "05", title: "Udaipur â€“ City of Lakes", desc: "Tour the grand City Palace overlooking Lake Pichola and the beautiful Saheliyon Ki Bari. In the evening, enjoy a boat ride on Lake Pichola with views of Jag Mandir and the Lake Palace." },
+    { day: “05”, title: “Udaipur, City of Lakes”, desc: "Tour the grand City Palace overlooking Lake Pichola and the beautiful Saheliyon Ki Bari. In the evening, enjoy a boat ride on Lake Pichola with views of Jag Mandir and the Lake Palace." },
     { day: "06", title: "Departure", desc: "Transfer to Udaipur Airport for the onward journey, taking along royal memories of forts and palaces." },
   ],
 };
@@ -216,7 +216,7 @@ function Footer() {
         <div><h4 className="font-semibold mb-4">Support</h4><Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link></div>
         <div><h4 className="font-semibold mb-4">Social</h4><div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]"><a href="https://www.instagram.com/thenomadsco/" aria-label="Follow on Instagram"><Instagram /></a><a href="https://www.facebook.com/Thenomadsco/" aria-label="Follow on Facebook"><Facebook /></a><a href="mailto:thenomadsco@gmail.com" aria-label="Email us"><Mail /></a></div></div>
         <div className="col-span-full pt-8 border-t border-[#E6E8EF] flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#1F2328]/50">
-          <p>Â© {new Date().getFullYear()} The Nomads Co.</p>
+          <p>© {new Date().getFullYear()} The Nomads Co.</p>
           <div className="flex gap-6"><Link to="/privacypolicy" className="hover:text-[#2D3191]">Privacy Policy</Link><Link to="/terms" className="hover:text-[#2D3191]">Terms</Link></div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 ﻿import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import nomadsLogo from "./the nomads logo.jpeg";
+import nomadsLogo from "./the nomads logo.webp";
 
 const PAGE_CONFIG = {
   title: "Family Vacations",

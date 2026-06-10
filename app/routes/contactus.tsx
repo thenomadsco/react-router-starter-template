@@ -1,7 +1,7 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import nomadsLogo from "./the nomads logo.jpeg";
-import kirtiProfile from "./kirti-shah-profile.jpeg";
+import nomadsLogo from "./the nomads logo.webp";
+import kirtiProfile from "./kirti-shah-profile.webp";
 
 // --- ICONS ---
 const iconDefaults = { size: 24, strokeWidth: 2 };
@@ -270,7 +270,7 @@ function Navigation() {
               onClick={() => setIsOpen((v) => !v)}
             >
               {isOpen ? (
-                <span className="text-2xl leading-none">×</span>
+                <span className="text-2xl leading-none">Ã—</span>
               ) : (
                 <Menu size={22} />
               )}
@@ -362,7 +362,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#1F2328]/70">
-          <div>© {currentYear} The Nomads Co. All rights reserved.</div>
+          <div>Â© {currentYear} The Nomads Co. All rights reserved.</div>
           <div className="flex gap-6">
             <Link to="/privacypolicy" className="hover:text-[#2D3191] transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-[#2D3191] transition-colors">Terms of Service</Link>

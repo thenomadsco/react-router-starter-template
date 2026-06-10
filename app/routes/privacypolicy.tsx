@@ -1,6 +1,6 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import nomadsLogo from "./the nomads logo.jpeg";
+import nomadsLogo from "./the nomads logo.webp";
 
 /**
  * Privacy Policy Page
@@ -69,7 +69,7 @@ export default function PrivacyPolicyPage() {
 
           <h3 className="text-2xl font-bold text-[#1F2328] mt-10 mb-4">Collection of Information</h3>
           <p className="mb-6">
-            There are times when we may collect personal information from you such as name, physical address, or telephone number. It is our intent to inform you before we do that and to tell you what we intend to do with the information. Generally, you will have the option not to provide the information, and in the future, you will be able to ‘opt out’ of certain uses of the information. If you choose not to provide the information we request, you can still visit our website, but you may be unable to access certain options, offers, and services.
+            There are times when we may collect personal information from you such as name, physical address, or telephone number. It is our intent to inform you before we do that and to tell you what we intend to do with the information. Generally, you will have the option not to provide the information, and in the future, you will be able to â€˜opt outâ€™ of certain uses of the information. If you choose not to provide the information we request, you can still visit our website, but you may be unable to access certain options, offers, and services.
           </p>
 
           <h3 className="text-2xl font-bold text-[#1F2328] mt-10 mb-4">Transaction Processing</h3>
@@ -198,7 +198,7 @@ function Footer() {
           </div>
         </div>
         <div>
-          <p className="text-sm text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
+          <p className="text-sm text-[#1F2328]/50">Â© {new Date().getFullYear()} The Nomads Co.</p>
         </div>
       </div>
     </footer>

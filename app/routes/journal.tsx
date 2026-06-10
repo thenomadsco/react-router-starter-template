@@ -1,7 +1,7 @@
-import { Link, useLoaderData, isRouteErrorResponse, useRouteError } from "react-router";
+﻿import { Link, useLoaderData, isRouteErrorResponse, useRouteError } from "react-router";
 import { useState, useEffect } from "react";
 import type { Route } from "./+types/journal";
-import nomadsLogo from "./the nomads logo.jpeg";
+import nomadsLogo from "./the nomads logo.webp";
 
 function IconBase({ size = 24, className, strokeWidth = 2, fill = "none", children }: any) { 
   return <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>; 

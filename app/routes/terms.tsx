@@ -1,6 +1,6 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import nomadsLogo from "./the nomads logo.jpeg";
+import nomadsLogo from "./the nomads logo.webp";
 
 /**
  * Terms and Conditions Page
@@ -203,7 +203,7 @@ function Footer() {
           </div>
         </div>
         <div>
-          <p className="text-sm text-[#1F2328]/50">© {new Date().getFullYear()} The Nomads Co.</p>
+          <p className="text-sm text-[#1F2328]/50">Â© {new Date().getFullYear()} The Nomads Co.</p>
         </div>
       </div>
     </footer>

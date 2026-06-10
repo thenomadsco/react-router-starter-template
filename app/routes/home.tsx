@@ -177,35 +177,80 @@ export const destinations: Destination[] = [
   { id: 37, slug: "andhra-pradesh",     title: "Andhra Pradesh",       category: "India",         image: "/images/hero/dest-andhra-pradesh-800.webp",    tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
 ];
 
-const INITIAL_BGS = [
-  { src: "/images/hero/hero-1-800.webp", srcSet: "/images/hero/hero-1-800.webp 800w, /images/hero/hero-1-1400.webp 1400w" },
-  { src: "/images/hero/hero-2-800.webp", srcSet: "/images/hero/hero-2-800.webp 800w, /images/hero/hero-2-1400.webp 1400w" },
-  { src: "/images/hero/hero-3-800.webp", srcSet: "/images/hero/hero-3-800.webp 800w, /images/hero/hero-3-1400.webp 1400w" },
-];
-
 const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
-  const [currentBg, setCurrentBg] = useState(0);
+  const [hero1, setHero1] = useState<Destination | null>(null);
+  const [hero2, setHero2] = useState<Destination | null>(null);
+  const [activeSlot, setActiveSlot] = useState<1 | 2>(1);
+  const historyRef = useRef<number[]>([]);
 
   useEffect(() => {
-    const timer = setInterval(() => { setCurrentBg((prev) => (prev + 1) % INITIAL_BGS.length); }, 6000); 
+    const getRandomDest = (history: number[]) => {
+      const available = destinations.filter(d => !history.includes(d.id));
+      return available[Math.floor(Math.random() * available.length)] || destinations[0];
+    };
+
+    // Initialize with two distinct random destinations
+    const d1 = getRandomDest([]);
+    const d2 = getRandomDest([d1.id]);
+    setHero1(d1);
+    setHero2(d2);
+    historyRef.current = [d1.id, d2.id];
+
+    const timer = setInterval(() => {
+      setActiveSlot(prev => {
+        const nextActive = prev === 1 ? 2 : 1;
+        
+        // Wait for the 1-second crossfade transition to completely finish before silently 
+        // swapping the background image of the inactive slot to prepare it for the next round.
+        setTimeout(() => {
+          const newDest = getRandomDest(historyRef.current);
+          
+          // Maintain a history of the last 4 destinations to prevent rapid repeats
+          historyRef.current = [...historyRef.current.slice(-3), newDest.id]; 
+          
+          if (nextActive === 1) {
+            setHero2(newDest);
+          } else {
+            setHero1(newDest);
+          }
+        }, 1200);
+
+        return nextActive;
+      });
+    }, 6000); 
+
     return () => clearInterval(timer);
   }, []);
 
+  const renderHeroImage = (hero: Destination | null, isActive: boolean, isEager: boolean) => {
+    if (!hero) return null;
+    const { src, srcSet } = getResponsiveUrls(hero.image);
+    return (
+      <img 
+        src={src} 
+        srcSet={srcSet}
+        sizes="100vw"
+        alt={hero.title} 
+        loading={isEager ? "eager" : "lazy"} 
+        {...(isEager ? { fetchPriority: "high" } : {})}
+        className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${isActive ? "scale-105" : "scale-100"}`} 
+      />
+    );
+  };
+
   return (
     <section className="relative min-h-[95vh] flex items-center justify-center w-full bg-[#1F2328] overflow-hidden">
-      {INITIAL_BGS.map((bg, idx) => (
-        <div key={`hero-bg-${idx}`} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentBg ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-          <img 
-            src={bg.src} 
-            srcSet={bg.srcSet}
-            sizes="100vw"
-            alt="Beautiful travel destination" 
-            loading={idx === 0 ? "eager" : "lazy"} 
-            {...(idx === 0 ? { fetchPriority: "high" } : {})}
-            className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${idx === currentBg ? "scale-105" : "scale-100"}`} 
-          />
-        </div>
-      ))}
+      
+      {/* Dynamic Slot 1 */}
+      <div className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${activeSlot === 1 ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
+        {renderHeroImage(hero1, activeSlot === 1, true)}
+      </div>
+      
+      {/* Dynamic Slot 2 */}
+      <div className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${activeSlot === 2 ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
+        {renderHeroImage(hero2, activeSlot === 2, false)}
+      </div>
+
       <div className="absolute inset-0 bg-gradient-to-t from-[#1F2328]/95 via-[#1F2328]/40 to-black/20 z-10 pointer-events-none" />
       <div className="container mx-auto px-4 md:px-8 relative flex flex-col items-center text-center z-20 pt-32 pb-10">
         <div className="animate-hero-1 inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.1)]">

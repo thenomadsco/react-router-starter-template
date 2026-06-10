@@ -8,8 +8,8 @@ function ArrowLeft(p: any) { return <IconBase {...p}><line x1="19" y1="12" x2="5
 
 export async function loader({ params }: Route.LoaderArgs) {
   const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?slug=${params.slug}&_embed&t=${Date.now()}`;
-  
-  const response = await fetch(WP_API_URL);
+
+  const response = await fetch(WP_API_URL, { signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error("Article not found");
   const posts = await response.json();
   
@@ -81,8 +81,8 @@ export default function Article() {
 
       <section className="py-20 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 md:px-8 flex justify-center">
-          <article 
-            className="prose prose-lg md:prose-xl prose-stone prose-headings:font-bold prose-headings:text-[#1F2328] prose-a:text-[#2D3191] prose-a:no-underline hover:prose-a:underline prose-img:rounded-[2rem] max-w-[800px] w-full"
+          <article
+            className="wp-content prose prose-lg md:prose-xl prose-stone prose-headings:font-bold prose-headings:text-[#1F2328] prose-a:text-[#2D3191] prose-a:no-underline hover:prose-a:underline prose-img:rounded-[2rem] max-w-[800px] w-full"
             style={{ 
               '--tw-prose-headings': "'Playfair Display', serif",
               '--tw-prose-body': "'Inter', ui-sans-serif, system-ui, sans-serif"

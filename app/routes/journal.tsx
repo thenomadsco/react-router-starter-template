@@ -11,7 +11,7 @@ function ArrowLeft(p: any) { return <IconBase {...p}><line x1="19" y1="12" x2="5
 export async function loader() {
   const WP_API_URL = `https://dev-nomadsco-journal-backend.pantheonsite.io/wp-json/wp/v2/posts?_embed&t=${Date.now()}`;
   try {
-    const response = await fetch(WP_API_URL);
+    const response = await fetch(WP_API_URL, { signal: AbortSignal.timeout(8000) });
     if (!response.ok) throw new Error("Failed to fetch journal entries");
     const posts = await response.json();
     return posts.map((post: any) => ({

@@ -5,7 +5,7 @@ import kirtiProfile from "./kirti-shah-profile.jpeg";
 import type { Route } from "./+types/home";
 
 export function headers() {
-  return { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" };
+  return { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" };
 }
 
 export async function action({ request }: Route.ActionArgs) {

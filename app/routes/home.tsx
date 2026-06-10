@@ -261,7 +261,7 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
           Discover the world, <em className="not-italic text-blue-200">beautifully curated.</em>
         </h1>
         <p className="animate-hero-3 text-lg md:text-xl text-white/80 mb-12 max-w-xl leading-relaxed drop-shadow-md">
-          Zero-stress premium travel planning. We handle every detail â€” you collect the memories.
+          Zero-stress premium travel planning. We handle every detail — you collect the memories.
         </p>
         <div className="animate-hero-4">
           <button onClick={onPlanTrip} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">

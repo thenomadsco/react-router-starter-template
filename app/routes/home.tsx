@@ -295,7 +295,7 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
             <p className="text-xl md:text-2xl text-[#1F2328]/80 leading-relaxed italic font-medium mb-4">
               “Kirti handled everything. We were in holiday mode from day one. She has never failed to be on point with the reminders, the information, and looking after everyone's needs.”
             </p>
-            <p className=”text-sm font-bold text-[#2D3191] uppercase tracking-wider”>Greece Group Trip, 10 Travellers</p>
+            <p className="text-sm font-bold text-[#2D3191] uppercase tracking-wider">Greece Group Trip, 10 Travellers</p>
           </div>
           <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={20} className="text-yellow-400" />)}</div>

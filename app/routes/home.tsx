@@ -1,4 +1,4 @@
-﻿import { Link, useFetcher } from "react-router";
+import { Link, useFetcher } from "react-router";
 import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.webp";
 import kirtiProfile from "./kirti-shah-profile.webp";
@@ -145,44 +145,342 @@ export type Destination = {
 
 // Exported so destination.tsx can access the central database
 export const destinations: Destination[] = [
-  { id: 1,  slug: "bali",               title: "Bali, Indonesia",      category: "International", image: "/images/hero/dest-bali-800.webp",              tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture.", highlights: ["Iconic rice terraces in Ubud", "World-class surf at Seminyak & Canggu", "Ancient temples including Tanah Lot & Uluwatu", "Vibrant nightlife and wellness retreats", "Affordable luxury villas with private pools"], bestTime: "April to October (dry season)", priceRange: "₹80,000 – ₹1,50,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive Denpasar, check into villa, Seminyak beach & sunset dinner"},{day:"Day 3–4",activities:"Ubud rice terraces, Monkey Forest, Tegalalang, cooking class"},{day:"Day 5–6",activities:"Uluwatu temple, Kecak fire dance, Nusa Penida day trip"},{day:"Day 7",activities:"Spa day, last-minute shopping, departure"}], whyKirti: "Kirti has personally visited Bali 4 times and has trusted villa and activity partners who give her clients preferential rates and private access." },
-  { id: 2,  slug: "maldives",           title: "Maldives",             category: "International", image: "/images/hero/dest-maldives-800.webp",          tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons.", highlights: ["Overwater bungalows with direct lagoon access", "World's best snorkelling and diving", "Bioluminescent beach nights", "Private sandbank dinners", "Seaplane transfers between islands"], bestTime: "November to April (dry season)", priceRange: "₹1,50,000 – ₹4,00,000 per person", sampleItinerary: [{day:"Day 1",activities:"Arrive Malé, seaplane to resort, welcome dinner over water"},{day:"Day 2–3",activities:"Snorkelling, dolphin cruise, underwater spa"},{day:"Day 4–5",activities:"Private sandbank picnic, sunset fishing, night snorkelling"},{day:"Day 6",activities:"Last morning in lagoon, seaplane back to Malé, depart"}], whyKirti: "Kirti has direct contracts with 12 Maldives resorts — better room categories and inclusions than booking directly or through large OTAs." },
-  { id: 3,  slug: "dubai",              title: "Dubai, UAE",           category: "International", image: "/images/hero/dest-dubai-800.webp",             tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris.", highlights: ["Burj Khalifa and Dubai Frame skyline views", "Desert safari with dune bashing and BBQ dinner", "Dubai Mall, Gold Souk and spice markets", "Luxury beach clubs at JBR and Palm Jumeirah", "Day trip to Abu Dhabi and the Sheikh Zayed Mosque"], bestTime: "November to March (cool season)", priceRange: "₹75,000 – ₹1,80,000 per person", sampleItinerary: [{day:"Day 1",activities:"Arrive Dubai, Dubai Mall & Burj Khalifa at sunset"},{day:"Day 2",activities:"Desert safari, camel ride, dune bashing, BBQ dinner under stars"},{day:"Day 3",activities:"Palm Jumeirah, Atlantis, beach club afternoon"},{day:"Day 4",activities:"Gold Souk, Spice Souk, Abra ride, Old Dubai"},{day:"Day 5",activities:"Abu Dhabi day trip — Sheikh Zayed Mosque & Ferrari World, depart"}], whyKirti: "Dubai is one of Kirti's most-booked destinations. She has preferred partnerships with 4 and 5 star hotels on the Palm and Downtown, often securing upgrades." },
-  { id: 4,  slug: "singapore",          title: "Singapore",            category: "International", image: "/images/hero/dest-singapore-800.webp",         tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
-  { id: 5,  slug: "thailand",           title: "Thailand",             category: "International", image: "/images/hero/dest-thailand-800.webp",          tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
-  { id: 6,  slug: "vietnam",            title: "Vietnam",              category: "International", image: "/images/hero/dest-vietnam-800.webp",           tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
-  { id: 7,  slug: "sri-lanka",          title: "Sri Lanka",            category: "International", image: "/images/hero/dest-sri-lanka-800.webp",         tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
-  { id: 8,  slug: "bhutan",             title: "Bhutan",               category: "International", image: "/images/hero/dest-bhutan-800.webp",            tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
-  { id: 9,  slug: "europe",             title: "Europe (Schengen)",    category: "International", image: "/images/hero/dest-europe-800.webp",            tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe.", highlights: ["Paris — Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps — Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome — Colosseum, Vatican, and authentic pasta", "Barcelona — Sagrada Familia and La Boqueria market"], bestTime: "May to September (summer season)", priceRange: "₹1,80,000 – ₹3,50,000 per person", sampleItinerary: [{day:"Day 1–3",activities:"Arrive Paris, Eiffel Tower, Louvre, Seine cruise, Versailles day trip"},{day:"Day 4–5",activities:"Train to Switzerland, Interlaken, Jungfraujoch excursion"},{day:"Day 6–7",activities:"Amsterdam canal boat, Anne Frank House, Rijksmuseum"},{day:"Day 8–10",activities:"Fly to Rome, Colosseum, Vatican, day trip to Florence"},{day:"Day 11–13",activities:"Barcelona, Sagrada Familia, Montjuïc, La Boqueria, depart"}], whyKirti: "Kirti handles Schengen visas end-to-end. Her 95%+ visa approval rate for Indian passport holders speaks for itself." },
-  { id: 10, slug: "australia",          title: "Australia",            category: "International", image: "/images/hero/dest-australia-800.webp",         tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
-  { id: 11, slug: "new-zealand",        title: "New Zealand",          category: "International", image: "/images/hero/dest-new-zealand-800.webp",       tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
-  { id: 12, slug: "japan",              title: "Japan",                category: "International", image: "/images/hero/dest-japan-800.webp",             tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
-  { id: 13, slug: "south-korea",        title: "South Korea",          category: "International", image: "/images/hero/dest-south-korea-800.webp",       tags: ["Culture","City","Food"],                description: "Dynamic cities, ancient palaces, and trendy pop culture." },
-  { id: 14, slug: "turkey",             title: "Turkey",               category: "International", image: "/images/hero/dest-turkey-800.webp",            tags: ["History","Culture","Landscapes"],       description: "Where East meets West, featuring rich history and unique landscapes." },
-  { id: 15, slug: "usa",                title: "USA",                  category: "International", image: "/images/hero/dest-usa-800.webp",               tags: ["City","Nature","Diverse"],              description: "Diverse experiences from bustling metropolises to vast national parks." },
-  { id: 16, slug: "south-africa",       title: "South Africa",         category: "International", image: "/images/hero/dest-south-africa-800.webp",      tags: ["Wildlife","Adventure","Nature"],        description: "Safari adventures, stunning coastlines, and vibrant culture." },
-  { id: 17, slug: "kenya",              title: "Kenya",                category: "International", image: "/images/hero/dest-kenya-800.webp",             tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
-  { id: 18, slug: "tanzania",           title: "Tanzania",             category: "International", image: "/images/hero/dest-tanzania-800.webp",          tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
+  // INTERNATIONAL
+  { 
+    id: 1, slug: "bali", title: "Bali, Indonesia", category: "International", image: "/images/hero/dest-bali-800.webp", tags: ["Tropical","Beaches","Culture"], 
+    description: "Island of Gods with serene beaches and vibrant culture.", 
+    highlights: ["Iconic rice terraces in Ubud", "World-class surf at Seminyak & Canggu", "Ancient temples including Tanah Lot & Uluwatu", "Vibrant nightlife and wellness retreats", "Affordable luxury villas with private pools"], 
+    bestTime: "April to October (dry season)", 
+    priceRange: "₹80,000 – ₹1,50,000 per person", 
+    sampleItinerary: [{day:"Day 1–2",activities:"Arrive Denpasar, check into villa, Seminyak beach & sunset dinner"},{day:"Day 3–4",activities:"Ubud rice terraces, Monkey Forest, Tegalalang, cooking class"},{day:"Day 5–6",activities:"Uluwatu temple, Kecak fire dance, Nusa Penida day trip"},{day:"Day 7",activities:"Spa day, last-minute shopping, departure"}], 
+    whyKirti: "Kirti has personally visited Bali 4 times and has trusted villa and activity partners who give her clients preferential rates and private access." 
+  },
+  { 
+    id: 2, slug: "maldives", title: "Maldives", category: "International", image: "/images/hero/dest-maldives-800.webp", tags: ["Honeymoon","Luxury","Beaches"], 
+    description: "Overwater villas and crystal clear turquoise lagoons.", 
+    highlights: ["Overwater bungalows with direct lagoon access", "World's best snorkelling and diving", "Bioluminescent beach nights", "Private sandbank dinners", "Seaplane transfers between islands"], 
+    bestTime: "November to April (dry season)", 
+    priceRange: "₹1,50,000 – ₹4,00,000 per person", 
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Malé, seaplane to resort, welcome dinner over water"},{day:"Day 2–3",activities:"Snorkelling, dolphin cruise, underwater spa"},{day:"Day 4–5",activities:"Private sandbank picnic, sunset fishing, night snorkelling"},{day:"Day 6",activities:"Last morning in lagoon, seaplane back to Malé, depart"}], 
+    whyKirti: "Kirti has direct contracts with 12 Maldives resorts — better room categories and inclusions than booking directly or through large OTAs." 
+  },
+  { 
+    id: 3, slug: "dubai", title: "Dubai, UAE", category: "International", image: "/images/hero/dest-dubai-800.webp", tags: ["Luxury","City","Desert"], 
+    description: "Futuristic architecture, luxury shopping, and desert safaris.", 
+    highlights: ["Burj Khalifa and Dubai Frame skyline views", "Desert safari with dune bashing and BBQ dinner", "Dubai Mall, Gold Souk and spice markets", "Luxury beach clubs at JBR and Palm Jumeirah", "Day trip to Abu Dhabi and the Sheikh Zayed Mosque"], 
+    bestTime: "November to March (cool season)", 
+    priceRange: "₹75,000 – ₹1,80,000 per person", 
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Dubai, Dubai Mall & Burj Khalifa at sunset"},{day:"Day 2",activities:"Desert safari, camel ride, dune bashing, BBQ dinner under stars"},{day:"Day 3",activities:"Palm Jumeirah, Atlantis, beach club afternoon"},{day:"Day 4",activities:"Gold Souk, Spice Souk, Abra ride, Old Dubai"},{day:"Day 5",activities:"Abu Dhabi day trip — Sheikh Zayed Mosque & Ferrari World, depart"}], 
+    whyKirti: "Dubai is one of Kirti's most-booked destinations. She has preferred partnerships with 4 and 5 star hotels on the Palm and Downtown, often securing upgrades." 
+  },
+  { 
+    id: 4, slug: "singapore", title: "Singapore", category: "International", image: "/images/hero/dest-singapore-800.webp", tags: ["City","Family","Modern"], 
+    description: "A blend of nature and modernity in a global metropolis.",
+    highlights: ["Gardens by the Bay & Supertree Grove", "Universal Studios Singapore & Sentosa Island", "Night Safari & Singapore Zoo", "Marina Bay Sands observation deck", "Chinatown & Little India food walks"],
+    bestTime: "February to April (least rain)",
+    priceRange: "₹65,000 – ₹1,20,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive, check-in, Night Safari experience"},{day:"Day 2",activities:"City tour, Marina Bay Sands, Gardens by the Bay"},{day:"Day 3",activities:"Full day at Universal Studios Singapore"},{day:"Day 4",activities:"Sentosa Island beaches, S.E.A Aquarium, depart"}],
+    whyKirti: "Singapore is perfect for families. Kirti secures fast-track tourist visas for Indians and bundles attraction tickets so you skip the long queues." 
+  },
+  { 
+    id: 5, slug: "thailand", title: "Thailand", category: "International", image: "/images/hero/dest-thailand-800.webp", tags: ["Beaches","Culture","Nightlife"], 
+    description: "Vibrant street life, ornate temples, and tropical beaches.",
+    highlights: ["Phi Phi & James Bond island hopping", "Grand Palace & Wat Arun in Bangkok", "Ethical elephant sanctuaries in Chiang Mai", "Vibrant nightlife in Phuket & Pattaya", "Authentic Thai street food & massages"],
+    bestTime: "November to early April",
+    priceRange: "₹45,000 – ₹90,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Bangkok, Grand Palace, Chao Phraya river cruise"},{day:"Day 3-4",activities:"Fly to Phuket, Patong Beach, Bangla Road"},{day:"Day 5-6",activities:"Full day Phi Phi Island speedboat tour, relaxation"},{day:"Day 7",activities:"Last minute shopping in Bangkok, depart"}],
+    whyKirti: "Kirti goes beyond the standard tourist traps, curating stays at premium beachfront resorts and guiding you through smooth visa-on-arrival processes." 
+  },
+  { 
+    id: 6, slug: "vietnam", title: "Vietnam", category: "International", image: "/images/hero/dest-vietnam-800.webp", tags: ["Nature","Culture","Food"], 
+    description: "Bustling cities, serene limestone islands, and rich history.",
+    highlights: ["Overnight cruise in Halong Bay", "Wandering the lantern-lit streets of Hoi An", "Cu Chi Tunnels & Mekong Delta tours", "French colonial architecture in Hanoi", "World-renowned Vietnamese coffee and Pho"],
+    bestTime: "February to April or August to October",
+    priceRange: "₹50,000 – ₹95,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Hanoi, Old Quarter tour, water puppet show"},{day:"Day 3-4",activities:"Overnight luxury cruise in Halong Bay"},{day:"Day 5-6",activities:"Fly to Da Nang, explore ancient Hoi An and Ba Na Hills (Golden Bridge)"},{day:"Day 7-8",activities:"Ho Chi Minh City, Cu Chi Tunnels, depart"}],
+    whyKirti: "Vietnam is India's fastest-growing destination. Kirti manages the entire e-visa process and connects you with top-tier Indian restaurants if you miss home food." 
+  },
+  { 
+    id: 7, slug: "sri-lanka", title: "Sri Lanka", category: "International", image: "/images/hero/dest-sri-lanka-800.webp", tags: ["Nature","Wildlife","Beaches"], 
+    description: "Diverse landscapes, wildlife, and ancient Buddhist ruins.",
+    highlights: ["Climbing the ancient Sigiriya Rock Fortress", "Leopard spotting in Yala National Park", "Scenic train ride from Kandy to Ella", "Temple of the Sacred Tooth Relic", "Pristine beaches in Bentota and Mirissa"],
+    bestTime: "December to April (South/West), May to September (East)",
+    priceRange: "₹45,000 – ₹85,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Colombo, transfer to Kandy, Temple of the Tooth"},{day:"Day 3",activities:"Scenic train to Nuwara Eliya (Little England)"},{day:"Day 4",activities:"Yala National Park afternoon safari"},{day:"Day 5-6",activities:"Bentota beach relaxation, Galle Fort day trip, depart"}],
+    whyKirti: "Just a short flight from major Indian cities, Kirti plans perfectly paced road trips across Sri Lanka with trusted private chauffeurs." 
+  },
+  { 
+    id: 8, slug: "bhutan", title: "Bhutan", category: "International", image: "/images/hero/dest-bhutan-800.webp", tags: ["Mountains","Culture","Peace"], 
+    description: "The last great Himalayan kingdom, shrouded in mystery.",
+    highlights: ["Hiking to the iconic Tiger's Nest Monastery", "Exploring majestic Dzongs in Punakha and Thimphu", "Archery matches and traditional Bhutanese culture", "Driving across the scenic Dochu La Pass", "Unmatched Gross National Happiness vibe"],
+    bestTime: "March to May & September to November",
+    priceRange: "₹60,000 – ₹1,10,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Fly into Paro, drive to Thimphu, Buddha Dordenma"},{day:"Day 3",activities:"Drive to Punakha via Dochu La Pass, Punakha Dzong"},{day:"Day 4-5",activities:"Return to Paro, early morning Tiger's Nest hike"},{day:"Day 6",activities:"Hot stone bath, local shopping, depart"}],
+    whyKirti: "Bhutan requires specific permits for Indian nationals (SDF fees). Kirti handles all the bureaucratic paperwork so your entry is seamless." 
+  },
+  { 
+    id: 9, slug: "europe", title: "Europe (Schengen)", category: "International", image: "/images/hero/dest-europe-800.webp", tags: ["History","Culture","Romance"], 
+    description: "Explore diverse cultures, history, and architecture across Europe.", 
+    highlights: ["Paris — Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps — Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome — Colosseum, Vatican, and authentic pasta", "Barcelona — Sagrada Familia and La Boqueria market"], 
+    bestTime: "May to September (summer season)", 
+    priceRange: "₹1,80,000 – ₹3,50,000 per person", 
+    sampleItinerary: [{day:"Day 1–3",activities:"Arrive Paris, Eiffel Tower, Louvre, Seine cruise, Versailles day trip"},{day:"Day 4–5",activities:"Train to Switzerland, Interlaken, Jungfraujoch excursion"},{day:"Day 6–7",activities:"Amsterdam canal boat, Anne Frank House, Rijksmuseum"},{day:"Day 8–10",activities:"Fly to Rome, Colosseum, Vatican, day trip to Florence"},{day:"Day 11–13",activities:"Barcelona, Sagrada Familia, Montjuïc, La Boqueria, depart"}], 
+    whyKirti: "Kirti handles Schengen visas end-to-end. Her 95%+ visa approval rate for Indian passport holders speaks for itself." 
+  },
+  { 
+    id: 10, slug: "australia", title: "Australia", category: "International", image: "/images/hero/dest-australia-800.webp", tags: ["Adventure","Wildlife","Beaches"], 
+    description: "The Great Barrier Reef, outback adventures, and vibrant cities.",
+    highlights: ["Snorkelling the Great Barrier Reef", "Sydney Opera House & Harbour Bridge climb", "Driving the Great Ocean Road (12 Apostles)", "Meeting kangaroos and koalas at wildlife parks", "Vibrant cafe culture in Melbourne"],
+    bestTime: "September to November & March to May",
+    priceRange: "₹2,20,000 – ₹3,80,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Sydney, Opera House tour, Bondi Beach"},{day:"Day 4-6",activities:"Fly to Cairns, Great Barrier Reef catamaran tour, Kuranda Railway"},{day:"Day 7-9",activities:"Fly to Melbourne, Great Ocean Road trip, Yarra Valley"},{day:"Day 10",activities:"City exploration, depart"}],
+    whyKirti: "Australian visas for Indians require meticulous documentation. Kirti’s team vets every financial document to ensure a stress-free approval." 
+  },
+  { 
+    id: 11, slug: "new-zealand", title: "New Zealand", category: "International", image: "/images/hero/dest-new-zealand-800.webp", tags: ["Adventure","Nature","Landscapes"], 
+    description: "Stunning natural landscapes, from mountains to fjords.",
+    highlights: ["Cruising Milford Sound's dramatic fjords", "Hobbiton Movie Set tours in Matamata", "Bungee jumping & jet boating in Queenstown", "Geothermal wonders in Rotorua", "Glacier hiking at Franz Josef"],
+    bestTime: "December to March (Summer)",
+    priceRange: "₹2,50,000 – ₹4,50,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Auckland, drive to Rotorua, Hobbiton tour"},{day:"Day 4-6",activities:"Fly to Queenstown, extreme sports, Skyline Gondola"},{day:"Day 7-8",activities:"Milford Sound day cruise"},{day:"Day 9-10",activities:"Mount Cook region, stargazing, depart from Christchurch"}],
+    whyKirti: "Whether you want a self-drive campervan adventure or a luxury guided tour, Kirti maps out the perfect kiwi routing." 
+  },
+  { 
+    id: 12, slug: "japan", title: "Japan", category: "International", image: "/images/hero/dest-japan-800.webp", tags: ["Culture","Modern","Food"], 
+    description: "A seamless blend of ancient traditions and cutting-edge technology.",
+    highlights: ["Experiencing the sensory overload of Tokyo", "Bullet train (Shinkansen) rides past Mt. Fuji", "Wandering Kyoto's temples & Arashiyama Bamboo Grove", "Meeting the friendly deer in Nara", "Authentic sushi and bustling street food in Osaka"],
+    bestTime: "March to May (Cherry Blossoms) & September to November",
+    priceRange: "₹1,80,000 – ₹3,00,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Tokyo, Shibuya Crossing, teamLab Planets, Asakusa"},{day:"Day 4",activities:"Hakone day trip, hot springs (Onsen), Mt. Fuji views"},{day:"Day 5-7",activities:"Bullet train to Kyoto, Fushimi Inari, Bamboo forest"},{day:"Day 8-9",activities:"Osaka Castle, Dotonbori food tour, Nara day trip, depart"}],
+    whyKirti: "Japan can be overwhelming to navigate. Kirti pre-books your JR passes and maps out train routes so you never get lost in translation." 
+  },
+  { 
+    id: 13, slug: "south-korea", title: "South Korea", category: "International", image: "/images/hero/dest-south-korea-800.webp", tags: ["Culture","City","Food"], 
+    description: "Dynamic cities, ancient palaces, and trendy pop culture.",
+    highlights: ["Trying on Hanbok at Gyeongbokgung Palace", "Exploring Nami Island & K-Drama filming sites", "Shopping in Myeongdong & Hongdae", "Visiting the DMZ (border with North Korea)", "Relaxing on Jeju Island's volcanic beaches"],
+    bestTime: "April to June & September to November",
+    priceRange: "₹1,40,000 – ₹2,20,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Seoul, Palace tour, N Seoul Tower, Myeongdong shopping"},{day:"Day 4",activities:"DMZ half-day tour, Gangnam district"},{day:"Day 5",activities:"Nami Island & Petite France day trip"},{day:"Day 6-8",activities:"Fly to Jeju Island, Hallasan Mountain, Manjanggul Cave, depart"}],
+    whyKirti: "For K-Culture fans, Kirti curates specific itineraries hitting the best drama locations, K-Pop spots, and authentic Korean BBQ joints." 
+  },
+  { 
+    id: 14, slug: "turkey", title: "Turkey", category: "International", image: "/images/hero/dest-turkey-800.webp", tags: ["History","Culture","Landscapes"], 
+    description: "Where East meets West, featuring rich history and unique landscapes.",
+    highlights: ["Hot air ballooning over Cappadocia at sunrise", "Exploring the Blue Mosque & Hagia Sophia in Istanbul", "Thermal pools of Pamukkale", "Shopping in the massive Grand Bazaar", "Cruising the Bosphorus strait"],
+    bestTime: "April to May & September to October",
+    priceRange: "₹1,20,000 – ₹1,90,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Istanbul, Sultanahmet tours, Bosphorus Cruise, Grand Bazaar"},{day:"Day 4-5",activities:"Fly to Cappadocia, sunrise balloon ride, underground cities"},{day:"Day 6",activities:"Drive to Pamukkale, Cleopatra's Pool"},{day:"Day 7-8",activities:"Ephesus ancient ruins, depart from Izmir"}],
+    whyKirti: "Holding a valid US, UK, or Schengen visa? Kirti will process your Turkish e-visa in minutes and handle all internal domestic flights seamlessly." 
+  },
+  { 
+    id: 15, slug: "usa", title: "USA", category: "International", image: "/images/hero/dest-usa-800.webp", tags: ["City","Nature","Diverse"], 
+    description: "Diverse experiences from bustling metropolises to vast national parks.",
+    highlights: ["New York City's Times Square & Central Park", "Driving the scenic Pacific Coast Highway in California", "The sheer scale of the Grand Canyon", "Theme park magic in Orlando, Florida", "Las Vegas strip and nightlife"],
+    bestTime: "Varies by region (May to September generally)",
+    priceRange: "₹2,50,000 – ₹5,00,000+ per person",
+    sampleItinerary: [{day:"Day 1-4",activities:"New York: Statue of Liberty, Empire State, Broadway"},{day:"Day 5-7",activities:"Fly to Vegas, Grand Canyon helicopter tour, Strip shows"},{day:"Day 8-11",activities:"Fly to LA, Hollywood, Universal Studios, Santa Monica"},{day:"Day 12-14",activities:"Drive to San Francisco, Golden Gate Bridge, depart"}],
+    whyKirti: "The US requires complex planning. Kirti assists with the rigorous B1/B2 visa process and curates routes that maximize your time across the massive country." 
+  },
+  { 
+    id: 16, slug: "south-africa", title: "South Africa", category: "International", image: "/images/hero/dest-south-africa-800.webp", tags: ["Wildlife","Adventure","Nature"], 
+    description: "Safari adventures, stunning coastlines, and vibrant culture.",
+    highlights: ["Big 5 Safari in Kruger National Park", "Taking the cable car up Table Mountain in Cape Town", "Driving the spectacular Garden Route", "Penguin watching at Boulders Beach", "Wine tasting in Stellenbosch"],
+    bestTime: "May to October (Safari), November to March (Cape Town)",
+    priceRange: "₹1,60,000 – ₹2,80,000 per person",
+    sampleItinerary: [{day:"Day 1-4",activities:"Arrive Cape Town, Table Mountain, Cape of Good Hope, Penguins"},{day:"Day 5-6",activities:"Stellenbosch wine tour, drive to Hermanus for whale watching"},{day:"Day 7-9",activities:"Fly to Kruger region, luxury lodge, 4x4 Big 5 safaris"},{day:"Day 10",activities:"Morning game drive, fly to Johannesburg, depart"}],
+    whyKirti: "South Africa combines luxury and wilderness perfectly. Kirti partners with premium lodges to ensure you get the best guides and safest transfers." 
+  },
+  { 
+    id: 17, slug: "kenya", title: "Kenya", category: "International", image: "/images/hero/dest-kenya-800.webp", tags: ["Wildlife","Safari","Nature"], 
+    description: "Home of the Great Migration and iconic African wildlife.",
+    highlights: ["Witnessing the Great Migration in the Masai Mara", "Flamingos at Lake Nakuru", "Views of Mount Kilimanjaro from Amboseli", "Maasai village cultural visits", "Breakfast with giraffes in Nairobi"],
+    bestTime: "July to October (Great Migration)",
+    priceRange: "₹1,40,000 – ₹2,50,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Nairobi, Giraffe Centre, Elephant Orphanage"},{day:"Day 2-4",activities:"Drive/Fly to Masai Mara, daily morning & evening safaris"},{day:"Day 5",activities:"Lake Nakuru or Lake Naivasha boat safari"},{day:"Day 6-7",activities:"Amboseli National Park for large elephant herds, depart"}],
+    whyKirti: "Indian food in the bush? Yes. Kirti ensures your safari lodges can cater to specific dietary requirements without compromising the luxury experience." 
+  },
+  { 
+    id: 18, slug: "tanzania", title: "Tanzania", category: "International", image: "/images/hero/dest-tanzania-800.webp", tags: ["Wildlife","Safari","Beaches"], 
+    description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches.",
+    highlights: ["Game drives in the vast Serengeti National Park", "Descending into the Ngorongoro Crater", "Trekking the foothills of Mount Kilimanjaro", "Relaxing on the white sands of Zanzibar", "Strolling through historic Stone Town"],
+    bestTime: "June to October (Safari), Year-round for Zanzibar",
+    priceRange: "₹1,80,000 – ₹3,20,000 per person",
+    sampleItinerary: [{day:"Day 1-3",activities:"Arrive Kilimanjaro, transfer to Serengeti, full day game drives"},{day:"Day 4",activities:"Ngorongoro Crater rim stay and crater floor safari"},{day:"Day 5",activities:"Tarangire National Park"},{day:"Day 6-8",activities:"Fly to Zanzibar, Stone Town tour, beach resort relaxation, depart"}],
+    whyKirti: "Tanzania offers the ultimate 'Bush & Beach' combo. Kirti handles the complex internal logistics between the Serengeti airstrips and Zanzibar." 
+  },
 
-  { id: 19, slug: "kashmir",            title: "Kashmir",              category: "India",         image: "/images/hero/dest-kashmir-800.webp",           tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake.", highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens — Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"], bestTime: "April to June and September to November", priceRange: "₹45,000 – ₹90,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive Srinagar, houseboat on Dal Lake, Shikara ride, Mughal gardens"},{day:"Day 3–4",activities:"Drive to Gulmarg, gondola ride, snow activities"},{day:"Day 5–6",activities:"Pahalgam, Betaab Valley, Aru Valley, horse riding"},{day:"Day 7",activities:"Local market, Wazwan dinner, depart Srinagar"}], whyKirti: "Kirti works exclusively with locally-owned houseboats and guides in Kashmir, ensuring authentic experiences while directly supporting local families." },
-  { id: 20, slug: "leh-ladakh",         title: "Leh-Ladakh",           category: "India",         image: "/images/hero/dest-leh-ladakh-800.webp",        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
-  { id: 21, slug: "himachal-pradesh",   title: "Himachal Pradesh",     category: "India",         image: "/images/hero/dest-himachal-pradesh-800.webp",  tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
-  { id: 22, slug: "uttarakhand",        title: "Uttarakhand",          category: "India",         image: "/images/hero/dest-uttarakhand-800.webp",       tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
-  { id: 23, slug: "rajasthan",          title: "Rajasthan",            category: "India",         image: "/images/hero/dest-rajasthan-800.webp",         tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
-  { id: 24, slug: "goa",                title: "Goa",                  category: "India",         image: "/images/hero/dest-goa-800.webp",               tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe.", highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches — Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"], bestTime: "November to February (peak season)", priceRange: "₹25,000 – ₹70,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive, check into beach resort, North Goa beaches, Baga nightlife"},{day:"Day 3",activities:"Old Goa churches, spice plantation tour, Goan lunch"},{day:"Day 4–5",activities:"Drive to South Goa, Palolem beach, quiet sunsets"},{day:"Day 6",activities:"Mandovi river cruise, final dinner, depart"}], whyKirti: "From budget beach shacks to luxury boutique resorts, Kirti knows every tier of Goa and will match your group's vibe perfectly." },
-  { id: 25, slug: "kerala",             title: "Kerala",               category: "India",         image: "/images/hero/dest-kerala-800.webp",            tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
-  { id: 26, slug: "andaman",            title: "Andaman Islands",      category: "India",         image: "/images/hero/dest-andaman-800.webp",           tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
-  { id: 27, slug: "north-east-india",   title: "North East India",     category: "India",         image: "/images/hero/dest-north-east-india-800.webp",  tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
-  { id: 28, slug: "sikkim",             title: "Sikkim",               category: "India",         image: "/images/hero/dest-sikkim-800.webp",            tags: ["Mountains","Nature","Monasteries"],     description: "Home to Kanchenjunga, scenic landscapes, and monasteries." },
-  { id: 29, slug: "meghalaya",          title: "Meghalaya",            category: "India",         image: "/images/hero/dest-meghalaya-800.webp",         tags: ["Nature","Waterfalls","Offbeat"],        description: "Abode of Clouds, known for living root bridges and waterfalls." },
-  { id: 30, slug: "arunachal-pradesh",  title: "Arunachal Pradesh",    category: "India",         image: "/images/hero/dest-arunachal-pradesh-800.webp", tags: ["Mountains","Culture","Adventure"],      description: "Land of the Dawn-Lit Mountains with rich tribal heritage." },
-  { id: 31, slug: "karnataka",          title: "Karnataka",            category: "India",         image: "/images/hero/dest-karnataka-800.webp",         tags: ["History","Nature","Culture"],           description: "Heritage sites like Hampi, coffee plantations in Coorg." },
-  { id: 32, slug: "tamil-nadu",         title: "Tamil Nadu",           category: "India",         image: "/images/hero/dest-tamil-nadu-800.webp",        tags: ["Culture","Temples","Beaches"],          description: "Land of temples, rich culture, and coastal beauty." },
-  { id: 33, slug: "pondicherry",        title: "Pondicherry",          category: "India",         image: "/images/hero/dest-pondicherry-800.webp",       tags: ["Beaches","French Colony","Relaxation"], description: "A touch of French culture on the Indian coast." },
-  { id: 34, slug: "west-bengal",        title: "West Bengal",          category: "India",         image: "/images/hero/dest-west-bengal-800.webp",       tags: ["Culture","History","Mountains"],        description: "Cultural richness of Kolkata to the tea gardens of Darjeeling." },
-  { id: 35, slug: "odisha",             title: "Odisha",               category: "India",         image: "/images/hero/dest-odisha-800.webp",            tags: ["Culture","Temples","Beaches"],          description: "Known for its ancient temples, beaches, and tribal culture." },
-  { id: 36, slug: "gujarat",            title: "Gujarat",              category: "India",         image: "/images/hero/dest-gujarat-800.webp",           tags: ["Culture","Wildlife","White Desert"],    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions." },
-  { id: 37, slug: "andhra-pradesh",     title: "Andhra Pradesh",       category: "India",         image: "/images/hero/dest-andhra-pradesh-800.webp",    tags: ["Nature","Rivers","Culture"],            description: "Scenic Godavari rivers, paddy fields, and lush greenery." },
+  // INDIA
+  { 
+    id: 19, slug: "kashmir", title: "Kashmir", category: "India", image: "/images/hero/dest-kashmir-800.webp", tags: ["Mountains","Nature","Romance"], 
+    description: "Paradise on Earth with stunning valleys and Dal Lake.", 
+    highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens — Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"], 
+    bestTime: "April to June and September to November", 
+    priceRange: "₹45,000 – ₹90,000 per person", 
+    sampleItinerary: [{day:"Day 1–2",activities:"Arrive Srinagar, houseboat on Dal Lake, Shikara ride, Mughal gardens"},{day:"Day 3–4",activities:"Drive to Gulmarg, gondola ride, snow activities"},{day:"Day 5–6",activities:"Pahalgam, Betaab Valley, Aru Valley, horse riding"},{day:"Day 7",activities:"Local market, Wazwan dinner, depart Srinagar"}], 
+    whyKirti: "Kirti works exclusively with locally-owned houseboats and guides in Kashmir, ensuring authentic experiences while directly supporting local families." 
+  },
+  { 
+    id: 20, slug: "leh-ladakh", title: "Leh-Ladakh", category: "India", image: "/images/hero/dest-leh-ladakh-800.webp", tags: ["Adventure","Mountains","Road Trip"], 
+    description: "Stark mountain landscapes, monasteries, and high passes.",
+    highlights: ["Driving through Khardung La, one of the highest motorable roads", "Camping by the color-changing Pangong Lake", "Nubra Valley sand dunes and double-humped camel rides", "Ancient Thiksey and Hemis Monasteries", "Magnetic Hill and Sangam (confluence of rivers)"],
+    bestTime: "May to September",
+    priceRange: "₹35,000 – ₹70,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Leh, strict acclimatization, Shanti Stupa, local market"},{day:"Day 3",activities:"Sham Valley tour: Magnetic Hill, Sangam, Hall of Fame"},{day:"Day 4",activities:"Drive to Nubra Valley via Khardung La, camel safari"},{day:"Day 5",activities:"Drive to Pangong Lake via Shyok river, lakeside camping"},{day:"Day 6-7",activities:"Return to Leh via Chang La, Thiksey Monastery, depart"}],
+    whyKirti: "Altitude sickness is real. Kirti plans itineraries with proper acclimatization days built-in and ensures you travel in reliable SUVs with oxygen-equipped drivers." 
+  },
+  { 
+    id: 21, slug: "himachal-pradesh", title: "Himachal Pradesh", category: "India", image: "/images/hero/dest-himachal-pradesh-800.webp", tags: ["Mountains","Nature","Adventure"], 
+    description: "Scenic hill stations, pine forests, and snow-capped peaks.",
+    highlights: ["Paragliding and cafe-hopping in Bir Billing", "Snow activities in Solang Valley & Rohtang Pass (Manali)", "Colonial heritage and Mall Road in Shimla", "Dalai Lama Temple in McLeodganj (Dharamshala)", "Offbeat drives through Spiti Valley"],
+    bestTime: "March to June (Summer) & December to February (Snow)",
+    priceRange: "₹25,000 – ₹60,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Chandigarh, drive to Shimla, Mall Road, Kufri"},{day:"Day 3-5",activities:"Drive to Manali, Solang Valley, Rohtang Pass, Old Manali cafes"},{day:"Day 6",activities:"Kullu rafting, drive to Dharamshala/McLeodganj"},{day:"Day 7-8",activities:"Dalai Lama temple, Kangra Fort, return via Pathankot/Chandigarh"}],
+    whyKirti: "Skip the crowded, generic hotels. Kirti books boutique mountain lodges and luxury cottages that give you uninterrupted Himalayan views." 
+  },
+  { 
+    id: 22, slug: "uttarakhand", title: "Uttarakhand", category: "India", image: "/images/hero/dest-uttarakhand-800.webp", tags: ["Mountains","Spiritual","Nature"], 
+    description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas.",
+    highlights: ["Ganga Aarti at Triveni Ghat in Rishikesh", "Tiger safaris in Jim Corbett National Park", "Boating on Naini Lake in Nainital", "Skiing and ropeway in Auli", "Trekking to the Valley of Flowers"],
+    bestTime: "March to June & September to November",
+    priceRange: "₹25,000 – ₹65,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Drive to Jim Corbett, evening and morning jeep safaris"},{day:"Day 3-4",activities:"Drive to Nainital, boating, Naina Devi temple, Snow View point"},{day:"Day 5-6",activities:"Drive to Rishikesh, Ganga Aarti, yoga sessions, river rafting"},{day:"Day 7",activities:"Explore Mussoorie, Kempty Falls, depart from Dehradun"}],
+    whyKirti: "From luxury wellness retreats in Rishikesh to premium safari lodges in Corbett, Kirti curates Uttarakhand for those who want nature without roughing it." 
+  },
+  { 
+    id: 23, slug: "rajasthan", title: "Rajasthan", category: "India", image: "/images/hero/dest-rajasthan-800.webp", tags: ["History","Culture","Desert"], 
+    description: "Royal palaces, vibrant culture, and vast desert landscapes.",
+    highlights: ["Sunset boat rides on Lake Pichola, Udaipur", "Exploring the massive Mehrangarh Fort in Jodhpur", "Camel safaris and desert camping in Jaisalmer", "Amber Fort and shopping in Jaipur", "Tiger spotting in Ranthambore"],
+    bestTime: "October to March",
+    priceRange: "₹30,000 – ₹80,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Jaipur, Amber Fort, Hawa Mahal, Chokhi Dhani"},{day:"Day 3-4",activities:"Drive to Jodhpur, Mehrangarh Fort, Umaid Bhawan, blue city walk"},{day:"Day 5-6",activities:"Drive to Udaipur, City Palace, Lake Pichola boat ride"},{day:"Day 7",activities:"Visit Kumbhalgarh Fort or depart from Udaipur"}],
+    whyKirti: "Live like royalty. Kirti has access to authentic heritage havelis and Taj/Oberoi palace properties that elevate a standard trip into a regal experience." 
+  },
+  { 
+    id: 24, slug: "goa", title: "Goa", category: "India", image: "/images/hero/dest-goa-800.webp", tags: ["Beaches","Nightlife","Relaxation"], 
+    description: "Sun, sand, beaches, and a relaxed coastal vibe.", 
+    highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches — Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"], 
+    bestTime: "November to February (peak season)", 
+    priceRange: "₹25,000 – ₹70,000 per person", 
+    sampleItinerary: [{day:"Day 1–2",activities:"Arrive, check into beach resort, North Goa beaches, Baga nightlife"},{day:"Day 3",activities:"Old Goa churches, spice plantation tour, Goan lunch"},{day:"Day 4–5",activities:"Drive to South Goa, Palolem beach, quiet sunsets"},{day:"Day 6",activities:"Mandovi river cruise, final dinner, depart"}], 
+    whyKirti: "From budget beach shacks to luxury boutique resorts, Kirti knows every tier of Goa and will match your group's vibe perfectly." 
+  },
+  { 
+    id: 25, slug: "kerala", title: "Kerala", category: "India", image: "/images/hero/dest-kerala-800.webp", tags: ["Nature","Backwaters","Wellness"], 
+    description: "God's Own Country with tranquil backwaters and lush greenery.",
+    highlights: ["Cruising the Alleppey backwaters in a private houseboat", "Wandering the tea estates of Munnar", "Spotting wild elephants in Thekkady (Periyar)", "Watching Kathakali & Kalaripayattu performances", "Ayurvedic spa treatments and wellness retreats"],
+    bestTime: "September to March",
+    priceRange: "₹30,000 – ₹65,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Kochi, Fort Kochi heritage walk, Chinese fishing nets"},{day:"Day 2-3",activities:"Drive to Munnar, Tea museum, Mattupetty Dam, Eravikulam"},{day:"Day 4",activities:"Drive to Thekkady, spice plantation, Periyar boat safari"},{day:"Day 5",activities:"Drive to Alleppey, overnight luxury houseboat cruise"},{day:"Day 6",activities:"Disembark, depart from Kochi"}],
+    whyKirti: "Not all houseboats are equal. Kirti books only premium, air-conditioned houseboats with private chefs maintaining the highest hygiene standards." 
+  },
+  { 
+    id: 26, slug: "andaman", title: "Andaman Islands", category: "India", image: "/images/hero/dest-andaman-800.webp", tags: ["Beaches","Islands","Adventure"], 
+    description: "Pristine beaches, clear waters, and water sports.",
+    highlights: ["Scuba diving and sea walking at Havelock Island", "Relaxing on the pristine Radhanagar Beach", "Light & Sound show at the Cellular Jail, Port Blair", "Glass bottom boat rides at North Bay", "Sunset views at Chidiya Tapu"],
+    bestTime: "October to May",
+    priceRange: "₹45,000 – ₹85,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Port Blair, Cellular Jail, Corbyn's Cove Beach"},{day:"Day 2-4",activities:"Ferry to Havelock, Radhanagar Beach, Elephant Beach water sports"},{day:"Day 5",activities:"Ferry to Neil Island, Bharatpur and Laxmanpur beaches"},{day:"Day 6",activities:"Return ferry to Port Blair, shopping"},{day:"Day 7",activities:"Depart Port Blair"}],
+    whyKirti: "Ferry logistics in the Andamans can be chaotic. Kirti pre-books private Makruzz/Green Ocean ferry tickets so you never waste a day standing in port lines." 
+  },
+  { 
+    id: 27, slug: "north-east-india", title: "North East India", category: "India", image: "/images/hero/dest-north-east-india-800.webp", tags: ["Nature","Culture","Offbeat"], 
+    description: "Unexplored beauty, tribal culture, and biodiversity.",
+    highlights: ["Rhino safaris in Kaziranga National Park, Assam", "Living root bridges of Meghalaya", "Monasteries of Tawang, Arunachal", "Floating islands of Loktak Lake, Manipur", "Hornbill Festival in Nagaland (December)"],
+    bestTime: "October to April",
+    priceRange: "₹40,000 – ₹80,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Guwahati, drive to Kaziranga, Jeep & Elephant safaris"},{day:"Day 3-4",activities:"Drive to Shillong, Umiam Lake, Don Bosco Museum"},{day:"Day 5-6",activities:"Cherrapunjee, waterfalls, root bridge trek, Dawki river"},{day:"Day 7",activities:"Return to Guwahati, Kamakhya Temple, depart"}],
+    whyKirti: "The North East requires ILPs (Inner Line Permits) and expert drivers for tough terrain. Kirti handles all permits and vets local drivers rigorously." 
+  },
+  { 
+    id: 28, slug: "sikkim", title: "Sikkim", category: "India", image: "/images/hero/dest-sikkim-800.webp", tags: ["Mountains","Nature","Monasteries"], 
+    description: "Home to Kanchenjunga, scenic landscapes, and monasteries.",
+    highlights: ["Viewing Mt. Kanchenjunga from Pelling or Tiger Hill", "Visiting the frozen Tsomgo Lake and Baba Mandir", "Exploring the ancient Rumtek Monastery", "Driving through the breathtaking Yumthang Valley (Spring)", "Riding the Gangtok ropeway"],
+    bestTime: "March to May & October to mid-December",
+    priceRange: "₹35,000 – ₹70,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Bagdogra, drive to Gangtok, MG Marg evening stroll"},{day:"Day 2",activities:"Day trip to Tsomgo Lake and Baba Mandir"},{day:"Day 3-4",activities:"Drive to Lachen/Lachung, Gurudongmar Lake or Yumthang Valley"},{day:"Day 5",activities:"Drive to Pelling, skywalk, waterfalls"},{day:"Day 6-7",activities:"Darjeeling tea estates, Toy Train, depart"}],
+    whyKirti: "Sikkim's high-altitude areas like Gurudongmar require specific military permits. Kirti's local network ensures these are secured days in advance." 
+  },
+  { 
+    id: 29, slug: "meghalaya", title: "Meghalaya", category: "India", image: "/images/hero/dest-meghalaya-800.webp", tags: ["Nature","Waterfalls","Offbeat"], 
+    description: "Abode of Clouds, known for living root bridges and waterfalls.",
+    highlights: ["Trekking to the Double Decker Living Root Bridge in Nongriat", "Boating on the crystal clear Umngot River in Dawki", "Exploring Mawsmai and Arwah caves", "Viewing the majestic Nohkalikai Falls", "Experiencing the culture of Mawlynnong (Asia's cleanest village)"],
+    bestTime: "October to April",
+    priceRange: "₹35,000 – ₹65,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Guwahati, drive to Shillong, Umiam Lake sunset"},{day:"Day 2",activities:"Shillong local sightseeing, Laitlum Canyons"},{day:"Day 3",activities:"Drive to Cherrapunjee, Nohkalikai Falls, Mawsmai Cave"},{day:"Day 4",activities:"Double Decker Root Bridge trek (full day)"},{day:"Day 5-6",activities:"Mawlynnong village, Dawki river boating, return to Guwahati, depart"}],
+    whyKirti: "Meghalaya is all about offbeat exploration. Kirti blends adventure with comfort, booking the best available boutique stays in Cherrapunjee and Shillong." 
+  },
+  { 
+    id: 30, slug: "arunachal-pradesh", title: "Arunachal Pradesh", category: "India", image: "/images/hero/dest-arunachal-pradesh-800.webp", tags: ["Mountains","Culture","Adventure"], 
+    description: "Land of the Dawn-Lit Mountains with rich tribal heritage.",
+    highlights: ["Visiting the magnificent Tawang Monastery", "Crossing the snow-bound Sela Pass", "Exploring the remote Ziro Valley", "Paying respects at the Jaswant Garh War Memorial", "Breathtaking views at Bum La Pass (Indo-China border)"],
+    bestTime: "October to April",
+    priceRange: "₹40,000 – ₹80,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Guwahati, drive to Nameri or Bhalukpong"},{day:"Day 2",activities:"Drive to Dirang, visit apple orchards and hot springs"},{day:"Day 3",activities:"Drive to Tawang via Sela Pass and Jaswant Garh"},{day:"Day 4",activities:"Tawang Monastery, local sightseeing"},{day:"Day 5",activities:"Bum La Pass and Madhuri Lake day trip"},{day:"Day 6-7",activities:"Drive back to Bomdila, then Guwahati, depart"}],
+    whyKirti: "Arunachal involves long driving days. Kirti guarantees spacious, well-maintained SUVs and experienced hill drivers for your safety." 
+  },
+  { 
+    id: 31, slug: "karnataka", title: "Karnataka", category: "India", image: "/images/hero/dest-karnataka-800.webp", tags: ["History","Nature","Culture"], 
+    description: "Heritage sites like Hampi, coffee plantations in Coorg.",
+    highlights: ["Exploring the ruins of the Vijayanagara Empire in Hampi", "Coffee plantation stays in Coorg (Kodagu)", "Wildlife safaris in Kabini or Bandipur", "Marveling at the Mysore Palace", "Trekking in Chikmagalur"],
+    bestTime: "October to March",
+    priceRange: "₹25,000 – ₹55,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Bangalore, drive to Mysore, Mysore Palace, Chamundi Hill"},{day:"Day 3-4",activities:"Drive to Coorg, Abbey Falls, Dubare Elephant Camp, Coffee tour"},{day:"Day 5-6",activities:"Drive to Kabini, afternoon & morning jungle safaris"},{day:"Day 7",activities:"Return to Bangalore, depart"}],
+    whyKirti: "Kirti partners with Karnataka's finest eco-resorts and coffee estates, ensuring a luxurious yet deeply nature-connected holiday." 
+  },
+  { 
+    id: 32, slug: "tamil-nadu", title: "Tamil Nadu", category: "India", image: "/images/hero/dest-tamil-nadu-800.webp", tags: ["Culture","Temples","Beaches"], 
+    description: "Land of temples, rich culture, and coastal beauty.",
+    highlights: ["Meenakshi Amman Temple in Madurai", "French quarter and cafes in Pondicherry", "Riding the Nilgiri Mountain Railway to Ooty", "Exploring the Shore Temple in Mahabalipuram", "Southernmost tip of India at Kanyakumari"],
+    bestTime: "November to March",
+    priceRange: "₹20,000 – ₹50,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Chennai, drive to Mahabalipuram, Shore Temple"},{day:"Day 2-3",activities:"Drive to Pondicherry, Auroville, White Town walk, Promenade beach"},{day:"Day 4",activities:"Drive to Thanjavur, Brihadeeswara Temple"},{day:"Day 5-6",activities:"Drive to Madurai, Meenakshi Temple, depart from Madurai or Trichy"}],
+    whyKirti: "Temple circuits can be exhausting. Kirti paces the itinerary perfectly, mixing heritage stops with relaxing coastal or hill station breaks." 
+  },
+  { 
+    id: 33, slug: "pondicherry", title: "Pondicherry", category: "India", image: "/images/hero/dest-pondicherry-800.webp", tags: ["Beaches","French Colony","Relaxation"], 
+    description: "A touch of French culture on the Indian coast.",
+    highlights: ["Cycling through the French Quarter (White Town)", "Finding peace at the Matrimandir in Auroville", "Relaxing on Paradise Beach & Serenity Beach", "Cafe hopping for authentic French pastries", "Visiting the Sri Aurobindo Ashram"],
+    bestTime: "October to March",
+    priceRange: "₹15,000 – ₹40,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive via Chennai, check into heritage hotel, evening Promenade walk"},{day:"Day 2",activities:"Auroville day trip, Matrimandir viewing, boutique shopping"},{day:"Day 3",activities:"Paradise beach boat ride, White Town cafe hopping"},{day:"Day 4",activities:"Visit Ashram, last minute shopping, depart via Chennai"}],
+    whyKirti: "Kirti books exclusive heritage villas in White Town, putting you walking distance from the best cafes and the ocean." 
+  },
+  { 
+    id: 34, slug: "west-bengal", title: "West Bengal", category: "India", image: "/images/hero/dest-west-bengal-800.webp", tags: ["Culture","History","Mountains"], 
+    description: "Cultural richness of Kolkata to the tea gardens of Darjeeling.",
+    highlights: ["Sunrise over Kanchenjunga from Tiger Hill, Darjeeling", "Riding the UNESCO Darjeeling Himalayan Railway", "Victoria Memorial and street food in Kolkata", "Tiger spotting in the Sundarbans mangroves", "Tea tasting at an authentic Darjeeling estate"],
+    bestTime: "October to March",
+    priceRange: "₹25,000 – ₹55,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Kolkata, Victoria Memorial, Howrah Bridge, Park Street food"},{day:"Day 3",activities:"Fly to Bagdogra, drive to Darjeeling, evening at Mall Road"},{day:"Day 4",activities:"Tiger Hill sunrise, Batasia Loop, Toy Train ride"},{day:"Day 5",activities:"Tea garden tour, Himalayan Mountaineering Institute, depart"}],
+    whyKirti: "Kirti connects you with the best local guides in Kolkata for food and heritage walks, and premium tea-estate stays in Darjeeling." 
+  },
+  { 
+    id: 35, slug: "odisha", title: "Odisha", category: "India", image: "/images/hero/dest-odisha-800.webp", tags: ["Culture","Temples","Beaches"], 
+    description: "Known for its ancient temples, beaches, and tribal culture.",
+    highlights: ["The magnificent Sun Temple at Konark", "Darshan at the Jagannath Temple in Puri", "Boating on Chilika Lake to spot Irrawaddy dolphins", "Exploring Udayagiri and Khandagiri Caves", "Relaxing on the golden sands of Puri Beach"],
+    bestTime: "October to March",
+    priceRange: "₹20,000 – ₹45,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Bhubaneswar, Lingaraj Temple, Caves"},{day:"Day 2",activities:"Drive to Puri via Dhauli Peace Pagoda and Pipili applique village"},{day:"Day 3",activities:"Jagannath Temple darshan, excursion to Konark Sun Temple"},{day:"Day 4",activities:"Day trip to Chilika Lake (Satapada) for dolphins, depart from Bhubaneswar"}],
+    whyKirti: "Temple visits can be crowded. Kirti arranges for knowledgeable local pandas (guides) where appropriate for a smoother spiritual experience." 
+  },
+  { 
+    id: 36, slug: "gujarat", title: "Gujarat", category: "India", image: "/images/hero/dest-gujarat-800.webp", tags: ["Culture","Wildlife","White Desert"], 
+    description: "Rann of Kutch, Asiatic Lions, and vibrant traditions.",
+    highlights: ["Full moon nights at the white salt flats of Rann of Kutch", "Spotting Asiatic Lions in Gir National Park", "Darshan at Somnath and Dwarka temples", "Exploring the Statue of Unity", "Heritage walk in the walled city of Ahmedabad"],
+    bestTime: "November to February (Rann Utsav)",
+    priceRange: "₹20,000 – ₹55,000 per person",
+    sampleItinerary: [{day:"Day 1-2",activities:"Arrive Ahmedabad, Sabarmati Ashram, drive to Statue of Unity & return"},{day:"Day 3",activities:"Drive to Sasan Gir, evening lion safari"},{day:"Day 4",activities:"Drive to Somnath, evening Aarti and light & sound show"},{day:"Day 5",activities:"Drive to Dwarka via Porbandar, Dwarkadhish temple"},{day:"Day 6",activities:"Bet Dwarka, Nageshwar Jyotirlinga, depart via Jamnagar/Rajkot"}],
+    whyKirti: "As a Vadodara-based agency, Kirti has unparalleled on-ground networks in Gujarat, securing the best Rann Utsav tents and Gir safari permits effortlessly." 
+  },
+  { 
+    id: 37, slug: "andhra-pradesh", title: "Andhra Pradesh", category: "India", image: "/images/hero/dest-andhra-pradesh-800.webp", tags: ["Nature","Rivers","Culture"], 
+    description: "Scenic Godavari rivers, paddy fields, and lush greenery.",
+    highlights: ["Spiritual visit to Tirupati Balaji Temple", "Exploring the Borra Caves in Araku Valley", "Relaxing on the beaches of Visakhapatnam (Vizag)", "River cruising in Papikondalu", "Undavalli Caves and Amaravati heritage"],
+    bestTime: "November to February",
+    priceRange: "₹15,000 – ₹40,000 per person",
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Vizag, RK Beach, Submarine Museum, Kailasagiri"},{day:"Day 2",activities:"Vistadome train ride to Araku Valley, coffee plantations"},{day:"Day 3",activities:"Borra Caves, Katiki Waterfalls, return to Vizag"},{day:"Day 4",activities:"Rushikonda beach, local shopping, depart"}],
+    whyKirti: "Kirti ensures you get the highly sought-after Vistadome train tickets to Araku Valley by booking them the minute the window opens." 
+  }
 ];
 
 const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
@@ -279,7 +577,7 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
         <div className="animate-hero-5 flex flex-wrap items-center justify-center gap-6 mt-16 px-8 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
           <div className="flex items-center gap-1.5">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-yellow-400" />)}</div>
-            <span className="text-sm font-semibold text-white">5.0 rated</span>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-white hover:text-blue-200 transition-colors">5.0 ★ on Google</a>
           </div>
           <span className="text-white/30 hidden sm:block">|</span>
           <span className="text-sm font-semibold text-white/90">500+ trips planned</span>
@@ -948,7 +1246,7 @@ export default function Home() {
             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
             <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
-            <p className="text-gray-500 font-medium break-all px-2 text-sm">thenomadsco@gmail.com</p>
+            <p className="text-gray-500 font-medium whitespace-nowrap text-sm">thenomadsco@gmail.com</p>
             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </a>
           <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden">
@@ -965,7 +1263,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
             <div className="col-span-1 md:col-span-2">
               <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
-              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Crafting unforgettable, personalized travel experiences. Your journey, our expertise.</p>
+              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Curated personally by Kirti Shah — every trip, every detail, every memory. Based in Vadodara, Gujarat.</p>
               <div className="flex space-x-4">
                 <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Instagram className="w-5 h-5" /></a>
                 <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Facebook className="w-5 h-5" /></a>

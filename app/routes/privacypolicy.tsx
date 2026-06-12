@@ -1,22 +1,15 @@
-﻿import { Link } from "react-router";
+import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import nomadsLogo from "./the nomads logo.webp";
+import { ArrowRight } from "./home";
 
-/**
- * Privacy Policy Page
- * Content adapted from user request, styled for The Nomads Co.
- */
-
-// --- ICONS (Reuse for Navigation/Footer) ---
-const iconDefaults = { size: 24, strokeWidth: 2 };
-function IconBase({ size = iconDefaults.size, className, strokeWidth = iconDefaults.strokeWidth, fill = "none", children }: any) {
+function IconBase({ size = 24, className, strokeWidth = 2, fill = "none", children }: any) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       {children}
     </svg>
   );
 }
-function Menu(props: any) { return (<IconBase {...props}><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></IconBase>); }
 function X(props: any) { return (<IconBase {...props}><path d="M18 6 6 18" /><path d="M6 6l12 12" /></IconBase>); }
 function Facebook(props: any) { return (<IconBase {...props}><path d="M14 8h-2c-1.1 0-2 .9-2 2v2H8v3h2v5h3v-5h2.2l.8-3H13v-1.6c0-.4.3-.7.7-.7H16V8z" /></IconBase>); }
 function Instagram(props: any) { return (<IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></IconBase>); }
@@ -57,19 +50,19 @@ export default function PrivacyPolicyPage() {
       {/* CONTENT */}
       <section className="py-16 px-6 sm:px-12">
         <div className="max-w-[1000px] mx-auto prose prose-lg text-[#1F2328]/80 leading-relaxed">
-          
+
           <p className="mb-6">
             <strong>The Nomads Co.</strong> respects your privacy and recognizes the need to protect the personally identifiable information (any information by which you can be identified, such as name, address, E-mail, telephone number, and any other personal information) you share with us. We would like to assure you that we follow appropriate standards when it comes to protecting your privacy on our website.
           </p>
 
           <h3 className="text-2xl font-bold text-[#1F2328] mt-10 mb-4">Visiting Our Website</h3>
           <p className="mb-6">
-            In general, you can visit <strong>www.thenomadsco.com</strong> without telling us who you are or revealing any personal information about yourself.
+            In general, you can visit <strong>www.thenomadsco.in</strong> without telling us who you are or revealing any personal information about yourself.
           </p>
 
           <h3 className="text-2xl font-bold text-[#1F2328] mt-10 mb-4">Collection of Information</h3>
           <p className="mb-6">
-            There are times when we may collect personal information from you such as name, physical address, or telephone number. It is our intent to inform you before we do that and to tell you what we intend to do with the information. Generally, you will have the option not to provide the information, and in the future, you will be able to ‘opt out’ of certain uses of the information. If you choose not to provide the information we request, you can still visit our website, but you may be unable to access certain options, offers, and services.
+            There are times when we may collect personal information from you such as name, physical address, or telephone number. It is our intent to inform you before we do that and to tell you what we intend to do with the information. Generally, you will have the option not to provide the information, and in the future, you will be able to 'opt out' of certain uses of the information. If you choose not to provide the information we request, you can still visit our website, but you may be unable to access certain options, offers, and services.
           </p>
 
           <h3 className="text-2xl font-bold text-[#1F2328] mt-10 mb-4">Transaction Processing</h3>
@@ -106,9 +99,9 @@ export default function PrivacyPolicyPage() {
           <p className="mb-6">
             If our privacy policy changes in the future, it will be posted here, and a new effective date will be shown. You should access our privacy policy regularly to ensure you understand our current policies. Please reference the privacy policy in your subject line.
           </p>
-          
+
           <p className="mt-8 pt-8 border-t border-[#E6E8EF] text-sm text-[#1F2328]/60">
-            The Nomads Co. will attempt to respond to all reasonable concerns or inquiries within seven business days of receipt. Thank you for using www.thenomadsco.com.
+            The Nomads Co. will attempt to respond to all reasonable concerns or inquiries within seven business days of receipt. Thank you for using www.thenomadsco.in.
           </p>
 
         </div>
@@ -123,48 +116,58 @@ export default function PrivacyPolicyPage() {
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; }, [isOpen]);
-
-  const inPageLinks = [
-    { label: "Home", href: "/" },
-    { label: "Contact", href: "/contactus" },
-  ];
+  useEffect(() => { document.body.style.overflow = isOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [isOpen]);
 
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E6E8EF]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 py-4">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          <Link to="/" className="flex items-center gap-3 group">
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
             <img src={nomadsLogo} alt="The Nomads Co." className="h-10 w-auto group-hover:-translate-y-0.5 transition-transform" />
-            <span className="font-semibold text-[#1F2328] hidden sm:inline">The Nomads Co.</span>
+            <span className="font-semibold text-[#1F2328] hidden sm:inline whitespace-nowrap">The Nomads Co.</span>
           </Link>
 
-          <div className="hidden lg:flex items-center justify-center gap-10">
-             <Link to="/" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
-             <Link to="/contactus" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
+          <div className="hidden lg:flex items-center justify-center gap-8">
+            <Link to="/"              className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
+            <Link to="/#destinations" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Destinations</Link>
+            <Link to="/#reviews"      className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Reviews</Link>
+            <Link to="/journal"       className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Journal</Link>
+            <Link to="/#contact"      className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Contact</Link>
           </div>
 
           <div className="flex items-center justify-end gap-4">
-            <Link to="/contactus" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
+            <Link to="/?openFunnel=true" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
               Plan My Trip
             </Link>
-            <button className="lg:hidden p-2" onClick={() => setIsOpen(true)}><Menu size={24} /></button>
+            <button className="lg:hidden p-2 text-gray-700" onClick={() => setIsOpen(true)} aria-label="Open menu">
+              <div className="space-y-1.5">
+                <span className="block w-6 h-0.5 bg-current" />
+                <span className="block w-4 h-0.5 bg-current ml-auto" />
+                <span className="block w-6 h-0.5 bg-current" />
+              </div>
+            </button>
           </div>
         </div>
       </div>
 
       {isOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-0 h-full w-[80%] bg-white shadow-2xl p-6">
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-bold text-lg">Menu</span>
-              <button onClick={() => setIsOpen(false)}><X size={24} /></button>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col">
+            <div className="p-6 flex justify-end">
+              <button onClick={() => setIsOpen(false)} aria-label="Close menu" className="p-2 -mr-2 text-gray-400 hover:text-gray-900"><X size={28} /></button>
             </div>
-            <div className="flex flex-col gap-4">
-              <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-[#1F2328]">Home</Link>
-              <Link to="/contactus" onClick={() => setIsOpen(false)} className="text-lg font-medium text-[#1F2328]">Contact</Link>
-              <Link to="/contactus" className="mt-4 px-6 py-3 bg-[#2D3191] text-white text-center rounded-xl font-medium">Plan My Trip</Link>
+            <div className="flex-1 flex flex-col px-8 py-4 gap-8 overflow-y-auto">
+              <Link to="/"              onClick={() => setIsOpen(false)} className="text-3xl font-bold text-[#1F2328] hover:text-[#2D3191] transition-colors">Home</Link>
+              <Link to="/#destinations" onClick={() => setIsOpen(false)} className="text-3xl font-bold text-[#1F2328] hover:text-[#2D3191] transition-colors">Destinations</Link>
+              <Link to="/#reviews"      onClick={() => setIsOpen(false)} className="text-3xl font-bold text-[#1F2328] hover:text-[#2D3191] transition-colors">Reviews</Link>
+              <Link to="/journal"       onClick={() => setIsOpen(false)} className="text-3xl font-bold text-[#1F2328] hover:text-[#2D3191] transition-colors">Journal</Link>
+              <Link to="/#contact"      onClick={() => setIsOpen(false)} className="text-3xl font-bold text-[#1F2328] hover:text-[#2D3191] transition-colors">Contact</Link>
+            </div>
+            <div className="p-8 pb-12 border-t border-gray-100 bg-[#FAFAF8]">
+              <Link to="/?openFunnel=true" onClick={() => setIsOpen(false)} className="w-full py-4 bg-[#2D3191] text-white text-lg font-bold rounded-2xl shadow-lg hover:bg-[#242875] transition-colors flex items-center justify-center gap-2">
+                Plan My Trip <ArrowRight size={18} />
+              </Link>
             </div>
           </div>
         </div>
@@ -183,18 +186,17 @@ function Footer() {
         </div>
         <div>
           <h4 className="font-semibold mb-4">Support</h4>
-          <Link to="/contactus" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link>
+          <Link to="/#contact" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Contact Us</Link>
         </div>
         <div>
           <h4 className="font-semibold mb-4">Legal</h4>
-          {/* Linked to the new page */}
           <Link to="/privacypolicy" className="text-sm text-[#1F2328]/70 hover:text-[#2D3191]">Privacy Policy</Link>
         </div>
         <div>
           <h4 className="font-semibold mb-4">Social</h4>
           <div className="flex gap-4 justify-center sm:justify-start text-[#2D3191]">
-             <a href="https://www.instagram.com/thenomadsco/"><Instagram /></a>
-             <a href="https://www.facebook.com/Thenomadsco/"><Facebook /></a>
+            <a href="https://www.instagram.com/thenomadsco/" aria-label="Instagram"><Instagram /></a>
+            <a href="https://www.facebook.com/Thenomadsco/" aria-label="Facebook"><Facebook /></a>
           </div>
         </div>
         <div>

@@ -127,7 +127,7 @@ function Navigation() {
             <span className="font-semibold text-[#1F2328] hidden sm:inline whitespace-nowrap">The Nomads Co.</span>
           </Link>
 
-          <div className="hidden lg:flex items-center justify-center gap-8">
+          <div className="hidden md:flex items-center justify-center gap-8">
             <Link to="/"              className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Home</Link>
             <Link to="/#destinations" className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Destinations</Link>
             <Link to="/#reviews"      className="text-sm font-medium text-[#1F2328]/70 hover:text-[#2D3191] transition-colors">Reviews</Link>
@@ -136,10 +136,10 @@ function Navigation() {
           </div>
 
           <div className="flex items-center justify-end gap-4">
-            <Link to="/?openFunnel=true" className="hidden lg:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
+            <Link to="/?openFunnel=true" className="hidden md:block px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] hover:-translate-y-0.5 transition-all">
               Plan My Trip
             </Link>
-            <button className="lg:hidden p-2 text-gray-700" onClick={() => setIsOpen(true)} aria-label="Open menu">
+            <button className="md:hidden p-2 text-gray-700" onClick={() => setIsOpen(true)} aria-label="Open menu">
               <div className="space-y-1.5">
                 <span className="block w-6 h-0.5 bg-current" />
                 <span className="block w-4 h-0.5 bg-current ml-auto" />
@@ -151,7 +151,7 @@ function Navigation() {
       </div>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] md:hidden">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
           <div className="absolute right-0 top-0 h-full w-[80%] max-w-[320px] bg-white shadow-2xl flex flex-col">
             <div className="p-6 flex justify-end">

@@ -133,19 +133,27 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
   );
 };
 
-export type Destination = { id: number; slug: string; title: string; category: string; image: string; tags: string[]; description: string };
+export type Destination = {
+  id: number; slug: string; title: string; category: string;
+  image: string; tags: string[]; description: string;
+  highlights?: string[];
+  bestTime?: string;
+  sampleItinerary?: { day: string; activities: string }[];
+  priceRange?: string;
+  whyKirti?: string;
+};
 
 // Exported so destination.tsx can access the central database
 export const destinations: Destination[] = [
-  { id: 1,  slug: "bali",               title: "Bali, Indonesia",      category: "International", image: "/images/hero/dest-bali-800.webp",              tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture." },
-  { id: 2,  slug: "maldives",           title: "Maldives",             category: "International", image: "/images/hero/dest-maldives-800.webp",          tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons." },
-  { id: 3,  slug: "dubai",              title: "Dubai, UAE",           category: "International", image: "/images/hero/dest-dubai-800.webp",             tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris." },
+  { id: 1,  slug: "bali",               title: "Bali, Indonesia",      category: "International", image: "/images/hero/dest-bali-800.webp",              tags: ["Tropical","Beaches","Culture"],         description: "Island of Gods with serene beaches and vibrant culture.", highlights: ["Iconic rice terraces in Ubud", "World-class surf at Seminyak & Canggu", "Ancient temples including Tanah Lot & Uluwatu", "Vibrant nightlife and wellness retreats", "Affordable luxury villas with private pools"], bestTime: "April to October (dry season)", priceRange: "₹80,000 – ₹1,50,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive Denpasar, check into villa, Seminyak beach & sunset dinner"},{day:"Day 3–4",activities:"Ubud rice terraces, Monkey Forest, Tegalalang, cooking class"},{day:"Day 5–6",activities:"Uluwatu temple, Kecak fire dance, Nusa Penida day trip"},{day:"Day 7",activities:"Spa day, last-minute shopping, departure"}], whyKirti: "Kirti has personally visited Bali 4 times and has trusted villa and activity partners who give her clients preferential rates and private access." },
+  { id: 2,  slug: "maldives",           title: "Maldives",             category: "International", image: "/images/hero/dest-maldives-800.webp",          tags: ["Honeymoon","Luxury","Beaches"],         description: "Overwater villas and crystal clear turquoise lagoons.", highlights: ["Overwater bungalows with direct lagoon access", "World's best snorkelling and diving", "Bioluminescent beach nights", "Private sandbank dinners", "Seaplane transfers between islands"], bestTime: "November to April (dry season)", priceRange: "₹1,50,000 – ₹4,00,000 per person", sampleItinerary: [{day:"Day 1",activities:"Arrive Malé, seaplane to resort, welcome dinner over water"},{day:"Day 2–3",activities:"Snorkelling, dolphin cruise, underwater spa"},{day:"Day 4–5",activities:"Private sandbank picnic, sunset fishing, night snorkelling"},{day:"Day 6",activities:"Last morning in lagoon, seaplane back to Malé, depart"}], whyKirti: "Kirti has direct contracts with 12 Maldives resorts — better room categories and inclusions than booking directly or through large OTAs." },
+  { id: 3,  slug: "dubai",              title: "Dubai, UAE",           category: "International", image: "/images/hero/dest-dubai-800.webp",             tags: ["Luxury","City","Desert"],               description: "Futuristic architecture, luxury shopping, and desert safaris.", highlights: ["Burj Khalifa and Dubai Frame skyline views", "Desert safari with dune bashing and BBQ dinner", "Dubai Mall, Gold Souk and spice markets", "Luxury beach clubs at JBR and Palm Jumeirah", "Day trip to Abu Dhabi and the Sheikh Zayed Mosque"], bestTime: "November to March (cool season)", priceRange: "₹75,000 – ₹1,80,000 per person", sampleItinerary: [{day:"Day 1",activities:"Arrive Dubai, Dubai Mall & Burj Khalifa at sunset"},{day:"Day 2",activities:"Desert safari, camel ride, dune bashing, BBQ dinner under stars"},{day:"Day 3",activities:"Palm Jumeirah, Atlantis, beach club afternoon"},{day:"Day 4",activities:"Gold Souk, Spice Souk, Abra ride, Old Dubai"},{day:"Day 5",activities:"Abu Dhabi day trip — Sheikh Zayed Mosque & Ferrari World, depart"}], whyKirti: "Dubai is one of Kirti's most-booked destinations. She has preferred partnerships with 4 and 5 star hotels on the Palm and Downtown, often securing upgrades." },
   { id: 4,  slug: "singapore",          title: "Singapore",            category: "International", image: "/images/hero/dest-singapore-800.webp",         tags: ["City","Family","Modern"],               description: "A blend of nature and modernity in a global metropolis." },
   { id: 5,  slug: "thailand",           title: "Thailand",             category: "International", image: "/images/hero/dest-thailand-800.webp",          tags: ["Beaches","Culture","Nightlife"],        description: "Vibrant street life, ornate temples, and tropical beaches." },
   { id: 6,  slug: "vietnam",            title: "Vietnam",              category: "International", image: "/images/hero/dest-vietnam-800.webp",           tags: ["Nature","Culture","Food"],              description: "Bustling cities, serene limestone islands, and rich history." },
   { id: 7,  slug: "sri-lanka",          title: "Sri Lanka",            category: "International", image: "/images/hero/dest-sri-lanka-800.webp",         tags: ["Nature","Wildlife","Beaches"],          description: "Diverse landscapes, wildlife, and ancient Buddhist ruins." },
   { id: 8,  slug: "bhutan",             title: "Bhutan",               category: "International", image: "/images/hero/dest-bhutan-800.webp",            tags: ["Mountains","Culture","Peace"],          description: "The last great Himalayan kingdom, shrouded in mystery." },
-  { id: 9,  slug: "europe",             title: "Europe (Schengen)",    category: "International", image: "/images/hero/dest-europe-800.webp",            tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe." },
+  { id: 9,  slug: "europe",             title: "Europe (Schengen)",    category: "International", image: "/images/hero/dest-europe-800.webp",            tags: ["History","Culture","Romance"],          description: "Explore diverse cultures, history, and architecture across Europe.", highlights: ["Paris — Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps — Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome — Colosseum, Vatican, and authentic pasta", "Barcelona — Sagrada Familia and La Boqueria market"], bestTime: "May to September (summer season)", priceRange: "₹1,80,000 – ₹3,50,000 per person", sampleItinerary: [{day:"Day 1–3",activities:"Arrive Paris, Eiffel Tower, Louvre, Seine cruise, Versailles day trip"},{day:"Day 4–5",activities:"Train to Switzerland, Interlaken, Jungfraujoch excursion"},{day:"Day 6–7",activities:"Amsterdam canal boat, Anne Frank House, Rijksmuseum"},{day:"Day 8–10",activities:"Fly to Rome, Colosseum, Vatican, day trip to Florence"},{day:"Day 11–13",activities:"Barcelona, Sagrada Familia, Montjuïc, La Boqueria, depart"}], whyKirti: "Kirti handles Schengen visas end-to-end. Her 95%+ visa approval rate for Indian passport holders speaks for itself." },
   { id: 10, slug: "australia",          title: "Australia",            category: "International", image: "/images/hero/dest-australia-800.webp",         tags: ["Adventure","Wildlife","Beaches"],       description: "The Great Barrier Reef, outback adventures, and vibrant cities." },
   { id: 11, slug: "new-zealand",        title: "New Zealand",          category: "International", image: "/images/hero/dest-new-zealand-800.webp",       tags: ["Adventure","Nature","Landscapes"],      description: "Stunning natural landscapes, from mountains to fjords." },
   { id: 12, slug: "japan",              title: "Japan",                category: "International", image: "/images/hero/dest-japan-800.webp",             tags: ["Culture","Modern","Food"],              description: "A seamless blend of ancient traditions and cutting-edge technology." },
@@ -156,12 +164,12 @@ export const destinations: Destination[] = [
   { id: 17, slug: "kenya",              title: "Kenya",                category: "International", image: "/images/hero/dest-kenya-800.webp",             tags: ["Wildlife","Safari","Nature"],           description: "Home of the Great Migration and iconic African wildlife." },
   { id: 18, slug: "tanzania",           title: "Tanzania",             category: "International", image: "/images/hero/dest-tanzania-800.webp",          tags: ["Wildlife","Safari","Beaches"],          description: "Mount Kilimanjaro, Serengeti safaris, and Zanzibar beaches." },
 
-  { id: 19, slug: "kashmir",            title: "Kashmir",              category: "India",         image: "/images/hero/dest-kashmir-800.webp",           tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake." },
+  { id: 19, slug: "kashmir",            title: "Kashmir",              category: "India",         image: "/images/hero/dest-kashmir-800.webp",           tags: ["Mountains","Nature","Romance"],         description: "Paradise on Earth with stunning valleys and Dal Lake.", highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens — Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"], bestTime: "April to June and September to November", priceRange: "₹45,000 – ₹90,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive Srinagar, houseboat on Dal Lake, Shikara ride, Mughal gardens"},{day:"Day 3–4",activities:"Drive to Gulmarg, gondola ride, snow activities"},{day:"Day 5–6",activities:"Pahalgam, Betaab Valley, Aru Valley, horse riding"},{day:"Day 7",activities:"Local market, Wazwan dinner, depart Srinagar"}], whyKirti: "Kirti works exclusively with locally-owned houseboats and guides in Kashmir, ensuring authentic experiences while directly supporting local families." },
   { id: 20, slug: "leh-ladakh",         title: "Leh-Ladakh",           category: "India",         image: "/images/hero/dest-leh-ladakh-800.webp",        tags: ["Adventure","Mountains","Road Trip"],    description: "Stark mountain landscapes, monasteries, and high passes." },
   { id: 21, slug: "himachal-pradesh",   title: "Himachal Pradesh",     category: "India",         image: "/images/hero/dest-himachal-pradesh-800.webp",  tags: ["Mountains","Nature","Adventure"],       description: "Scenic hill stations, pine forests, and snow-capped peaks." },
   { id: 22, slug: "uttarakhand",        title: "Uttarakhand",          category: "India",         image: "/images/hero/dest-uttarakhand-800.webp",       tags: ["Mountains","Spiritual","Nature"],       description: "Land of Gods, featuring pilgrimage sites and Himalayan vistas." },
   { id: 23, slug: "rajasthan",          title: "Rajasthan",            category: "India",         image: "/images/hero/dest-rajasthan-800.webp",         tags: ["History","Culture","Desert"],           description: "Royal palaces, vibrant culture, and vast desert landscapes." },
-  { id: 24, slug: "goa",                title: "Goa",                  category: "India",         image: "/images/hero/dest-goa-800.webp",               tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe." },
+  { id: 24, slug: "goa",                title: "Goa",                  category: "India",         image: "/images/hero/dest-goa-800.webp",               tags: ["Beaches","Nightlife","Relaxation"],     description: "Sun, sand, beaches, and a relaxed coastal vibe.", highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches — Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"], bestTime: "November to February (peak season)", priceRange: "₹25,000 – ₹70,000 per person", sampleItinerary: [{day:"Day 1–2",activities:"Arrive, check into beach resort, North Goa beaches, Baga nightlife"},{day:"Day 3",activities:"Old Goa churches, spice plantation tour, Goan lunch"},{day:"Day 4–5",activities:"Drive to South Goa, Palolem beach, quiet sunsets"},{day:"Day 6",activities:"Mandovi river cruise, final dinner, depart"}], whyKirti: "From budget beach shacks to luxury boutique resorts, Kirti knows every tier of Goa and will match your group's vibe perfectly." },
   { id: 25, slug: "kerala",             title: "Kerala",               category: "India",         image: "/images/hero/dest-kerala-800.webp",            tags: ["Nature","Backwaters","Wellness"],       description: "God's Own Country with tranquil backwaters and lush greenery." },
   { id: 26, slug: "andaman",            title: "Andaman Islands",      category: "India",         image: "/images/hero/dest-andaman-800.webp",           tags: ["Beaches","Islands","Adventure"],        description: "Pristine beaches, clear waters, and water sports." },
   { id: 27, slug: "north-east-india",   title: "North East India",     category: "India",         image: "/images/hero/dest-north-east-india-800.webp",  tags: ["Nature","Culture","Offbeat"],           description: "Unexplored beauty, tribal culture, and biodiversity." },
@@ -319,8 +327,8 @@ const keyServices = [
 ];
 
 const testimonials = [
-  { id: 1, name: "Client Review", location: "", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
-  { id: 2, name: "Client Review", location: "", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 😊 ✨ " }
+  { id: 1, name: "Priya M.", location: "Greece Group Trip · 10 Travellers", rating: 5, text: "We decided to go on a holiday to Greece. We were 10 of us. The destination was all we were sure of. Rest was chaos. In a large group the nitty gritties, the co ordination and convincing everyone to a workable plan is the worst part if travel planning. We the smart people that we are gave the job to Kirti, a dear dear friend. The headache was hers. We were in the holiday mode that day onwards. Needless to say she did a wonderful job and always. This made us enjoy the much needed and much awaited holiday all the more. Nomads has never failed to be on point to everything, the reminders the information and looking after everyone's needs. Keep it up Kirti. Thank you for this and all the ones we will put you through" },
+  { id: 2, name: "Ravi K.", location: "Mauritius Family Trip · 6 Travellers", rating: 5, text: "Huge thanks for organizing such an incredible last-minute trip to Mauritius for my parents and relatives. Despite the short notice, everything was flawlessly planned and perfectly coordinated. The hotels, transfers, and sightseeing were seamless and stress-free. My parents felt well taken care of and absolutely loved the entire experience. Truly grateful for your professionalism, dedication, and ability to turn it into such a memorable holiday! 😊 ✨ " }
 ];
 
 const NOMADS_WA = "919924399335";
@@ -340,9 +348,19 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [touched, setTouched] = useState({ name: false, email: false });
+  const [advancing, setAdvancing] = useState(false);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
+
+  const safeNext = (setter?: () => void) => {
+    if (advancing) return;
+    setAdvancing(true);
+    if (setter) setter();
+    setStep(s => s + 1);
+    setTimeout(() => setAdvancing(false), 400);
+  };
   
   const maxInputSteps = preselectedDest ? 4 : 5;
   const currentDisplayStep = preselectedDest ? step : step + 1;
@@ -356,6 +374,8 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
     setName("");
     setEmail("");
     setWhatsapp("");
+    setTouched({ name: false, email: false });
+    setAdvancing(false);
     onClose();
   };
 
@@ -451,7 +471,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>When are you planning to travel?</h3>
               <div className="space-y-3">
                 {["Within 30 Days", "1-3 Months", "3-6 Months", "Just dreaming for now"].map(opt => (
-                  <button key={opt} onClick={() => { setTimeline(opt); next(); }} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
+                  <button key={opt} onClick={() => safeNext(() => setTimeline(opt))} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
                     <span>{opt}</span><ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#2D3191]" />
                   </button>
                 ))}
@@ -464,7 +484,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Who is joining you?</h3>
               <div className="space-y-3">
                 {["Solo Adventure", "Couples Retreat", "Family Vacation", "Group of Friends"].map(opt => (
-                  <button key={opt} onClick={() => { setTravelers(opt); next(); }} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
+                  <button key={opt} onClick={() => safeNext(() => setTravelers(opt))} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
                     <span>{opt}</span><ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#2D3191]" />
                   </button>
                 ))}
@@ -477,7 +497,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
               <h3 className="text-3xl font-bold mb-8 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>What's your travel vibe?</h3>
               <div className="space-y-3">
                 {["Total Relaxation & Beaches", "Adventure & Exploring", "Culture & History", "A mix of everything"].map(opt => (
-                  <button key={opt} onClick={() => { setVibe(opt); next(); }} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
+                  <button key={opt} onClick={() => safeNext(() => setVibe(opt))} className="w-full text-left px-6 py-5 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
                     <span>{opt}</span><ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#2D3191]" />
                   </button>
                 ))}
@@ -490,37 +510,53 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
               <h3 className="text-3xl font-bold mb-3 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Almost there.</h3>
               <p className="text-gray-500 mb-6 text-sm">Where should Kirti send your curated itinerary?</p>
               
-              <input 
-                type="text" 
-                value={name} 
-                onChange={e => setName(e.target.value)} 
-                placeholder="Your First Name" 
-                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-3 shadow-inner transition-shadow" 
-                autoFocus 
-                disabled={isSubmitting} 
+              <input
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                onBlur={() => setTouched(t => ({ ...t, name: true }))}
+                placeholder="Your First Name"
+                className={`w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-1 shadow-inner transition-shadow ${touched.name && !name.trim() ? "ring-2 ring-red-400" : ""}`}
+                autoFocus
+                disabled={isSubmitting}
               />
-              
-              <input 
-                type="email" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)} 
-                placeholder="Email (For formal itinerary & docs)" 
-                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-3 shadow-inner transition-shadow" 
-                disabled={isSubmitting} 
+              {touched.name && !name.trim() && (
+                <p className="text-red-500 text-xs mb-2 ml-1">Name is required</p>
+              )}
+              {!(touched.name && !name.trim()) && <div className="mb-2" />}
+
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onBlur={() => setTouched(t => ({ ...t, email: true }))}
+                placeholder="Email (For formal itinerary & docs)"
+                className={`w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-1 shadow-inner transition-shadow ${touched.email && !isEmailValid ? "ring-2 ring-red-400" : ""}`}
+                disabled={isSubmitting}
               />
-              
-              <input 
-                type="tel" 
-                value={whatsapp} 
-                onChange={e => setWhatsapp(e.target.value)} 
-                placeholder="WhatsApp Number (Optional, for instant replies)" 
-                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow" 
-                disabled={isSubmitting} 
+              {touched.email && email.length === 0 && (
+                <p className="text-red-500 text-xs mb-2 ml-1">Email is required</p>
+              )}
+              {touched.email && email.length > 0 && !isEmailValid && (
+                <p className="text-red-500 text-xs mb-2 ml-1">Enter a valid email address</p>
+              )}
+              {!(touched.email && !isEmailValid) && <div className="mb-2" />}
+
+              <input
+                type="tel"
+                value={whatsapp}
+                onChange={e => setWhatsapp(e.target.value)}
+                placeholder="WhatsApp Number (Optional, for instant replies)"
+                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow"
+                disabled={isSubmitting}
               />
-              
-              <button 
-                onClick={submitToCRM} 
-                disabled={!isStep4Valid || isSubmitting} 
+
+              <button
+                onClick={() => {
+                  setTouched({ name: true, email: true });
+                  if (isStep4Valid) submitToCRM();
+                }}
+                disabled={isSubmitting}
                 className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
               >
                 {isSubmitting ? "Securing preferences..." : "Secure My Trip → "}
@@ -568,6 +604,7 @@ export default function Home() {
   const [showFunnel,       setShowFunnel]       = useState(false);
   const [funnelDest,       setFunnelDest]       = useState("");
   const [showPill,         setShowPill]         = useState(false);
+  const [pillAnimOut,      setPillAnimOut]      = useState(false);
   const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
 
   const [utmData, setUtmData] = useState({
@@ -581,6 +618,11 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("openFunnel") === "true") {
+      setShowFunnel(true);
+    }
+
     const utmSource = urlParams.get("utm_source");
 
     if (utmSource) {
@@ -662,14 +704,14 @@ export default function Home() {
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
 
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"}`}>
-        <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <div className="container mx-auto px-4 md:px-8 flex justify-between items-center gap-2 min-w-0">
+          <div className="flex items-center gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img src={nomadsLogo} alt="The Nomads Co." width={40} height={40} loading="eager" decoding="async" className="h-10 w-auto rounded-md shadow-sm" />
-            <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
+            <span className={`font-bold tracking-tighter text-lg sm:text-2xl transition-colors whitespace-nowrap ${scrolled ? "text-[#1F2328]" : "text-white"}`}>The Nomads Co.</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <button onClick={() => scrollTo("about")}        className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>About</button>
-            <button onClick={() => scrollTo("destinations")} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
+            <button onClick={() => setShowDestinations(true)} className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Destinations</button>
             <button onClick={() => scrollTo("reviews")}      className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Reviews</button>
             <Link to="/journal" className={`text-sm font-medium transition-colors ${scrolled ? "text-[#1F2328] hover:text-blue-600" : "text-white hover:text-blue-300"}`}>Journal</Link>
             <button onClick={handlePlanMyTrip} className="px-6 py-2.5 bg-[#2D3191] text-white text-sm font-medium rounded-full hover:bg-[#242875] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20">Plan My Trip</button>
@@ -692,7 +734,7 @@ export default function Home() {
           </div>
           <div className="flex-1 flex flex-col px-8 py-4 gap-8 overflow-y-auto">
             <button onClick={() => scrollTo("about")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">About</button>
-            <button onClick={() => scrollTo("destinations")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
+            <button onClick={() => { setShowDestinations(true); setIsMenuOpen(false); }} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Destinations</button>
             <button onClick={() => scrollTo("reviews")} className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors">Reviews</button>
             <Link to="/journal" className="text-3xl font-bold text-[#1F2328] text-left hover:text-[#2D3191] transition-colors" onClick={() => setIsMenuOpen(false)}>Journal</Link>
           </div>
@@ -722,14 +764,14 @@ export default function Home() {
       </div>
 
       {showPill && randomDest && (
-        <div className="fixed top-24 right-4 md:right-8 z-50 animate-float-in">
+        <div className={`fixed top-24 right-4 md:right-8 z-50 ${pillAnimOut ? "animate-float-out" : "animate-float-in"}`}>
           <Link to={`/destinations/${randomDest.slug}`} onClick={() => setShowPill(false)} className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 pr-6 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-all relative block">
             <div className="w-12 h-12 rounded-full overflow-hidden shadow-inner flex-shrink-0"><img src={getResponsiveUrls(randomDest.image).src} className="w-full h-full object-cover" alt={randomDest.title} /></div>
             <div>
               <p className="text-xs font-bold text-[#02A551] uppercase tracking-wider mb-0.5 flex items-center gap-1"><Sparkles size={12} /> Trending</p>
               <p className="text-sm font-semibold text-gray-900">Escape to {randomDest.title}</p>
             </div>
-            <button aria-label="Close" onClick={e => { e.preventDefault(); e.stopPropagation(); setShowPill(false); }} className="absolute top-2 right-2 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-900"><X size={14} /></button>
+            <button aria-label="Close" onClick={e => { e.preventDefault(); e.stopPropagation(); setPillAnimOut(true); setTimeout(() => { setShowPill(false); setPillAnimOut(false); }, 400); }} className="absolute top-2 right-2 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-900"><X size={14} /></button>
           </Link>
         </div>
       )}
@@ -906,7 +948,7 @@ export default function Home() {
             <div className="w-20 h-20 mx-auto bg-white rounded-[1.5rem] flex items-center justify-center text-[#2D3191] shadow-[0_8px_20px_rgb(0,0,0,0.06)] mb-8 group-hover:scale-110 transition-transform duration-500"><Mail size={36} /></div>
             <h3 className="text-2xl font-bold text-[#1F2328] mb-2 group-hover:hidden">Email</h3>
             <h3 className="text-2xl font-bold text-[#2D3191] mb-2 hidden group-hover:block animate-fade-in-up">Write to Us</h3>
-            <p className="text-gray-500 font-medium truncate px-4">thenomadsco@gmail.com</p>
+            <p className="text-gray-500 font-medium break-all px-2 text-sm">thenomadsco@gmail.com</p>
             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#2D3191] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </a>
           <div className="group relative bg-[#FAFAF8] rounded-[2rem] p-10 text-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(2,165,81,0.15)] transition-all duration-500 overflow-hidden">
@@ -934,7 +976,7 @@ export default function Home() {
               <h4 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-8">Quick Links</h4>
               <ul className="space-y-4 font-medium text-gray-300">
                 <li><button onClick={() => scrollTo("about")}        className="hover:text-white transition-colors">About Us</button></li>
-                <li><button onClick={() => scrollTo("destinations")} className="hover:text-white transition-colors">Destinations</button></li>
+                <li><button onClick={() => setShowDestinations(true)} className="hover:text-white transition-colors">Destinations</button></li>
                 <li><button onClick={() => scrollTo("reviews")}      className="hover:text-white transition-colors">Reviews</button></li>
                 <li><Link to="/journal" className="hover:text-white transition-colors">Journal</Link></li>
                 <li><button onClick={() => scrollTo("contact")}      className="hover:text-white transition-colors">Contact</button></li>
@@ -986,6 +1028,9 @@ export default function Home() {
       <style>{`
         @keyframes floatIn { from{opacity:0;transform:translateX(40px) translateY(20px)} to{opacity:1;transform:translateX(0) translateY(0)} }
         .animate-float-in { animation: floatIn .8s cubic-bezier(.16,1,.3,1) forwards; }
+
+        @keyframes floatOut { from{opacity:1;transform:translateX(0) translateY(0)} to{opacity:0;transform:translateX(40px) translateY(20px)} }
+        .animate-float-out { animation: floatOut .4s cubic-bezier(.4,0,1,1) forwards; }
 
         @keyframes heroFade { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
         .animate-hero-1 { animation: heroFade .8s cubic-bezier(.16,1,.3,1) .1s both; }

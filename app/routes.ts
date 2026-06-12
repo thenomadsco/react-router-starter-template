@@ -13,8 +13,13 @@ export default [
   route("journal/:slug", "routes/article.tsx"),
   route("destinations/:slug", "routes/destination.tsx"),
   
+  // --- Hash-anchor redirects for direct URL access ---
+  route("about",        "routes/redirect-about.ts"),
+  route("reviews",      "routes/redirect-reviews.ts"),
+  route("destinations", "routes/redirect-destinations.ts"),
+
   // --- Existing Static Routes ---
-  route("contactus", "routes/contactus.tsx"),
+  route("contactus",    "routes/redirect-contactus.ts"),
   route("privacypolicy", "routes/privacypolicy.tsx"),
   route("terms", "routes/terms.tsx"),
 ] satisfies RouteConfig;

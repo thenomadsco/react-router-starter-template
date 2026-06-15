@@ -149,7 +149,7 @@ export const destinations: Destination[] = [
   {
     id: 1, slug: "bali", title: "Bali, Indonesia", category: "International", image: "/images/hero/dest-bali-800.webp", tags: ["Tropical","Beaches","Culture"],
     tagline: "Temples, rice terraces, and five completely different Balis.",
-    description: "Ubud, Seminyak, Canggu, Uluwatu, Nusa Penida — each one has a completely different character. Most people stay in one area and miss the point. Rice terraces and temple ceremonies in the hills, sunset beach clubs on the west coast, clifftop temples in the south. Works best when you treat it as several small trips stitched into one.",
+    description: "Ubud, Seminyak, Canggu, Uluwatu, Nusa Penida. Each one has a completely different character. Most people stay in one area and miss the point. Rice terraces and temple ceremonies in the hills, sunset beach clubs on the west coast, clifftop temples in the south. Works best when you treat it as several small trips stitched into one.",
     highlights: ["Iconic rice terraces in Ubud", "World-class surf at Seminyak & Canggu", "Ancient temples including Tanah Lot & Uluwatu", "Vibrant nightlife and wellness retreats", "Affordable luxury villas with private pools"],
     bestTime: "April to October (dry season)",
     priceRange: "₹80,000 – ₹1,50,000 per person",
@@ -159,21 +159,21 @@ export const destinations: Destination[] = [
   {
     id: 2, slug: "maldives", title: "Maldives", category: "International", image: "/images/hero/dest-maldives-800.webp", tags: ["Honeymoon","Luxury","Beaches"],
     tagline: "Overwater bungalows, bioluminescent nights, and seaplane rides.",
-    description: "Yes, overwater bungalows. But also bioluminescent beaches at midnight, seaplane rides between atolls, and an underwater world that makes the photos look understated. The island and resort you choose defines the whole trip — there's a real difference between properties here, not just a marketing one.",
+    description: "Yes, overwater bungalows. But also bioluminescent beaches at midnight, seaplane rides between atolls, and an underwater world that makes the photos look understated. The island and resort you choose defines the whole trip. There is a real difference between properties here, not just a marketing one.",
     highlights: ["Overwater bungalows with direct lagoon access", "World's best snorkelling and diving", "Bioluminescent beach nights", "Private sandbank dinners", "Seaplane transfers between islands"],
     bestTime: "November to April (dry season)",
     priceRange: "₹1,50,000 – ₹4,00,000 per person",
     sampleItinerary: [{day:"Day 1",activities:"Arrive Malé, seaplane to resort, welcome dinner over water"},{day:"Day 2–3",activities:"Snorkelling, dolphin cruise, underwater spa"},{day:"Day 4–5",activities:"Private sandbank picnic, sunset fishing, night snorkelling"},{day:"Day 6",activities:"Last morning in lagoon, seaplane back to Malé, depart"}],
-    whyKirti: "Kirti has direct contracts with 12 Maldives resorts — better room categories and inclusions than booking directly or through large OTAs."
+    whyKirti: "Kirti has direct contracts with 12 Maldives resorts. Better room categories and inclusions than booking directly or through large OTAs."
   },
   {
     id: 3, slug: "dubai", title: "Dubai, UAE", category: "International", image: "/images/hero/dest-dubai-800.webp", tags: ["Luxury","City","Desert"],
     tagline: "Burj Khalifa, desert safaris, gold souks, and the Palm.",
-    description: "Clean, efficient, and relentlessly photogenic. The Burj, the desert safari, the gold souk, the Palm — it all moves smoothly when planned well. Good for families who want everything sorted, great for groups who want one big international trip done properly. December to March is when the weather actually cooperates.",
+    description: "Clean, efficient, and relentlessly photogenic. The Burj, the desert safari, the gold souk, the Palm. It all moves smoothly when planned well. Good for families who want everything sorted, great for groups who want one big international trip done properly. December to March is when the weather actually cooperates.",
     highlights: ["Burj Khalifa and Dubai Frame skyline views", "Desert safari with dune bashing and BBQ dinner", "Dubai Mall, Gold Souk and spice markets", "Luxury beach clubs at JBR and Palm Jumeirah", "Day trip to Abu Dhabi and the Sheikh Zayed Mosque"],
     bestTime: "November to March (cool season)",
     priceRange: "₹75,000 – ₹1,80,000 per person",
-    sampleItinerary: [{day:"Day 1",activities:"Arrive Dubai, Dubai Mall & Burj Khalifa at sunset"},{day:"Day 2",activities:"Desert safari, camel ride, dune bashing, BBQ dinner under stars"},{day:"Day 3",activities:"Palm Jumeirah, Atlantis, beach club afternoon"},{day:"Day 4",activities:"Gold Souk, Spice Souk, Abra ride, Old Dubai"},{day:"Day 5",activities:"Abu Dhabi day trip — Sheikh Zayed Mosque & Ferrari World, depart"}],
+    sampleItinerary: [{day:"Day 1",activities:"Arrive Dubai, Dubai Mall & Burj Khalifa at sunset"},{day:"Day 2",activities:"Desert safari, camel ride, dune bashing, BBQ dinner under stars"},{day:"Day 3",activities:"Palm Jumeirah, Atlantis, beach club afternoon"},{day:"Day 4",activities:"Gold Souk, Spice Souk, Abra ride, Old Dubai"},{day:"Day 5",activities:"Abu Dhabi day trip: Sheikh Zayed Mosque & Ferrari World, depart"}],
     whyKirti: "Dubai is one of Kirti's most-booked destinations. She has preferred partnerships with 4 and 5 star hotels on the Palm and Downtown, often securing upgrades."
   },
   {
@@ -219,7 +219,7 @@ export const destinations: Destination[] = [
   {
     id: 8, slug: "bhutan", title: "Bhutan", category: "International", image: "/images/hero/dest-bhutan-800.webp", tags: ["Mountains","Culture","Peace"],
     tagline: "Tiger's Nest, ancient Dzongs, and the world's only GNH-measuring country.",
-    description: "The country has deliberately stayed the way it is — no billboards, no chain hotels. The Tiger's Nest monastery sits on that cliff exactly the way it looks in photos. Tourism is managed and unhurried here. Worth the slightly higher daily cost.",
+    description: "The country has deliberately stayed the way it is. No billboards, no chain hotels. The Tiger's Nest monastery sits on that cliff exactly the way it looks in photos. Tourism is managed and unhurried here. Worth the slightly higher daily cost.",
     highlights: ["Hiking to the iconic Tiger's Nest Monastery", "Exploring majestic Dzongs in Punakha and Thimphu", "Archery matches and traditional Bhutanese culture", "Driving across the scenic Dochu La Pass", "Unmatched Gross National Happiness vibe"],
     bestTime: "March to May & September to November",
     priceRange: "₹60,000 – ₹1,10,000 per person",
@@ -228,9 +228,9 @@ export const destinations: Destination[] = [
   },
   {
     id: 9, slug: "europe", title: "Europe (Schengen)", category: "International", image: "/images/hero/dest-europe-800.webp", tags: ["History","Culture","Romance"],
-    tagline: "Paris, Swiss Alps, Amsterdam, Rome, and Barcelona — Schengen visa included.",
-    description: "Paris for the museums and the food. Switzerland because nothing else looks like that. Amsterdam for the canals. Rome because the history doesn't feel like history — it's right in front of you. The Schengen visa is the main hurdle for Indian passport holders. We handle it from start to finish.",
-    highlights: ["Paris — Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps — Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome — Colosseum, Vatican, and authentic pasta", "Barcelona — Sagrada Familia and La Boqueria market"],
+    tagline: "Paris, Swiss Alps, Amsterdam, Rome, and Barcelona. Schengen visa included.",
+    description: "Paris for the museums and the food. Switzerland because nothing else looks like that. Amsterdam for the canals. Rome because the history doesn't feel like history. It's right in front of you. The Schengen visa is the main hurdle for Indian passport holders. We handle it from start to finish.",
+    highlights: ["Paris: Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps: Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome: Colosseum, Vatican, and authentic pasta", "Barcelona: Sagrada Familia and La Boqueria market"],
     bestTime: "May to September (summer season)",
     priceRange: "₹1,80,000 – ₹3,50,000 per person",
     sampleItinerary: [{day:"Day 1–3",activities:"Arrive Paris, Eiffel Tower, Louvre, Seine cruise, Versailles day trip"},{day:"Day 4–5",activities:"Train to Switzerland, Interlaken, Jungfraujoch excursion"},{day:"Day 6–7",activities:"Amsterdam canal boat, Anne Frank House, Rijksmuseum"},{day:"Day 8–10",activities:"Fly to Rome, Colosseum, Vatican, day trip to Florence"},{day:"Day 11–13",activities:"Barcelona, Sagrada Familia, Montjuïc, La Boqueria, depart"}],
@@ -239,7 +239,7 @@ export const destinations: Destination[] = [
   {
     id: 10, slug: "australia", title: "Australia", category: "International", image: "/images/hero/dest-australia-800.webp", tags: ["Adventure","Wildlife","Beaches"],
     tagline: "Great Barrier Reef, Sydney Opera House, and the Great Ocean Road.",
-    description: "Sydney has the skyline and Bondi. The Great Barrier Reef lives up to what people say about it. Melbourne has the food and coffee scene. It’s a large country and the routing matters — get it wrong and you spend more time on domestic flights than anywhere worth seeing.",
+    description: "Sydney has the skyline and Bondi. The Great Barrier Reef lives up to what people say about it. Melbourne has the food and coffee scene. It’s a large country and the routing matters. Get it wrong and you spend more time on domestic flights than anywhere worth seeing.",
     highlights: ["Snorkelling the Great Barrier Reef", "Sydney Opera House & Harbour Bridge climb", "Driving the Great Ocean Road (12 Apostles)", "Meeting kangaroos and koalas at wildlife parks", "Vibrant cafe culture in Melbourne"],
     bestTime: "September to November & March to May",
     priceRange: "₹2,20,000 – ₹3,80,000 per person",
@@ -249,7 +249,7 @@ export const destinations: Destination[] = [
   {
     id: 11, slug: "new-zealand", title: "New Zealand", category: "International", image: "/images/hero/dest-new-zealand-800.webp", tags: ["Adventure","Nature","Landscapes"],
     tagline: "Milford Sound, Hobbiton, Queenstown, and the most dramatic landscapes on earth.",
-    description: "Milford Sound from a boat. Bungee jumping in Queenstown. Hobbiton if you loved the films, stargazing in Tekapo if you didn't. The people who go come back saying it was the most beautiful place they've seen. Getting here from India takes effort — they're never wrong about it.",
+    description: "Milford Sound from a boat. Bungee jumping in Queenstown. Hobbiton if you loved the films, stargazing in Tekapo if you didn't. The people who go come back saying it was the most beautiful place they've seen. Getting here from India takes effort, but they are never wrong about it.",
     highlights: ["Cruising Milford Sound's dramatic fjords", "Hobbiton Movie Set tours in Matamata", "Bungee jumping & jet boating in Queenstown", "Geothermal wonders in Rotorua", "Glacier hiking at Franz Josef"],
     bestTime: "December to March (Summer)",
     priceRange: "₹2,50,000 – ₹4,50,000 per person",
@@ -259,7 +259,7 @@ export const destinations: Destination[] = [
   {
     id: 12, slug: "japan", title: "Japan", category: "International", image: "/images/hero/dest-japan-800.webp", tags: ["Culture","Modern","Food"],
     tagline: "Tokyo, Kyoto, Osaka, bullet trains, and cherry blossom season.",
-    description: "Tokyo is sensory overload in the best way. Kyoto slows you down. Osaka makes you eat too much. The bullet train connects it all. Cherry blossom season is worth building your dates around if you can. Don't go without a proper plan — the logistics here reward preparation.",
+    description: "Tokyo is sensory overload in the best way. Kyoto slows you down. Osaka makes you eat too much. The bullet train connects it all. Cherry blossom season is worth building your dates around if you can. Don't go without a proper plan. The logistics here reward preparation.",
     highlights: ["Experiencing the sensory overload of Tokyo", "Bullet train (Shinkansen) rides past Mt. Fuji", "Wandering Kyoto's temples & Arashiyama Bamboo Grove", "Meeting the friendly deer in Nara", "Authentic sushi and bustling street food in Osaka"],
     bestTime: "March to May (Cherry Blossoms) & September to November",
     priceRange: "₹1,80,000 – ₹3,00,000 per person",
@@ -279,7 +279,7 @@ export const destinations: Destination[] = [
   {
     id: 14, slug: "turkey", title: "Turkey", category: "International", image: "/images/hero/dest-turkey-800.webp", tags: ["History","Culture","Landscapes"],
     tagline: "Istanbul, Cappadocia hot air balloons, and Pamukkale's white pools.",
-    description: "Istanbul alone is four different cities layered on each other. Then Cappadocia, which looks like someone invented it for a fantasy film — hot air balloons at sunrise over those valleys is the image everyone talks about after. Pamukkale, Ephesus, the Grand Bazaar. Turkey rewards staying longer than a week.",
+    description: "Istanbul alone is four different cities layered on each other. Then Cappadocia, which looks like someone invented it for a fantasy film. Hot air balloons at sunrise over those valleys is the image everyone talks about after. Pamukkale, Ephesus, the Grand Bazaar. Turkey rewards staying longer than a week.",
     highlights: ["Hot air ballooning over Cappadocia at sunrise", "Exploring the Blue Mosque & Hagia Sophia in Istanbul", "Thermal pools of Pamukkale", "Shopping in the massive Grand Bazaar", "Cruising the Bosphorus strait"],
     bestTime: "April to May & September to October",
     priceRange: "₹1,20,000 – ₹1,90,000 per person",
@@ -289,7 +289,7 @@ export const destinations: Destination[] = [
   {
     id: 15, slug: "usa", title: "USA", category: "International", image: "/images/hero/dest-usa-800.webp", tags: ["City","Nature","Diverse"],
     tagline: "New York, Vegas, Grand Canyon, and the Pacific Coast.",
-    description: "New York, Las Vegas, Los Angeles is the classic route. Add the Grand Canyon for one of those moments that puts everything in proportion. It's a big country and the routing matters — wrong order means too many domestic flights and too little time. The B1/B2 visa requires solid preparation.",
+    description: "New York, Las Vegas, Los Angeles is the classic route. Add the Grand Canyon for one of those moments that puts everything in proportion. It's a big country and the routing matters. Wrong order means too many domestic flights and too little time. The B1/B2 visa requires solid preparation.",
     highlights: ["New York City's Times Square & Central Park", "Driving the scenic Pacific Coast Highway in California", "The sheer scale of the Grand Canyon", "Theme park magic in Orlando, Florida", "Las Vegas strip and nightlife"],
     bestTime: "Varies by region (May to September generally)",
     priceRange: "₹2,50,000 – ₹5,00,000+ per person",
@@ -299,7 +299,7 @@ export const destinations: Destination[] = [
   {
     id: 16, slug: "south-africa", title: "South Africa", category: "International", image: "/images/hero/dest-south-africa-800.webp", tags: ["Wildlife","Adventure","Nature"],
     tagline: "Big Five safaris, Table Mountain, penguins, and the Garden Route.",
-    description: "Table Mountain above Cape Town, penguins at Boulders Beach (yes, penguins), the Garden Route along the coast, then Kruger for the Big Five. On an open 4x4 in Kruger with nothing between you and the animals — you understand why people come specifically for this.",
+    description: "Table Mountain above Cape Town, penguins at Boulders Beach (yes, penguins), the Garden Route along the coast, then Kruger for the Big Five. On an open 4x4 in Kruger with nothing between you and the animals. You understand why people come specifically for this.",
     highlights: ["Big 5 Safari in Kruger National Park", "Taking the cable car up Table Mountain in Cape Town", "Driving the spectacular Garden Route", "Penguin watching at Boulders Beach", "Wine tasting in Stellenbosch"],
     bestTime: "May to October (Safari), November to March (Cape Town)",
     priceRange: "₹1,60,000 – ₹2,80,000 per person",
@@ -309,7 +309,7 @@ export const destinations: Destination[] = [
   {
     id: 17, slug: "kenya", title: "Kenya", category: "International", image: "/images/hero/dest-kenya-800.webp", tags: ["Wildlife","Safari","Nature"],
     tagline: "Great Migration, Masai Mara safaris, and breakfast with giraffes in Nairobi.",
-    description: "A million wildebeest crossing the Mara River while predators wait on both banks. July to October is when it happens — timing the safari right is everything. The Giraffe Centre breakfast in Nairobi is the smaller thing that people mention for years after.",
+    description: "A million wildebeest crossing the Mara River while predators wait on both banks. July to October is when it happens. Timing the safari right is everything. The Giraffe Centre breakfast in Nairobi is the smaller thing that people mention for years after.",
     highlights: ["Witnessing the Great Migration in the Masai Mara", "Flamingos at Lake Nakuru", "Views of Mount Kilimanjaro from Amboseli", "Maasai village cultural visits", "Breakfast with giraffes in Nairobi"],
     bestTime: "July to October (Great Migration)",
     priceRange: "₹1,40,000 – ₹2,50,000 per person",
@@ -319,7 +319,7 @@ export const destinations: Destination[] = [
   {
     id: 18, slug: "tanzania", title: "Tanzania", category: "International", image: "/images/hero/dest-tanzania-800.webp", tags: ["Wildlife","Safari","Beaches"],
     tagline: "Serengeti, Ngorongoro Crater, and Zanzibar's white sand beaches.",
-    description: "The Serengeti is enormous. Ngorongoro Crater is a natural bowl that holds every animal you've seen on a wildlife documentary. Then Zanzibar at the end — white sand, clear water, and Stone Town's winding Arabic lanes. Bush to beach in one trip, and it works.",
+    description: "The Serengeti is enormous. Ngorongoro Crater is a natural bowl that holds every animal you've seen on a wildlife documentary. Then Zanzibar at the end. White sand, clear water, and Stone Town's winding Arabic lanes. Bush to beach in one trip, and it works.",
     highlights: ["Game drives in the vast Serengeti National Park", "Descending into the Ngorongoro Crater", "Trekking the foothills of Mount Kilimanjaro", "Relaxing on the white sands of Zanzibar", "Strolling through historic Stone Town"],
     bestTime: "June to October (Safari), Year-round for Zanzibar",
     priceRange: "₹1,80,000 – ₹3,20,000 per person",
@@ -332,7 +332,7 @@ export const destinations: Destination[] = [
     id: 19, slug: "kashmir", title: "Kashmir", category: "India", image: "/images/hero/dest-kashmir-800.webp", tags: ["Mountains","Nature","Romance"],
     tagline: "Dal Lake houseboats, Gulmarg snow, Pahalgam meadows, and a Wazwan feast.",
     description: "Dal Lake from a houseboat at dusk. Gulmarg in the snow. Pahalgam in spring when the meadows are almost unrealistically green. A Wazwan feast at the end of a long day. One of those places that makes well-travelled people go quiet.",
-    highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens — Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"],
+    highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens: Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"],
     bestTime: "April to June and September to November",
     priceRange: "₹45,000 – ₹90,000 per person",
     sampleItinerary: [{day:"Day 1–2",activities:"Arrive Srinagar, houseboat on Dal Lake, Shikara ride, Mughal gardens"},{day:"Day 3–4",activities:"Drive to Gulmarg, gondola ride, snow activities"},{day:"Day 5–6",activities:"Pahalgam, Betaab Valley, Aru Valley, horse riding"},{day:"Day 7",activities:"Local market, Wazwan dinner, depart Srinagar"}],
@@ -341,7 +341,7 @@ export const destinations: Destination[] = [
   {
     id: 20, slug: "leh-ladakh", title: "Leh-Ladakh", category: "India", image: "/images/hero/dest-leh-ladakh-800.webp", tags: ["Adventure","Mountains","Road Trip"],
     tagline: "Pangong Lake, Khardung La, Nubra Valley, and the roof of the world.",
-    description: "The landscape looks like it belongs on another planet. Pangong Lake changes colour through the day. Khardung La at 5,350 metres. The altitude is real — rushing this trip is the one mistake to avoid. Acclimatisation days aren't optional, they're the difference between a good trip and a wasted one.",
+    description: "The landscape looks like it belongs on another planet. Pangong Lake changes colour through the day. Khardung La at 5,350 metres. The altitude is real. Rushing this trip is the one mistake to avoid. Acclimatisation days aren't optional, they're the difference between a good trip and a wasted one.",
     highlights: ["Driving through Khardung La, one of the highest motorable roads", "Camping by the color-changing Pangong Lake", "Nubra Valley sand dunes and double-humped camel rides", "Ancient Thiksey and Hemis Monasteries", "Magnetic Hill and Sangam (confluence of rivers)"],
     bestTime: "May to September",
     priceRange: "₹35,000 – ₹70,000 per person",
@@ -351,7 +351,7 @@ export const destinations: Destination[] = [
   {
     id: 21, slug: "himachal-pradesh", title: "Himachal Pradesh", category: "India", image: "/images/hero/dest-himachal-pradesh-800.webp", tags: ["Mountains","Nature","Adventure"],
     tagline: "Shimla heritage, Manali snow, Dharamshala calm, and hidden Spiti Valley.",
-    description: "Shimla has the old colonial feel on Mall Road. Manali in winter is for people who want snow. Dharamshala has a quiet that Manali doesn't anymore. Spiti Valley is for those who want to feel genuinely far from things — high altitude, sparse, and worth the rough roads to get there.",
+    description: "Shimla has the old colonial feel on Mall Road. Manali in winter is for people who want snow. Dharamshala has a quiet that Manali doesn't anymore. Spiti Valley is for those who want to feel genuinely far from things. High altitude, sparse, and worth the rough roads to get there.",
     highlights: ["Paragliding and cafe-hopping in Bir Billing", "Snow activities in Solang Valley & Rohtang Pass (Manali)", "Colonial heritage and Mall Road in Shimla", "Dalai Lama Temple in McLeodganj (Dharamshala)", "Offbeat drives through Spiti Valley"],
     bestTime: "March to June (Summer) & December to February (Snow)",
     priceRange: "₹25,000 – ₹60,000 per person",
@@ -361,7 +361,7 @@ export const destinations: Destination[] = [
   {
     id: 22, slug: "uttarakhand", title: "Uttarakhand", category: "India", image: "/images/hero/dest-uttarakhand-800.webp", tags: ["Mountains","Spiritual","Nature"],
     tagline: "Corbett safaris, Naini Lake, Rishikesh Ganga Aarti, and Mussoorie.",
-    description: "Tiger safaris in Corbett, lake views in Nainital, the Ganga Aarti at Rishikesh at dusk and river rafting the next morning. The Aarti is one of those experiences that has to be seen in person — photographs don't carry it.",
+    description: "Tiger safaris in Corbett, lake views in Nainital, the Ganga Aarti at Rishikesh at dusk and river rafting the next morning. The Aarti is one of those experiences that has to be seen in person. Photographs don't carry it.",
     highlights: ["Ganga Aarti at Triveni Ghat in Rishikesh", "Tiger safaris in Jim Corbett National Park", "Boating on Naini Lake in Nainital", "Skiing and ropeway in Auli", "Trekking to the Valley of Flowers"],
     bestTime: "March to June & September to November",
     priceRange: "₹25,000 – ₹65,000 per person",
@@ -371,7 +371,7 @@ export const destinations: Destination[] = [
   {
     id: 23, slug: "rajasthan", title: "Rajasthan", category: "India", image: "/images/hero/dest-rajasthan-800.webp", tags: ["History","Culture","Desert"],
     tagline: "Jaipur, Jodhpur, Udaipur, Jaisalmer desert camps, and royal palace stays.",
-    description: "Jaipur's pink city streets. Jodhpur's blue walls at golden hour. Udaipur on Lake Pichola. Jaisalmer out in the desert where you camp under the stars. The pacing of a Rajasthan trip matters as much as the destinations — too rushed and it loses its texture.",
+    description: "Jaipur's pink city streets. Jodhpur's blue walls at golden hour. Udaipur on Lake Pichola. Jaisalmer out in the desert where you camp under the stars. The pacing of a Rajasthan trip matters as much as the destinations. Too rushed and it loses its texture.",
     highlights: ["Sunset boat rides on Lake Pichola, Udaipur", "Exploring the massive Mehrangarh Fort in Jodhpur", "Camel safaris and desert camping in Jaisalmer", "Amber Fort and shopping in Jaipur", "Tiger spotting in Ranthambore"],
     bestTime: "October to March",
     priceRange: "₹30,000 – ₹80,000 per person",
@@ -382,7 +382,7 @@ export const destinations: Destination[] = [
     id: 24, slug: "goa", title: "Goa", category: "India", image: "/images/hero/dest-goa-800.webp", tags: ["Beaches","Nightlife","Relaxation"],
     tagline: "North Goa energy, South Goa quiet, spice plantations, and Portuguese churches.",
     description: "North Goa for energy, beach shacks, and late nights. South Goa for quiet, Portuguese churches, and a pool with a sea view. December gets busy. March onwards is cheaper, still warm, less crowded. A spice plantation lunch on a slow midweek afternoon is one of those small perfect things Goa does well.",
-    highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches — Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"],
+    highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches: Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"],
     bestTime: "November to February (peak season)",
     priceRange: "₹25,000 – ₹70,000 per person",
     sampleItinerary: [{day:"Day 1–2",activities:"Arrive, check into beach resort, North Goa beaches, Baga nightlife"},{day:"Day 3",activities:"Old Goa churches, spice plantation tour, Goan lunch"},{day:"Day 4–5",activities:"Drive to South Goa, Palolem beach, quiet sunsets"},{day:"Day 6",activities:"Mandovi river cruise, final dinner, depart"}],
@@ -391,7 +391,7 @@ export const destinations: Destination[] = [
   {
     id: 25, slug: "kerala", title: "Kerala", category: "India", image: "/images/hero/dest-kerala-800.webp", tags: ["Nature","Backwaters","Wellness"],
     tagline: "Alleppey backwaters, Munnar tea estates, Thekkady wildlife, and Ayurveda.",
-    description: "An overnight on a private houseboat in the Alleppey backwaters, with a cook who makes fish curry for dinner — that's the memory that stays. Munnar's tea estates in the morning mist. Thekkady for elephants. Flows naturally as a circuit starting and ending in Kochi.",
+    description: "An overnight on a private houseboat in the Alleppey backwaters, with a cook who makes fish curry for dinner. That's the memory that stays. Munnar's tea estates in the morning mist. Thekkady for elephants. Flows naturally as a circuit starting and ending in Kochi.",
     highlights: ["Cruising the Alleppey backwaters in a private houseboat", "Wandering the tea estates of Munnar", "Spotting wild elephants in Thekkady (Periyar)", "Watching Kathakali & Kalaripayattu performances", "Ayurvedic spa treatments and wellness retreats"],
     bestTime: "September to March",
     priceRange: "₹30,000 – ₹65,000 per person",
@@ -401,7 +401,7 @@ export const destinations: Destination[] = [
   {
     id: 26, slug: "andaman", title: "Andaman Islands", category: "India", image: "/images/hero/dest-andaman-800.webp", tags: ["Beaches","Islands","Adventure"],
     tagline: "Radhanagar Beach, scuba diving, Havelock Island, and the Cellular Jail.",
-    description: "Radhanagar Beach on Havelock is the real thing — that blue water, that sand. Scuba diving here has some of the best visibility in Asia. The Cellular Jail is a different kind of experience. Ferry logistics between the islands are the one thing not worth attempting without planning ahead.",
+    description: "Radhanagar Beach on Havelock is the real thing. That blue water, that sand. Scuba diving here has some of the best visibility in Asia. The Cellular Jail is a different kind of experience. Ferry logistics between the islands are the one thing not worth attempting without planning ahead.",
     highlights: ["Scuba diving and sea walking at Havelock Island", "Relaxing on the pristine Radhanagar Beach", "Light & Sound show at the Cellular Jail, Port Blair", "Glass bottom boat rides at North Bay", "Sunset views at Chidiya Tapu"],
     bestTime: "October to May",
     priceRange: "₹45,000 – ₹85,000 per person",
@@ -411,7 +411,7 @@ export const destinations: Destination[] = [
   {
     id: 27, slug: "north-east-india", title: "North East India", category: "India", image: "/images/hero/dest-north-east-india-800.webp", tags: ["Nature","Culture","Offbeat"],
     tagline: "Kaziranga rhinos, Meghalaya root bridges, and Tawang Monastery.",
-    description: "Seven states, each one different, most barely touched by mainstream tourism. Kaziranga for rhino safaris. Meghalaya for living root bridges and rivers that look unreal. Tawang Monastery near the Chinese border. More planning than almost anywhere else we send people — which is exactly why it helps to have someone who's done it.",
+    description: "Seven states, each one different, most barely touched by mainstream tourism. Kaziranga for rhino safaris. Meghalaya for living root bridges and rivers that look unreal. Tawang Monastery near the Chinese border. More planning than almost anywhere else we send people, which is exactly why it helps to have someone who's done it.",
     highlights: ["Rhino safaris in Kaziranga National Park, Assam", "Living root bridges of Meghalaya", "Monasteries of Tawang, Arunachal", "Floating islands of Loktak Lake, Manipur", "Hornbill Festival in Nagaland (December)"],
     bestTime: "October to April",
     priceRange: "₹40,000 – ₹80,000 per person",
@@ -594,7 +594,7 @@ const CinematicHero = ({ onPlanTrip }: { onPlanTrip: () => void }) => {
           Discover the world, <em className="not-italic text-blue-200">beautifully curated.</em>
         </h1>
         <p className="animate-hero-3 text-lg md:text-xl text-white/80 mb-12 max-w-xl leading-relaxed drop-shadow-md">
-          Zero-stress premium travel planning. We handle every detail — you collect the memories.
+          Zero-stress premium travel planning. We handle every detail so you collect the memories.
         </p>
         <div className="animate-hero-4">
           <button onClick={onPlanTrip} className="inline-flex items-center justify-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-[#2D3191] text-white text-lg font-bold rounded-full shadow-[0_10px_40px_rgba(45,49,145,0.6)] border border-white/10 hover:bg-[#242875] hover:shadow-[0_15px_50px_rgba(45,49,145,0.8)] hover:-translate-y-1 transition-all duration-300">
@@ -628,7 +628,7 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
             <p className="text-xl md:text-2xl text-[#1F2328]/80 leading-relaxed italic font-medium mb-4">
               “Kirti handled everything. We were in holiday mode from day one. She has never failed to be on point with the reminders, the information, and looking after everyone's needs.”
             </p>
-            <p className="text-sm font-bold text-[#2D3191] uppercase tracking-wider">— Alpa Thakkur · Greece · 10 Travellers</p>
+            <p className="text-sm font-bold text-[#2D3191] uppercase tracking-wider">Alpa Thakkur · Greece · 10 Travellers</p>
           </div>
           <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} size={20} className="text-yellow-400" />)}</div>
@@ -643,11 +643,11 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
 );
 
 const keyServices = [
-  { icon: <Compass className="w-8 h-8 text-[#2D3191]" />, title: "360° Trip Planning", description: "From the first 'where should we go' to coming home. Itinerary, hotels, flights, activities, transfers — one person handles all of it, so nothing falls through a gap." },
+  { icon: <Compass className="w-8 h-8 text-[#2D3191]" />, title: "360° Trip Planning", description: "From the first 'where should we go' to coming home. Itinerary, hotels, flights, activities, transfers. One person handles all of it, so nothing falls through a gap." },
   { icon: <SlidersHorizontal className="w-8 h-8 text-[#2D3191]" />, title: "Fill the Gaps", description: "Already have flights booked? Know where you want to stay but not what to do? We can step in wherever you need us and handle exactly the pieces you haven't sorted." },
   { icon: <Shield className="w-8 h-8 text-[#2D3191]" />, title: "Rate Advantage", description: "We have supplier agreements that aren't available on Booking.com. Better room categories, inclusions that would cost extra otherwise, and a few upgrades that happen because the hotel knows us." },
-  { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "Visa & Documentation", description: "Schengen, Australian, UK, US — we've done them all hundreds of times. We know exactly what the consulate wants to see and we build your file to give your application the strongest chance." },
-  { icon: <MapIcon className="w-8 h-8 text-[#2D3191]" />, title: "Support While You're There", description: "A hotel gets it wrong. A transfer is late. A flight changes. You message Kirti directly — not a call centre, not a bot. Someone who knows your itinerary and can actually fix it." },
+  { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "Visa & Documentation", description: "Schengen, Australian, UK, US. We've done them all hundreds of times. We know exactly what the consulate wants to see and we build your file to give your application the strongest chance." },
+  { icon: <MapIcon className="w-8 h-8 text-[#2D3191]" />, title: "Support While You're There", description: "A hotel gets it wrong. A transfer is late. A flight changes. You message Kirti directly. Not a call centre, not a bot. Someone who knows your itinerary and can actually fix it." },
   { icon: <Headphones className="w-8 h-8 text-[#2D3191]" />, title: "Start Anywhere", description: "Not sure where you want to go? Have a rough idea but no plan? Just tell us who's coming, what mood you're in, and how many days you have. We'll take it from there." },
 ];
 
@@ -816,7 +816,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
           {step === 2 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Who's making this trip happen?</h3>
-              <p className="text-gray-400 mb-6 text-sm">Be honest — we plan differently for each</p>
+              <p className="text-gray-400 mb-6 text-sm">Be honest, we plan differently for each</p>
               <div className="space-y-3">
                 {[
                   { label: "Just me", sub: "Solo trip, my rules" },
@@ -840,7 +840,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
           {step === 3 && (
             <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>How do you actually travel?</h3>
-              <p className="text-gray-400 mb-6 text-sm">Not what sounds good — what's actually you</p>
+              <p className="text-gray-400 mb-6 text-sm">Not what sounds good. What's actually you</p>
               <div className="space-y-3">
                 {[
                   { label: "I want to do nothing", sub: "Beach, pool, good food. That's the plan." },
@@ -1235,7 +1235,7 @@ export default function Home() {
           <div className="md:pl-6">
             <span className="text-[#2D3191] font-bold text-xs uppercase tracking-widest mb-6 block">The Founder</span>
             <h2 className="text-4xl sm:text-5xl font-bold text-[#1F2328] mb-8" style={{ fontFamily: "'Playfair Display',serif" }}>Meet Kirti Shah</h2>
-            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should feel like a holiday from the moment you say yes — not from the moment you land. She takes on the coordination, the follow-ups, the visa documentation, the group WhatsApp chaos, so that you don't have to.</p>
+            <p className="text-lg text-[#1F2328]/70 leading-relaxed mb-6 max-w-xl">Kirti believes that travel should feel like a holiday from the moment you say yes, not from the moment you land. She takes on the coordination, the follow-ups, the visa documentation, the group WhatsApp chaos, so that you don't have to.</p>
             <p className="text-lg text-[#1F2328]/70 leading-relaxed max-w-xl">With over three decades in the industry and 500+ families planned for, she has the supplier relationships that translate to better rooms, real upgrades, and prices you won't find on any booking platform.</p>
             <button onClick={handleWA} className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] transition-all shadow-md text-sm hover:-translate-y-0.5">
               <MessageCircle size={16} /> Chat with Kirti
@@ -1320,7 +1320,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
             <div className="col-span-1 md:col-span-2">
               <span className="text-3xl font-bold text-white mb-8 block" style={{ fontFamily: "'Playfair Display',serif" }}>The Nomads Co.</span>
-              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Curated personally by Kirti Shah — every trip, every detail, every memory. Based in Vadodara, Gujarat.</p>
+              <p className="text-gray-400 pr-6 leading-relaxed mb-10 text-lg">Planned personally by Kirti Shah. Every trip, every detail, every memory. Based in Vadodara, Gujarat.</p>
               <div className="flex space-x-4">
                 <a href="https://www.instagram.com/thenomadsco/" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Instagram className="w-5 h-5" /></a>
                 <a href="https://www.facebook.com/Thenomadsco/" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#2D3191] hover:scale-110 transition-all duration-300"><Facebook className="w-5 h-5" /></a>

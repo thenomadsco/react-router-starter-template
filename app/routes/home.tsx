@@ -643,12 +643,12 @@ const SocialProofStrip = ({ onWhatsApp }: { onWhatsApp: () => void }) => (
 );
 
 const keyServices = [
-  { icon: <Compass className="w-8 h-8 text-[#2D3191]" />, title: "360° Trip Planning", description: "From the first 'where should we go' to coming home. Itinerary, hotels, flights, activities, transfers. One person handles all of it, so nothing falls through a gap." },
-  { icon: <SlidersHorizontal className="w-8 h-8 text-[#2D3191]" />, title: "Fill the Gaps", description: "Already have flights booked? Know where you want to stay but not what to do? We can step in wherever you need us and handle exactly the pieces you haven't sorted." },
-  { icon: <Shield className="w-8 h-8 text-[#2D3191]" />, title: "Rate Advantage", description: "We have supplier agreements that aren't available on Booking.com. Better room categories, inclusions that would cost extra otherwise, and a few upgrades that happen because the hotel knows us." },
-  { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "Visa & Documentation", description: "Schengen, Australian, UK, US. We've done them all hundreds of times. We know exactly what the consulate wants to see and we build your file to give your application the strongest chance." },
-  { icon: <MapIcon className="w-8 h-8 text-[#2D3191]" />, title: "Support While You're There", description: "A hotel gets it wrong. A transfer is late. A flight changes. You message Kirti directly. Not a call centre, not a bot. Someone who knows your itinerary and can actually fix it." },
-  { icon: <Headphones className="w-8 h-8 text-[#2D3191]" />, title: "Start Anywhere", description: "Not sure where you want to go? Have a rough idea but no plan? Just tell us who's coming, what mood you're in, and how many days you have. We'll take it from there." },
+  { icon: <MessageCircle className="w-8 h-8 text-[#2D3191]" />, title: "You always deal with Kirti", description: "Not an agent who pulls up your file. Not whoever answers the phone that day. You message Kirti, she responds. She built your trip so she knows exactly what's in it." },
+  { icon: <Plane className="w-8 h-8 text-[#2D3191]" />, title: "The visa is inside the plan, not after it", description: "Most agencies plan your holiday and then hand you a visa checklist and good luck. We build the documentation from day one. We know what each consulate looks for and your file is prepared to show exactly that." },
+  { icon: <MapPin className="w-8 h-8 text-[#2D3191]" />, title: "She has personally been to most of these places", description: "Most itineraries are assembled from other itineraries. Kirti has visited the majority of destinations she plans for. That is how she knows which resort earns its price tag, and which one looks better in photos than in person." },
+  { icon: <Star className="w-8 h-8 text-[#2D3191]" />, title: "Rooms and rates that are not on any booking site", description: "Three decades of supplier relationships means better room categories, inclusions that cost extra everywhere else, and the occasional upgrade that happens simply because the property knows Kirti by name." },
+  { icon: <Headphones className="w-8 h-8 text-[#2D3191]" />, title: "Reachable when something goes wrong", description: "Something always does. Hotel room not ready, transfer late, flight changed. You message Kirti on WhatsApp. Not a support ticket, not a chatbot. The person who planned your trip and can actually fix the problem." },
+  { icon: <SlidersHorizontal className="w-8 h-8 text-[#2D3191]" />, title: "Start from wherever you are in the process", description: "Have a destination? Great. Have nothing but a date range? Also fine. Already booked flights and just need everything else handled? We step in at whatever stage you are and take it from there." },
 ];
 
 const testimonials = [
@@ -1247,7 +1247,7 @@ export default function Home() {
       <section className="py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>What we actually do for you</h2>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>What is actually different</h2>
           </RevealOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {keyServices.map((s, i) => (

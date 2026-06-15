@@ -135,7 +135,7 @@ const RevealOnScroll = ({ children, className = "" }: { children: React.ReactNod
 
 export type Destination = {
   id: number; slug: string; title: string; category: string;
-  image: string; tags: string[]; description: string;
+  image: string; tags: string[]; description: string; tagline?: string;
   highlights?: string[];
   bestTime?: string;
   sampleItinerary?: { day: string; activities: string }[];
@@ -148,7 +148,8 @@ export const destinations: Destination[] = [
   // INTERNATIONAL
   {
     id: 1, slug: "bali", title: "Bali, Indonesia", category: "International", image: "/images/hero/dest-bali-800.webp", tags: ["Tropical","Beaches","Culture"],
-    description: "Bali isn't one place — it's five, depending on what you're there for. Ubud for stillness and rice terraces. Seminyak for sunsets and restaurants. Canggu if you like energy. Uluwatu for clifftop temples. Nusa Penida if you want to feel like you've discovered something. Most people mix them wrong. We don't.",
+    tagline: "Temples, rice terraces, and five completely different Balis.",
+    description: "Ubud, Seminyak, Canggu, Uluwatu, Nusa Penida — each one has a completely different character. Most people stay in one area and miss the point. Rice terraces and temple ceremonies in the hills, sunset beach clubs on the west coast, clifftop temples in the south. Works best when you treat it as several small trips stitched into one.",
     highlights: ["Iconic rice terraces in Ubud", "World-class surf at Seminyak & Canggu", "Ancient temples including Tanah Lot & Uluwatu", "Vibrant nightlife and wellness retreats", "Affordable luxury villas with private pools"],
     bestTime: "April to October (dry season)",
     priceRange: "₹80,000 – ₹1,50,000 per person",
@@ -157,7 +158,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 2, slug: "maldives", title: "Maldives", category: "International", image: "/images/hero/dest-maldives-800.webp", tags: ["Honeymoon","Luxury","Beaches"],
-    description: "The Maldives has a reputation problem — everyone thinks it's just overwater bungalows and honeymooners. It's that, yes. But it's also bioluminescent beaches at midnight, seaplane rides over 26 atolls, and the kind of silence that makes you forget your phone exists. The resort you pick makes or breaks this trip. We've stayed in enough of them to know which ones earn the price tag.",
+    tagline: "Overwater bungalows, bioluminescent nights, and seaplane rides.",
+    description: "Yes, overwater bungalows. But also bioluminescent beaches at midnight, seaplane rides between atolls, and an underwater world that makes the photos look understated. The island and resort you choose defines the whole trip — there's a real difference between properties here, not just a marketing one.",
     highlights: ["Overwater bungalows with direct lagoon access", "World's best snorkelling and diving", "Bioluminescent beach nights", "Private sandbank dinners", "Seaplane transfers between islands"],
     bestTime: "November to April (dry season)",
     priceRange: "₹1,50,000 – ₹4,00,000 per person",
@@ -166,7 +168,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 3, slug: "dubai", title: "Dubai, UAE", category: "International", image: "/images/hero/dest-dubai-800.webp", tags: ["Luxury","City","Desert"],
-    description: "Dubai is what happens when a city decides to be unapologetically excessive — and pulls it off. The Burj, the desert, the gold souk, the Palm. But the best part of Dubai is how easy it is. Clean, efficient, endlessly photogenic. Perfect for families who want everything sorted, or groups who want to say they did it. We've sent hundreds of families here. We know exactly how to pace it.",
+    tagline: "Burj Khalifa, desert safaris, gold souks, and the Palm.",
+    description: "Clean, efficient, and relentlessly photogenic. The Burj, the desert safari, the gold souk, the Palm — it all moves smoothly when planned well. Good for families who want everything sorted, great for groups who want one big international trip done properly. December to March is when the weather actually cooperates.",
     highlights: ["Burj Khalifa and Dubai Frame skyline views", "Desert safari with dune bashing and BBQ dinner", "Dubai Mall, Gold Souk and spice markets", "Luxury beach clubs at JBR and Palm Jumeirah", "Day trip to Abu Dhabi and the Sheikh Zayed Mosque"],
     bestTime: "November to March (cool season)",
     priceRange: "₹75,000 – ₹1,80,000 per person",
@@ -175,7 +178,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 4, slug: "singapore", title: "Singapore", category: "International", image: "/images/hero/dest-singapore-800.webp", tags: ["City","Family","Modern"],
-    description: "Singapore is the most underrated family destination in Asia. Three days is enough to feel like you've seen the world — Gardens by the Bay, Universal Studios, a night safari, food that genuinely surprises you. It's small enough to not be overwhelming, and organized enough that nothing goes wrong. It's also a brilliant add-on to Bali or Bangkok without burning extra leave.",
+    tagline: "Gardens by the Bay, Universal Studios, and Asia's most family-friendly city.",
+    description: "Three days covers serious ground here: Gardens by the Bay, Universal Studios, Night Safari, food that actually surprises you. Small enough to not feel overwhelming, organised enough that things run on time. Works as a standalone trip or tacked onto Bali or Bangkok without burning extra leave.",
     highlights: ["Gardens by the Bay & Supertree Grove", "Universal Studios Singapore & Sentosa Island", "Night Safari & Singapore Zoo", "Marina Bay Sands observation deck", "Chinatown & Little India food walks"],
     bestTime: "February to April (least rain)",
     priceRange: "₹65,000 – ₹1,20,000 per person",
@@ -184,7 +188,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 5, slug: "thailand", title: "Thailand", category: "International", image: "/images/hero/dest-thailand-800.webp", tags: ["Beaches","Culture","Nightlife"],
-    description: "Thailand gives you everything for a fraction of what you'd spend elsewhere. Bangkok is loud and brilliant. Chiang Mai is calm and green. Phuket is for the beach people. Phi Phi is the one everyone comes back from talking about. It's one of those places where you can go five times and have five completely different trips — and the food alone is worth the flight.",
+    tagline: "Bangkok temples, Chiang Mai forests, Phuket beaches, and Phi Phi Islands.",
+    description: "Bangkok for the temples and the noise. Chiang Mai for green hills and slower days. Phuket for the beach crowd. Phi Phi for the island everyone comes back talking about. You can go three times and have three different trips. The food makes a convincing case for coming back.",
     highlights: ["Phi Phi & James Bond island hopping", "Grand Palace & Wat Arun in Bangkok", "Ethical elephant sanctuaries in Chiang Mai", "Vibrant nightlife in Phuket & Pattaya", "Authentic Thai street food & massages"],
     bestTime: "November to early April",
     priceRange: "₹45,000 – ₹90,000 per person",
@@ -193,7 +198,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 6, slug: "vietnam", title: "Vietnam", category: "International", image: "/images/hero/dest-vietnam-800.webp", tags: ["Nature","Culture","Food"],
-    description: "Vietnam is one of the most rewarding long trips you can take. Hanoi is old-world and chaotic in a way that grows on you. Halong Bay is everything the photos promise. Hoi An is the one that makes people cry when they leave — lantern-lit streets, tailors who'll turn around a custom suit in 24 hours, and some of the best food in Southeast Asia. Worth every hour of transit.",
+    tagline: "Halong Bay, Hoi An lanterns, and some of the best food in Southeast Asia.",
+    description: "Halong Bay over two days on a boat, then Hoi An's lantern-lit streets, then Ho Chi Minh City's pace and noise. The train south from Hanoi runs past rice paddies and coastal cliffs. Longer trip, but one that earns every hour in transit.",
     highlights: ["Overnight cruise in Halong Bay", "Wandering the lantern-lit streets of Hoi An", "Cu Chi Tunnels & Mekong Delta tours", "French colonial architecture in Hanoi", "World-renowned Vietnamese coffee and Pho"],
     bestTime: "February to April or August to October",
     priceRange: "₹50,000 – ₹95,000 per person",
@@ -202,7 +208,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 7, slug: "sri-lanka", title: "Sri Lanka", category: "International", image: "/images/hero/dest-sri-lanka-800.webp", tags: ["Nature","Wildlife","Beaches"],
-    description: "Sri Lanka is the trip that surprises people the most. In ten days you can do the train ride through tea estates, leopard spotting in Yala, Sigiriya Rock at sunrise, and end up on a beach in Mirissa. It packs more variety per square kilometre than almost anywhere in the region — and the visa is a formality for Indians. An underrated masterpiece of a destination.",
+    tagline: "Sigiriya Rock, leopards in Yala, scenic trains, and Mirissa beaches.",
+    description: "Under two weeks: the train through tea estates, leopard spotting in Yala, Sigiriya Rock at sunrise, and a beach in Mirissa at the end. Visa is a formality for Indians. Packs more variety per kilometre than almost anywhere else in the region.",
     highlights: ["Climbing the ancient Sigiriya Rock Fortress", "Leopard spotting in Yala National Park", "Scenic train ride from Kandy to Ella", "Temple of the Sacred Tooth Relic", "Pristine beaches in Bentota and Mirissa"],
     bestTime: "December to April (South/West), May to September (East)",
     priceRange: "₹45,000 – ₹85,000 per person",
@@ -211,7 +218,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 8, slug: "bhutan", title: "Bhutan", category: "International", image: "/images/hero/dest-bhutan-800.webp", tags: ["Mountains","Culture","Peace"],
-    description: "Bhutan is the only destination on this list where the entire country is trying to stay exactly as it is. No billboards. No chains. The Tiger's Nest monastery is genuinely as dramatic as it looks perched on that cliff. The people are warm in a way that doesn't feel performative. This is the trip for someone who wants to feel like they've gone somewhere that still has something left to protect.",
+    tagline: "Tiger's Nest, ancient Dzongs, and the world's only GNH-measuring country.",
+    description: "The country has deliberately stayed the way it is — no billboards, no chain hotels. The Tiger's Nest monastery sits on that cliff exactly the way it looks in photos. Tourism is managed and unhurried here. Worth the slightly higher daily cost.",
     highlights: ["Hiking to the iconic Tiger's Nest Monastery", "Exploring majestic Dzongs in Punakha and Thimphu", "Archery matches and traditional Bhutanese culture", "Driving across the scenic Dochu La Pass", "Unmatched Gross National Happiness vibe"],
     bestTime: "March to May & September to November",
     priceRange: "₹60,000 – ₹1,10,000 per person",
@@ -220,7 +228,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 9, slug: "europe", title: "Europe (Schengen)", category: "International", image: "/images/hero/dest-europe-800.webp", tags: ["History","Culture","Romance"],
-    description: "Europe is less a destination and more a question of which version you want. Paris for romance and art. Switzerland because nowhere else looks like that. Amsterdam if you like canals and chaos. Rome because the history is genuinely staggering. The Schengen visa is the biggest hurdle for Indian passport holders — we have a 95%+ approval rate and handle the paperwork end-to-end.",
+    tagline: "Paris, Swiss Alps, Amsterdam, Rome, and Barcelona — Schengen visa included.",
+    description: "Paris for the museums and the food. Switzerland because nothing else looks like that. Amsterdam for the canals. Rome because the history doesn't feel like history — it's right in front of you. The Schengen visa is the main hurdle for Indian passport holders. We handle it from start to finish.",
     highlights: ["Paris — Eiffel Tower, Louvre, Seine river cruise", "Swiss Alps — Jungfraujoch and Interlaken", "Amsterdam canals and Rijksmuseum", "Rome — Colosseum, Vatican, and authentic pasta", "Barcelona — Sagrada Familia and La Boqueria market"],
     bestTime: "May to September (summer season)",
     priceRange: "₹1,80,000 – ₹3,50,000 per person",
@@ -229,7 +238,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 10, slug: "australia", title: "Australia", category: "International", image: "/images/hero/dest-australia-800.webp", tags: ["Adventure","Wildlife","Beaches"],
-    description: "Australia is the trip you plan for months and come back talking about for years. Sydney has that skyline. The Great Barrier Reef is one of the few places that actually lives up to its reputation. Melbourne has the food scene. The visa requires serious documentation prep — this is one where having someone who’s done it a hundred times before genuinely matters.",
+    tagline: "Great Barrier Reef, Sydney Opera House, and the Great Ocean Road.",
+    description: "Sydney has the skyline and Bondi. The Great Barrier Reef lives up to what people say about it. Melbourne has the food and coffee scene. It’s a large country and the routing matters — get it wrong and you spend more time on domestic flights than anywhere worth seeing.",
     highlights: ["Snorkelling the Great Barrier Reef", "Sydney Opera House & Harbour Bridge climb", "Driving the Great Ocean Road (12 Apostles)", "Meeting kangaroos and koalas at wildlife parks", "Vibrant cafe culture in Melbourne"],
     bestTime: "September to November & March to May",
     priceRange: "₹2,20,000 – ₹3,80,000 per person",
@@ -238,7 +248,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 11, slug: "new-zealand", title: "New Zealand", category: "International", image: "/images/hero/dest-new-zealand-800.webp", tags: ["Adventure","Nature","Landscapes"],
-    description: "New Zealand is for people who want nature to feel like a main character. Milford Sound from a boat. Bungee jumping in Queenstown because why not. Hobbiton if you love the films, stargazing in Tekapo if you don't. It takes effort to get here from India, but the people who go come back saying it was the most beautiful place they've ever seen. We believe them.",
+    tagline: "Milford Sound, Hobbiton, Queenstown, and the most dramatic landscapes on earth.",
+    description: "Milford Sound from a boat. Bungee jumping in Queenstown. Hobbiton if you loved the films, stargazing in Tekapo if you didn't. The people who go come back saying it was the most beautiful place they've seen. Getting here from India takes effort — they're never wrong about it.",
     highlights: ["Cruising Milford Sound's dramatic fjords", "Hobbiton Movie Set tours in Matamata", "Bungee jumping & jet boating in Queenstown", "Geothermal wonders in Rotorua", "Glacier hiking at Franz Josef"],
     bestTime: "December to March (Summer)",
     priceRange: "₹2,50,000 – ₹4,50,000 per person",
@@ -247,7 +258,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 12, slug: "japan", title: "Japan", category: "International", image: "/images/hero/dest-japan-800.webp", tags: ["Culture","Modern","Food"],
-    description: "Japan is the most organized country you'll ever visit — and somehow still completely overwhelming if you go in without a plan. Tokyo is sensory overload in the best way. Kyoto makes you slow down. Osaka makes you eat too much. The bullet train makes you feel like the future exists. Cherry blossom season is real and worth planning around if you can. We've helped a lot of first-timers get it exactly right.",
+    tagline: "Tokyo, Kyoto, Osaka, bullet trains, and cherry blossom season.",
+    description: "Tokyo is sensory overload in the best way. Kyoto slows you down. Osaka makes you eat too much. The bullet train connects it all. Cherry blossom season is worth building your dates around if you can. Don't go without a proper plan — the logistics here reward preparation.",
     highlights: ["Experiencing the sensory overload of Tokyo", "Bullet train (Shinkansen) rides past Mt. Fuji", "Wandering Kyoto's temples & Arashiyama Bamboo Grove", "Meeting the friendly deer in Nara", "Authentic sushi and bustling street food in Osaka"],
     bestTime: "March to May (Cherry Blossoms) & September to November",
     priceRange: "₹1,80,000 – ₹3,00,000 per person",
@@ -256,7 +268,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 13, slug: "south-korea", title: "South Korea", category: "International", image: "/images/hero/dest-south-korea-800.webp", tags: ["Culture","City","Food"],
-    description: "South Korea has quietly become one of the best trips you can take from India. Seoul is immaculate — every neighbourhood has its own personality. Gyeongbokgung Palace in a Hanbok feels like stepping sideways in time. Jeju Island is the one that surprises people. The food is its own reason to go. K-drama fans will recognise corners of the city that feel like they've been there before.",
+    tagline: "Seoul palaces, Jeju Island, K-drama spots, and Korean BBQ.",
+    description: "Seoul has a different personality in every neighbourhood. Putting on a Hanbok at Gyeongbokgung Palace feels like stepping into a different century. Jeju Island surprises most first-timers. The food alone is a reason to visit. K-drama fans will recognise street corners immediately.",
     highlights: ["Trying on Hanbok at Gyeongbokgung Palace", "Exploring Nami Island & K-Drama filming sites", "Shopping in Myeongdong & Hongdae", "Visiting the DMZ (border with North Korea)", "Relaxing on Jeju Island's volcanic beaches"],
     bestTime: "April to June & September to November",
     priceRange: "₹1,40,000 – ₹2,20,000 per person",
@@ -265,7 +278,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 14, slug: "turkey", title: "Turkey", category: "International", image: "/images/hero/dest-turkey-800.webp", tags: ["History","Culture","Landscapes"],
-    description: "Turkey is genuinely hard to categorize — Istanbul alone is four cities layered on top of each other. Then there's Cappadocia, which looks like a landscape someone invented for a film. Hot air balloons at sunrise over those valleys is one of those things you'll remember when you're old. Pamukkale's white travertine pools, Ephesus ruins — Turkey rewards you for staying longer than a week.",
+    tagline: "Istanbul, Cappadocia hot air balloons, and Pamukkale's white pools.",
+    description: "Istanbul alone is four different cities layered on each other. Then Cappadocia, which looks like someone invented it for a fantasy film — hot air balloons at sunrise over those valleys is the image everyone talks about after. Pamukkale, Ephesus, the Grand Bazaar. Turkey rewards staying longer than a week.",
     highlights: ["Hot air ballooning over Cappadocia at sunrise", "Exploring the Blue Mosque & Hagia Sophia in Istanbul", "Thermal pools of Pamukkale", "Shopping in the massive Grand Bazaar", "Cruising the Bosphorus strait"],
     bestTime: "April to May & September to October",
     priceRange: "₹1,20,000 – ₹1,90,000 per person",
@@ -274,7 +288,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 15, slug: "usa", title: "USA", category: "International", image: "/images/hero/dest-usa-800.webp", tags: ["City","Nature","Diverse"],
-    description: "The USA is the trip where more planning goes into logistics than anywhere else we send people. Not because it's hard — because it's genuinely enormous and the wrong routing wastes days. New York, Vegas, and LA is the classic. Add the Grand Canyon if you want one moment that puts everything in perspective. The B1/B2 visa process is rigorous — we've guided hundreds through it.",
+    tagline: "New York, Vegas, Grand Canyon, and the Pacific Coast.",
+    description: "New York, Las Vegas, Los Angeles is the classic route. Add the Grand Canyon for one of those moments that puts everything in proportion. It's a big country and the routing matters — wrong order means too many domestic flights and too little time. The B1/B2 visa requires solid preparation.",
     highlights: ["New York City's Times Square & Central Park", "Driving the scenic Pacific Coast Highway in California", "The sheer scale of the Grand Canyon", "Theme park magic in Orlando, Florida", "Las Vegas strip and nightlife"],
     bestTime: "Varies by region (May to September generally)",
     priceRange: "₹2,50,000 – ₹5,00,000+ per person",
@@ -283,7 +298,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 16, slug: "south-africa", title: "South Africa", category: "International", image: "/images/hero/dest-south-africa-800.webp", tags: ["Wildlife","Adventure","Nature"],
-    description: "South Africa is the one destination that legitimately does everything. Table Mountain above Cape Town. Penguins at Boulders Beach (yes, penguins). The Garden Route hugging the coast. Then Kruger — which is as close to a wildlife documentary as you'll ever get. Seeing the Big Five from a game drive vehicle, on open savannah, with nothing between you and them is something a photo can't fully prepare you for.",
+    tagline: "Big Five safaris, Table Mountain, penguins, and the Garden Route.",
+    description: "Table Mountain above Cape Town, penguins at Boulders Beach (yes, penguins), the Garden Route along the coast, then Kruger for the Big Five. On an open 4x4 in Kruger with nothing between you and the animals — you understand why people come specifically for this.",
     highlights: ["Big 5 Safari in Kruger National Park", "Taking the cable car up Table Mountain in Cape Town", "Driving the spectacular Garden Route", "Penguin watching at Boulders Beach", "Wine tasting in Stellenbosch"],
     bestTime: "May to October (Safari), November to March (Cape Town)",
     priceRange: "₹1,60,000 – ₹2,80,000 per person",
@@ -292,7 +308,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 17, slug: "kenya", title: "Kenya", category: "International", image: "/images/hero/dest-kenya-800.webp", tags: ["Wildlife","Safari","Nature"],
-    description: "Kenya is where you go to watch the Great Migration — a million wildebeest crossing the Mara River while predators wait. It sounds dramatic because it is. Nairobi is also a proper city now, and the Giraffe Centre breakfast is something kids (and adults) talk about for years. July to October is when the magic happens. We'll make sure you're in the right camp at the right time.",
+    tagline: "Great Migration, Masai Mara safaris, and breakfast with giraffes in Nairobi.",
+    description: "A million wildebeest crossing the Mara River while predators wait on both banks. July to October is when it happens — timing the safari right is everything. The Giraffe Centre breakfast in Nairobi is the smaller thing that people mention for years after.",
     highlights: ["Witnessing the Great Migration in the Masai Mara", "Flamingos at Lake Nakuru", "Views of Mount Kilimanjaro from Amboseli", "Maasai village cultural visits", "Breakfast with giraffes in Nairobi"],
     bestTime: "July to October (Great Migration)",
     priceRange: "₹1,40,000 – ₹2,50,000 per person",
@@ -301,7 +318,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 18, slug: "tanzania", title: "Tanzania", category: "International", image: "/images/hero/dest-tanzania-800.webp", tags: ["Wildlife","Safari","Beaches"],
-    description: "Tanzania is the original safari country. The Serengeti is as vast as it sounds. Ngorongoro Crater is one of those places where you descend into a natural amphitheatre filled with every animal you've ever seen on a wildlife channel. Then you can end it all on Zanzibar — white sand, clear water, Stone Town with its winding Arabic lanes. The bush-to-beach combination here is unmatched.",
+    tagline: "Serengeti, Ngorongoro Crater, and Zanzibar's white sand beaches.",
+    description: "The Serengeti is enormous. Ngorongoro Crater is a natural bowl that holds every animal you've seen on a wildlife documentary. Then Zanzibar at the end — white sand, clear water, and Stone Town's winding Arabic lanes. Bush to beach in one trip, and it works.",
     highlights: ["Game drives in the vast Serengeti National Park", "Descending into the Ngorongoro Crater", "Trekking the foothills of Mount Kilimanjaro", "Relaxing on the white sands of Zanzibar", "Strolling through historic Stone Town"],
     bestTime: "June to October (Safari), Year-round for Zanzibar",
     priceRange: "₹1,80,000 – ₹3,20,000 per person",
@@ -312,7 +330,8 @@ export const destinations: Destination[] = [
   // INDIA
   {
     id: 19, slug: "kashmir", title: "Kashmir", category: "India", image: "/images/hero/dest-kashmir-800.webp", tags: ["Mountains","Nature","Romance"],
-    description: "Kashmir is the kind of place that makes people who've seen a lot of the world go quiet. The Dal Lake at dusk from a houseboat. Gulmarg in the snow. Pahalgam in spring when the meadows are absurdly green. The Wazwan feast at the end of a long day. If you've been putting this trip off, stop. There's no better time than the season you're reading this in.",
+    tagline: "Dal Lake houseboats, Gulmarg snow, Pahalgam meadows, and a Wazwan feast.",
+    description: "Dal Lake from a houseboat at dusk. Gulmarg in the snow. Pahalgam in spring when the meadows are almost unrealistically green. A Wazwan feast at the end of a long day. One of those places that makes well-travelled people go quiet.",
     highlights: ["Shikara rides on the serene Dal Lake", "Mughal gardens — Shalimar Bagh and Nishat Bagh", "Snow-capped Gulmarg and the world's highest gondola", "Pahalgam and Betaab Valley", "Authentic multi-course Wazwan feast"],
     bestTime: "April to June and September to November",
     priceRange: "₹45,000 – ₹90,000 per person",
@@ -321,7 +340,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 20, slug: "leh-ladakh", title: "Leh-Ladakh", category: "India", image: "/images/hero/dest-leh-ladakh-800.webp", tags: ["Adventure","Mountains","Road Trip"],
-    description: "Ladakh is a bucket-list trip that actually delivers. The landscape looks like a film set for a planet that doesn't exist. Pangong Lake changes colour depending on the hour. Khardung La at 5,350 metres makes you feel like the roof of the world. The key is pacing — altitude sickness is real, and rushing this trip ruins it. We build the acclimatisation in from day one.",
+    tagline: "Pangong Lake, Khardung La, Nubra Valley, and the roof of the world.",
+    description: "The landscape looks like it belongs on another planet. Pangong Lake changes colour through the day. Khardung La at 5,350 metres. The altitude is real — rushing this trip is the one mistake to avoid. Acclimatisation days aren't optional, they're the difference between a good trip and a wasted one.",
     highlights: ["Driving through Khardung La, one of the highest motorable roads", "Camping by the color-changing Pangong Lake", "Nubra Valley sand dunes and double-humped camel rides", "Ancient Thiksey and Hemis Monasteries", "Magnetic Hill and Sangam (confluence of rivers)"],
     bestTime: "May to September",
     priceRange: "₹35,000 – ₹70,000 per person",
@@ -330,7 +350,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 21, slug: "himachal-pradesh", title: "Himachal Pradesh", category: "India", image: "/images/hero/dest-himachal-pradesh-800.webp", tags: ["Mountains","Nature","Adventure"],
-    description: "Himachal is the escape that never gets old. Shimla still has that colonial-era charm on Mall Road. Manali in winter is for snow people. Dharamshala has a quietness to it that Manali no longer does. And then there's Spiti — which is for the ones who want to feel genuinely far from everything, at 4,000 metres, in a valley that's been there for centuries.",
+    tagline: "Shimla heritage, Manali snow, Dharamshala calm, and hidden Spiti Valley.",
+    description: "Shimla has the old colonial feel on Mall Road. Manali in winter is for people who want snow. Dharamshala has a quiet that Manali doesn't anymore. Spiti Valley is for those who want to feel genuinely far from things — high altitude, sparse, and worth the rough roads to get there.",
     highlights: ["Paragliding and cafe-hopping in Bir Billing", "Snow activities in Solang Valley & Rohtang Pass (Manali)", "Colonial heritage and Mall Road in Shimla", "Dalai Lama Temple in McLeodganj (Dharamshala)", "Offbeat drives through Spiti Valley"],
     bestTime: "March to June (Summer) & December to February (Snow)",
     priceRange: "₹25,000 – ₹60,000 per person",
@@ -339,7 +360,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 22, slug: "uttarakhand", title: "Uttarakhand", category: "India", image: "/images/hero/dest-uttarakhand-800.webp", tags: ["Mountains","Spiritual","Nature"],
-    description: "Uttarakhand holds a rare combination — tigers in Corbett, lake views in Nainital, the Ganga Aarti in Rishikesh, and serious trekking if you want it. It's the most versatile hill destination in India. The Ganga Aarti at dusk is one of those experiences that doesn't require explanation. You just have to be there.",
+    tagline: "Corbett safaris, Naini Lake, Rishikesh Ganga Aarti, and Mussoorie.",
+    description: "Tiger safaris in Corbett, lake views in Nainital, the Ganga Aarti at Rishikesh at dusk and river rafting the next morning. The Aarti is one of those experiences that has to be seen in person — photographs don't carry it.",
     highlights: ["Ganga Aarti at Triveni Ghat in Rishikesh", "Tiger safaris in Jim Corbett National Park", "Boating on Naini Lake in Nainital", "Skiing and ropeway in Auli", "Trekking to the Valley of Flowers"],
     bestTime: "March to June & September to November",
     priceRange: "₹25,000 – ₹65,000 per person",
@@ -348,7 +370,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 23, slug: "rajasthan", title: "Rajasthan", category: "India", image: "/images/hero/dest-rajasthan-800.webp", tags: ["History","Culture","Desert"],
-    description: "Rajasthan is the one destination India keeps giving the world — and it deserves every bit of the reputation. Jaipur's pink city energy. Jodhpur's blue walls at golden hour. Udaipur reflected in Lake Pichola. Jaisalmer in the desert, which is unlike anything else in the country. A good Rajasthan itinerary isn't just a places list — it's a rhythm. We've perfected it over hundreds of trips.",
+    tagline: "Jaipur, Jodhpur, Udaipur, Jaisalmer desert camps, and royal palace stays.",
+    description: "Jaipur's pink city streets. Jodhpur's blue walls at golden hour. Udaipur on Lake Pichola. Jaisalmer out in the desert where you camp under the stars. The pacing of a Rajasthan trip matters as much as the destinations — too rushed and it loses its texture.",
     highlights: ["Sunset boat rides on Lake Pichola, Udaipur", "Exploring the massive Mehrangarh Fort in Jodhpur", "Camel safaris and desert camping in Jaisalmer", "Amber Fort and shopping in Jaipur", "Tiger spotting in Ranthambore"],
     bestTime: "October to March",
     priceRange: "₹30,000 – ₹80,000 per person",
@@ -357,7 +380,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 24, slug: "goa", title: "Goa", category: "India", image: "/images/hero/dest-goa-800.webp", tags: ["Beaches","Nightlife","Relaxation"],
-    description: "Goa means different things to different people and that's exactly the point. North Goa if you want energy, shacks, and late nights. South Goa if you want quiet, Portuguese churches, and a pool with a sea view. December is mad. March onwards is underrated. A spice plantation lunch midweek when the crowds clear out is one of those small, perfect things. We know which resorts are worth it at every budget.",
+    tagline: "North Goa energy, South Goa quiet, spice plantations, and Portuguese churches.",
+    description: "North Goa for energy, beach shacks, and late nights. South Goa for quiet, Portuguese churches, and a pool with a sea view. December gets busy. March onwards is cheaper, still warm, less crowded. A spice plantation lunch on a slow midweek afternoon is one of those small perfect things Goa does well.",
     highlights: ["North Goa beach shacks and nightlife at Baga & Anjuna", "South Goa's quiet beaches — Palolem & Agonda", "Portuguese-era churches and Old Goa heritage walk", "Spice plantation tours with traditional Goan lunch", "Sunset river cruises on the Mandovi"],
     bestTime: "November to February (peak season)",
     priceRange: "₹25,000 – ₹70,000 per person",
@@ -366,7 +390,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 25, slug: "kerala", title: "Kerala", category: "India", image: "/images/hero/dest-kerala-800.webp", tags: ["Nature","Backwaters","Wellness"],
-    description: "Kerala is the trip that makes people slow down and actually enjoy themselves. An overnight on a private houseboat in the Alleppey backwaters with a cook who makes fresh fish curry at dinner — that's the one memory that comes first. Munnar's tea estates in the morning mist. Thekkady for elephants. It flows perfectly as a circuit. We've done it hundreds of times.",
+    tagline: "Alleppey backwaters, Munnar tea estates, Thekkady wildlife, and Ayurveda.",
+    description: "An overnight on a private houseboat in the Alleppey backwaters, with a cook who makes fish curry for dinner — that's the memory that stays. Munnar's tea estates in the morning mist. Thekkady for elephants. Flows naturally as a circuit starting and ending in Kochi.",
     highlights: ["Cruising the Alleppey backwaters in a private houseboat", "Wandering the tea estates of Munnar", "Spotting wild elephants in Thekkady (Periyar)", "Watching Kathakali & Kalaripayattu performances", "Ayurvedic spa treatments and wellness retreats"],
     bestTime: "September to March",
     priceRange: "₹30,000 – ₹65,000 per person",
@@ -375,7 +400,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 26, slug: "andaman", title: "Andaman Islands", category: "India", image: "/images/hero/dest-andaman-800.webp", tags: ["Beaches","Islands","Adventure"],
-    description: "The Andamans feel like a secret that hasn't been fully found yet — which is rare for a beach destination this good. Radhanagar Beach on Havelock is legitimately world-class. The water is that blue. Scuba diving here is some of the clearest visibility in Asia. The Cellular Jail does something to you that the history books can't. Ferry logistics can be a headache — that's the one thing you should not DIY.",
+    tagline: "Radhanagar Beach, scuba diving, Havelock Island, and the Cellular Jail.",
+    description: "Radhanagar Beach on Havelock is the real thing — that blue water, that sand. Scuba diving here has some of the best visibility in Asia. The Cellular Jail is a different kind of experience. Ferry logistics between the islands are the one thing not worth attempting without planning ahead.",
     highlights: ["Scuba diving and sea walking at Havelock Island", "Relaxing on the pristine Radhanagar Beach", "Light & Sound show at the Cellular Jail, Port Blair", "Glass bottom boat rides at North Bay", "Sunset views at Chidiya Tapu"],
     bestTime: "October to May",
     priceRange: "₹45,000 – ₹85,000 per person",
@@ -384,7 +410,8 @@ export const destinations: Destination[] = [
   },
   {
     id: 27, slug: "north-east-india", title: "North East India", category: "India", image: "/images/hero/dest-north-east-india-800.webp", tags: ["Nature","Culture","Offbeat"],
-    description: "The Northeast is India's most underrated region — seven states, each completely different, most of them barely touched by mass tourism. Kaziranga for rhinos. Meghalaya for root bridges and rivers so clear they look edited. Tawang Monastery if you want to feel like you're at the edge of the world. It requires more planning than anywhere else we send people. That's exactly why having us handle it matters.",
+    tagline: "Kaziranga rhinos, Meghalaya root bridges, and Tawang Monastery.",
+    description: "Seven states, each one different, most barely touched by mainstream tourism. Kaziranga for rhino safaris. Meghalaya for living root bridges and rivers that look unreal. Tawang Monastery near the Chinese border. More planning than almost anywhere else we send people — which is exactly why it helps to have someone who's done it.",
     highlights: ["Rhino safaris in Kaziranga National Park, Assam", "Living root bridges of Meghalaya", "Monasteries of Tawang, Arunachal", "Floating islands of Loktak Lake, Manipur", "Hornbill Festival in Nagaland (December)"],
     bestTime: "October to April",
     priceRange: "₹40,000 – ₹80,000 per person",
@@ -1188,7 +1215,7 @@ export default function Home() {
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                       <h4 className="text-lg font-bold text-white leading-tight mb-1 drop-shadow-sm">{dest.title}</h4>
                       <p className="text-white/75 text-xs leading-relaxed max-h-0 overflow-hidden group-hover:max-h-12 transition-all duration-500 ease-out">
-                        {dest.description}
+                        {dest.tagline ?? dest.description}
                       </p>
                     </div>
                   </Link>

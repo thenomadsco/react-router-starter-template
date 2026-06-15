@@ -173,21 +173,13 @@ export default function DestinationPage() {
             </div>
           )}
 
-          {/* Best Time + Price */}
-          {(dest.bestTime || dest.priceRange) && (
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-              {dest.bestTime && (
-                <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-                  <h3 className="font-bold text-[#1F2328] mb-2">Best Time to Visit</h3>
-                  <p className="text-gray-500">{dest.bestTime}</p>
-                </div>
-              )}
-              {dest.priceRange && (
-                <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-                  <h3 className="font-bold text-[#1F2328] mb-2">Price Range</h3>
-                  <p className="text-gray-500">{dest.priceRange}</p>
-                </div>
-              )}
+          {/* Best Time */}
+          {dest.bestTime && (
+            <div className="mt-10">
+              <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left">
+                <h3 className="font-bold text-[#1F2328] mb-2">Best Time to Visit</h3>
+                <p className="text-gray-500">{dest.bestTime}</p>
+              </div>
             </div>
           )}
 

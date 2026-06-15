@@ -214,7 +214,7 @@ export default function Article() {
           <div className="text-center bg-[#FAFAF8] rounded-[2rem] p-12 border border-gray-100">
             <p className="text-sm font-bold text-[#2D3191] uppercase tracking-widest mb-4">Ready to Travel?</p>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1F2328] mb-4" style={{ fontFamily: "'Playfair Display',serif" }}>Design Your Own Escape</h2>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">Let Kirti plan the perfect trip, tailored exactly to you. Visas, flights, stays — all handled.</p>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">Let Kirti plan the perfect trip, tailored exactly to you. Visas, flights, stays. All handled.</p>
             <Link
               to="/?openFunnel=true"
               className="inline-flex items-center gap-2 px-8 py-4 bg-[#2D3191] text-white font-bold rounded-full hover:bg-[#242875] hover:-translate-y-1 transition-all shadow-lg"

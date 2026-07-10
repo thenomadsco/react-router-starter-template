@@ -3,25 +3,22 @@ import React, { useEffect, useRef, useState } from "react";
 import nomadsLogo from "./the nomads logo.webp";
 import kirtiProfile from "./kirti-shah-profile.webp";
 import type { Route } from "./+types/home";
+import { processLeadSubmission } from "../lib/lead-pipeline.server";
+import { persistUtm, readStoredUtm } from "../lib/utm";
 
 export function headers() {
   return { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" };
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
   const formData = await request.formData();
   const payload = Object.fromEntries(formData);
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/45fd8mdp8zr1inan86708wj4zzmkahpu";
-  
+
   try {
-    await fetch(MAKE_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    await processLeadSubmission(payload, context.cloudflare.env);
     return { success: true };
   } catch (err) {
-    console.error("Server-side webhook failed:", err);
+    console.error("Lead pipeline failed:", err);
     return { success: false };
   }
 }
@@ -661,7 +658,7 @@ export function isMobile() { return typeof window !== "undefined" && (/Android|w
 export function waLink(text: string) { const enc = encodeURIComponent(text); return isMobile() ? `https://wa.me/${NOMADS_WA}?text=${enc}` : `https://web.whatsapp.com/send/?phone=${NOMADS_WA}&text=${enc}&type=phone_number&app_absent=1`; }
 export function openWhatsApp(dest?: string) { window.open(waLink(dest ? `Hi Kirti! 👋  I'd love to plan a trip to ${dest}. Can you help me?` : `Hi Kirti! 👋  I'd love to plan a trip. Can you help me?`), "_blank"); }
 
-export function DestinationFunnel({ preselectedDest, onClose, utmData }: { preselectedDest?: string; onClose: () => void; utmData: { source: string; medium: string; campaign: string } }) {
+export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDest?: string; onClose: () => void }) {
   const fetcher = useFetcher(); 
   
   const [step, setStep] = useState(preselectedDest ? 1 : 0);
@@ -675,6 +672,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
   const [whatsapp, setWhatsapp] = useState("");
   const [touched, setTouched] = useState({ name: false, email: false });
   const [advancing, setAdvancing] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
@@ -701,6 +699,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
     setWhatsapp("");
     setTouched({ name: false, email: false });
     setAdvancing(false);
+    setHasSubmitted(false);
     onClose();
   };
 
@@ -714,12 +713,23 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
   const isSubmitting = fetcher.state === "submitting";
 
   useEffect(() => {
-    if (fetcher.data?.success) {
-      next(); 
+    // Only react once a submission we kicked off has round-tripped back to idle,
+    // so this doesn't fire on initial mount or while still submitting.
+    if (!hasSubmitted || fetcher.state !== "idle") return;
+    setHasSubmitted(false);
+    if (fetcher.data?.success === true) {
+      next();
+    } else {
+      // Covers both an explicit { success: false } from the action and a
+      // network-level failure (e.g. a 5xx before the action ever runs), where
+      // fetcher.data never gets set at all — either way, don't pretend it worked.
+      setStep(6);
     }
-  }, [fetcher.data]);
+  }, [fetcher.state, fetcher.data, hasSubmitted]);
 
   const submitToCRM = () => {
+    setHasSubmitted(true);
+    const utm = readStoredUtm();
     fetcher.submit(
       {
         name: name.trim(),
@@ -730,9 +740,9 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
         travelers,
         vibe,
         source: "React Funnel",
-        utm_source: utmData.source,
-        utm_medium: utmData.medium,
-        utm_campaign: utmData.campaign
+        utm_source: utm.utm_source,
+        utm_medium: utm.utm_medium,
+        utm_campaign: utm.utm_campaign
       },
       // Safely point the submission to the homepage action to bypass adblockers
       { method: "post", action: "/?index" }
@@ -782,7 +792,7 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
               <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Where are you dreaming of going?</h3>
               <p className="text-gray-400 mb-5 text-sm">Tap a quick pick or type your destination</p>
               <div className="flex flex-wrap gap-2 mb-4">
-                {["Bali", "Maldives", "Dubai", "Kashmir", "Goa", "Paris", "Singapore", "Thailand"].map(d => (
+                {["Bali", "Maldives", "Dubai", "Kashmir", "Goa", "Singapore", "Thailand"].map(d => (
                   <button key={d} onClick={() => { setDest(d); setTimeout(next, 150); }} className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${dest === d ? "bg-[#2D3191] text-white border-[#2D3191]" : "bg-[#FAFAF8] text-gray-600 border-gray-200 hover:border-[#2D3191] hover:text-[#2D3191]"}`}>{d}</button>
                 ))}
               </div>
@@ -944,6 +954,31 @@ export function DestinationFunnel({ preselectedDest, onClose, utmData }: { prese
             </div>
           )}
 
+          {step === 6 && (
+            <div className="animate-fade-in-up text-center flex flex-col items-center">
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-5">
+                <X className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Something went wrong</h3>
+              <p className="text-gray-500 mb-8 text-sm max-w-[280px]">We hit a snag saving your preferences on our end. Let's sort this out on WhatsApp instead, Kirti will take it from there.</p>
+
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={() => { window.open(waURL(), "_blank"); handleClose(); }}
+                  className="w-full py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg flex items-center justify-center gap-2 text-sm"
+                >
+                  Chat with Kirti Now 💬
+                </button>
+                <button
+                  onClick={() => setStep(4)}
+                  className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
@@ -962,12 +997,6 @@ export default function Home() {
   const [pillAnimOut,      setPillAnimOut]      = useState(false);
   const [randomDest,       setRandomDest]       = useState<Destination | null>(null);
 
-  const [utmData, setUtmData] = useState({
-    source: "direct",
-    medium: "none",
-    campaign: "direct_type_in"
-  });
-  
   const preloadedRef = useRef(false);
 
   useEffect(() => {
@@ -978,24 +1007,19 @@ export default function Home() {
       setShowFunnel(true);
     }
 
-    const utmSource = urlParams.get("utm_source");
-
-    if (utmSource) {
-      setUtmData({
-        source: utmSource,
-        medium: urlParams.get("utm_medium") || "organic",
-        campaign: urlParams.get("utm_campaign") || "organic_visit"
-      });
-    } else if (document.referrer) {
+    // Explicit ?utm_source=... is already captured globally in root.tsx.
+    // This only fills in a best-guess attribution from the referrer for
+    // organic/social visits that arrived with no UTM params at all.
+    if (!urlParams.get("utm_source") && document.referrer) {
       try {
         const referrerUrl = new URL(document.referrer);
         const hostname = referrerUrl.hostname.toLowerCase();
-        if (hostname.includes("instagram.com")) setUtmData({ source: "instagram", medium: "social", campaign: "organic_visit" });
-        else if (hostname.includes("facebook.com")) setUtmData({ source: "facebook", medium: "social", campaign: "organic_visit" });
-        else if (hostname.includes("t.co") || hostname.includes("twitter.com") || hostname.includes("x.com")) setUtmData({ source: "x_twitter", medium: "social", campaign: "organic_visit" });
-        else if (hostname.includes("google.com")) setUtmData({ source: "google", medium: "search", campaign: "organic_visit" });
-        else if (hostname.includes("wa.me") || hostname.includes("whatsapp.com")) setUtmData({ source: "whatsapp", medium: "chat", campaign: "organic_visit" });
-        else setUtmData({ source: hostname, medium: "referral", campaign: "organic_visit" });
+        if (hostname.includes("instagram.com")) persistUtm({ source: "instagram", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("facebook.com")) persistUtm({ source: "facebook", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("t.co") || hostname.includes("twitter.com") || hostname.includes("x.com")) persistUtm({ source: "x_twitter", medium: "social", campaign: "organic_visit" });
+        else if (hostname.includes("google.com")) persistUtm({ source: "google", medium: "search", campaign: "organic_visit" });
+        else if (hostname.includes("wa.me") || hostname.includes("whatsapp.com")) persistUtm({ source: "whatsapp", medium: "chat", campaign: "organic_visit" });
+        else persistUtm({ source: hostname, medium: "referral", campaign: "organic_visit" });
       } catch (e) {
         console.warn("Could not parse referrer string");
       }
@@ -1351,7 +1375,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} utmData={utmData} />}
+      {showFunnel && <DestinationFunnel preselectedDest={funnelDest} onClose={() => setShowFunnel(false)} />}
 
       {/* AI & Search Engine Schema Markup */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

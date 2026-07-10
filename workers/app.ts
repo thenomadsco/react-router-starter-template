@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+import { sendDailyTaskDigest, checkDueFollowUps } from "../app/lib/cron.server";
 
 declare module "react-router" {
 	export interface AppLoadContext {
@@ -19,5 +20,14 @@ export default {
 		return requestHandler(request, {
 			cloudflare: { env, ctx },
 		});
+	},
+	async scheduled(event, env, ctx) {
+		// "30 2 * * *"  -> 8:00am IST daily task digest
+		// "30 3 * * *"  -> 9:00am IST daily follow-up cadence check
+		if (event.cron === "30 2 * * *") {
+			ctx.waitUntil(sendDailyTaskDigest(env));
+		} else if (event.cron === "30 3 * * *") {
+			ctx.waitUntil(checkDueFollowUps(env));
+		}
 	},
 } satisfies ExportedHandler<Env>;

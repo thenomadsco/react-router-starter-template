@@ -10,5 +10,11 @@
 	"upload_source_maps": true,
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
+	},
+	"triggers": {
+		"crons": [
+			"30 2 * * *",
+			"30 3 * * *"
+		]
 	}
 }

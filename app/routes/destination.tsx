@@ -231,7 +231,6 @@ export default function DestinationPage() {
         <DestinationFunnel
           preselectedDest={dest.title}
           onClose={() => setShowFunnel(false)}
-          utmData={{ source: "direct", medium: "destination_page", campaign: dest.slug }}
         />
       )}
     </div>

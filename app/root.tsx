@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Links,
   Meta,
@@ -9,6 +10,7 @@ import {
 import type { LinksFunction } from "react-router";
 
 import stylesheet from "./app.css?url";
+import { captureUtmFromUrl } from "./lib/utm";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,6 +44,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
+
+  useEffect(() => {
+    captureUtmFromUrl();
+  }, []);
 
   return (
     <>

@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "./supabase.server";
+import { today, addDays, fillTemplate, WARM_TEMPLATE, COLD_TEMPLATE } from "./lead-pipeline.server";
 
 const DIGEST_FROM_ADDRESS = "crm@thenomadsco.in";
 const DIGEST_TO_ADDRESS = "thenomadsco@gmail.com";
@@ -45,15 +46,33 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
   }
 }
 
+// Cadence definition: each stage maps to the next stage + how many days from
+// today the next follow-up should land, or `null` if the stage is terminal
+// (sequence complete, hand off to a human via a Manual Review task).
+// Warm's stage 1 -> 3 gap is a fixed 3 days per product spec (not the
+// 3-1=2 day-difference the Cold ladder uses) — these are intentionally
+// different cadences, not a shared formula.
+const WARM_CADENCE: Record<number, { nextStage: number; daysUntilNext: number } | null> = {
+  1: { nextStage: 3, daysUntilNext: 3 },
+  3: null,
+};
+
+const COLD_CADENCE: Record<number, { nextStage: number; daysUntilNext: number } | null> = {
+  1: { nextStage: 3, daysUntilNext: 3 - 1 },
+  3: { nextStage: 7, daysUntilNext: 7 - 3 },
+  7: { nextStage: 14, daysUntilNext: 14 - 7 },
+  14: null,
+};
+
 export async function checkDueFollowUps(env: Env): Promise<void> {
   const supabase = getSupabaseClient(env);
-  const today = new Date().toISOString().slice(0, 10);
+  const todayDate = today();
 
   const { data: followUps, error } = await supabase
     .from("follow_ups")
-    .select("id, lead_id, follow_up_date, message_template, leads(lead_status)")
+    .select("id, lead_id, follow_up_date, message_template, sequence_stage, leads(name, destination, lead_score, lead_status)")
     .eq("completed", false)
-    .lte("follow_up_date", today);
+    .lte("follow_up_date", todayDate);
 
   if (error) {
     console.error("Failed to fetch due follow-ups:", error);
@@ -65,11 +84,66 @@ export async function checkDueFollowUps(env: Env): Promise<void> {
     return status !== "Converted" && status !== "Lost";
   });
 
-  for (const followUp of due) {
-    // TODO: nurture cadence not yet defined (Cold: Day 1/3/7/14, Warm: Day 1/3).
-    // Needs product input on what each step should do (send via WhatsApp/Resend?
-    // advance follow_up_date to the next cadence day? mark completed?) before
-    // this hook can safely act instead of just logging.
-    console.log(`Follow-up due for lead ${followUp.lead_id} (follow_ups.id=${followUp.id})`);
+  for (const followUp of due as any[]) {
+    const lead = followUp.leads;
+    if (!lead) {
+      console.error(`Follow-up ${followUp.id} has no linked lead — skipping`);
+      continue;
+    }
+
+    const score = lead.lead_score ?? 0;
+
+    // Hot leads only ever get the one immediate WhatsApp Outreach task from
+    // processLeadSubmission and never enter this cadence — leave their
+    // follow_up row completely untouched.
+    if (score >= 75) {
+      continue;
+    }
+
+    const tier: "warm" | "cold" = score >= 50 ? "warm" : "cold";
+    const cadence = tier === "warm" ? WARM_CADENCE : COLD_CADENCE;
+    const stage = followUp.sequence_stage;
+
+    if (stage == null || !(stage in cadence)) {
+      console.error(
+        `Follow-up ${followUp.id} (lead ${followUp.lead_id}) has unrecognized sequence_stage ${stage} for tier ${tier} — skipping`
+      );
+      continue;
+    }
+
+    const { error: completeErr } = await supabase
+      .from("follow_ups")
+      .update({ completed: true })
+      .eq("id", followUp.id);
+    if (completeErr) {
+      console.error(`Failed to mark follow-up ${followUp.id} completed:`, completeErr);
+      continue;
+    }
+
+    const next = cadence[stage];
+
+    if (next) {
+      const template = tier === "warm" ? WARM_TEMPLATE : COLD_TEMPLATE;
+      const { error: insertErr } = await supabase.from("follow_ups").insert({
+        lead_id: followUp.lead_id,
+        follow_up_date: addDays(next.daysUntilNext),
+        message_template: fillTemplate(template, lead.name, lead.destination),
+        sequence_stage: next.nextStage,
+      });
+      if (insertErr) {
+        console.error(`Failed to insert next-stage follow-up for lead ${followUp.lead_id}:`, insertErr);
+      }
+    } else {
+      const { error: taskErr } = await supabase.from("tasks").insert({
+        lead_id: followUp.lead_id,
+        task_type: "Manual Review",
+        priority: "Medium",
+        due_date: todayDate,
+        notes: "Nurture sequence complete — decide next steps",
+      });
+      if (taskErr) {
+        console.error(`Failed to insert sequence-complete task for lead ${followUp.lead_id}:`, taskErr);
+      }
+    }
   }
 }

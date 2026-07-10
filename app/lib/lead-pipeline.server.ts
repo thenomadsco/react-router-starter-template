@@ -52,35 +52,35 @@ function field(payload: LeadPayload, key: string): string {
   return typeof payload[key] === "string" ? (payload[key] as string) : "";
 }
 
-function today(): string {
+export function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function addDays(days: number): string {
+export function addDays(days: number): string {
   const d = new Date();
   d.setUTCDate(d.getUTCDate() + days);
   return d.toISOString().slice(0, 10);
 }
 
-function fillTemplate(template: string, name: string, destination: string): string {
+export function fillTemplate(template: string, name: string, destination: string): string {
   return template.replaceAll("{name}", name).replaceAll("{destination}", destination);
 }
 
-const HOT_TEMPLATE = `Hi {name}! 👋 Kirti here from The Nomads Co.
+export const HOT_TEMPLATE = `Hi {name}! 👋 Kirti here from The Nomads Co.
 I can see you're thinking about a trip to {destination} very soon and I would love to make it absolutely unforgettable for you.
 I've put together premium packages that match your travel style perfectly and I can have a personalised itinerary ready within 24 hours.
 Are you free for a quick chat today? I'm on WhatsApp right now.
 — Kirti Shah | The Nomads Co.
 📞 +91 99243 99335 | thenomadsco.in`;
 
-const WARM_TEMPLATE = `Hi {name}! 😊 This is Kirti from The Nomads Co.
+export const WARM_TEMPLATE = `Hi {name}! 😊 This is Kirti from The Nomads Co.
 I noticed you're planning a trip to {destination} in the coming months.
 I have some great ideas that match your travel style perfectly.
 Would it help if I sent over a few curated options to get the planning started?
 — Kirti Shah | The Nomads Co.
 📞 +91 99243 99335 | thenomadsco.in`;
 
-const COLD_TEMPLATE = `Hi {name}! 🌍 Kirti here from The Nomads Co.
+export const COLD_TEMPLATE = `Hi {name}! 🌍 Kirti here from The Nomads Co.
 Whenever you're ready to start planning your trip to {destination}, I'm here to help make it completely stress-free.
 No pressure at all — just reach out when the time feels right. I'll make sure it's worth every rupee. 🌟
 — Kirti Shah | The Nomads Co.
@@ -270,6 +270,7 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
     lead_id: leadId,
     follow_up_date: dueDate,
     message_template: fillTemplate(template, scored.name, scored.destination),
+    sequence_stage: 1,
   });
   if (followUpErr) throw new Error(`Failed to insert follow-up: ${followUpErr.message}`);
 }

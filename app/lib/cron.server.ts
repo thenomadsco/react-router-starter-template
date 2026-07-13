@@ -10,7 +10,7 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
 
   const { data: tasks, error } = await supabase
     .from("tasks")
-    .select("task_type, priority, due_date, lead_id, leads(name, destination, phone, email)")
+    .select("task_type, priority, due_date, notes, lead_id, leads(name, destination, phone, email)")
     .eq("status", "Open")
     .eq("due_date", today);
 
@@ -22,6 +22,10 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
   const lines = (tasks ?? []).map((t: any) => {
     const lead = t.leads;
     const leadLine = lead ? `${lead.name} — ${lead.destination} (${lead.phone || lead.email})` : `Lead ${t.lead_id}`;
+    const isOverdueEscalation = typeof t.notes === "string" && t.notes.startsWith("Overdue —");
+    if (isOverdueEscalation) {
+      return `⚠️ OVERDUE ESCALATION — ${t.task_type} — ${leadLine}\n    ${t.notes}`;
+    }
     return `[${t.priority}] ${t.task_type} — ${leadLine}`;
   });
 
@@ -144,6 +148,50 @@ export async function checkDueFollowUps(env: Env): Promise<void> {
       if (taskErr) {
         console.error(`Failed to insert sequence-complete task for lead ${followUp.lead_id}:`, taskErr);
       }
+    }
+  }
+}
+
+// Manual Review safety net: an Open Manual Review task sitting untouched for
+// more than 2 days means either the Groq-failure fallback fired and nobody's
+// acted on it, or the digest isn't surfacing it correctly. Escalate once per
+// original task (tracked via tasks.escalated) rather than re-escalating the
+// same task every day.
+export async function escalateOverdueManualReviews(env: Env): Promise<void> {
+  const supabase = getSupabaseClient(env);
+  const todayDate = today();
+  const cutoff = `${addDays(-2)}T00:00:00Z`;
+
+  const { data: overdueTasks, error } = await supabase
+    .from("tasks")
+    .select("id, lead_id, created_at")
+    .eq("task_type", "Manual Review")
+    .eq("status", "Open")
+    .eq("escalated", false)
+    .lt("created_at", cutoff);
+
+  if (error) {
+    console.error("Failed to fetch overdue Manual Review tasks:", error);
+    return;
+  }
+
+  for (const task of overdueTasks ?? []) {
+    const originalDate = task.created_at.slice(0, 10);
+    const { error: insertErr } = await supabase.from("tasks").insert({
+      lead_id: task.lead_id,
+      task_type: "Manual Review",
+      priority: "High",
+      due_date: todayDate,
+      notes: `Overdue — original Manual Review task from ${originalDate} still open`,
+    });
+    if (insertErr) {
+      console.error(`Failed to insert overdue-escalation task for lead ${task.lead_id}:`, insertErr);
+      continue;
+    }
+
+    const { error: updateErr } = await supabase.from("tasks").update({ escalated: true }).eq("id", task.id);
+    if (updateErr) {
+      console.error(`Failed to mark task ${task.id} as escalated:`, updateErr);
     }
   }
 }

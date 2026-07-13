@@ -10,9 +10,32 @@ export function headers() {
   return { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" };
 }
 
+async function verifyTurnstileToken(token: string, secretKey: string): Promise<boolean> {
+  if (!token) return false;
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret: secretKey, response: token }),
+    });
+    const json: any = await res.json();
+    return json?.success === true;
+  } catch (err) {
+    console.error("Turnstile verification request failed:", err);
+    return false;
+  }
+}
+
 export async function action({ request, context }: Route.ActionArgs) {
   const formData = await request.formData();
   const payload = Object.fromEntries(formData);
+
+  const turnstileToken = typeof payload.turnstile_token === "string" ? payload.turnstile_token : "";
+  const turnstileValid = await verifyTurnstileToken(turnstileToken, context.cloudflare.env.TURNSTILE_SECRET_KEY);
+  if (!turnstileValid) {
+    console.error("Turnstile verification failed for submission");
+    return { success: false };
+  }
 
   try {
     await processLeadSubmission(payload, context.cloudflare.env);
@@ -673,6 +696,98 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
   const [touched, setTouched] = useState({ name: false, email: false });
   const [advancing, setAdvancing] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
+
+  // Focus trap: capture whatever had focus before the modal opened (usually
+  // the button that triggered it) and restore it on unmount, regardless of
+  // how the modal was closed.
+  useEffect(() => {
+    const trigger = document.activeElement as HTMLElement | null;
+    modalRef.current?.focus();
+    return () => {
+      trigger?.focus?.();
+    };
+  }, []);
+
+  // Keep Tab/Shift+Tab cycling only within the modal's own focusable
+  // elements — previously Tab could escape into the page behind the open
+  // modal once past the last field.
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !modalRef.current) return;
+      const focusable = Array.from(
+        modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (!modalRef.current.contains(active)) {
+        e.preventDefault();
+        first.focus();
+        return;
+      }
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Cloudflare Turnstile — loaded and rendered only once the contact step is
+  // reached, removed again on unmount/step change away from it.
+  useEffect(() => {
+    if (step !== 4) return;
+
+    function renderWidget() {
+      const turnstile = (window as any).turnstile;
+      if (!turnstile || !turnstileContainerRef.current) return;
+      turnstileWidgetIdRef.current = turnstile.render(turnstileContainerRef.current, {
+        sitekey: "0x4AAAAAADzCFNX5wCzXMvvX",
+        callback: (token: string) => setTurnstileToken(token),
+        "expired-callback": () => setTurnstileToken(""),
+        "error-callback": () => setTurnstileToken(""),
+      });
+    }
+
+    if ((window as any).turnstile) {
+      renderWidget();
+    } else {
+      const existing = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null;
+      if (!existing) {
+        const script = document.createElement("script");
+        script.id = "cf-turnstile-script";
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+        script.async = true;
+        script.defer = true;
+        script.onload = renderWidget;
+        document.head.appendChild(script);
+      } else {
+        existing.addEventListener("load", renderWidget);
+      }
+    }
+
+    return () => {
+      const turnstile = (window as any).turnstile;
+      if (turnstileWidgetIdRef.current && turnstile) {
+        turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+      setTurnstileToken("");
+    };
+  }, [step]);
 
   const next = () => setStep(s => s + 1);
   const back = () => setStep(s => s - 1);
@@ -700,6 +815,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
     setTouched({ name: false, email: false });
     setAdvancing(false);
     setHasSubmitted(false);
+    setTurnstileToken("");
     onClose();
   };
 
@@ -742,7 +858,8 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
         source: "React Funnel",
         utm_source: utm.utm_source,
         utm_medium: utm.utm_medium,
-        utm_campaign: utm.utm_campaign
+        utm_campaign: utm.utm_campaign,
+        turnstile_token: turnstileToken,
       },
       // Safely point the submission to the homepage action to bypass adblockers
       { method: "post", action: "/?index" }
@@ -752,8 +869,13 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gray-900/20 backdrop-blur-md" onClick={handleClose} />
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up">
-        
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
+        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up outline-none"
+      >
         {step < 5 ? (
           <>
             <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
@@ -881,6 +1003,8 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
                 onChange={e => setName(e.target.value)}
                 onBlur={() => setTouched(t => ({ ...t, name: true }))}
                 placeholder="Your First Name"
+                aria-label="Your First Name"
+                maxLength={200}
                 className={`w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-1 shadow-inner transition-shadow ${touched.name && !name.trim() ? "ring-2 ring-red-400" : ""}`}
                 autoFocus
                 disabled={isSubmitting}
@@ -896,6 +1020,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
                 onChange={e => setEmail(e.target.value)}
                 onBlur={() => setTouched(t => ({ ...t, email: true }))}
                 placeholder="Email (For formal itinerary & docs)"
+                aria-label="Email address"
                 className={`w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-1 shadow-inner transition-shadow ${touched.email && !isEmailValid ? "ring-2 ring-red-400" : ""}`}
                 disabled={isSubmitting}
               />
@@ -912,16 +1037,19 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
                 value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
                 placeholder="WhatsApp Number (Optional, for instant replies)"
-                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-6 shadow-inner transition-shadow"
+                aria-label="WhatsApp number (optional)"
+                className="w-full text-base px-5 py-3.5 bg-[#FAFAF8] rounded-2xl focus:ring-2 focus:ring-[#2D3191] outline-none mb-4 shadow-inner transition-shadow"
                 disabled={isSubmitting}
               />
+
+              <div ref={turnstileContainerRef} className="mb-4" />
 
               <button
                 onClick={() => {
                   setTouched({ name: true, email: true });
                   if (isStep4Valid) submitToCRM();
                 }}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !turnstileToken}
                 className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
               >
                 {isSubmitting ? "Securing preferences..." : "Secure My Trip → "}

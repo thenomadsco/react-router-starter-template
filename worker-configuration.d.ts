@@ -11,6 +11,7 @@ declare namespace Cloudflare {
 		SUPABASE_SERVICE_ROLE_KEY: string;
 		GROQ_API_KEY: string;
 		RESEND_API_KEY: string;
+		TURNSTILE_SECRET_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}
@@ -18,7 +19,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "VALUE_FROM_CLOUDFLARE" | "SUPABASE_URL" | "SUPABASE_SERVICE_ROLE_KEY" | "GROQ_API_KEY" | "RESEND_API_KEY">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "VALUE_FROM_CLOUDFLARE" | "SUPABASE_URL" | "SUPABASE_SERVICE_ROLE_KEY" | "GROQ_API_KEY" | "RESEND_API_KEY" | "TURNSTILE_SECRET_KEY">> {}
 }
 
 // Begin runtime types

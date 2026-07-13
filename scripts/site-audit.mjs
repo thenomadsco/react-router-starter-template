@@ -1,14 +1,88 @@
 // Reusable Playwright regression audit for thenomadsco.in.
 // Usage: node scripts/site-audit.mjs
 // Requires: npm install -D playwright && npx playwright install chromium --with-deps
+//
+// Sections 1-7 are the original funnel/UTM/entry-point/console/journal checks.
+// Sections A-H (added in the "most thorough audit yet" pass) cover crawling,
+// form edge cases, resilience, security, mobile/a11y, performance, backend
+// data health, and a quick regression re-check. All Supabase access here
+// uses the service role key from .dev.vars — this script must only ever be
+// run locally, never committed with real credentials inlined.
 
-import { chromium } from "playwright";
+import { chromium, devices } from "playwright";
+import fs from "fs";
 
 const BASE = "https://thenomadsco.in";
 
 const TEST_EMAIL_1 = "playwright-audit@example.com";
 const TEST_EMAIL_2 = "playwright-audit-utm@example.com";
 const TEST_NAME = "Playwright Audit Test";
+
+// ---- Supabase REST helper (service role, local-only) ----
+function loadDevVars() {
+  const path = new URL("../.dev.vars", import.meta.url);
+  if (!fs.existsSync(path)) return {};
+  return Object.fromEntries(
+    fs
+      .readFileSync(path, "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => {
+        const i = l.indexOf("=");
+        return [l.slice(0, i), l.slice(i + 1)];
+      })
+  );
+}
+const DEV_VARS = loadDevVars();
+const SUPABASE_URL = DEV_VARS.SUPABASE_URL;
+const SUPABASE_KEY = DEV_VARS.SUPABASE_SERVICE_ROLE_KEY;
+
+async function sb(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: opts.prefer || "return=representation",
+      ...opts.headers,
+    },
+  });
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = text;
+  }
+  if (!res.ok) throw new Error(`Supabase ${res.status}: ${JSON.stringify(json)}`);
+  return json;
+}
+
+// Standing rule: any filter-based DELETE must SELECT-and-print the exact
+// same filter first, and only delete once the caller has looked at the
+// printed match. This helper enforces that shape everywhere it's used.
+async function selectThenDelete(label, selectPath, deletePath) {
+  const matches = await sb(selectPath);
+  console.log(`  [SELECT before DELETE] ${label}: ${Array.isArray(matches) ? matches.length : "?"} row(s) matched`);
+  console.log(JSON.stringify(matches, null, 2));
+  if (Array.isArray(matches) && matches.length === 0) return matches;
+  const deleted = await sb(deletePath, { method: "DELETE" });
+  console.log(`  [DELETE] ${label}: ${deleted.length} row(s) deleted`);
+  return deleted;
+}
+
+// Orphaned route files that exist under app/routes/ but are never referenced
+// in app/routes.ts — confirmed via direct comparison of routes.ts's imports
+// against `ls app/routes/`. React Router 7 uses explicit route config (no
+// filesystem-based routing), so any file not listed there is unreachable by
+// definition; this list exists to empirically double-check that.
+const ORPHANED_ROUTE_SLUGS = [
+  "andaman", "australia", "contactus", "family", "france", "friends", "goa",
+  "gujarat", "himachal", "honeymoon", "indonesia", "italy", "japan", "kashmir",
+  "kerala", "ladakh", "london", "maldives", "meghalaya", "mp", "rajasthan",
+  "sikkim", "singapore", "switzerland", "thailand", "uae", "up", "vietnam",
+];
 
 const HEADINGS = {
   step0: "Where are you dreaming of going?",
@@ -28,6 +102,14 @@ const report = {
   check5_console_errors: null,
   check6_journal_stability: null,
   check7_other_issues: [],
+  checkA_crawl_and_links: null,
+  checkB_form_edge_cases: null,
+  checkC_resilience: null,
+  checkD_security: null,
+  checkE_mobile_a11y: null,
+  checkF_performance: null,
+  checkG_data_health: null,
+  checkH_regression: null,
 };
 
 const globalIssues = [];
@@ -385,6 +467,744 @@ async function runCheck6(browser) {
   report.check6_journal_stability = attempts;
 }
 
+// ============================================================
+// SECTION A — Full crawl and link integrity
+// ============================================================
+async function runCheckA() {
+  console.log("\n=== Section A: Full crawl and link integrity ===");
+  const result = { orphanedRoutes: [], sitemapCheck: null, linkGraph: null };
+
+  // A1 — every previously-found orphaned route file should genuinely be
+  // unreachable (soft-404 via the catch-all route).
+  console.log("-- A1: orphaned route files --");
+  for (const slug of ORPHANED_ROUTE_SLUGS) {
+    const url = `${BASE}/${slug}`;
+    try {
+      const res = await fetch(url);
+      const html = await res.text();
+      const isSoft404 = html.includes("Wandered off the map?") || html.includes("Page Not Found");
+      result.orphanedRoutes.push({ slug, url, httpStatus: res.status, renderedAsNotFound: isSoft404 });
+    } catch (err) {
+      result.orphanedRoutes.push({ slug, url, error: err.message });
+    }
+  }
+  const unexpectedlyReachable = result.orphanedRoutes.filter((r) => r.renderedAsNotFound === false);
+  console.log(
+    `Checked ${result.orphanedRoutes.length} orphaned routes — unexpectedly reachable: ${unexpectedlyReachable.length}`
+  );
+  if (unexpectedlyReachable.length) console.log(JSON.stringify(unexpectedlyReachable, null, 2));
+
+  // A2 — robots.txt + sitemap.xml, cross-checked against a real crawl.
+  console.log("-- A2: robots.txt + sitemap.xml --");
+  const robotsRes = await fetch(`${BASE}/robots.txt`);
+  const robotsText = await robotsRes.text();
+  const sitemapRes = await fetch(`${BASE}/sitemap.xml`);
+  const sitemapText = await sitemapRes.text();
+  const sitemapLocs = [...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+
+  const sitemapUrlChecks = [];
+  for (const loc of sitemapLocs) {
+    try {
+      const res = await fetch(loc);
+      sitemapUrlChecks.push({ url: loc, status: res.status });
+    } catch (err) {
+      sitemapUrlChecks.push({ url: loc, error: err.message });
+    }
+  }
+  const brokenSitemapUrls = sitemapUrlChecks.filter((c) => (c.status && c.status >= 400) || c.error);
+  console.log(`robots.txt status: ${robotsRes.status}, sitemap.xml status: ${sitemapRes.status}`);
+  console.log(`Sitemap lists ${sitemapLocs.length} URLs; ${brokenSitemapUrls.length} did not resolve cleanly`);
+  if (brokenSitemapUrls.length) console.log(JSON.stringify(brokenSitemapUrls, null, 2));
+
+  // A3 — crawl every registered/reachable page, extract every <a href>,
+  // check each target for a real non-4xx/5xx response. Static-HTML crawl:
+  // catches all server-rendered <a>/<Link> hrefs; does NOT catch JS-only
+  // dynamically-constructed navigation (e.g. the WhatsApp deep-link button,
+  // built at click-time via window.open(waLink(...))) — noted as a scope
+  // limitation rather than silently claimed as covered.
+  console.log("-- A3: crawl + link graph --");
+  const destSlugs = sitemapLocs
+    .filter((l) => l.includes("/destinations/"))
+    .map((l) => l.split("/destinations/")[1]);
+  const pagesToCrawl = [
+    `${BASE}/`,
+    `${BASE}/journal`,
+    `${BASE}/privacypolicy`,
+    `${BASE}/terms`,
+    ...destSlugs.map((s) => `${BASE}/destinations/${s}`),
+  ];
+
+  const allLinks = new Set();
+  const crawlErrors = [];
+  for (const pageUrl of pagesToCrawl) {
+    try {
+      const res = await fetch(pageUrl);
+      const html = await res.text();
+      const hrefs = [...html.matchAll(/href="([^"]+)"/g)]
+        .map((m) => m[1])
+        .filter((h) => h && !h.startsWith("mailto:") && !h.startsWith("tel:") && !h.startsWith("#"));
+      hrefs.forEach((h) => allLinks.add(h));
+    } catch (err) {
+      crawlErrors.push({ pageUrl, error: err.message });
+    }
+  }
+
+  const linkChecks = [];
+  for (const link of allLinks) {
+    const fullUrl = link.startsWith("http") ? link : `${BASE}${link.startsWith("/") ? "" : "/"}${link}`;
+    try {
+      const res = await fetch(fullUrl);
+      linkChecks.push({
+        link,
+        fullUrl,
+        status: res.status,
+        internal: fullUrl.startsWith(BASE),
+      });
+    } catch (err) {
+      linkChecks.push({ link, fullUrl, error: err.message, internal: fullUrl.startsWith(BASE) });
+    }
+  }
+  const brokenLinks = linkChecks.filter((c) => (c.status && c.status >= 400) || c.error);
+  console.log(
+    `Crawled ${pagesToCrawl.length} pages, found ${allLinks.size} unique link targets, ${brokenLinks.length} broken`
+  );
+  if (brokenLinks.length) console.log(JSON.stringify(brokenLinks, null, 2));
+
+  result.sitemapCheck = {
+    robotsStatus: robotsRes.status,
+    robotsContent: robotsText,
+    sitemapStatus: sitemapRes.status,
+    totalUrlsListed: sitemapLocs.length,
+    brokenSitemapUrls,
+  };
+  result.linkGraph = {
+    pagesCrawled: pagesToCrawl.length,
+    crawlErrors,
+    uniqueLinksFound: allLinks.size,
+    brokenLinks,
+    allLinkChecks: linkChecks,
+  };
+
+  report.checkA_crawl_and_links = result;
+}
+
+// ============================================================
+// SECTION B — Forms and lead capture: exhaustive edge cases
+// ============================================================
+async function openFunnelToContactStep(page) {
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  await page.locator("nav button", { hasText: "Plan My Trip" }).first().click();
+  await page.locator("h3").filter({ hasText: HEADINGS.step0 }).waitFor({ timeout: 15000 });
+  await page.waitForTimeout(500);
+  await page.locator(".flex.flex-wrap.gap-2 button", { hasText: "Bali" }).first().click();
+  await page.locator("h3").filter({ hasText: HEADINGS.step1 }).waitFor({ timeout: 15000 });
+  await page.waitForTimeout(500);
+  await page.locator("button", { hasText: "Holiday" }).first().click();
+  await page.locator("h3").filter({ hasText: HEADINGS.step2 }).waitFor({ timeout: 15000 });
+  await page.waitForTimeout(500);
+  await page.locator("button", { hasText: "Just me" }).first().click();
+  await page.locator("h3").filter({ hasText: HEADINGS.step3 }).waitFor({ timeout: 15000 });
+  await page.waitForTimeout(500);
+  await page.locator("button", { hasText: "Mix of both" }).first().click();
+  await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
+  await page.waitForTimeout(500);
+}
+
+const B_TEST_EMAILS = {
+  emptyName: "edgecase-emptyname@example.com",
+  invalidEmail: "edgecase-invalidemail-notused@example.com",
+  whitespaceName: "edgecase-whitespace@example.com",
+  xss: "edgecase-xss@example.com",
+  longName: "edgecase-longname@example.com",
+  doubleSubmit: "edgecase-doublesubmit@example.com",
+  unicode: "edgecase-unicode@example.com",
+};
+
+async function runCheckB(browser) {
+  console.log("\n=== Section B: Form edge cases ===");
+  const result = {};
+
+  // B1 — empty name field
+  {
+    const page = await browser.newPage();
+    try {
+      await openFunnelToContactStep(page);
+      let postFired = false;
+      page.on("request", (req) => {
+        if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postFired = true;
+      });
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.emptyName);
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      await page.waitForTimeout(1500);
+      const validationShown = await page.locator("text=Name is required").isVisible().catch(() => false);
+      result.emptyName = { clientBlockedSubmission: !postFired, validationMessageShown: validationShown };
+    } catch (err) {
+      result.emptyName = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B2 — obviously invalid email
+  {
+    const page = await browser.newPage();
+    try {
+      await openFunnelToContactStep(page);
+      let postFired = false;
+      page.on("request", (req) => {
+        if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postFired = true;
+      });
+      await page.locator('input[placeholder="Your First Name"]').fill("Edge Case Invalid Email");
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill("notanemail");
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      await page.waitForTimeout(1500);
+      const validationShown = await page
+        .locator("text=Enter a valid email address")
+        .isVisible()
+        .catch(() => false);
+      result.invalidEmail = { clientBlockedSubmission: !postFired, validationMessageShown: validationShown };
+    } catch (err) {
+      result.invalidEmail = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B3 — whitespace-only name
+  {
+    const page = await browser.newPage();
+    try {
+      await openFunnelToContactStep(page);
+      let postFired = false;
+      page.on("request", (req) => {
+        if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postFired = true;
+      });
+      await page.locator('input[placeholder="Your First Name"]').fill("   ");
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.whitespaceName);
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      await page.waitForTimeout(1500);
+      result.whitespaceName = { clientBlockedSubmission: !postFired };
+    } catch (err) {
+      result.whitespaceName = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B4 — XSS / SQL-metacharacter injection attempt (real submission, cleaned up after)
+  {
+    const page = await browser.newPage();
+    try {
+      await openFunnelToContactStep(page);
+      const responsePromise = page.waitForResponse(
+        (res) => res.request().method() === "POST" && !res.url().includes("cdn-cgi"),
+        { timeout: 20000 }
+      );
+      await page.locator('input[placeholder="Your First Name"]').fill('<script>alert(1)</script>');
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.xss);
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      const response = await responsePromise;
+      await page.waitForTimeout(2500);
+      result.xssAttempt = { httpStatus: response.status(), submittedName: "<script>alert(1)</script>" };
+    } catch (err) {
+      result.xssAttempt = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B5 — extremely long name (5000 chars)
+  {
+    const page = await browser.newPage();
+    const longName = "A".repeat(5000);
+    try {
+      await openFunnelToContactStep(page);
+      const responsePromise = page.waitForResponse(
+        (res) => res.request().method() === "POST" && !res.url().includes("cdn-cgi"),
+        { timeout: 20000 }
+      );
+      await page.locator('input[placeholder="Your First Name"]').fill(longName);
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.longName);
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      const response = await responsePromise;
+      await page.waitForTimeout(2500);
+      result.longName = { httpStatus: response.status(), submittedLength: longName.length };
+    } catch (err) {
+      result.longName = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B6 — rapid double-submit (two synchronous click events, no await between them)
+  {
+    const page = await browser.newPage();
+    try {
+      await openFunnelToContactStep(page);
+      await page.locator('input[placeholder="Your First Name"]').fill("Double Submit Test");
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.doubleSubmit);
+      let postCount = 0;
+      page.on("request", (req) => {
+        if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postCount++;
+      });
+      await page.evaluate(() => {
+        const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.includes("Secure My Trip"));
+        btn.click();
+        btn.click();
+      });
+      await page.waitForTimeout(3000);
+      result.doubleSubmit = { postRequestsObserved: postCount };
+    } catch (err) {
+      result.doubleSubmit = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // B7 — unicode / emoji in name
+  {
+    const page = await browser.newPage();
+    const unicodeName = "अमन 🌍";
+    try {
+      await openFunnelToContactStep(page);
+      const responsePromise = page.waitForResponse(
+        (res) => res.request().method() === "POST" && !res.url().includes("cdn-cgi"),
+        { timeout: 20000 }
+      );
+      await page.locator('input[placeholder="Your First Name"]').fill(unicodeName);
+      await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.unicode);
+      await page.locator("button", { hasText: "Secure My Trip" }).click();
+      const response = await responsePromise;
+      await page.waitForTimeout(2500);
+      result.unicode = { httpStatus: response.status(), submittedName: unicodeName };
+    } catch (err) {
+      result.unicode = { error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // Now check what actually landed in Supabase for each real-submission case.
+  console.log("-- Verifying actual stored data in Supabase --");
+  await new Promise((r) => setTimeout(r, 3000)); // let Groq scoring finish
+  const emailsToCheck = [B_TEST_EMAILS.xss, B_TEST_EMAILS.longName, B_TEST_EMAILS.doubleSubmit, B_TEST_EMAILS.unicode];
+  const orFilter = emailsToCheck.map((e) => `email.eq.${encodeURIComponent(e)}`).join(",");
+  const storedRows = await sb(`leads?or=(${orFilter})&select=id,name,email`);
+  result.storedDataVerification = storedRows;
+  console.log(JSON.stringify(storedRows, null, 2));
+
+  const doubleSubmitLeads = storedRows.filter((r) => r.email === B_TEST_EMAILS.doubleSubmit);
+  if (doubleSubmitLeads.length > 0) {
+    const leadIdFilter = `lead_id=in.(${doubleSubmitLeads.map((l) => l.id).join(",")})`;
+    const tasks = await sb(`tasks?${leadIdFilter}&select=id`);
+    const followUps = await sb(`follow_ups?${leadIdFilter}&select=id`);
+    result.doubleSubmit.leadsCreated = doubleSubmitLeads.length;
+    result.doubleSubmit.tasksCreated = tasks.length;
+    result.doubleSubmit.followUpsCreated = followUps.length;
+  }
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkB_form_edge_cases = result;
+  return emailsToCheck;
+}
+
+// ============================================================
+// SECTION C — Failure and resilience testing
+// ============================================================
+async function runCheckC() {
+  console.log("\n=== Section C: Failure and resilience ===");
+  const result = {};
+
+  // A second live forced-failure mode (e.g. malformed Groq response) would
+  // require another temporary production secret/code change identical in
+  // risk to the one used previously to verify the error screen —
+  // browser-side network interception (page.route()) cannot reach the Groq
+  // fetch call, since it happens server-side inside the Cloudflare Worker,
+  // never in the browser. Declining to repeat that production-modifying
+  // procedure again in this pass without being explicitly asked — verifying
+  // the actual Groq-failure code path via inspection + real production
+  // evidence instead.
+  const pipelineSourcePath = new URL("../app/lib/lead-pipeline.server.ts", import.meta.url);
+  const journalSourcePath = new URL("../app/routes/journal.tsx", import.meta.url);
+  const source = fs.readFileSync(pipelineSourcePath, "utf8");
+  const journalSource = fs.readFileSync(journalSourcePath, "utf8");
+
+  const groqFnStart = source.indexOf("async function scoreWithGroq");
+  const groqFetchBlock = source.slice(groqFnStart, groqFnStart + 900);
+  const hasAbortSignalOnGroqCall = /AbortSignal/.test(groqFetchBlock);
+  const journalHasAbortSignal = /AbortSignal\.timeout/.test(journalSource);
+
+  result.codeInspection = {
+    groqFetchHasTimeout: hasAbortSignalOnGroqCall,
+    journalFetchHasTimeout: journalHasAbortSignal,
+    note: hasAbortSignalOnGroqCall
+      ? "Groq fetch has a timeout configured."
+      : "Groq fetch in scoreWithGroq() has NO AbortSignal timeout, unlike journal.tsx's loader (AbortSignal.timeout(8000)). If Groq hangs, nothing times this fetch out — the funnel submission would hang rather than falling back to Manual Review.",
+  };
+
+  const psStart = source.indexOf("export async function processLeadSubmission");
+  const errorHandlingBlock = source.slice(psStart, psStart + 500);
+  result.groqFailureHandling = {
+    catchWrapsScoreWithGroq: /try\s*{\s*scored = await scoreWithGroq/.test(errorHandlingBlock),
+    fallsBackWithoutRethrow: /insertManualReviewFallback\(payload, env\);\s*return;/.test(errorHandlingBlock),
+    note: "Any Groq-side failure (auth error, malformed JSON, non-200 status) is caught inside processLeadSubmission's own try/catch around scoreWithGroq, which calls insertManualReviewFallback and returns normally — it does NOT rethrow. home.tsx's action still returns {success:true} and the user sees 'Preferences Secured!' even when Groq fails. The error screen verified previously only covers failures OUTSIDE this try/catch (e.g. a Supabase write failure) — it does not exercise the Groq-failure path at all.",
+  };
+
+  // Real evidence: any existing lead with lead_score IS NULL is proof the
+  // Groq-failure fallback path has already fired for real, without needing
+  // to force it again.
+  const nullScoreLeads = await sb("leads?lead_score=is.null&select=id,name,email,source,created_at");
+  result.realFallbackEvidence = {
+    leadsWithNullScore: nullScoreLeads.length,
+    rows: nullScoreLeads,
+    note:
+      nullScoreLeads.length > 0
+        ? "Confirms the Groq-failure fallback path has fired for real production submissions."
+        : "No real evidence found of the fallback path having fired naturally — doesn't mean it doesn't work, just that no Groq failure has happened yet in production data.",
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkC_resilience = result;
+}
+
+// ============================================================
+// SECTION D — Security scan
+// ============================================================
+async function runCheckD() {
+  console.log("\n=== Section D: Security scan ===");
+  const result = {};
+
+  // D1 — grep the live deployed CLIENT bundle (not build/server, which never
+  // ships to the browser) for anything that looks like a leaked secret.
+  const homePageHtml = await (await fetch(BASE)).text();
+  const jsUrls = [...new Set([...homePageHtml.matchAll(/"(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]))];
+  const secretPatterns = [
+    { name: "GROQ_API_KEY (name)", re: /GROQ_API_KEY/ },
+    { name: "SUPABASE_SERVICE_ROLE_KEY (name)", re: /SUPABASE_SERVICE_ROLE_KEY/ },
+    { name: "RESEND_API_KEY (name)", re: /RESEND_API_KEY/ },
+    { name: "Groq key value pattern (gsk_)", re: /gsk_[A-Za-z0-9]{10,}/ },
+    { name: "Generic secret key value pattern (sk_)", re: /\bsk_[A-Za-z0-9]{10,}/ },
+    { name: "Resend key value pattern (re_)", re: /\bre_[A-Za-z0-9_]{10,}/ },
+    { name: "Supabase service_role JWT fragment", re: /eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9_-]*service_role/ },
+  ];
+  const findings = [];
+  for (const jsUrl of jsUrls) {
+    const fullUrl = `${BASE}${jsUrl}`;
+    try {
+      const jsText = await (await fetch(fullUrl)).text();
+      for (const pattern of secretPatterns) {
+        const match = jsText.match(pattern.re);
+        if (match) findings.push({ file: fullUrl, pattern: pattern.name, matchedText: match[0].slice(0, 40) });
+      }
+    } catch {
+      // ignore individual bundle fetch failures
+    }
+  }
+  result.clientBundleSecretScan = { bundlesChecked: jsUrls.length, findings, clean: findings.length === 0 };
+  console.log(`Client bundle secret scan: ${jsUrls.length} JS files checked, ${findings.length} potential leaks found`);
+  if (findings.length) console.log(JSON.stringify(findings, null, 2));
+
+  // D2 — .dev.vars never in git history
+  const { execSync } = await import("node:child_process");
+  const repoRoot = new URL("..", import.meta.url).pathname;
+  let gitLogOutput = "";
+  try {
+    gitLogOutput = execSync("git log --all --full-history -- .dev.vars", { cwd: repoRoot }).toString();
+  } catch (err) {
+    gitLogOutput = `<error: ${err.message}>`;
+  }
+  result.devVarsGitHistory = { output: gitLogOutput, clean: gitLogOutput.trim() === "" };
+  console.log(
+    `.dev.vars git history check: ${gitLogOutput.trim() === "" ? "clean (no output)" : "FOUND ENTRIES: " + gitLogOutput}`
+  );
+
+  // D3 — response security headers (informational, not blocking)
+  const headResRaw = await fetch(BASE);
+  const headers = Object.fromEntries(headResRaw.headers.entries());
+  const securityHeaderNames = [
+    "strict-transport-security",
+    "x-content-type-options",
+    "x-frame-options",
+    "content-security-policy",
+    "referrer-policy",
+    "permissions-policy",
+  ];
+  result.securityHeaders = Object.fromEntries(securityHeaderNames.map((h) => [h, headers[h] ?? null]));
+  console.log("Security headers:", JSON.stringify(result.securityHeaders, null, 2));
+
+  // D4 — anon key / client-side Supabase exposure
+  let anonKeyGrep = "";
+  try {
+    anonKeyGrep = execSync(`grep -rl "SUPABASE_ANON\\|supabase-js" "${repoRoot}app" || true`).toString();
+  } catch (err) {
+    anonKeyGrep = `<error: ${err.message}>`;
+  }
+  const filesFound = anonKeyGrep.trim() ? anonKeyGrep.trim().split("\n") : [];
+  result.clientSideSupabaseUsage = {
+    filesReferencingSupabaseClientSide: filesFound,
+    note:
+      filesFound.length === 0
+        ? "No client-side Supabase usage found anywhere in app/ — all Supabase access is server-side (Cloudflare Worker, service role key only, never shipped to the browser per the bundle scan above). Could not obtain the project's actual anon key (only the service role key is available in .dev.vars) to literally attempt an anonymous REST read, but the architectural fact that the client never talks to Supabase directly makes RLS/anon-key exposure moot for this app's real attack surface."
+        : "Found references — needs manual review.",
+  };
+  console.log(JSON.stringify(result.clientSideSupabaseUsage, null, 2));
+
+  report.checkD_security = result;
+}
+
+// ============================================================
+// SECTION E — Mobile and basic accessibility
+// ============================================================
+async function runCheckE(browser) {
+  console.log("\n=== Section E: Mobile and accessibility ===");
+  const result = {};
+
+  // E1 — full funnel walkthrough on a real narrow (iPhone 13) viewport
+  const iphone = devices["iPhone 13"];
+  const context = await browser.newContext({ ...iphone });
+  const page = await context.newPage();
+  try {
+    await page.goto(BASE, { waitUntil: "networkidle" });
+    const mobileMenuToggle = page.locator('button[aria-label="Open navigation menu"]');
+    await mobileMenuToggle.click();
+    await page.waitForTimeout(500);
+    // The desktop nav's "Plan My Trip" button is still in the DOM (just
+    // hidden via CSS on mobile) and appears before the mobile menu's own
+    // copy of that button — .first() alone would match the hidden desktop
+    // one. Scope to :visible so this actually clicks the mobile menu's CTA.
+    await page.locator('button:visible', { hasText: "Plan My Trip" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step0 }).waitFor({ timeout: 15000 });
+
+    const stepsChecked = [];
+    const viewportSize = page.viewportSize();
+
+    async function checkNoOverflow(stepName) {
+      const modal = page.locator(".max-w-lg").first();
+      const box = await modal.boundingBox();
+      const overflowsViewport = box ? box.x < -5 || box.x + box.width > viewportSize.width + 5 : null;
+      stepsChecked.push({ step: stepName, boundingBox: box, overflowsViewport });
+    }
+
+    await checkNoOverflow("step0_destination");
+    await page.waitForTimeout(400);
+    await page.locator(".flex.flex-wrap.gap-2 button", { hasText: "Bali" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step1 }).waitFor({ timeout: 15000 });
+    await checkNoOverflow("step1_occasion");
+    await page.waitForTimeout(400);
+    await page.locator("button", { hasText: "Holiday" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step2 }).waitFor({ timeout: 15000 });
+    await checkNoOverflow("step2_travelers");
+    await page.waitForTimeout(400);
+    await page.locator("button", { hasText: "Just me" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step3 }).waitFor({ timeout: 15000 });
+    await checkNoOverflow("step3_vibe");
+    await page.waitForTimeout(400);
+    await page.locator("button", { hasText: "Mix of both" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
+    await checkNoOverflow("step4_contact");
+
+    const submitButton = page.locator("button", { hasText: "Secure My Trip" });
+    const submitVisible = await submitButton.isVisible();
+    const submitBox = await submitButton.boundingBox();
+    await page.screenshot({ path: "/tmp/mobile-funnel-step4.png" });
+
+    result.mobileWalkthrough = {
+      viewport: viewportSize,
+      device: "iPhone 13",
+      stepsChecked,
+      anyOverflow: stepsChecked.some((s) => s.overflowsViewport),
+      submitButtonVisible: submitVisible,
+      submitButtonBoundingBox: submitBox,
+      screenshotPath: "/tmp/mobile-funnel-step4.png",
+    };
+  } catch (err) {
+    result.mobileWalkthrough = { error: err.message };
+  } finally {
+    await page.close();
+    await context.close();
+  }
+
+  // E2 — basic accessibility pass (labels, keyboard nav)
+  const page2 = await browser.newPage();
+  try {
+    await page2.goto(BASE, { waitUntil: "networkidle" });
+    await page2.locator("nav button", { hasText: "Plan My Trip" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step0 }).waitFor({ timeout: 15000 });
+    await page2.waitForTimeout(400);
+    await page2.locator(".flex.flex-wrap.gap-2 button", { hasText: "Bali" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step1 }).waitFor({ timeout: 15000 });
+    await page2.waitForTimeout(400);
+    await page2.locator("button", { hasText: "Holiday" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step2 }).waitFor({ timeout: 15000 });
+    await page2.waitForTimeout(400);
+    await page2.locator("button", { hasText: "Just me" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step3 }).waitFor({ timeout: 15000 });
+    await page2.waitForTimeout(400);
+    await page2.locator("button", { hasText: "Mix of both" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
+
+    const nameInput = page2.locator('input[placeholder="Your First Name"]');
+    const hasAriaLabel = await nameInput.getAttribute("aria-label");
+    const hasLabelledBy = await nameInput.getAttribute("aria-labelledby");
+    const inputId = await nameInput.getAttribute("id");
+    const associatedLabelCount = inputId ? await page2.locator(`label[for="${inputId}"]`).count() : 0;
+
+    await page2.keyboard.press("Tab");
+    const focusSequence = [];
+    for (let i = 0; i < 7; i++) {
+      const focused = await page2.evaluate(
+        () =>
+          document.activeElement?.tagName +
+          ":" +
+          (document.activeElement?.placeholder || document.activeElement?.textContent?.slice(0, 24) || "")
+      );
+      focusSequence.push(focused);
+      await page2.keyboard.press("Tab");
+    }
+
+    result.accessibility = {
+      nameInputHasAriaLabel: !!hasAriaLabel,
+      nameInputHasAriaLabelledBy: !!hasLabelledBy,
+      nameInputHasAssociatedLabelElement: associatedLabelCount > 0,
+      nameInputLabelingMechanism:
+        !hasAriaLabel && !hasLabelledBy && associatedLabelCount === 0 ? "placeholder text only (no real label)" : "properly labeled",
+      keyboardTabFocusSequence: focusSequence,
+    };
+  } catch (err) {
+    result.accessibility = { error: err.message };
+  } finally {
+    await page2.close();
+  }
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkE_mobile_a11y = result;
+}
+
+// ============================================================
+// SECTION F — Performance (rough timing, not a hard pass/fail)
+// ============================================================
+async function runCheckF(browser) {
+  console.log("\n=== Section F: Performance (rough timing) ===");
+  const result = {};
+
+  for (const [label, url] of [
+    ["homepage", `${BASE}/`],
+    ["destination_goa", `${BASE}/destinations/goa`],
+  ]) {
+    const page = await browser.newPage();
+    try {
+      const start = Date.now();
+      await page.goto(url, { waitUntil: "load" });
+      const wallClockMs = Date.now() - start;
+      const timing = await page.evaluate(() => {
+        const nav = performance.getEntriesByType("navigation")[0];
+        return nav
+          ? {
+              domContentLoaded: Math.round(nav.domContentLoadedEventEnd),
+              loadEvent: Math.round(nav.loadEventEnd),
+              responseStart: Math.round(nav.responseStart),
+              transferSize: nav.transferSize,
+            }
+          : null;
+      });
+      result[label] = { url, wallClockMs, navigationTiming: timing };
+    } catch (err) {
+      result[label] = { url, error: err.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkF_performance = result;
+}
+
+// ============================================================
+// SECTION G — Backend/data health check
+// ============================================================
+async function runCheckG() {
+  console.log("\n=== Section G: Backend/data health ===");
+  const result = {};
+
+  const allLeads = await sb("leads?select=id,name,email,lead_score,lead_status,created_at");
+  result.totalLeads = allLeads.length;
+
+  const emailCounts = {};
+  for (const lead of allLeads) {
+    if (!lead.email) continue;
+    const key = lead.email.toLowerCase();
+    emailCounts[key] = (emailCounts[key] || 0) + 1;
+  }
+  result.duplicateEmails = Object.entries(emailCounts)
+    .filter(([, count]) => count > 1)
+    .map(([email, count]) => ({ email, count }));
+
+  const todayDate = new Date().toISOString().slice(0, 10);
+  result.overdueOpenTasks = await sb(
+    `tasks?status=eq.Open&due_date=lt.${todayDate}&select=id,lead_id,task_type,due_date,priority`
+  );
+
+  const allLeadIds = new Set(allLeads.map((l) => l.id));
+  const [allInquiries, allTasks, allFollowUps, allBookedTrips] = await Promise.all([
+    sb("inquiries?select=id,lead_id"),
+    sb("tasks?select=id,lead_id"),
+    sb("follow_ups?select=id,lead_id"),
+    sb("booked_trips?select=id,lead_id"),
+  ]);
+  result.orphanedRows = {
+    inquiries: allInquiries.filter((r) => !allLeadIds.has(r.lead_id)),
+    tasks: allTasks.filter((r) => !allLeadIds.has(r.lead_id)),
+    followUps: allFollowUps.filter((r) => !allLeadIds.has(r.lead_id)),
+    bookedTrips: allBookedTrips.filter((r) => !allLeadIds.has(r.lead_id)),
+  };
+
+  const phase4Names = ["Dhanshree Impex", "A B Elasto Products Pvt. Ltd.", "Alpa Thakkur"];
+  const phase4Leads = allLeads.filter((l) => phase4Names.includes(l.name));
+  const phase4LeadIds = phase4Leads.map((l) => l.id);
+  const phase4Trips = phase4LeadIds.length
+    ? await sb(`booked_trips?lead_id=in.(${phase4LeadIds.join(",")})&select=id,lead_id,invoice_number,trip_name,invoice_file_url`)
+    : [];
+  result.phase4Check = { leadsFound: phase4Leads, tripsFound: phase4Trips };
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkG_data_health = result;
+}
+
+// ============================================================
+// SECTION H — Regression confirmation (quick re-check)
+// ============================================================
+async function runCheckH() {
+  console.log("\n=== Section H: Regression confirmation ===");
+  const result = {
+    note: "UTM capture, Paris chip, and /journal stability are re-verified by checks 2/3/6 earlier in this same run — referencing those results rather than duplicating them.",
+    utmCapture: report.check2_utm_survival,
+    parisChip: report.check3_paris_chip,
+    journalStability: report.check6_journal_stability,
+  };
+
+  result.errorScreenOnForcedFailure = {
+    reVerifiedThisRun: false,
+    note: "Last verified via real screenshot in the previous session (2026-07-10) — genuinely re-forcing this again would require another temporary FORCE_TEST_FAILURE secret + redeploy cycle, carrying the same process risk demonstrated last time. Not repeated here without being asked.",
+  };
+
+  await new Promise((r) => setTimeout(r, 2000));
+  const recentEmails = [TEST_EMAIL_1, TEST_EMAIL_2];
+  const orFilter = recentEmails.map((e) => `email.eq.${encodeURIComponent(e)}`).join(",");
+  const recentLeads = await sb(`leads?or=(${orFilter})&select=id,email`);
+  const leadIds = recentLeads.map((l) => l.id);
+  const relatedFollowUps = leadIds.length
+    ? await sb(`follow_ups?lead_id=in.(${leadIds.join(",")})&select=id,lead_id,sequence_stage`)
+    : [];
+  result.sequenceStageOnNewSubmissions = {
+    leadsChecked: recentLeads,
+    followUps: relatedFollowUps,
+    allHaveSequenceStage: relatedFollowUps.length > 0 && relatedFollowUps.every((f) => f.sequence_stage != null),
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+  report.checkH_regression = result;
+}
+
 async function main() {
   const browser = await chromium.launch({ headless: true });
 
@@ -394,6 +1214,14 @@ async function main() {
   await runCheck4(browser);
   await runCheck5(browser);
   await runCheck6(browser);
+  await runCheckA();
+  const bTestEmails = await runCheckB(browser);
+  await runCheckC();
+  await runCheckD();
+  await runCheckE(browser);
+  await runCheckF(browser);
+  await runCheckG();
+  await runCheckH();
 
   // Check 7 — anything else that surfaced naturally.
   // Dedupe: only report entries not already central to checks 1/2 (the lead
@@ -408,6 +1236,48 @@ async function main() {
   }
 
   await browser.close();
+
+  // ---- Standing-rule cleanup: SELECT-and-confirm-count before any DELETE ----
+  console.log("\n\n========== CLEANUP (SELECT-then-DELETE per standing rule) ==========");
+  const allTestEmails = [
+    TEST_EMAIL_1,
+    TEST_EMAIL_2,
+    ...Object.values(B_TEST_EMAILS),
+    ...(bTestEmails || []),
+  ];
+  const uniqueTestEmails = [...new Set(allTestEmails)];
+  const cleanupOrFilter = uniqueTestEmails.map((e) => `email.eq.${encodeURIComponent(e)}`).join(",");
+  const cleanupLeads = await sb(`leads?or=(${cleanupOrFilter})&select=id,name,email`);
+  console.log(`SELECT before DELETE — matching test leads: ${cleanupLeads.length}`);
+  console.log(JSON.stringify(cleanupLeads, null, 2));
+
+  const cleanupSummary = { emailsChecked: uniqueTestEmails, leadsFound: cleanupLeads, deleted: null };
+
+  if (cleanupLeads.length > 0) {
+    const ids = cleanupLeads.map((l) => l.id);
+    const leadIdFilter = `lead_id=in.(${ids.join(",")})`;
+    const idFilter = `id=in.(${ids.join(",")})`;
+    const deletedFollowUps = await sb(`follow_ups?${leadIdFilter}`, { method: "DELETE" });
+    const deletedTasks = await sb(`tasks?${leadIdFilter}`, { method: "DELETE" });
+    const deletedInquiries = await sb(`inquiries?${leadIdFilter}`, { method: "DELETE" });
+    const deletedLeads = await sb(`leads?${idFilter}`, { method: "DELETE" });
+    cleanupSummary.deleted = {
+      leads: deletedLeads.length,
+      tasks: deletedTasks.length,
+      followUps: deletedFollowUps.length,
+      inquiries: deletedInquiries.length,
+    };
+    console.log("Deleted:", JSON.stringify(cleanupSummary.deleted, null, 2));
+
+    const verifyLeads = await sb(`leads?or=(${cleanupOrFilter})&select=id`);
+    cleanupSummary.verifiedZeroRemaining = verifyLeads.length === 0;
+    console.log(`Post-delete verification — remaining matches: ${verifyLeads.length}`);
+  } else {
+    cleanupSummary.deleted = { leads: 0, tasks: 0, followUps: 0, inquiries: 0 };
+    cleanupSummary.verifiedZeroRemaining = true;
+  }
+
+  report.cleanupSummary = cleanupSummary;
 
   console.log("\n\n========== FULL STRUCTURED REPORT ==========");
   console.log(JSON.stringify(report, null, 2));

@@ -31,10 +31,14 @@ Return EXACTLY this JSON structure:
 
 type LeadPayload = Record<string, FormDataEntryValue>;
 
+// Identity fields (name/email/phone) are deliberately absent from this type.
+// Groq's returned JSON still includes them (system prompt unchanged), but
+// nothing downstream is allowed to read scored.name/email/phone — only the
+// raw funnel payload is a valid source for identity data. See
+// processLeadSubmission: Groq can misread or drop a name/email (confirmed:
+// an XSS-payload name came back as an empty string), so it must never be
+// the source of truth for who the lead actually is.
 type ScoredLead = {
-  name: string;
-  email: string;
-  phone: string;
   destination: string;
   timeline: string;
   travelers: number;
@@ -48,8 +52,17 @@ type ScoredLead = {
   next_action: string;
 };
 
+const MAX_NAME_LENGTH = 200;
+
 function field(payload: LeadPayload, key: string): string {
   return typeof payload[key] === "string" ? (payload[key] as string) : "";
+}
+
+// Defensive server-side sanitization — the client already validates/trims,
+// but an oversized name (e.g. 5000 chars) is large enough to break Groq's
+// JSON response, so it's capped before anything touches Groq at all.
+function sanitizePayload(payload: LeadPayload): LeadPayload {
+  return { ...payload, name: field(payload, "name").trim().slice(0, MAX_NAME_LENGTH) };
 }
 
 export function today(): string {
@@ -110,6 +123,7 @@ Vibe: ${field(payload, "vibe")}`;
         { role: "user", content: userMessage },
       ],
     }),
+    signal: AbortSignal.timeout(15000),
   });
 
   if (!res.ok) {
@@ -162,17 +176,22 @@ async function insertManualReviewFallback(payload: LeadPayload, env: Env) {
 }
 
 export async function processLeadSubmission(payload: LeadPayload, env: Env): Promise<void> {
+  const sanitized = sanitizePayload(payload);
+  const rawName = field(sanitized, "name");
+  const rawEmail = field(sanitized, "email").trim();
+  const rawPhone = field(sanitized, "whatsapp").trim();
+
   let scored: ScoredLead;
   try {
-    scored = await scoreWithGroq(payload, env);
+    scored = await scoreWithGroq(sanitized, env);
   } catch (err) {
     console.error("Groq enrichment failed, falling back to manual review:", err);
-    await insertManualReviewFallback(payload, env);
+    await insertManualReviewFallback(sanitized, env);
     return;
   }
 
   const supabase = getSupabaseClient(env);
-  const normalizedEmail = scored.email.trim().toLowerCase();
+  const normalizedEmail = rawEmail.toLowerCase();
 
   const { data: matches, error: findErr } = await supabase
     .from("leads")
@@ -211,9 +230,9 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
     const { data: inserted, error: insertErr } = await supabase
       .from("leads")
       .insert({
-        name: scored.name,
-        email: scored.email,
-        phone: scored.phone,
+        name: rawName,
+        email: rawEmail,
+        phone: rawPhone,
         destination: scored.destination,
         timeline: scored.timeline,
         travelers: scored.travelers,
@@ -225,10 +244,10 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
         urgency_level: scored.urgency_level,
         ai_summary: scored.ai_summary,
         next_action: scored.next_action,
-        source: field(payload, "source"),
-        utm_source: field(payload, "utm_source"),
-        utm_medium: field(payload, "utm_medium"),
-        utm_campaign: field(payload, "utm_campaign"),
+        source: field(sanitized, "source"),
+        utm_source: field(sanitized, "utm_source"),
+        utm_medium: field(sanitized, "utm_medium"),
+        utm_campaign: field(sanitized, "utm_campaign"),
       })
       .select("id")
       .single();
@@ -269,7 +288,7 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
   const { error: followUpErr } = await supabase.from("follow_ups").insert({
     lead_id: leadId,
     follow_up_date: dueDate,
-    message_template: fillTemplate(template, scored.name, scored.destination),
+    message_template: fillTemplate(template, rawName, scored.destination),
     sequence_stage: 1,
   });
   if (followUpErr) throw new Error(`Failed to insert follow-up: ${followUpErr.message}`);

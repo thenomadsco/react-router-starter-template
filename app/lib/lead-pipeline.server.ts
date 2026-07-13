@@ -1,27 +1,29 @@
 import { getSupabaseClient } from "./supabase.server";
 
+// Only genuinely judgment-based fields are asked of Groq now — destination/
+// timeline/vibe/lead_category/lead_score/urgency_level/ai_summary/next_action.
+// Identity (name/email/phone), travelers (a fixed 5-option chip), contact_method
+// (derivable from whether a phone was given), and budget (a fixed 5-option
+// chip) are all deterministic and computed in code instead — Groq has proven
+// unreliable even at simple passthrough (an XSS-payload name once came back
+// empty; the old travelers-conversion rule's example labels didn't even match
+// the funnel's real chip text). Budget and returning-customer status are still
+// given to Groq as scoring *context* (they legitimately affect lead_score),
+// just never trusted as something Groq echoes back.
 const GROQ_SYSTEM_PROMPT = `You are an AI data enricher for a luxury travel CRM. You receive structured lead data from a web funnel. Your job is to format it into a strict JSON object and calculate missing CRM metrics.
 
 RULES:
-1. If a text value is missing, output "". If a number is missing, output 0.
-2. Convert the 'Travelers' string into an integer (e.g., 'Solo Adventure' = 1, 'Couples Retreat' = 2, 'Family Vacation' = 4, 'Group of Friends' = 5).
-3. We do not ask for Budget yet, so output 0.
-4. Determine 'contact_method' based on whether phone or email was provided.
-5. Generate a 1-sentence 'ai_summary' of their ideal trip.
-6. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High) based on their timeline (e.g. 'Within 30 Days' is High urgency).
-7. Suggest a logical 'next_action'.
+1. If a text value is missing, output "".
+2. Generate a 1-sentence 'ai_summary' of their ideal trip.
+3. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High) based on their timeline (e.g. 'Within 30 Days' is High urgency) and their stated budget (a higher budget signals a more valuable lead).
+4. If 'Returning Customer' is true, weight 'lead_score' upward — a proven past paying customer submitting an identical inquiry should score higher than a first-time stranger with the same answers.
+5. Suggest a logical 'next_action'.
 
 Return EXACTLY this JSON structure:
 {
-  "name": "",
-  "email": "",
-  "phone": "",
   "destination": "",
   "timeline": "",
-  "travelers": 0,
   "vibe": "",
-  "budget": 0,
-  "contact_method": "",
   "lead_category": "",
   "lead_score": 0,
   "urgency_level": "",
@@ -31,20 +33,15 @@ Return EXACTLY this JSON structure:
 
 type LeadPayload = Record<string, FormDataEntryValue>;
 
-// Identity fields (name/email/phone) are deliberately absent from this type.
-// Groq's returned JSON still includes them (system prompt unchanged), but
-// nothing downstream is allowed to read scored.name/email/phone — only the
-// raw funnel payload is a valid source for identity data. See
-// processLeadSubmission: Groq can misread or drop a name/email (confirmed:
-// an XSS-payload name came back as an empty string), so it must never be
-// the source of truth for who the lead actually is.
+// Identity fields, travelers, contact_method, and budget are deliberately
+// absent from this type — see the comment above GROQ_SYSTEM_PROMPT. Nothing
+// downstream may read scored.name/email/phone/travelers/contact_method/budget;
+// only the raw funnel payload (via the raw*/deriveContactMethod/map* helpers
+// below) is a valid source for them.
 type ScoredLead = {
   destination: string;
   timeline: string;
-  travelers: number;
   vibe: string;
-  budget: number;
-  contact_method: string;
   lead_category: string;
   lead_score: number;
   urgency_level: string;
@@ -54,8 +51,45 @@ type ScoredLead = {
 
 const MAX_NAME_LENGTH = 200;
 
+// Keyed by the DestinationFunnel component's exact current chip labels
+// (app/routes/home.tsx) — verify against the live component if these ever
+// drift, since Groq's old conversion rule silently used example labels that
+// didn't even match the real chips.
+const TRAVELERS_MAP: Record<string, number> = {
+  "Just me": 1,
+  "The two of us": 2,
+  "Family with kids": 4,
+  "A group of friends": 5,
+  "Large family group": 10,
+};
+
+// Numeric lower-bound of each budget bracket. "Under ₹50k" and "Not sure yet"
+// both intentionally store 0 — the former's true lower bound genuinely is 0,
+// and there's no separate text field to distinguish "a real low budget" from
+// "no answer given". Acceptable given the funnel only exposes these 5 labels;
+// flagged here rather than silently picked.
+const BUDGET_MAP: Record<string, number> = {
+  "Under ₹50k": 0,
+  "₹50k–1L": 50000,
+  "₹1L–3L": 100000,
+  "₹3L+": 300000,
+  "Not sure yet": 0,
+};
+
 function field(payload: LeadPayload, key: string): string {
   return typeof payload[key] === "string" ? (payload[key] as string) : "";
+}
+
+function mapTravelersToInt(travelersLabel: string): number {
+  return TRAVELERS_MAP[travelersLabel] ?? 0;
+}
+
+function mapBudgetToNumber(budgetLabel: string): number {
+  return BUDGET_MAP[budgetLabel] ?? 0;
+}
+
+function deriveContactMethod(payload: LeadPayload): string {
+  return field(payload, "whatsapp").trim() ? "WhatsApp" : "Email";
 }
 
 // Defensive server-side sanitization — the client already validates/trims,
@@ -99,14 +133,40 @@ No pressure at all — just reach out when the time feels right. I'll make sure 
 — Kirti Shah | The Nomads Co.
 📞 +91 99243 99335 | thenomadsco.in`;
 
-async function scoreWithGroq(payload: LeadPayload, env: Env): Promise<ScoredLead> {
+async function checkIsReturningCustomer(email: string, supabase: ReturnType<typeof getSupabaseClient>): Promise<boolean> {
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedEmail) return false;
+
+  const { data, error } = await supabase
+    .from("leads")
+    .select("id, lead_status, booked_trips(id)")
+    .ilike("email", normalizedEmail)
+    .is("deleted_at", null);
+
+  if (error) {
+    console.error("Failed to check returning-customer status:", error);
+    return false;
+  }
+
+  return (data ?? []).some(
+    (l: any) => l.lead_status === "Converted" || (Array.isArray(l.booked_trips) && l.booked_trips.length > 0)
+  );
+}
+
+async function scoreWithGroq(
+  payload: LeadPayload,
+  env: Env,
+  context: { budget: number; isReturningCustomer: boolean }
+): Promise<ScoredLead> {
   const userMessage = `Name: ${field(payload, "name")}
 Email: ${field(payload, "email")}
 Phone: ${field(payload, "whatsapp")}
 Destination: ${field(payload, "destination")}
 Timeline: ${field(payload, "timeline")}
 Travelers: ${field(payload, "travelers")}
-Vibe: ${field(payload, "vibe")}`;
+Vibe: ${field(payload, "vibe")}
+Budget: ₹${context.budget}
+Returning Customer: ${context.isReturningCustomer}`;
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -151,9 +211,13 @@ async function insertManualReviewFallback(payload: LeadPayload, env: Env) {
       destination: field(payload, "destination"),
       timeline: field(payload, "timeline"),
       vibe: field(payload, "vibe"),
-      // travelers is an integer column but the raw funnel value is a free-text
-      // label (e.g. "Just me") that only the Groq enrichment step can convert —
-      // left unset here since enrichment failed.
+      // travelers/budget/contact_method are all deterministic now, so unlike
+      // before, the fallback path can still capture them even though Groq
+      // enrichment failed.
+      travelers: mapTravelersToInt(field(payload, "travelers")),
+      budget: mapBudgetToNumber(field(payload, "budget")),
+      contact_method: deriveContactMethod(payload),
+      contact_consent: field(payload, "contact_consent") === "true",
       lead_score: null,
       source: field(payload, "source"),
       utm_source: field(payload, "utm_source"),
@@ -180,23 +244,30 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
   const rawName = field(sanitized, "name");
   const rawEmail = field(sanitized, "email").trim();
   const rawPhone = field(sanitized, "whatsapp").trim();
+  const rawTravelers = mapTravelersToInt(field(sanitized, "travelers"));
+  const rawBudget = mapBudgetToNumber(field(sanitized, "budget"));
+  const rawContactMethod = deriveContactMethod(sanitized);
+  const rawConsent = field(sanitized, "contact_consent") === "true";
+
+  const supabase = getSupabaseClient(env);
+  const isReturningCustomer = await checkIsReturningCustomer(rawEmail, supabase);
 
   let scored: ScoredLead;
   try {
-    scored = await scoreWithGroq(sanitized, env);
+    scored = await scoreWithGroq(sanitized, env, { budget: rawBudget, isReturningCustomer });
   } catch (err) {
     console.error("Groq enrichment failed, falling back to manual review:", err);
     await insertManualReviewFallback(sanitized, env);
     return;
   }
 
-  const supabase = getSupabaseClient(env);
   const normalizedEmail = rawEmail.toLowerCase();
 
   const { data: matches, error: findErr } = await supabase
     .from("leads")
-    .select("id")
+    .select("id, contact_consent")
     .ilike("email", normalizedEmail)
+    .is("deleted_at", null)
     .limit(1);
 
   if (findErr) throw new Error(`Failed to look up existing lead: ${findErr.message}`);
@@ -205,26 +276,30 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
 
   if (matches && matches.length > 0) {
     leadId = matches[0].id;
+    const existingConsent = matches[0].contact_consent === true;
 
     const { error: inquiryErr } = await supabase.from("inquiries").insert({
       lead_id: leadId,
       destination: scored.destination,
       timeline: scored.timeline,
       vibe: scored.vibe,
-      travelers: scored.travelers,
+      travelers: rawTravelers,
     });
     if (inquiryErr) throw new Error(`Failed to insert inquiry: ${inquiryErr.message}`);
 
-    const { error: updateErr } = await supabase
-      .from("leads")
-      .update({
-        lead_score: scored.lead_score,
-        urgency_level: scored.urgency_level,
-        ai_summary: scored.ai_summary,
-        next_action: scored.next_action,
-        lead_category: scored.lead_category,
-      })
-      .eq("id", leadId);
+    const updatePayload: Record<string, unknown> = {
+      lead_score: scored.lead_score,
+      urgency_level: scored.urgency_level,
+      ai_summary: scored.ai_summary,
+      next_action: scored.next_action,
+      lead_category: scored.lead_category,
+    };
+    // Never downgrade an existing true consent back to false.
+    if (rawConsent && !existingConsent) {
+      updatePayload.contact_consent = true;
+    }
+
+    const { error: updateErr } = await supabase.from("leads").update(updatePayload).eq("id", leadId);
     if (updateErr) throw new Error(`Failed to update lead: ${updateErr.message}`);
   } else {
     const { data: inserted, error: insertErr } = await supabase
@@ -235,10 +310,10 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
         phone: rawPhone,
         destination: scored.destination,
         timeline: scored.timeline,
-        travelers: scored.travelers,
+        travelers: rawTravelers,
         vibe: scored.vibe,
-        budget: scored.budget,
-        contact_method: scored.contact_method,
+        budget: rawBudget,
+        contact_method: rawContactMethod,
         lead_category: scored.lead_category,
         lead_score: scored.lead_score,
         urgency_level: scored.urgency_level,
@@ -248,6 +323,7 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
         utm_source: field(sanitized, "utm_source"),
         utm_medium: field(sanitized, "utm_medium"),
         utm_campaign: field(sanitized, "utm_campaign"),
+        contact_consent: rawConsent,
       })
       .select("id")
       .single();

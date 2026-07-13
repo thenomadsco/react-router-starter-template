@@ -89,10 +89,41 @@ const HEADINGS = {
   step1: "What's the occasion?",
   step2: "Who's making this trip happen?",
   step3: "How do you actually travel?",
-  step4: "Almost there.",
+  step4: "What's your rough budget for this trip?",
+  step5: "Almost there.",
   success: "Preferences Secured!",
   failure: "Something went wrong",
 };
+
+// Every real funnel submission needs a budget pick + consent check before
+// "Secure My Trip" is even clickable (it also gates Turnstile alongside the
+// button's disabled state). Centralized here so every call site advances
+// through both in the same way.
+async function pickBudgetAndConsent(pageOrLocatorScope) {
+  await pageOrLocatorScope.locator("button", { hasText: "₹1L–3L" }).first().click();
+  await pageOrLocatorScope.waitForTimeout(500);
+  await pageOrLocatorScope.locator("h3").filter({ hasText: HEADINGS.step5 }).waitFor({ timeout: 15000 });
+}
+
+async function checkConsent(pageOrLocatorScope) {
+  await pageOrLocatorScope.locator('input[type="checkbox"]').first().check();
+}
+
+// The submit button is disabled until Turnstile produces a real token
+// (in addition to consent being checked) — this was never accounted for in
+// this script before, so every submission check would otherwise click a
+// still-disabled button and then time out waiting for a response that never
+// fires. On the real production domain the site key is valid, so Turnstile
+// should genuinely solve on its own within a few seconds.
+async function waitForSubmitEnabled(page, timeoutMs = 20000) {
+  const button = page.locator("button", { hasText: "Secure My Trip" });
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (!(await button.isDisabled())) return true;
+    await page.waitForTimeout(1000);
+  }
+  return false;
+}
 
 const report = {
   check1_submission_integrity: null,
@@ -192,23 +223,35 @@ async function runCheck1(browser) {
 
     // Step 0 — quick pick chip
     await page.locator(".flex.flex-wrap.gap-2 button", { hasText: "Bali" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step1 }).waitFor({ timeout: 10000 });
 
     // Step 1 — occasion
     await page.locator("button", { hasText: "Holiday" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step2 }).waitFor({ timeout: 10000 });
 
     // Step 2 — travelers
     await page.locator("button", { hasText: "Just me" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step3 }).waitFor({ timeout: 10000 });
 
     // Step 3 — vibe
     await page.locator("button", { hasText: "Mix of both" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 10000 });
 
-    // Step 4 — contact info
+    // Step 4 — budget
+    await pickBudgetAndConsent(page);
+
+    // Step 5 — contact info
     await page.locator('input[placeholder="Your First Name"]').fill(TEST_NAME);
     await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(TEST_EMAIL_1);
+    await checkConsent(page);
+
+    const submitEnabled = await waitForSubmitEnabled(page);
+    result.submitEnabledAfterConsentAndTurnstile = submitEnabled;
+    if (!submitEnabled) throw new Error("Submit button never became enabled (Turnstile token not obtained)");
 
     // Filter out unrelated background POSTs (e.g. Cloudflare's /cdn-cgi/rum
     // beacon) so we don't pair the funnel submission's response with a
@@ -279,19 +322,30 @@ async function runCheck2(browser) {
     // Destination page's own CTA opens the funnel with the destination pre-filled,
     // starting at the "occasion" step.
     await page.locator("button", { hasText: "Design Your Escape" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step1 }).waitFor({ timeout: 10000 });
 
     await page.locator("button", { hasText: "Holiday" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step2 }).waitFor({ timeout: 10000 });
 
     await page.locator("button", { hasText: "Just me" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step3 }).waitFor({ timeout: 10000 });
 
     await page.locator("button", { hasText: "Mix of both" }).first().click();
+    await page.waitForTimeout(500);
     await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 10000 });
+
+    await pickBudgetAndConsent(page);
 
     await page.locator('input[placeholder="Your First Name"]').fill(TEST_NAME);
     await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(TEST_EMAIL_2);
+    await checkConsent(page);
+
+    const submitEnabled = await waitForSubmitEnabled(page);
+    result.submitEnabledAfterConsentAndTurnstile = submitEnabled;
+    if (!submitEnabled) throw new Error("Submit button never became enabled (Turnstile token not obtained)");
 
     const responsePromise = page.waitForResponse(
       (res) => res.request().method() === "POST" && !res.url().includes("/cdn-cgi/"),
@@ -608,6 +662,8 @@ async function openFunnelToContactStep(page) {
   await page.locator("button", { hasText: "Mix of both" }).first().click();
   await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
   await page.waitForTimeout(500);
+  await pickBudgetAndConsent(page);
+  await page.waitForTimeout(500);
 }
 
 const B_TEST_EMAILS = {
@@ -634,6 +690,8 @@ async function runCheckB(browser) {
         if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postFired = true;
       });
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.emptyName);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       await page.waitForTimeout(1500);
       const validationShown = await page.locator("text=Name is required").isVisible().catch(() => false);
@@ -656,6 +714,8 @@ async function runCheckB(browser) {
       });
       await page.locator('input[placeholder="Your First Name"]').fill("Edge Case Invalid Email");
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill("notanemail");
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       await page.waitForTimeout(1500);
       const validationShown = await page
@@ -681,6 +741,8 @@ async function runCheckB(browser) {
       });
       await page.locator('input[placeholder="Your First Name"]').fill("   ");
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.whitespaceName);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       await page.waitForTimeout(1500);
       result.whitespaceName = { clientBlockedSubmission: !postFired };
@@ -702,6 +764,8 @@ async function runCheckB(browser) {
       );
       await page.locator('input[placeholder="Your First Name"]').fill('<script>alert(1)</script>');
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.xss);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       const response = await responsePromise;
       await page.waitForTimeout(2500);
@@ -725,6 +789,8 @@ async function runCheckB(browser) {
       );
       await page.locator('input[placeholder="Your First Name"]').fill(longName);
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.longName);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       const response = await responsePromise;
       await page.waitForTimeout(2500);
@@ -743,6 +809,8 @@ async function runCheckB(browser) {
       await openFunnelToContactStep(page);
       await page.locator('input[placeholder="Your First Name"]').fill("Double Submit Test");
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.doubleSubmit);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       let postCount = 0;
       page.on("request", (req) => {
         if (req.method() === "POST" && !req.url().includes("cdn-cgi")) postCount++;
@@ -773,6 +841,8 @@ async function runCheckB(browser) {
       );
       await page.locator('input[placeholder="Your First Name"]').fill(unicodeName);
       await page.locator('input[placeholder="Email (For formal itinerary & docs)"]').fill(B_TEST_EMAILS.unicode);
+      await checkConsent(page);
+      await waitForSubmitEnabled(page);
       await page.locator("button", { hasText: "Secure My Trip" }).click();
       const response = await responsePromise;
       await page.waitForTimeout(2500);
@@ -829,9 +899,14 @@ async function runCheckC() {
   const source = fs.readFileSync(pipelineSourcePath, "utf8");
   const journalSource = fs.readFileSync(journalSourcePath, "utf8");
 
-  const groqFnStart = source.indexOf("async function scoreWithGroq");
-  const groqFetchBlock = source.slice(groqFnStart, groqFnStart + 900);
-  const hasAbortSignalOnGroqCall = /AbortSignal/.test(groqFetchBlock);
+  // Search the whole file rather than a fixed-length slice from an anchor —
+  // a slice window broke silently once earlier (the Groq-simplification
+  // rewrite added enough lines before these patterns that a 900/500-char
+  // window no longer reached them, making these checks falsely report
+  // "false" for things that were actually still true).
+  const groqFnMatch = source.match(/async function scoreWithGroq[\s\S]*?\n}/);
+  const groqFetchBlock = groqFnMatch ? groqFnMatch[0] : "";
+  const hasAbortSignalOnGroqCall = /AbortSignal\.timeout/.test(groqFetchBlock);
   const journalHasAbortSignal = /AbortSignal\.timeout/.test(journalSource);
 
   result.codeInspection = {
@@ -842,11 +917,11 @@ async function runCheckC() {
       : "Groq fetch in scoreWithGroq() has NO AbortSignal timeout, unlike journal.tsx's loader (AbortSignal.timeout(8000)). If Groq hangs, nothing times this fetch out — the funnel submission would hang rather than falling back to Manual Review.",
   };
 
-  const psStart = source.indexOf("export async function processLeadSubmission");
-  const errorHandlingBlock = source.slice(psStart, psStart + 500);
+  const psMatch = source.match(/export async function processLeadSubmission[\s\S]*?\n}/);
+  const errorHandlingBlock = psMatch ? psMatch[0] : "";
   result.groqFailureHandling = {
-    catchWrapsScoreWithGroq: /try\s*{\s*scored = await scoreWithGroq/.test(errorHandlingBlock),
-    fallsBackWithoutRethrow: /insertManualReviewFallback\(payload, env\);\s*return;/.test(errorHandlingBlock),
+    catchWrapsScoreWithGroq: /try\s*\{\s*scored = await scoreWithGroq/.test(errorHandlingBlock),
+    fallsBackWithoutRethrow: /insertManualReviewFallback\(sanitized, env\);\s*return;/.test(errorHandlingBlock),
     note: "Any Groq-side failure (auth error, malformed JSON, non-200 status) is caught inside processLeadSubmission's own try/catch around scoreWithGroq, which calls insertManualReviewFallback and returns normally — it does NOT rethrow. home.tsx's action still returns {success:true} and the user sees 'Preferences Secured!' even when Groq fails. The error screen verified previously only covers failures OUTSIDE this try/catch (e.g. a Supabase write failure) — it does not exercise the Groq-failure path at all.",
   };
 
@@ -1001,21 +1076,29 @@ async function runCheckE(browser) {
     await page.waitForTimeout(400);
     await page.locator("button", { hasText: "Mix of both" }).first().click();
     await page.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
-    await checkNoOverflow("step4_contact");
+    await checkNoOverflow("step4_budget");
+    await page.waitForTimeout(400);
+    await page.locator("button", { hasText: "₹1L–3L" }).first().click();
+    await page.locator("h3").filter({ hasText: HEADINGS.step5 }).waitFor({ timeout: 15000 });
+    await checkNoOverflow("step5_contact");
+
+    const consentCheckbox = page.locator('input[type="checkbox"]').first();
+    const consentVisible = await consentCheckbox.isVisible();
 
     const submitButton = page.locator("button", { hasText: "Secure My Trip" });
     const submitVisible = await submitButton.isVisible();
     const submitBox = await submitButton.boundingBox();
-    await page.screenshot({ path: "/tmp/mobile-funnel-step4.png" });
+    await page.screenshot({ path: "/tmp/mobile-funnel-step5.png" });
 
     result.mobileWalkthrough = {
       viewport: viewportSize,
       device: "iPhone 13",
       stepsChecked,
       anyOverflow: stepsChecked.some((s) => s.overflowsViewport),
+      consentCheckboxVisible: consentVisible,
       submitButtonVisible: submitVisible,
       submitButtonBoundingBox: submitBox,
-      screenshotPath: "/tmp/mobile-funnel-step4.png",
+      screenshotPath: "/tmp/mobile-funnel-step5.png",
     };
   } catch (err) {
     result.mobileWalkthrough = { error: err.message };
@@ -1042,6 +1125,9 @@ async function runCheckE(browser) {
     await page2.waitForTimeout(400);
     await page2.locator("button", { hasText: "Mix of both" }).first().click();
     await page2.locator("h3").filter({ hasText: HEADINGS.step4 }).waitFor({ timeout: 15000 });
+    await page2.waitForTimeout(400);
+    await page2.locator("button", { hasText: "₹1L–3L" }).first().click();
+    await page2.locator("h3").filter({ hasText: HEADINGS.step5 }).waitFor({ timeout: 15000 });
 
     const nameInput = page2.locator('input[placeholder="Your First Name"]');
     const hasAriaLabel = await nameInput.getAttribute("aria-label");
@@ -1051,7 +1137,12 @@ async function runCheckE(browser) {
 
     await page2.keyboard.press("Tab");
     const focusSequence = [];
-    for (let i = 0; i < 7; i++) {
+    // 12 iterations comfortably covers the modal's current focusable set
+    // (email, whatsapp, consent checkbox, Turnstile widget, submit) more
+    // than twice over — enough to show whether focus cycles back inside the
+    // modal (the focus trap working) or escapes to the page behind it (a
+    // regression), not just a single pass through.
+    for (let i = 0; i < 12; i++) {
       const focused = await page2.evaluate(
         () =>
           document.activeElement?.tagName +
@@ -1061,6 +1152,7 @@ async function runCheckE(browser) {
       focusSequence.push(focused);
       await page2.keyboard.press("Tab");
     }
+    const escapedToPageBehindModal = focusSequence.some((f) => /^(BODY|BUTTON:About|BUTTON:Destinations|BUTTON:Reviews)/.test(f));
 
     result.accessibility = {
       nameInputHasAriaLabel: !!hasAriaLabel,
@@ -1069,6 +1161,7 @@ async function runCheckE(browser) {
       nameInputLabelingMechanism:
         !hasAriaLabel && !hasLabelledBy && associatedLabelCount === 0 ? "placeholder text only (no real label)" : "properly labeled",
       keyboardTabFocusSequence: focusSequence,
+      focusTrapHolding: !escapedToPageBehindModal,
     };
   } catch (err) {
     result.accessibility = { error: err.message };
@@ -1126,12 +1219,17 @@ async function runCheckG() {
   console.log("\n=== Section G: Backend/data health ===");
   const result = {};
 
-  const allLeads = await sb("leads?select=id,name,email,lead_score,lead_status,created_at");
+  const allLeads = await sb("leads?select=id,name,email,lead_score,lead_status,created_at,deleted_at");
   result.totalLeads = allLeads.length;
+  result.activeLeads = allLeads.filter((l) => !l.deleted_at).length;
 
+  // Only active (non-soft-deleted) leads matter for duplicate detection —
+  // the dedupe lookup itself excludes deleted_at rows, so a soft-deleted
+  // lead legitimately sharing an email with its active replacement (see
+  // item 5's soft-delete-then-resubmit flow) is by design, not a bug.
   const emailCounts = {};
   for (const lead of allLeads) {
-    if (!lead.email) continue;
+    if (!lead.email || lead.deleted_at) continue;
     const key = lead.email.toLowerCase();
     emailCounts[key] = (emailCounts[key] || 0) + 1;
   }
@@ -1237,7 +1335,10 @@ async function main() {
 
   await browser.close();
 
-  // ---- Standing-rule cleanup: SELECT-and-confirm-count before any DELETE ----
+  // ---- Standing-rule cleanup: SELECT-and-confirm-count before any delete/soft-delete ----
+  // Leads are soft-deleted (deleted_at = now()), never hard-deleted — matches the
+  // app's own dedupe-lookup lifecycle. Child rows (tasks/follow_ups/inquiries)
+  // are still hard-deleted since they carry no deleted_at column.
   console.log("\n\n========== CLEANUP (SELECT-then-DELETE per standing rule) ==========");
   const allTestEmails = [
     TEST_EMAIL_1,
@@ -1247,7 +1348,7 @@ async function main() {
   ];
   const uniqueTestEmails = [...new Set(allTestEmails)];
   const cleanupOrFilter = uniqueTestEmails.map((e) => `email.eq.${encodeURIComponent(e)}`).join(",");
-  const cleanupLeads = await sb(`leads?or=(${cleanupOrFilter})&select=id,name,email`);
+  const cleanupLeads = await sb(`leads?or=(${cleanupOrFilter})&deleted_at=is.null&select=id,name,email`);
   console.log(`SELECT before DELETE — matching test leads: ${cleanupLeads.length}`);
   console.log(JSON.stringify(cleanupLeads, null, 2));
 
@@ -1260,18 +1361,21 @@ async function main() {
     const deletedFollowUps = await sb(`follow_ups?${leadIdFilter}`, { method: "DELETE" });
     const deletedTasks = await sb(`tasks?${leadIdFilter}`, { method: "DELETE" });
     const deletedInquiries = await sb(`inquiries?${leadIdFilter}`, { method: "DELETE" });
-    const deletedLeads = await sb(`leads?${idFilter}`, { method: "DELETE" });
+    const softDeletedLeads = await sb(`leads?${idFilter}`, {
+      method: "PATCH",
+      body: JSON.stringify({ deleted_at: new Date().toISOString() }),
+    });
     cleanupSummary.deleted = {
-      leads: deletedLeads.length,
+      leads: softDeletedLeads.length,
       tasks: deletedTasks.length,
       followUps: deletedFollowUps.length,
       inquiries: deletedInquiries.length,
     };
-    console.log("Deleted:", JSON.stringify(cleanupSummary.deleted, null, 2));
+    console.log("Soft-deleted leads / deleted child rows:", JSON.stringify(cleanupSummary.deleted, null, 2));
 
-    const verifyLeads = await sb(`leads?or=(${cleanupOrFilter})&select=id`);
+    const verifyLeads = await sb(`leads?or=(${cleanupOrFilter})&deleted_at=is.null&select=id`);
     cleanupSummary.verifiedZeroRemaining = verifyLeads.length === 0;
-    console.log(`Post-delete verification — remaining matches: ${verifyLeads.length}`);
+    console.log(`Post-cleanup verification — remaining active matches: ${verifyLeads.length}`);
   } else {
     cleanupSummary.deleted = { leads: 0, tasks: 0, followUps: 0, inquiries: 0 };
     cleanupSummary.verifiedZeroRemaining = true;

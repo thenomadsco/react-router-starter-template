@@ -689,10 +689,12 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
   const [timeline, setTimeline] = useState("");
   const [travelers, setTravelers] = useState("");
   const [vibe, setVibe] = useState("");
-  
+  const [budget, setBudget] = useState("");
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [contactConsent, setContactConsent] = useState(false);
   const [touched, setTouched] = useState({ name: false, email: false });
   const [advancing, setAdvancing] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -749,7 +751,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
   // Cloudflare Turnstile — loaded and rendered only once the contact step is
   // reached, removed again on unmount/step change away from it.
   useEffect(() => {
-    if (step !== 4) return;
+    if (step !== 5) return;
 
     function renderWidget() {
       const turnstile = (window as any).turnstile;
@@ -800,7 +802,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
     setTimeout(() => setAdvancing(false), 400);
   };
   
-  const maxInputSteps = preselectedDest ? 4 : 5;
+  const maxInputSteps = preselectedDest ? 5 : 6;
   const currentDisplayStep = preselectedDest ? step : step + 1;
 
   const handleClose = () => {
@@ -809,9 +811,11 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
     setTimeline("");
     setTravelers("");
     setVibe("");
+    setBudget("");
     setName("");
     setEmail("");
     setWhatsapp("");
+    setContactConsent(false);
     setTouched({ name: false, email: false });
     setAdvancing(false);
     setHasSubmitted(false);
@@ -820,12 +824,12 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
   };
 
   const waURL = () => {
-    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n\nCan we fast-track this?`;
+    const body = `Hi Kirti! 👋 I'm ${name}. I just submitted my trip request${dest ? ` to ${dest}` : ""}.\n\n*Email:* ${email}\n${whatsapp ? `*Phone:* ${whatsapp}\n` : ""}*Travelers:* ${travelers}\n*Timeline:* ${timeline}\n*Vibe:* ${vibe}\n*Budget:* ${budget}\n\nCan we fast-track this?`;
     return waLink(body);
   };
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isStep4Valid = name.trim().length > 0 && isEmailValid;
+  const isContactStepValid = name.trim().length > 0 && isEmailValid;
   const isSubmitting = fetcher.state === "submitting";
 
   useEffect(() => {
@@ -839,7 +843,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
       // Covers both an explicit { success: false } from the action and a
       // network-level failure (e.g. a 5xx before the action ever runs), where
       // fetcher.data never gets set at all — either way, don't pretend it worked.
-      setStep(6);
+      setStep(7);
     }
   }, [fetcher.state, fetcher.data, hasSubmitted]);
 
@@ -855,11 +859,13 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
         timeline,
         travelers,
         vibe,
+        budget,
         source: "React Funnel",
         utm_source: utm.utm_source,
         utm_medium: utm.utm_medium,
         utm_campaign: utm.utm_campaign,
         turnstile_token: turnstileToken,
+        contact_consent: contactConsent ? "true" : "false",
       },
       // Safely point the submission to the homepage action to bypass adblockers
       { method: "post", action: "/?index" }
@@ -876,7 +882,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
         tabIndex={-1}
         className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[460px] flex flex-col animate-fade-in-up outline-none"
       >
-        {step < 5 ? (
+        {step < 6 ? (
           <>
             <div className="px-6 py-4 flex items-center justify-between bg-[#FAFAF8]">
               <div className="flex items-center gap-2">
@@ -994,6 +1000,30 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
 
           {step === 4 && (
             <div className="animate-fade-in-up">
+              <h3 className="text-3xl font-bold mb-2 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>What's your rough budget for this trip?</h3>
+              <p className="text-gray-400 mb-6 text-sm">Helps us pitch the right options — no wrong answer here</p>
+              <div className="space-y-3">
+                {[
+                  { label: "Under ₹50k", sub: "Keeping it light" },
+                  { label: "₹50k–1L", sub: "Comfortable mid-range" },
+                  { label: "₹1L–3L", sub: "Premium experience" },
+                  { label: "₹3L+", sub: "No compromises" },
+                  { label: "Not sure yet", sub: "We'll help you figure it out" },
+                ].map(opt => (
+                  <button key={opt.label} onClick={() => safeNext(() => setBudget(opt.label))} className="w-full text-left px-5 py-4 rounded-2xl font-medium bg-[#FAFAF8] hover:bg-[#EEF0FF] hover:text-[#2D3191] text-gray-700 flex items-center justify-between group transition-all shadow-sm">
+                    <div>
+                      <div className="font-semibold text-sm">{opt.label}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">{opt.sub}</div>
+                    </div>
+                    <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#2D3191] flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {step === 5 && (
+            <div className="animate-fade-in-up">
               <h3 className="text-3xl font-bold mb-3 text-[#1F2328]" style={{ fontFamily: "'Playfair Display',serif" }}>Almost there.</h3>
               <p className="text-gray-500 mb-6 text-sm">Where should Kirti send your curated itinerary?</p>
               
@@ -1042,14 +1072,28 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
                 disabled={isSubmitting}
               />
 
+              <label className="flex items-start gap-2.5 mb-4 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={contactConsent}
+                  onChange={e => setContactConsent(e.target.checked)}
+                  aria-label="I agree to be contacted about my trip via WhatsApp or email"
+                  className="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#2D3191] focus:ring-2 focus:ring-[#2D3191] flex-shrink-0"
+                  disabled={isSubmitting}
+                />
+                <span className="text-xs text-gray-500 leading-relaxed">
+                  I agree to be contacted about my trip via WhatsApp or email.
+                </span>
+              </label>
+
               <div ref={turnstileContainerRef} className="mb-4" />
 
               <button
                 onClick={() => {
                   setTouched({ name: true, email: true });
-                  if (isStep4Valid) submitToCRM();
+                  if (isContactStepValid) submitToCRM();
                 }}
-                disabled={isSubmitting || !turnstileToken}
+                disabled={isSubmitting || !turnstileToken || !contactConsent}
                 className="w-full py-4 bg-[#2D3191] text-white font-bold rounded-2xl disabled:opacity-40 hover:bg-[#242875] transition-colors shadow-lg flex items-center justify-center gap-2 text-base"
               >
                 {isSubmitting ? "Securing preferences..." : "Secure My Trip → "}
@@ -1057,7 +1101,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
             </div>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <div className="animate-fade-in-up text-center flex flex-col items-center">
               <div className="w-16 h-16 bg-[#EEF0FF] text-[#2D3191] rounded-full flex items-center justify-center mb-5">
                 <CheckCircle2 className="w-8 h-8" />
@@ -1082,7 +1126,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
             </div>
           )}
 
-          {step === 6 && (
+          {step === 7 && (
             <div className="animate-fade-in-up text-center flex flex-col items-center">
               <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-5">
                 <X className="w-8 h-8" />
@@ -1098,7 +1142,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
                   Chat with Kirti Now 💬
                 </button>
                 <button
-                  onClick={() => setStep(4)}
+                  onClick={() => setStep(5)}
                   className="w-full py-4 bg-[#FAFAF8] text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm border border-gray-200"
                 >
                   Try again

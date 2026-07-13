@@ -4,49 +4,72 @@ import { today, addDays, fillTemplate, WARM_TEMPLATE, COLD_TEMPLATE } from "./le
 const DIGEST_FROM_ADDRESS = "crm@thenomadsco.in";
 const DIGEST_TO_ADDRESS = "thenomadsco@gmail.com";
 
+// cron_runs only has run_type/success/error_message (no separate "details"
+// column) — error_message doubles as a general message field, carrying a
+// short outcome summary on success too, not just errors on failure.
+async function logCronRun(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  runType: string,
+  success: boolean,
+  message?: string
+): Promise<void> {
+  const { error } = await supabase.from("cron_runs").insert({
+    run_type: runType,
+    success,
+    error_message: message ?? null,
+  });
+  if (error) {
+    console.error(`Failed to log cron_runs row for ${runType}:`, error);
+  }
+}
+
 export async function sendDailyTaskDigest(env: Env): Promise<void> {
   const supabase = getSupabaseClient(env);
-  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const todayDate = new Date().toISOString().slice(0, 10);
 
-  const { data: tasks, error } = await supabase
-    .from("tasks")
-    .select("task_type, priority, due_date, notes, lead_id, leads(name, destination, phone, email)")
-    .eq("status", "Open")
-    .eq("due_date", today);
+    const { data: tasks, error } = await supabase
+      .from("tasks")
+      .select("task_type, priority, due_date, notes, lead_id, leads(name, destination, phone, email)")
+      .eq("status", "Open")
+      .eq("due_date", todayDate);
 
-  if (error) {
-    console.error("Failed to fetch tasks for daily digest:", error);
-    return;
-  }
+    if (error) throw new Error(`Failed to fetch tasks for daily digest: ${error.message}`);
 
-  const lines = (tasks ?? []).map((t: any) => {
-    const lead = t.leads;
-    const leadLine = lead ? `${lead.name} — ${lead.destination} (${lead.phone || lead.email})` : `Lead ${t.lead_id}`;
-    const isOverdueEscalation = typeof t.notes === "string" && t.notes.startsWith("Overdue —");
-    if (isOverdueEscalation) {
-      return `⚠️ OVERDUE ESCALATION — ${t.task_type} — ${leadLine}\n    ${t.notes}`;
+    const lines = (tasks ?? []).map((t: any) => {
+      const lead = t.leads;
+      const leadLine = lead ? `${lead.name} — ${lead.destination} (${lead.phone || lead.email})` : `Lead ${t.lead_id}`;
+      const isOverdueEscalation = typeof t.notes === "string" && t.notes.startsWith("Overdue —");
+      if (isOverdueEscalation) {
+        return `⚠️ OVERDUE ESCALATION — ${t.task_type} — ${leadLine}\n    ${t.notes}`;
+      }
+      return `[${t.priority}] ${t.task_type} — ${leadLine}`;
+    });
+
+    const text = `Tasks due today (${todayDate}):\n\n${lines.length > 0 ? lines.join("\n") : "No tasks due today."}`;
+
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: DIGEST_FROM_ADDRESS,
+        to: DIGEST_TO_ADDRESS,
+        subject: `The Nomads Co — Task Digest for ${todayDate}`,
+        text,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Resend digest email failed with status ${res.status}: ${await res.text()}`);
     }
-    return `[${t.priority}] ${t.task_type} — ${leadLine}`;
-  });
 
-  const text = `Tasks due today (${today}):\n\n${lines.length > 0 ? lines.join("\n") : "No tasks due today."}`;
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-    },
-    body: JSON.stringify({
-      from: DIGEST_FROM_ADDRESS,
-      to: DIGEST_TO_ADDRESS,
-      subject: `The Nomads Co — Task Digest for ${today}`,
-      text,
-    }),
-  });
-
-  if (!res.ok) {
-    console.error(`Resend digest email failed with status ${res.status}: ${await res.text()}`);
+    await logCronRun(supabase, "sendDailyTaskDigest", true, `${(tasks ?? []).length} task(s) in digest`);
+  } catch (err: any) {
+    console.error("sendDailyTaskDigest failed:", err);
+    await logCronRun(supabase, "sendDailyTaskDigest", false, err?.message ?? String(err));
   }
 }
 
@@ -71,17 +94,29 @@ const COLD_CADENCE: Record<number, { nextStage: number; daysUntilNext: number } 
 export async function checkDueFollowUps(env: Env): Promise<void> {
   const supabase = getSupabaseClient(env);
   const todayDate = today();
+  let processedCount = 0;
 
+  try {
+    await runCheckDueFollowUps(supabase, todayDate, (n) => (processedCount = n));
+    await logCronRun(supabase, "checkDueFollowUps", true, `${processedCount} follow-up(s) processed`);
+  } catch (err: any) {
+    console.error("checkDueFollowUps failed:", err);
+    await logCronRun(supabase, "checkDueFollowUps", false, err?.message ?? String(err));
+  }
+}
+
+async function runCheckDueFollowUps(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  todayDate: string,
+  reportCount: (n: number) => void
+): Promise<void> {
   const { data: followUps, error } = await supabase
     .from("follow_ups")
     .select("id, lead_id, follow_up_date, message_template, sequence_stage, leads(name, destination, lead_score, lead_status)")
     .eq("completed", false)
     .lte("follow_up_date", todayDate);
 
-  if (error) {
-    console.error("Failed to fetch due follow-ups:", error);
-    return;
-  }
+  if (error) throw new Error(`Failed to fetch due follow-ups: ${error.message}`);
 
   const due = (followUps ?? []).filter((f: any) => {
     const status = f.leads?.lead_status;
@@ -150,6 +185,8 @@ export async function checkDueFollowUps(env: Env): Promise<void> {
       }
     }
   }
+
+  reportCount(due.length);
 }
 
 // Manual Review safety net: an Open Manual Review task sitting untouched for
@@ -159,6 +196,16 @@ export async function checkDueFollowUps(env: Env): Promise<void> {
 // same task every day.
 export async function escalateOverdueManualReviews(env: Env): Promise<void> {
   const supabase = getSupabaseClient(env);
+  try {
+    const count = await runEscalateOverdueManualReviews(supabase);
+    await logCronRun(supabase, "escalateOverdueManualReviews", true, `${count} task(s) escalated`);
+  } catch (err: any) {
+    console.error("escalateOverdueManualReviews failed:", err);
+    await logCronRun(supabase, "escalateOverdueManualReviews", false, err?.message ?? String(err));
+  }
+}
+
+async function runEscalateOverdueManualReviews(supabase: ReturnType<typeof getSupabaseClient>): Promise<number> {
   const todayDate = today();
   const cutoff = `${addDays(-2)}T00:00:00Z`;
 
@@ -170,10 +217,7 @@ export async function escalateOverdueManualReviews(env: Env): Promise<void> {
     .eq("escalated", false)
     .lt("created_at", cutoff);
 
-  if (error) {
-    console.error("Failed to fetch overdue Manual Review tasks:", error);
-    return;
-  }
+  if (error) throw new Error(`Failed to fetch overdue Manual Review tasks: ${error.message}`);
 
   for (const task of overdueTasks ?? []) {
     const originalDate = task.created_at.slice(0, 10);
@@ -194,4 +238,82 @@ export async function escalateOverdueManualReviews(env: Env): Promise<void> {
       console.error(`Failed to mark task ${task.id} as escalated:`, updateErr);
     }
   }
+
+  return (overdueTasks ?? []).length;
+}
+
+// Free daily backup via Supabase Storage (same private-bucket pattern as the
+// Phase 4 "invoices" bucket — the existing service-role client, no new
+// credentials): dump all 5 tables in full as timestamped JSON, then prune
+// anything older than 30 days so storage stays bounded.
+const BACKUP_TABLES = ["leads", "inquiries", "tasks", "follow_ups", "booked_trips"] as const;
+const BACKUP_RETENTION_DAYS = 30;
+const BACKUP_BUCKET = "database-backups";
+
+export async function backupDatabase(env: Env): Promise<void> {
+  const supabase = getSupabaseClient(env);
+  try {
+    const dateFolder = today();
+    const rowCounts: Record<string, number> = {};
+
+    for (const table of BACKUP_TABLES) {
+      const { data, error } = await supabase.from(table).select("*");
+      if (error) throw new Error(`Failed to query ${table} for backup: ${error.message}`);
+      const rows = data ?? [];
+      rowCounts[table] = rows.length;
+      const path = `backups/${dateFolder}/${table}.json`;
+      const { error: uploadErr } = await supabase.storage
+        .from(BACKUP_BUCKET)
+        .upload(path, JSON.stringify(rows, null, 2), { contentType: "application/json", upsert: true });
+      if (uploadErr) throw new Error(`Failed to upload backup for ${table}: ${uploadErr.message}`);
+    }
+
+    const deletedCount = await cleanupOldBackups(supabase);
+
+    await logCronRun(
+      supabase,
+      "backupDatabase",
+      true,
+      `Row counts: ${JSON.stringify(rowCounts)}; pruned ${deletedCount} stale folder(s)`
+    );
+  } catch (err: any) {
+    console.error("backupDatabase failed:", err);
+    await logCronRun(supabase, "backupDatabase", false, err?.message ?? String(err));
+  }
+}
+
+// Supabase Storage objects, not Supabase table rows — the standing
+// SELECT-before-DELETE rule is about DB rows specifically, but this still
+// lists and filters before deleting rather than deleting blindly.
+async function cleanupOldBackups(supabase: ReturnType<typeof getSupabaseClient>): Promise<number> {
+  const cutoffDate = addDays(-BACKUP_RETENTION_DAYS);
+
+  const { data: entries, error: listErr } = await supabase.storage.from(BACKUP_BUCKET).list("backups");
+  if (listErr) {
+    console.error("Failed to list backup folders for cleanup:", listErr);
+    return 0;
+  }
+
+  let deletedFolders = 0;
+  for (const entry of entries ?? []) {
+    const folderDate = entry.name;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(folderDate) || folderDate >= cutoffDate) continue;
+
+    const { data: files, error: filesErr } = await supabase.storage.from(BACKUP_BUCKET).list(`backups/${folderDate}`);
+    if (filesErr) {
+      console.error(`Failed to list files in stale backup folder ${folderDate}:`, filesErr);
+      continue;
+    }
+    const paths = (files ?? []).map((f) => `backups/${folderDate}/${f.name}`);
+    if (paths.length > 0) {
+      const { error: removeErr } = await supabase.storage.from(BACKUP_BUCKET).remove(paths);
+      if (removeErr) {
+        console.error(`Failed to remove stale backup folder ${folderDate}:`, removeErr);
+        continue;
+      }
+    }
+    deletedFolders++;
+  }
+
+  return deletedFolders;
 }

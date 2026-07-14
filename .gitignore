@@ -205,3 +205,6 @@ dist
 /receipts/
 test-receipts-synthetic/
 test-receipts-synthetic-extended/
+scripts/crm-test/.nocodb-password
+scripts/crm-test/.nocodb-browser-profile/
+scripts/crm-test/*.png

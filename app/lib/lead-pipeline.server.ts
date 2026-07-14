@@ -15,7 +15,7 @@ const GROQ_SYSTEM_PROMPT = `You are an AI data enricher for a luxury travel CRM.
 RULES:
 1. If a text value is missing, output "".
 2. Generate a 1-sentence 'ai_summary' of their ideal trip.
-3. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High) based on their timeline (e.g. 'Within 30 Days' is High urgency) and their stated budget (a higher budget signals a more valuable lead).
+3. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High). Base this on: the 'Timeline' field, which is actually an occasion/trip-type label (e.g. Honeymoon, Anniversary, Family Trip, Friends Trip, Work + Leisure, or a general Holiday) rather than a booking date — occasions tied to a fixed, less flexible date (like a Honeymoon or Anniversary) typically warrant higher urgency than an open-ended trip (like a general Holiday); their stated budget (a higher budget signals a more valuable lead); and whether they are a returning customer (see rule 4).
 4. If 'Returning Customer' is true, weight 'lead_score' upward — a proven past paying customer submitting an identical inquiry should score higher than a first-time stranger with the same answers.
 5. Suggest a logical 'next_action'.
 

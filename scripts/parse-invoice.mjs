@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Parses The Nomads Co. tax invoice PDFs (real text layer, not scanned/OCR)
-// into structured JSON. Uses `pdftotext` (poppler-utils) in two modes:
-//   -layout  : preserves column alignment -> used for header fields + item table
-//   (raw)    : blocks (Billing Address etc.) are cleanly newline-separated,
-//              without the column-interleaving that -layout introduces
-//              when Billing/Shipping addresses sit side by side
+// into structured JSON. Uses `pdftotext -layout` (poppler-utils) exclusively:
+// it preserves column alignment for the header fields and item table, and
+// -- unlike raw/reading-order mode, which has been observed to badly
+// scramble line order for CJK glyphs -- handles non-Latin scripts correctly.
+// Billing/Shipping sit side by side in -layout text; since they're always
+// identical (same client on both sides), the split point per line is found
+// by detecting the mirrored substring rather than assuming a fixed column.
 //
 // Known limitation: pictographic emoji in the "Notes" field extract as a
 // U+25A0 replacement square, not the original emoji. The invoice template's
@@ -49,9 +51,31 @@ function parseHeader(layoutText) {
   };
 }
 
-function parseBillingBlock(rawText) {
-  const lines = rawText.split("\n");
-  const startIdx = lines.findIndex((l) => l.trim() === "Billing Address");
+// Billing and Shipping addresses are always identical in this template (same
+// client on both sides), so instead of guessing a fixed character column to
+// split the two side-by-side blocks in -layout text, detect the mirrored
+// substring directly: a line "<content>  <same content>" reveals its own
+// split point regardless of how wide either column happens to be for this
+// particular invoice.
+function mirroredLeftHalf(line) {
+  const trimmed = line.trim();
+  const gapRe = /\s{2,}/g;
+  let m;
+  while ((m = gapRe.exec(trimmed))) {
+    const left = trimmed.slice(0, m.index);
+    const right = trimmed.slice(m.index + m[0].length);
+    if (left && left === right) return left;
+  }
+  return null;
+}
+
+// Deliberately uses -layout text, not raw (non-layout) pdftotext: poppler's
+// raw reading-order reconstruction has been observed to badly scramble line
+// order for CJK glyphs (verified against a synthetic Chinese-name case),
+// while -layout's coordinate-grid extraction handles the same PDF correctly.
+function parseBillingBlock(layoutText) {
+  const lines = layoutText.split("\n");
+  const startIdx = lines.findIndex((l) => /^\s*Billing Address\s{2,}Shipping Address\s*$/.test(l));
   if (startIdx === -1) {
     return { client_name: null, client_gstin: null, client_state: null, client_address_line: null };
   }
@@ -59,7 +83,8 @@ function parseBillingBlock(rawText) {
   for (let i = startIdx + 1; i < lines.length; i++) {
     const line = lines[i];
     if (line.trim() === "") break;
-    block.push(line.trim());
+    const left = mirroredLeftHalf(line);
+    if (left) block.push(left);
   }
 
   let client_gstin = null;
@@ -70,22 +95,32 @@ function parseBillingBlock(rawText) {
   const lastLine = block[block.length - 1] ?? "";
   const gstinMatch = lastLine.match(/^GSTIN:\s*(\S+)$/);
   if (gstinMatch) {
-    // Corporate client: [name...], "street, State", "GSTIN: xxx"
+    // Corporate client: [name (1+ lines)], [street/city/state (1+ lines)], "GSTIN: xxx".
+    // The address portion is identified by containing a comma (street, city,
+    // State) -- this also correctly handles an address line that itself
+    // wraps across more than one physical line.
     client_gstin = gstinMatch[1];
-    const addressLine = block[block.length - 2] ?? "";
+    const beforeGstin = block.slice(0, block.length - 1);
+    let addrStart = beforeGstin.length;
+    while (addrStart > 0 && beforeGstin[addrStart - 1].includes(",")) addrStart--;
+    if (addrStart === beforeGstin.length) addrStart = Math.max(0, beforeGstin.length - 1);
+    const addressLines = beforeGstin.slice(addrStart);
+    nameLines = beforeGstin.slice(0, addrStart);
+
+    const addressLine = addressLines.join(" ");
     const parts = addressLine.split(",").map((s) => s.trim());
     client_state = parts.length > 1 ? parts[parts.length - 1] : addressLine || null;
     client_address_line = addressLine || null;
-    nameLines = block.slice(0, block.length - 2);
   } else {
-    // Individual client: [name...], State
+    // Individual client: [name (1+ lines)], State (always exactly one line).
     client_state = lastLine || null;
     nameLines = block.slice(0, block.length - 1);
   }
 
-  // A name that wraps across lines is a single unbroken token cut mid-word by
-  // pdftotext -layout column width (no space/hyphen inserted at the break),
-  // so multi-line names are joined with no separator, not a space.
+  // A wrapped name is a single unbroken token cut mid-word by -layout's
+  // column width (no space/hyphen inserted at the break), so name fragments
+  // join with no separator. Wrapped address fragments, by contrast, always
+  // break at a real word boundary, so those join with a space (handled above).
   const client_name = nameLines.join("") || null;
 
   return { client_name, client_gstin, client_state, client_address_line };
@@ -113,9 +148,13 @@ function parseItemsAndTotals(layoutText) {
   const headerLine = lines[headerIdx];
   const tax_structure = /IGST/.test(headerLine) ? "inter" : /CGST/.test(headerLine) ? "intra" : null;
 
+  // On multi-page invoices the column header row repeats at the top of each
+  // continuation page (with no page-break marker in between) -- strip any
+  // repeat of it, or it shifts the 3-line-per-item grouping for every item
+  // after the page break.
   const body = lines
     .slice(headerIdx + 1, totalIdx)
-    .filter((l) => l.trim() !== "");
+    .filter((l) => l.trim() !== "" && !/Description\s+HSN\/SAC/.test(l));
 
   // Each item renders as 3 physical lines: [tax amount(s)], [item row], [tax %].
   const line_items = [];
@@ -176,10 +215,9 @@ function parseItemsAndTotals(layoutText) {
 
 function parseInvoicePdf(pdfPath) {
   const layoutText = pdftotext(pdfPath, true);
-  const rawText = pdftotext(pdfPath, false);
 
   const header = parseHeader(layoutText);
-  const billing = parseBillingBlock(rawText);
+  const billing = parseBillingBlock(layoutText);
   const notes = parseNotes(layoutText);
   const { tax_structure, line_items, taxable_total, tax_total, grand_total } = parseItemsAndTotals(layoutText);
 

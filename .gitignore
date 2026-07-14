@@ -203,3 +203,5 @@ dist
 /build/
 .dev.vars
 /receipts/
+test-receipts-synthetic/
+test-receipts-synthetic-extended/

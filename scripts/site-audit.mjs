@@ -1358,6 +1358,20 @@ async function main() {
     const ids = cleanupLeads.map((l) => l.id);
     const leadIdFilter = `lead_id=in.(${ids.join(",")})`;
     const idFilter = `id=in.(${ids.join(",")})`;
+
+    // Phase A added travelers/visa_applications, which can hang off a test
+    // lead (travelers.lead_id -> leads.id, visa_applications.traveler_id ->
+    // travelers.id). Neither table has a deleted_at column of its own, so —
+    // same as tasks/follow_ups/inquiries — they're hard-deleted as child
+    // rows of the (soft-deleted) lead, not soft-deleted themselves.
+    const testTravelers = await sb(`travelers?${leadIdFilter}&select=id`);
+    const travelerIds = testTravelers.map((t) => t.id);
+    const deletedVisaApplications =
+      travelerIds.length > 0
+        ? await sb(`visa_applications?traveler_id=in.(${travelerIds.join(",")})`, { method: "DELETE" })
+        : [];
+    const deletedTravelers = await sb(`travelers?${leadIdFilter}`, { method: "DELETE" });
+
     const deletedFollowUps = await sb(`follow_ups?${leadIdFilter}`, { method: "DELETE" });
     const deletedTasks = await sb(`tasks?${leadIdFilter}`, { method: "DELETE" });
     const deletedInquiries = await sb(`inquiries?${leadIdFilter}`, { method: "DELETE" });
@@ -1370,6 +1384,8 @@ async function main() {
       tasks: deletedTasks.length,
       followUps: deletedFollowUps.length,
       inquiries: deletedInquiries.length,
+      travelers: deletedTravelers.length,
+      visaApplications: deletedVisaApplications.length,
     };
     console.log("Soft-deleted leads / deleted child rows:", JSON.stringify(cleanupSummary.deleted, null, 2));
 
@@ -1377,7 +1393,7 @@ async function main() {
     cleanupSummary.verifiedZeroRemaining = verifyLeads.length === 0;
     console.log(`Post-cleanup verification — remaining active matches: ${verifyLeads.length}`);
   } else {
-    cleanupSummary.deleted = { leads: 0, tasks: 0, followUps: 0, inquiries: 0 };
+    cleanupSummary.deleted = { leads: 0, tasks: 0, followUps: 0, inquiries: 0, travelers: 0, visaApplications: 0 };
     cleanupSummary.verifiedZeroRemaining = true;
   }
 

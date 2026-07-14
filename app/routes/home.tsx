@@ -857,6 +857,7 @@ export function DestinationFunnel({ preselectedDest, onClose }: { preselectedDes
         whatsapp: whatsapp.trim(),
         destination: dest,
         timeline,
+        occasion: timeline,
         travelers,
         vibe,
         budget,

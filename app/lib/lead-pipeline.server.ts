@@ -217,6 +217,7 @@ async function insertManualReviewFallback(payload: LeadPayload, env: Env) {
       travelers: mapTravelersToInt(field(payload, "travelers")),
       budget: mapBudgetToNumber(field(payload, "budget")),
       contact_method: deriveContactMethod(payload),
+      trip_category: field(payload, "occasion"),
       contact_consent: field(payload, "contact_consent") === "true",
       lead_score: null,
       source: field(payload, "source"),
@@ -247,6 +248,7 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
   const rawTravelers = mapTravelersToInt(field(sanitized, "travelers"));
   const rawBudget = mapBudgetToNumber(field(sanitized, "budget"));
   const rawContactMethod = deriveContactMethod(sanitized);
+  const rawOccasion = field(sanitized, "occasion");
   const rawConsent = field(sanitized, "contact_consent") === "true";
 
   const supabase = getSupabaseClient(env);
@@ -314,6 +316,7 @@ export async function processLeadSubmission(payload: LeadPayload, env: Env): Pro
         vibe: scored.vibe,
         budget: rawBudget,
         contact_method: rawContactMethod,
+        trip_category: rawOccasion,
         lead_category: scored.lead_category,
         lead_score: scored.lead_score,
         urgency_level: scored.urgency_level,

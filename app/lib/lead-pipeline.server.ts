@@ -15,8 +15,12 @@ const GROQ_SYSTEM_PROMPT = `You are an AI data enricher for a luxury travel CRM.
 RULES:
 1. If a text value is missing, output "".
 2. Generate a 1-sentence 'ai_summary' of their ideal trip.
-3. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High). Base this on: the 'Timeline' field, which is actually an occasion/trip-type label (e.g. Honeymoon, Anniversary, Family Trip, Friends Trip, Work + Leisure, or a general Holiday) rather than a booking date — occasions tied to a fixed, less flexible date (like a Honeymoon or Anniversary) typically warrant higher urgency than an open-ended trip (like a general Holiday); their stated budget (a higher budget signals a more valuable lead); and whether they are a returning customer (see rule 4).
-4. If 'Returning Customer' is true, weight 'lead_score' upward — a proven past paying customer submitting an identical inquiry should score higher than a first-time stranger with the same answers.
+3. Assign a 'lead_score' (1-100) and 'urgency_level' (Low, Medium, High). This score directly controls how fast the lead gets contacted, so use the full range decisively rather than clustering around the middle. Score using these calibrated bands:
+   - 75-100 (Hot -> same-day WhatsApp outreach): a fixed-date occasion (Honeymoon, Anniversary) with a mid-to-top budget (anything above "Under ₹50k" or "Not sure yet"), OR any returning customer with a clear budget. A first-time inquiry combining a fixed-date occasion with the top budget bracket (₹3L+) is unambiguously in this band — score it 80-90, not 60.
+   - 50-74 (Warm -> next-day email follow-up): an open-ended occasion (Holiday, Family Trip, Friends Trip, Work + Leisure) with a clear budget signal, or a fixed-date occasion paired with an unclear/low budget.
+   - 1-49 (Cold -> nurture sequence): vague signals — no stated budget preference, or an open-ended occasion with the lowest budget bracket.
+   Base the band on: the 'Timeline' field, which is actually an occasion/trip-type label (e.g. Honeymoon, Anniversary, Family Trip, Friends Trip, Work + Leisure, or a general Holiday) rather than a booking date; their stated budget (a higher budget signals a more valuable lead); and whether they are a returning customer (see rule 4).
+4. If 'Returning Customer' is true, weight 'lead_score' upward — a proven past paying customer submitting an identical inquiry should score higher than a first-time stranger with the same answers, typically pushing well into the 85-100 range when other signals are also strong.
 5. Suggest a logical 'next_action'.
 
 Return EXACTLY this JSON structure:
@@ -162,7 +166,7 @@ async function scoreWithGroq(
 Email: ${field(payload, "email")}
 Phone: ${field(payload, "whatsapp")}
 Destination: ${field(payload, "destination")}
-Timeline: ${field(payload, "timeline")}
+Timeline: ${field(payload, "occasion")}
 Travelers: ${field(payload, "travelers")}
 Vibe: ${field(payload, "vibe")}
 Budget: ₹${context.budget}
@@ -209,7 +213,7 @@ async function insertManualReviewFallback(payload: LeadPayload, env: Env) {
       email: field(payload, "email"),
       phone: field(payload, "whatsapp"),
       destination: field(payload, "destination"),
-      timeline: field(payload, "timeline"),
+      timeline: field(payload, "occasion"),
       vibe: field(payload, "vibe"),
       // travelers/budget/contact_method are all deterministic now, so unlike
       // before, the fallback path can still capture them even though Groq

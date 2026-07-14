@@ -23,6 +23,46 @@ async function logCronRun(
   }
 }
 
+// Shared by checkVisaExpiry (its own cron_runs-logged slot, mirroring every
+// other top-level cron function) and sendDailyTaskDigest (which surfaces the
+// same data inline in the existing digest email rather than a separate one).
+async function queryExpiringVisas(supabase: ReturnType<typeof getSupabaseClient>, todayDate: string): Promise<any[]> {
+  const cutoffDate = addDays(30);
+
+  const { data, error } = await supabase
+    .from("visa_applications")
+    .select("id, country, visa_type, expiry_date, traveler_id, travelers(name, lead_id, leads(name, destination))")
+    .eq("status", "Approved")
+    .gte("expiry_date", todayDate)
+    .lte("expiry_date", cutoffDate);
+
+  if (error) throw new Error(`Failed to fetch expiring visa applications: ${error.message}`);
+  return data ?? [];
+}
+
+function formatVisaWarningLine(v: any): string {
+  const traveler = v.travelers;
+  const travelerName = traveler?.name ?? `Traveler ${v.traveler_id}`;
+  const lead = traveler?.leads;
+  const leadLine = lead ? ` (${lead.name} — ${lead.destination})` : "";
+  return `⚠️ VISA EXPIRING SOON — ${travelerName}${leadLine} — ${v.country} ${v.visa_type} visa expires ${v.expiry_date}`;
+}
+
+// Standalone cron slot purely for cron_runs observability, same as every
+// other top-level cron function — the actual surfacing of this data happens
+// inline inside sendDailyTaskDigest's own email, not here.
+export async function checkVisaExpiry(env: Env): Promise<void> {
+  const supabase = getSupabaseClient(env);
+  try {
+    const todayDate = today();
+    const visas = await queryExpiringVisas(supabase, todayDate);
+    await logCronRun(supabase, "checkVisaExpiry", true, `${visas.length} visa(s) expiring within 30 days`);
+  } catch (err: any) {
+    console.error("checkVisaExpiry failed:", err);
+    await logCronRun(supabase, "checkVisaExpiry", false, err?.message ?? String(err));
+  }
+}
+
 export async function sendDailyTaskDigest(env: Env): Promise<void> {
   const supabase = getSupabaseClient(env);
   try {
@@ -46,7 +86,19 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
       return `[${t.priority}] ${t.task_type} — ${leadLine}`;
     });
 
-    const text = `Tasks due today (${todayDate}):\n\n${lines.length > 0 ? lines.join("\n") : "No tasks due today."}`;
+    // A visa-query failure shouldn't block the whole digest from sending —
+    // degrade to an empty visa section rather than losing today's task list.
+    let expiringVisas: any[] = [];
+    try {
+      expiringVisas = await queryExpiringVisas(supabase, todayDate);
+    } catch (visaErr) {
+      console.error("Failed to fetch expiring visas for digest:", visaErr);
+    }
+    const visaLines = expiringVisas.map(formatVisaWarningLine);
+
+    const text =
+      `Tasks due today (${todayDate}):\n\n${lines.length > 0 ? lines.join("\n") : "No tasks due today."}` +
+      (visaLines.length > 0 ? `\n\nVisas expiring within 30 days:\n\n${visaLines.join("\n")}` : "");
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -244,9 +296,24 @@ async function runEscalateOverdueManualReviews(supabase: ReturnType<typeof getSu
 
 // Free daily backup via Supabase Storage (same private-bucket pattern as the
 // Phase 4 "invoices" bucket — the existing service-role client, no new
-// credentials): dump all 5 tables in full as timestamped JSON, then prune
-// anything older than 30 days so storage stays bounded.
-const BACKUP_TABLES = ["leads", "inquiries", "tasks", "follow_ups", "booked_trips"] as const;
+// credentials): dump all tables in full as timestamped JSON, then prune
+// anything older than 30 days so storage stays bounded. Phase B added the 8
+// travel-ops tables (travelers through feedback) alongside the original 5.
+const BACKUP_TABLES = [
+  "leads",
+  "inquiries",
+  "tasks",
+  "follow_ups",
+  "booked_trips",
+  "travelers",
+  "trip_travelers",
+  "visa_applications",
+  "documents",
+  "booking_items",
+  "payments",
+  "quotes",
+  "feedback",
+] as const;
 const BACKUP_RETENTION_DAYS = 30;
 const BACKUP_BUCKET = "database-backups";
 

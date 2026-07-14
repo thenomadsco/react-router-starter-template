@@ -1,5 +1,5 @@
 import { createRequestHandler } from "react-router";
-import { sendDailyTaskDigest, checkDueFollowUps, escalateOverdueManualReviews, backupDatabase } from "../app/lib/cron.server";
+import { sendDailyTaskDigest, checkDueFollowUps, escalateOverdueManualReviews, backupDatabase, checkVisaExpiry } from "../app/lib/cron.server";
 
 declare module "react-router" {
 	export interface AppLoadContext {
@@ -54,11 +54,12 @@ export default {
 		return withSecurityHeaders(response);
 	},
 	async scheduled(event, env, ctx) {
-		// "30 2 * * *"  -> 8:00am IST daily task digest
+		// "30 2 * * *"  -> 8:00am IST daily task digest + visa/passport expiry check
 		// "30 3 * * *"  -> 9:00am IST daily follow-up cadence check
 		// "0 4 * * *"   -> 9:30am IST daily database backup (Supabase Storage)
 		if (event.cron === "30 2 * * *") {
 			ctx.waitUntil(sendDailyTaskDigest(env));
+			ctx.waitUntil(checkVisaExpiry(env));
 		} else if (event.cron === "30 3 * * *") {
 			ctx.waitUntil(checkDueFollowUps(env));
 			ctx.waitUntil(escalateOverdueManualReviews(env));

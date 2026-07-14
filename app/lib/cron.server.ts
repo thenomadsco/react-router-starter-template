@@ -31,13 +31,21 @@ async function queryExpiringVisas(supabase: ReturnType<typeof getSupabaseClient>
 
   const { data, error } = await supabase
     .from("visa_applications")
-    .select("id, country, visa_type, expiry_date, traveler_id, travelers(name, lead_id, leads(name, destination))")
+    .select(
+      "id, country, visa_type, expiry_date, traveler_id, travelers(name, lead_id, leads(name, destination, deleted_at))"
+    )
     .eq("status", "Approved")
     .gte("expiry_date", todayDate)
     .lte("expiry_date", cutoffDate);
 
   if (error) throw new Error(`Failed to fetch expiring visa applications: ${error.message}`);
-  return data ?? [];
+
+  // traveler.lead_id is nullable — a traveler with no lead at all has
+  // nothing to suppress. Only exclude when the linked lead genuinely exists
+  // and has been soft-deleted (a plain PostgREST embed can't express this
+  // "lead present but active OR lead absent" OR-condition via !inner without
+  // wrongly dropping lead-less travelers too, so it's filtered here instead).
+  return (data ?? []).filter((v: any) => v.travelers?.leads?.deleted_at == null);
 }
 
 function formatVisaWarningLine(v: any): string {
@@ -70,13 +78,17 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
 
     const { data: tasks, error } = await supabase
       .from("tasks")
-      .select("task_type, priority, due_date, notes, lead_id, leads(name, destination, phone, email)")
+      .select("task_type, priority, due_date, notes, lead_id, leads(name, destination, phone, email, deleted_at)")
       .eq("status", "Open")
       .eq("due_date", todayDate);
 
     if (error) throw new Error(`Failed to fetch tasks for daily digest: ${error.message}`);
 
-    const lines = (tasks ?? []).map((t: any) => {
+    // Soft-deleted leads are inert going forward — their tasks shouldn't
+    // keep showing up in the operational digest.
+    const activeTasks = (tasks ?? []).filter((t: any) => t.leads?.deleted_at == null);
+
+    const lines = activeTasks.map((t: any) => {
       const lead = t.leads;
       const leadLine = lead ? `${lead.name} — ${lead.destination} (${lead.phone || lead.email})` : `Lead ${t.lead_id}`;
       const isOverdueEscalation = typeof t.notes === "string" && t.notes.startsWith("Overdue —");
@@ -118,7 +130,7 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
       throw new Error(`Resend digest email failed with status ${res.status}: ${await res.text()}`);
     }
 
-    await logCronRun(supabase, "sendDailyTaskDigest", true, `${(tasks ?? []).length} task(s) in digest`);
+    await logCronRun(supabase, "sendDailyTaskDigest", true, `${activeTasks.length} task(s) in digest`);
   } catch (err: any) {
     console.error("sendDailyTaskDigest failed:", err);
     await logCronRun(supabase, "sendDailyTaskDigest", false, err?.message ?? String(err));
@@ -164,14 +176,20 @@ async function runCheckDueFollowUps(
 ): Promise<void> {
   const { data: followUps, error } = await supabase
     .from("follow_ups")
-    .select("id, lead_id, follow_up_date, message_template, sequence_stage, leads(name, destination, lead_score, lead_status)")
+    .select(
+      "id, lead_id, follow_up_date, message_template, sequence_stage, leads(name, destination, lead_score, lead_status, deleted_at)"
+    )
     .eq("completed", false)
     .lte("follow_up_date", todayDate);
 
   if (error) throw new Error(`Failed to fetch due follow-ups: ${error.message}`);
 
+  // Soft-deleted leads are inert going forward — treat that the same as a
+  // terminal Converted/Lost status so their cadence stops progressing.
   const due = (followUps ?? []).filter((f: any) => {
-    const status = f.leads?.lead_status;
+    const lead = f.leads;
+    if (lead?.deleted_at != null) return false;
+    const status = lead?.lead_status;
     return status !== "Converted" && status !== "Lost";
   });
 
@@ -263,7 +281,7 @@ async function runEscalateOverdueManualReviews(supabase: ReturnType<typeof getSu
 
   const { data: overdueTasks, error } = await supabase
     .from("tasks")
-    .select("id, lead_id, created_at")
+    .select("id, lead_id, created_at, leads(deleted_at)")
     .eq("task_type", "Manual Review")
     .eq("status", "Open")
     .eq("escalated", false)
@@ -271,7 +289,13 @@ async function runEscalateOverdueManualReviews(supabase: ReturnType<typeof getSu
 
   if (error) throw new Error(`Failed to fetch overdue Manual Review tasks: ${error.message}`);
 
-  for (const task of overdueTasks ?? []) {
+  let escalatedCount = 0;
+  for (const task of (overdueTasks ?? []) as any[]) {
+    // Soft-deleted leads are inert going forward — don't keep escalating
+    // their stale Manual Review tasks.
+    if (task.leads?.deleted_at != null) continue;
+    escalatedCount++;
+
     const originalDate = task.created_at.slice(0, 10);
     const { error: insertErr } = await supabase.from("tasks").insert({
       lead_id: task.lead_id,
@@ -291,7 +315,7 @@ async function runEscalateOverdueManualReviews(supabase: ReturnType<typeof getSu
     }
   }
 
-  return (overdueTasks ?? []).length;
+  return escalatedCount;
 }
 
 // Free daily backup via Supabase Storage (same private-bucket pattern as the

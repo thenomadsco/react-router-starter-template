@@ -205,37 +205,75 @@ Returning Customer: ${context.isReturningCustomer}`;
 
 async function insertManualReviewFallback(payload: LeadPayload, env: Env) {
   const supabase = getSupabaseClient(env);
+  const normalizedEmail = field(payload, "email").trim().toLowerCase();
 
-  const { data: lead, error: leadErr } = await supabase
+  // Groq enrichment failing doesn't mean this is a first-time lead -- leads.email
+  // has a unique constraint, so a blind insert here crashes with a duplicate-key
+  // error on any repeat submission. Mirror processLeadSubmission's find-or-insert
+  // so a flaky Groq call can't turn a normal resubmission into a hard failure.
+  const { data: matches, error: findErr } = await supabase
     .from("leads")
-    .insert({
-      name: field(payload, "name"),
-      email: field(payload, "email"),
-      phone: field(payload, "whatsapp"),
+    .select("id, contact_consent")
+    .ilike("email", normalizedEmail)
+    .is("deleted_at", null)
+    .limit(1);
+  if (findErr) throw new Error(`Failed to look up existing lead: ${findErr.message}`);
+
+  let leadId: string;
+
+  if (matches && matches.length > 0) {
+    leadId = matches[0].id;
+    const existingConsent = matches[0].contact_consent === true;
+
+    const { error: inquiryErr } = await supabase.from("inquiries").insert({
+      lead_id: leadId,
       destination: field(payload, "destination"),
       timeline: field(payload, "occasion"),
       vibe: field(payload, "vibe"),
-      // travelers/budget/contact_method are all deterministic now, so unlike
-      // before, the fallback path can still capture them even though Groq
-      // enrichment failed.
       travelers: mapTravelersToInt(field(payload, "travelers")),
-      budget: mapBudgetToNumber(field(payload, "budget")),
-      contact_method: deriveContactMethod(payload),
-      trip_category: field(payload, "occasion"),
-      contact_consent: field(payload, "contact_consent") === "true",
-      lead_score: null,
-      source: field(payload, "source"),
-      utm_source: field(payload, "utm_source"),
-      utm_medium: field(payload, "utm_medium"),
-      utm_campaign: field(payload, "utm_campaign"),
-    })
-    .select("id")
-    .single();
+    });
+    if (inquiryErr) throw new Error(`Failed to insert fallback inquiry: ${inquiryErr.message}`);
 
-  if (leadErr) throw new Error(`Failed to insert fallback lead: ${leadErr.message}`);
+    // Never downgrade an existing true consent back to false -- same rule as
+    // the main dedupe path. Leave lead_score/urgency/etc untouched since Groq
+    // didn't run this time; overwriting a real prior score with null would
+    // regress a properly-scored lead.
+    if (field(payload, "contact_consent") === "true" && !existingConsent) {
+      const { error: updateErr } = await supabase.from("leads").update({ contact_consent: true }).eq("id", leadId);
+      if (updateErr) throw new Error(`Failed to update lead consent: ${updateErr.message}`);
+    }
+  } else {
+    const { data: lead, error: leadErr } = await supabase
+      .from("leads")
+      .insert({
+        name: field(payload, "name"),
+        email: field(payload, "email"),
+        phone: field(payload, "whatsapp"),
+        destination: field(payload, "destination"),
+        timeline: field(payload, "occasion"),
+        vibe: field(payload, "vibe"),
+        // travelers/budget/contact_method are all deterministic now, so unlike
+        // before, the fallback path can still capture them even though Groq
+        // enrichment failed.
+        travelers: mapTravelersToInt(field(payload, "travelers")),
+        budget: mapBudgetToNumber(field(payload, "budget")),
+        contact_method: deriveContactMethod(payload),
+        trip_category: field(payload, "occasion"),
+        contact_consent: field(payload, "contact_consent") === "true",
+        lead_score: null,
+        source: field(payload, "source"),
+        utm_source: field(payload, "utm_source"),
+        utm_medium: field(payload, "utm_medium"),
+        utm_campaign: field(payload, "utm_campaign"),
+      })
+      .select("id")
+      .single();
+    if (leadErr) throw new Error(`Failed to insert fallback lead: ${leadErr.message}`);
+    leadId = lead.id;
+  }
 
   const { error: taskErr } = await supabase.from("tasks").insert({
-    lead_id: lead.id,
+    lead_id: leadId,
     task_type: "Manual Review",
     priority: "High",
     due_date: today(),

@@ -108,9 +108,28 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
     }
     const visaLines = expiringVisas.map(formatVisaWarningLine);
 
+    // A spike in Manual Review tasks usually means Groq itself is having a
+    // bad day (rate-limited or erroring), not that lead volume genuinely
+    // grew -- worth flagging separately from the routine task list so it
+    // doesn't get read as just another busy day.
+    const manualReviewCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: manualReviewCount, error: manualReviewErr } = await supabase
+      .from("tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("task_type", "Manual Review")
+      .gte("created_at", manualReviewCutoff);
+    if (manualReviewErr) console.error("Failed to count recent Manual Review tasks:", manualReviewErr);
+
+    const MANUAL_REVIEW_SPIKE_THRESHOLD = 10;
+    const manualReviewSpike = (manualReviewCount ?? 0) > MANUAL_REVIEW_SPIKE_THRESHOLD;
+    const manualReviewFlagLine = manualReviewSpike
+      ? `\n\n⚠️ MANUAL REVIEW VOLUME — ${manualReviewCount} Manual Review task(s) created in the last 24h (normal volume is low single digits). This usually means Groq scoring is failing or being rate-limited rather than a genuine surge in leads -- worth checking Groq's status.`
+      : "";
+
     const text =
       `Tasks due today (${todayDate}):\n\n${lines.length > 0 ? lines.join("\n") : "No tasks due today."}` +
-      (visaLines.length > 0 ? `\n\nVisas expiring within 30 days:\n\n${visaLines.join("\n")}` : "");
+      (visaLines.length > 0 ? `\n\nVisas expiring within 30 days:\n\n${visaLines.join("\n")}` : "") +
+      manualReviewFlagLine;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -130,7 +149,12 @@ export async function sendDailyTaskDigest(env: Env): Promise<void> {
       throw new Error(`Resend digest email failed with status ${res.status}: ${await res.text()}`);
     }
 
-    await logCronRun(supabase, "sendDailyTaskDigest", true, `${activeTasks.length} task(s) in digest`);
+    await logCronRun(
+      supabase,
+      "sendDailyTaskDigest",
+      true,
+      `${activeTasks.length} task(s) in digest; Manual Review last 24h: ${manualReviewCount ?? "unknown"}${manualReviewSpike ? " (SPIKE FLAGGED)" : ""}`
+    );
   } catch (err: any) {
     console.error("sendDailyTaskDigest failed:", err);
     await logCronRun(supabase, "sendDailyTaskDigest", false, err?.message ?? String(err));

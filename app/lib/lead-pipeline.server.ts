@@ -157,6 +157,53 @@ async function checkIsReturningCustomer(email: string, supabase: ReturnType<type
   );
 }
 
+const GROQ_REQUEST_TIMEOUT_MS = 10000;
+const GROQ_MAX_RETRIES = 2;
+const GROQ_DEFAULT_BACKOFF_MS = [500, 1500];
+const GROQ_MAX_RETRY_AFTER_MS = 3000;
+
+// Retries ONLY on 429 (rate limit) -- a genuine auth/bad-request error, or a
+// thrown network/timeout failure, is not a 429 response at all and should
+// fall straight through to the caller's existing Manual Review fallback,
+// exactly as before. This is additive resilience on top of that fallback,
+// not a replacement for it.
+async function fetchGroqWithRateLimitRetry(userMessage: string, env: Env): Promise<Response> {
+  let attempt = 0;
+  while (true) {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.1,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: GROQ_SYSTEM_PROMPT },
+          { role: "user", content: userMessage },
+        ],
+      }),
+      signal: AbortSignal.timeout(GROQ_REQUEST_TIMEOUT_MS),
+    });
+
+    if (res.status !== 429 || attempt >= GROQ_MAX_RETRIES) {
+      return res;
+    }
+
+    const retryAfterHeader = res.headers.get("Retry-After");
+    const retryAfterMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : NaN;
+    const backoffMs =
+      Number.isFinite(retryAfterMs) && retryAfterMs > 0
+        ? Math.min(retryAfterMs, GROQ_MAX_RETRY_AFTER_MS)
+        : GROQ_DEFAULT_BACKOFF_MS[attempt];
+
+    await new Promise((resolve) => setTimeout(resolve, backoffMs));
+    attempt++;
+  }
+}
+
 async function scoreWithGroq(
   payload: LeadPayload,
   env: Env,
@@ -172,23 +219,7 @@ Vibe: ${field(payload, "vibe")}
 Budget: ₹${context.budget}
 Returning Customer: ${context.isReturningCustomer}`;
 
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${env.GROQ_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.1,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: GROQ_SYSTEM_PROMPT },
-        { role: "user", content: userMessage },
-      ],
-    }),
-    signal: AbortSignal.timeout(15000),
-  });
+  const res = await fetchGroqWithRateLimitRetry(userMessage, env);
 
   if (!res.ok) {
     throw new Error(`Groq request failed with status ${res.status}`);

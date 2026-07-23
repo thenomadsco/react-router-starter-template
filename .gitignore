@@ -208,3 +208,15 @@ test-receipts-synthetic-extended/
 scripts/crm-test/.nocodb-password
 scripts/crm-test/.nocodb-browser-profile/
 scripts/crm-test/*.png
+synthetic-leads.csv
+final-leads.csv
+test-receipts-final/
+scripts/crm-test-expansion-data/
+The Nomads Co. Invoices Backup/
+*.xlsx
+final-ecosystem-test.zip
+full-test-batch.zip
+import-log.txt
+.import-state.json
+Client Documents Sensitive/
+.doc-intake-state.json

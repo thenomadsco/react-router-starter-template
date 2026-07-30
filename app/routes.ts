@@ -18,6 +18,9 @@ export default [
   route("reviews",      "routes/redirect-reviews.ts"),
   route("destinations", "routes/redirect-destinations.ts"),
 
+  // --- Admin (protected by ?key=<ADMIN_KEY>) ---
+  route("admin", "routes/admin.tsx"),
+
   // --- Existing Static Routes ---
   route("contactus",    "routes/redirect-contactus.ts"),
   route("privacypolicy", "routes/privacypolicy.tsx"),

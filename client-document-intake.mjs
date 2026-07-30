@@ -1,15 +1,35 @@
 #!/usr/bin/env node
 // ═══════════════════════════════════════════════════════════════════════════════
-//  client-document-intake.mjs — The Nomads Co. Sensitive Document Intake  v1.0
+//  client-document-intake.mjs — The Nomads Co. Sensitive Document Intake  v2.0
 //  (Passports · Air Tickets · Hotel Vouchers → matched & staged for Supabase)
 // ═══════════════════════════════════════════════════════════════════════════════
 //
+//  This is Stage 1 of a deliberately two-file, two-stage pipeline:
+//    1. client-document-intake.mjs  (this file) — extract, validate, fetch
+//       real candidates from Supabase, match, flag anything uncertain, write
+//       ONE local review file. Read-only against Supabase. Nothing is ever
+//       written here.
+//    2. commit-approved-documents.mjs — the ONLY script that writes to
+//       Supabase, and only for rows YOU have hand-approved by editing the
+//       review file yourself. This split is intentional and is not being
+//       merged further — it's the actual safety boundary that keeps a wrong
+//       passport number from ever reaching the database un-reviewed.
+//
+//  v2.0 change: this used to require a separately-exported --candidates
+//  JSON file (produced by a third script, export-supabase-candidates.mjs).
+//  That's now folded in here as a live, read-only Supabase query by
+//  default — one less file to manage, and one less cleartext intermediate
+//  file (a candidates.json full of real names/emails) left sitting on disk
+//  after every run. --candidates <path> still works as an explicit override
+//  for offline testing against a mock file, same as before.
+//
 //  ⚠️  INSTRUCTIONS FOR CLAUDE CODE CLI  ⚠️
 //  ───────────────────────────────────────
-//  100% local. No network call of any kind except the final --commit write,
-//  which goes to Supabase only (your own database), never anywhere else.
-//  There is no OCR/vision API, no LLM call, no third-party service, anywhere
-//  in this pipeline. Passport reading uses the local `tesseract` binary only.
+//  100% local except one read-only Supabase query (fetching existing leads/
+//  travelers to match against) and, in commit-approved-documents.mjs only,
+//  the final approved write. No OCR/vision API, no LLM call, no third-party
+//  service anywhere in this pipeline. Passport reading uses the local
+//  `tesseract` binary only.
 //
 //  Your job: install deps if missing, run the command given to you, and
 //  relay ONLY the printed summary (counts + flag categories) back to the
@@ -19,18 +39,6 @@
 //      numbers, DOB, etc. in cleartext — that's for the human only)
 //  If something errors, diagnose from the error type/message printed to
 //  stdout. Do not go inspect a document or the review file to troubleshoot.
-//
-//  TWO-STAGE DESIGN
-//  ─────────────────
-//  Stage 1 (default, this script without --commit):
-//    extract → validate → match against existing Supabase records → flag
-//    anything uncertain → write ONE local review file. Nothing is written
-//    to Supabase in this stage, ever.
-//  Stage 2 (--commit --approved <file>):
-//    reads a file YOU produced by hand-editing the review output to mark
-//    rows as approved, and only then writes those specific rows to Supabase.
-//    Not implemented in this v1 run — this build focuses on getting Stage 1
-//    (the hard, risk-bearing part) right first.
 //
 //  ERROR HANDLING PHILOSOPHY
 //  ───────────────────────────
@@ -46,24 +54,27 @@
 //
 //  USAGE
 //  ─────
-//  node client-document-intake.mjs --dir "<documents folder>" --candidates "<path to mock or exported candidates.json>"
-//  node client-document-intake.mjs --dir ... --candidates ... --out review.json
-//
-//  In production, --candidates would be replaced by a live Supabase query
-//  (same schema-introspection pattern as the invoice importer) — this build
-//  accepts a JSON file so the matching/coherence logic can be tested fully
-//  offline first, per your instruction, before it ever touches production.
+//  node client-document-intake.mjs --dir "<documents folder>"
+//    (fetches candidates live from Supabase automatically)
+//  node client-document-intake.mjs --dir ... --candidates mock/candidates.json
+//    (offline/testing override — skips the live Supabase query)
+//  node client-document-intake.mjs --dir ... --out review.json
 //
 //  PREREQUISITES
 //  ──────────────
 //  brew install poppler tesseract
-//  npm install jimp
+//  npm install jimp @supabase/supabase-js dotenv ws
+//  .dev.vars must contain SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
+//  (not needed if you pass --candidates to use the offline override)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { execFileSync } from "node:child_process";
 import { readdirSync, statSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, basename, extname, resolve } from "node:path";
 import { createHash } from "node:crypto";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".dev.vars" });
 
 // ── CLI args ─────────────────────────────────────────────────────────────────
 
@@ -74,9 +85,12 @@ function argVal(flag, def) {
 }
 const VERBOSE = args.includes("--verbose");
 const ROOT_DIR = resolve(argVal("--dir", "."));
-const CANDIDATES_FILE = argVal("--candidates", null);
+const CANDIDATES_FILE = argVal("--candidates", null); // offline override; default is a live Supabase fetch
 const OUT_FILE = resolve(argVal("--out", "document-review.json"));
 const STATE_FILE = resolve(argVal("--state", ".doc-intake-state.json"));
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function die(msg) {
   console.error(`\n❌  ${msg}`);
@@ -84,8 +98,10 @@ function die(msg) {
 }
 
 if (!existsSync(ROOT_DIR)) die(`Folder not found: ${ROOT_DIR}`);
-if (!CANDIDATES_FILE || !existsSync(CANDIDATES_FILE)) {
-  die(`--candidates file is required (path to existing leads/travelers JSON). In production this is a live Supabase query; for testing, pass a local JSON file.`);
+if (CANDIDATES_FILE) {
+  if (!existsSync(CANDIDATES_FILE)) die(`--candidates file not found: ${CANDIDATES_FILE}`);
+} else if (!SUPABASE_URL || !SUPABASE_KEY) {
+  die("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .dev.vars (needed for the live candidates fetch — or pass --candidates <path> to use a local file instead).");
 }
 try { execFileSync("pdftotext", ["-v"], { stdio: "pipe" }); } catch { die("pdftotext not found — run: brew install poppler"); }
 try { execFileSync("tesseract", ["--version"], { stdio: "pipe" }); } catch { die("tesseract not found — run: brew install tesseract"); }
@@ -98,7 +114,146 @@ try {
   die('The "jimp" package is not installed. Run: npm install jimp');
 }
 
-const CANDIDATES = JSON.parse(readFileSync(CANDIDATES_FILE, "utf8"));
+// ─────────────────────────────────────────────────────────────────────────────
+//  SECTION 0 — CANDIDATES: live Supabase fetch (default) or offline file
+//  Merged in from what used to be a separate export-supabase-candidates.mjs.
+//  Read-only. Uses the same robust multi-column name discovery as before —
+//  earlier versions guessed a single name column and silently exported many
+//  candidates with a null name if that guess was wrong (e.g. names actually
+//  split across first_name/last_name). This discovers every name-like column
+//  from the live schema and resolves per-row with a fallback chain, only
+//  giving up (and reporting the count) if truly no name column has data.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const KNOWN_FULL_NAME_COLS = ["name", "full_name", "lead_name", "traveler_name", "client_name", "contact_name", "guest_name", "passenger_name"];
+const FIRST_NAME_PATTERNS = [/^first_?name$/i, /^fname$/i, /^given_?name$/i];
+const LAST_NAME_PATTERNS = [/^last_?name$/i, /^lname$/i, /^surname$/i, /^family_?name$/i];
+// Columns that contain "name" but are NOT a person's name — real example
+// that surfaced in testing: booked_trips.trip_name ("Bali Package Tour")
+// getting swept into the candidate pool as if it were a client name. Any
+// column matching one of these is excluded regardless of which discovery
+// tier would otherwise have picked it up.
+const NON_PERSON_NAME_PATTERN = /(trip|destination|product|item|package|hotel|company|business|file|document|event|campaign|template|report|table|column|field|project|task|module|route|brand|venue|location|place|category|class|type|status|app|service|plan|tier|role|group|team|org|vendor|supplier|airline|airport|region|country|city|state|invoice|booking|quote)_?name/i;
+
+function discoverNameColumns(cols) {
+  if (!cols) return { fullNameCols: [], firstNameCol: null, lastNameCol: null, otherNameCols: [] };
+  const isPersonLike = (c) => !NON_PERSON_NAME_PATTERN.test(c);
+  const all = [...cols].filter(isPersonLike);
+  const fullNameCols = KNOWN_FULL_NAME_COLS.filter((c) => cols.has(c) && isPersonLike(c));
+  const firstNameCol = all.find((c) => FIRST_NAME_PATTERNS.some((p) => p.test(c))) ?? null;
+  const lastNameCol = all.find((c) => LAST_NAME_PATTERNS.some((p) => p.test(c))) ?? null;
+  const classified = new Set([...fullNameCols, firstNameCol, lastNameCol].filter(Boolean));
+  const otherNameCols = all.filter((c) => /name/i.test(c) && !classified.has(c));
+  return { fullNameCols, firstNameCol, lastNameCol, otherNameCols };
+}
+
+function cleanVal(v) {
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s.length ? s : null;
+}
+
+function resolveCandidateName(row, discovered) {
+  for (const col of discovered.fullNameCols) {
+    const v = cleanVal(row[col]);
+    if (v) return v;
+  }
+  if (discovered.firstNameCol || discovered.lastNameCol) {
+    const first = cleanVal(row[discovered.firstNameCol]) ?? "";
+    const last = cleanVal(row[discovered.lastNameCol]) ?? "";
+    const combined = `${first} ${last}`.trim();
+    if (combined) return combined;
+  }
+  for (const col of discovered.otherNameCols) {
+    const v = cleanVal(row[col]);
+    if (v) return v;
+  }
+  return null;
+}
+
+function allNameColumns(discovered) {
+  return [...discovered.fullNameCols, discovered.firstNameCol, discovered.lastNameCol, ...discovered.otherNameCols].filter(Boolean);
+}
+
+function pickCol(cols, candidateNames) {
+  if (!cols) return null;
+  for (const c of candidateNames) if (cols.has(c)) return c;
+  return null;
+}
+
+async function fetchCandidatesLive() {
+  const { createClient } = await import("@supabase/supabase-js");
+  const ws = (await import("ws")).default;
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { realtime: { transport: ws }, auth: { persistSession: false } });
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+  if (!res.ok) die(`Schema fetch failed: ${res.status} ${res.statusText}`);
+  const spec = await res.json();
+
+  const allTableNames = Object.keys(spec.definitions ?? {});
+  if (!allTableNames.length) die("No tables found on this schema at all.");
+
+  // Scan EVERY table, not just leads/travelers — this exists specifically
+  // because leads can be mostly empty on the name column (e.g. leftover
+  // test data) while real names live elsewhere. A table only contributes
+  // candidates if it has both an id column and at least one name-like
+  // column; tables with neither (cron_runs, payments, etc.) are silently
+  // skipped, so this doesn't require a hand-maintained table list. Passport/
+  // DOB fields are only pulled where a table happens to have those columns
+  // (normally just travelers) — other tables contribute name/email/phone
+  // only, which is enough for matching purposes.
+  const candidates = [];
+  const tableNotes = [];
+  let totalUnresolved = 0;
+
+  for (const table of allTableNames) {
+    const def = spec.definitions[table];
+    const cols = def?.properties ? new Set(Object.keys(def.properties)) : null;
+    if (!cols) continue;
+
+    const nameDiscovery = discoverNameColumns(cols);
+    const nameCols = allNameColumns(nameDiscovery);
+    const idCol = pickCol(cols, ["id"]);
+    if (!nameCols.length || !idCol) continue; // not a candidate-bearing table — skip silently, this is expected for most tables
+
+    const emailCol = pickCol(cols, ["email"]);
+    const phoneCol = pickCol(cols, ["phone", "phone_number"]);
+    const passportCol = pickCol(cols, ["passport_number"]);
+    const passportIssueCol = pickCol(cols, ["passport_issue_date", "passport_issued_on"]);
+    const dobCol = pickCol(cols, ["dob", "date_of_birth"]);
+
+    const selectCols = [...new Set([idCol, ...nameCols, emailCol, phoneCol, passportCol, passportIssueCol, dobCol].filter(Boolean))];
+    let query = supabase.from(table).select(selectCols.join(","));
+    if (cols.has("deleted_at")) query = query.is("deleted_at", null);
+    const { data, error } = await query;
+    if (error) { tableNotes.push(`${table}: query failed — ${error.message}`); continue; }
+
+    let resolved = 0, unresolved = 0;
+    for (const row of data) {
+      const name = resolveCandidateName(row, nameDiscovery);
+      if (!name) { unresolved++; continue; }
+      resolved++;
+      candidates.push({
+        id: `${table}:${row[idCol]}`, full_name: name, email: cleanVal(row[emailCol]), phone: cleanVal(row[phoneCol]),
+        passport_number: passportCol ? cleanVal(row[passportCol]) : null,
+        passport_issue_date: passportIssueCol ? cleanVal(row[passportIssueCol]) : null,
+        dob: dobCol ? cleanVal(row[dobCol]) : null, source_table: table,
+      });
+    }
+    totalUnresolved += unresolved;
+    tableNotes.push(`${table}: ${resolved} resolved, ${unresolved} unresolved (checked columns: ${nameCols.join(", ")})`);
+  }
+
+  return { candidates, unresolved: totalUnresolved, tableNotes };
+}
+
+async function loadCandidates() {
+  if (CANDIDATES_FILE) {
+    return { candidates: JSON.parse(readFileSync(CANDIDATES_FILE, "utf8")), unresolved: 0, source: "offline file", tableNotes: [] };
+  }
+  const { candidates, unresolved, tableNotes } = await fetchCandidatesLive();
+  return { candidates, unresolved, tableNotes, source: "live Supabase query" };
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  SECTION 1 — FILE COLLECTION & DEDUPE STATE
@@ -110,6 +265,7 @@ function collectDocs(dir) {
   const out = [];
   for (const entry of readdirSync(dir)) {
     if (entry.startsWith(".")) continue;
+    if (entry.endsWith(".ocr-tmp")) continue; // this script's own temp-dir convention — a leftover from a previously-killed run must never be scanned as if it were a real input document
     const full = join(dir, entry);
     try {
       if (statSync(full).isDirectory()) out.push(...collectDocs(full));
@@ -182,7 +338,7 @@ const MIN_OSD_CONFIDENCE = 1.5; // tesseract's own confidence scale; low values 
 
 async function correctRotation(path, tmpDir) {
   try {
-    const osd = execFileSync("tesseract", [path, "stdout", "--psm", "0"], { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+    const osd = execFileSync("tesseract", [path, "stdout", "--psm", "0"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 10000 });
     const rotM = osd.match(/Rotate:\s*(\d+)/);
     const confM = osd.match(/Orientation confidence:\s*([\d.]+)/);
     const rotation = rotM ? Number(rotM[1]) : 0;
@@ -198,41 +354,66 @@ async function correctRotation(path, tmpDir) {
   }
 }
 
+// Standard Otsu's method: finds the threshold that maximizes between-class
+// variance of a grayscale histogram. Meaningfully better than a naive
+// (min+max)/2 midpoint on real scans with uneven lighting or a shadowed
+// gutter — those skew the observed min/max without actually being where the
+// text/background boundary sits.
+function otsuThreshold(histogram, totalPixels) {
+  let sumAll = 0;
+  for (let i = 0; i < 256; i++) sumAll += i * histogram[i];
+
+  let sumB = 0, weightB = 0, maxVariance = 0, threshold = 128;
+  for (let t = 0; t < 256; t++) {
+    weightB += histogram[t];
+    if (weightB === 0) continue;
+    const weightF = totalPixels - weightB;
+    if (weightF === 0) break;
+    sumB += t * histogram[t];
+    const meanB = sumB / weightB;
+    const meanF = (sumAll - sumB) / weightF;
+    const variance = weightB * weightF * (meanB - meanF) ** 2;
+    if (variance > maxVariance) { maxVariance = variance; threshold = t; }
+  }
+  return threshold;
+}
+
 // THE key fix for real-world scans: the MRZ occupies a small band near the
 // bottom of a passport photo, so OCR-ing the whole page wastes resolution on
 // everything else and reads the MRZ at low effective DPI. Cropping to just
 // that band and upscaling it significantly is the standard technique for
 // MRZ-specific OCR and typically improves accuracy far more than any global
 // enhancement does.
-async function cropMrzBand(path, tmpDir, label, { scale = 4, bandFraction = 0.28, binarize = false } = {}) {
+const SHARPEN_KERNEL = [[0, -1, 0], [-1, 5, -1], [0, -1, 0]];
+
+async function cropMrzBand(path, tmpDir, label, { scale = 4, bandFraction = 0.28, mode = "contrast" } = {}) {
   const img = await Jimp.read(path);
   const w = img.bitmap.width, h = img.bitmap.height;
   const bandTop = Math.floor(h * (1 - bandFraction));
   img.crop({ x: 0, y: bandTop, w, h: h - bandTop });
   img.greyscale();
-  if (binarize) {
-    // Simple global threshold at the midpoint of the observed range — the
-    // MRZ's high black-on-white contrast makes this reliable without needing
-    // a full Otsu implementation.
-    let min = 255, max = 0;
+
+  if (mode === "binarize") {
+    const histogram = new Array(256).fill(0);
+    let totalPixels = 0;
     img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
-      const v = this.bitmap.data[idx];
-      if (v < min) min = v;
-      if (v > max) max = v;
+      histogram[this.bitmap.data[idx]]++;
+      totalPixels++;
     });
-    const threshold = (min + max) / 2;
-    img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
-      const v = this.bitmap.data[idx] > threshold ? 255 : 0;
-      this.bitmap.data[idx] = this.bitmap.data[idx + 1] = this.bitmap.data[idx + 2] = v;
-    });
+    const t = otsuThreshold(histogram, totalPixels);
+    img.threshold({ max: t, autoGreyscale: false });
+  } else if (mode === "sharpen") {
+    img.contrast(0.2).convolute(SHARPEN_KERNEL);
   } else {
     img.contrast(0.3);
   }
+
   img.resize({ w: img.bitmap.width * scale, h: img.bitmap.height * scale });
   const outPath = `${tmpDir}/${label}.png`;
   await img.write(outPath);
   return outPath;
 }
+
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -242,7 +423,8 @@ async function cropMrzBand(path, tmpDir, label, { scale = 4, bandFraction = 0.28
 function ocrImage(path) {
   return execFileSync("tesseract", [path, "stdout", "--psm", "6"], {
     encoding: "utf8",
-    stdio: ["pipe", "pipe", "pipe"],
+    stdio: ["ignore", "pipe", "ignore"],
+    timeout: 15000, // hard cap — a single OCR call must never be able to hang the whole batch, regardless of why it's slow
   });
 }
 
@@ -364,10 +546,20 @@ function parseAndValidateMrz(line1, line2) {
       for (const chk of checkAttempts) {
         const expected = computeCheckDigit(attempt);
         if (expected != null && expected === chk) {
+          const finalValue = attempt.replace(/</g, "");
+          // The ICAO checksum formula mathematically accepts letters (A-Z map
+          // to values 10-35) — it's defined over the full alphanumeric set
+          // even for fields whose actual DATA must be digits-only (DOB,
+          // expiry). That means a checksum can coincidentally pass while a
+          // stray misread letter is still literally sitting in the value.
+          // For non-alphanumeric fields, require the final value to actually
+          // be all-digits before trusting it — a checksum match on corrupted
+          // data is worse than no match, since it looks verified but isn't.
+          if (!alphanumeric && !/^[0-9]+$/.test(finalValue)) continue;
           if (attempt !== raw || chk !== rawCheck) {
             corrections.push(`${label}: corrected known OCR-confusable characters, then ICAO checksum verified match`);
           }
-          return { value: attempt.replace(/</g, ""), verified: true, normalizedField: attempt, normalizedCheck: chk };
+          return { value: finalValue, verified: true, normalizedField: attempt, normalizedCheck: chk };
         }
       }
     }
@@ -430,6 +622,7 @@ async function extractPassport(path) {
 
   const tmpDir = path + ".ocr-tmp";
   const { mkdirSync, rmSync } = await import("node:fs");
+  rmSync(tmpDir, { recursive: true, force: true }); // guarantee a clean slate — a stale/partial dir from a previously-killed run must never be reused as-is
   mkdirSync(tmpDir, { recursive: true });
   const tempFiles = [];
 
@@ -442,26 +635,40 @@ async function extractPassport(path) {
     // phone-photo scans), full page as a fallback for edge cases where the
     // band-detection heuristic itself missed the MRZ's actual position.
     const strategies = [
-      { label: "mrz-crop-upscaled", build: () => cropMrzBand(basePath, tmpDir, "crop-upscaled", { scale: 4, binarize: false }) },
-      { label: "mrz-crop-binarized", build: () => cropMrzBand(basePath, tmpDir, "crop-binarized", { scale: 4, binarize: true }) },
-      { label: "mrz-crop-tight-band", build: () => cropMrzBand(basePath, tmpDir, "crop-tight", { scale: 5, bandFraction: 0.18, binarize: true }) },
+      { label: "mrz-crop-upscaled", build: () => cropMrzBand(basePath, tmpDir, "crop-upscaled", { scale: 4, mode: "contrast" }) },
+      { label: "mrz-crop-binarized", build: () => cropMrzBand(basePath, tmpDir, "crop-binarized", { scale: 4, mode: "binarize" }) },
+      { label: "mrz-crop-sharpened", build: () => cropMrzBand(basePath, tmpDir, "crop-sharpened", { scale: 4, mode: "sharpen" }) },
+      { label: "mrz-crop-tight-band", build: () => cropMrzBand(basePath, tmpDir, "crop-tight", { scale: 5, bandFraction: 0.18, mode: "binarize" }) },
       { label: "full-page-raw", build: async () => basePath },
       { label: "full-page-enhanced", build: () => enhanceForRetry(basePath, `${tmpDir}/full-enhanced.png`) },
     ];
 
     async function tryStrategy(strategy) {
-      const imgPath = await strategy.build();
-      if (imgPath !== path && imgPath !== basePath) tempFiles.push(imgPath);
-      const ocrText = ocrImage(imgPath);
-      const mrz = locateMrzLines(ocrText);
-      if (!mrz) return null;
-      const parsed = parseAndValidateMrz(mrz.line1, mrz.line2);
-      const allVerified = parsed.passportNumber.verified && parsed.dobRaw.verified && parsed.expiryRaw.verified;
-      return { mrz, parsed, allVerified, strategy: strategy.label, ocrText };
+      try {
+        const imgPath = await strategy.build();
+        if (imgPath !== path && imgPath !== basePath) tempFiles.push(imgPath);
+        const ocrText = ocrImage(imgPath);
+        const mrz = locateMrzLines(ocrText);
+        if (!mrz) return null;
+        const parsed = parseAndValidateMrz(mrz.line1, mrz.line2);
+        const allVerified = parsed.passportNumber.verified && parsed.dobRaw.verified && parsed.expiryRaw.verified;
+        return { mrz, parsed, allVerified, strategy: strategy.label, ocrText };
+      } catch {
+        // A single preprocessing attempt failing (temp file I/O hiccup, OCR
+        // choking on a malformed intermediate image, etc.) must never crash
+        // the whole document — just means this particular strategy didn't
+        // pan out, try the next one.
+        return null;
+      }
     }
 
     let mrzWasLocatedAtAll = false;
+    const initialDeadline = Date.now() + 30000;
     for (const strategy of strategies) {
+      if (Date.now() > initialDeadline) {
+        flags.push({ type: "extraction-timeout", reason: "gave up on initial extraction strategies after 30s — this document is unusually slow to process (often heavy noise/corruption)" });
+        break;
+      }
       const outcome = await tryStrategy(strategy);
       if (!outcome) continue;
       mrzWasLocatedAtAll = true;
@@ -470,27 +677,50 @@ async function extractPassport(path) {
     }
 
     // Rotation-search fallback: only paid when nothing above located an MRZ
-    // at all. OSD orientation detection is unreliable on sparse, form-style
-    // layouts (exactly what passport data pages are), so rather than trust
-    // it blindly, we try the two most effective crop strategies at each
-    // 90° rotation and let ICAO checksum validation — an objective signal —
-    // decide which orientation was actually correct.
+    // at all. Tries small-angle deskew first (±3°/±6°) — the common case for
+    // a hand-held phone photo that's slightly tilted rather than genuinely
+    // sideways — before the full 90°/180°/270° orientations. OSD orientation
+    // detection is unreliable on sparse, form-style layouts (exactly what
+    // passport data pages are), so rather than trust it blindly, each angle
+    // is verified the same way as everything else: ICAO checksum validation,
+    // an objective signal, not a guess. Each angle's whole attempt is
+    // isolated in its own try/catch — one angle failing (e.g. a rotated
+    // image write hiccup) must not abort the search for the remaining angles.
+    //
+    // Hard wall-clock budget on top of that: on a genuinely pathological
+    // image (e.g. heavy random noise), the actual cost turned out to live in
+    // local pixel-processing (crop/resize/threshold), not the tesseract
+    // subprocess — so a subprocess-level timeout alone doesn't bound it.
+    // This deadline is the real backstop: no single document can consume
+    // more than ~25s in this fallback, regardless of why it's slow, so one
+    // bad scan can never hang a whole batch.
     if (!mrzWasLocatedAtAll) {
-      for (const angle of [90, 180, 270]) {
-        const img = await Jimp.read(basePath);
-        img.rotate(angle);
-        const rotPath = `${tmpDir}/rot${angle}.png`;
-        await img.write(rotPath);
-        tempFiles.push(rotPath);
+      const deadline = Date.now() + 25000;
+      for (const angle of [-6, -3, 3, 6, 90, 180, 270]) {
+        if (Date.now() > deadline) {
+          flags.push({ type: "rotation-search-timeout", reason: "gave up on rotation search after 25s — this document is unusually slow to process (often heavy noise/corruption), remaining angles skipped" });
+          break;
+        }
+        try {
+          mkdirSync(tmpDir, { recursive: true }); // defensive re-ensure — cheap no-op if it already exists
+          const img = await Jimp.read(basePath);
+          img.rotate(angle);
+          const rotPath = `${tmpDir}/rot${angle}.png`;
+          await img.write(rotPath);
+          tempFiles.push(rotPath);
 
-        for (const build of [
-          { label: `mrz-crop-upscaled@${angle}`, build: () => cropMrzBand(rotPath, tmpDir, `crop-upscaled-${angle}`, { scale: 4, binarize: false }) },
-          { label: `mrz-crop-binarized@${angle}`, build: () => cropMrzBand(rotPath, tmpDir, `crop-binarized-${angle}`, { scale: 4, binarize: true }) },
-        ]) {
-          const outcome = await tryStrategy(build);
-          if (!outcome) continue;
-          if (!best || (outcome.allVerified && !best.allVerified)) best = outcome;
-          if (outcome.allVerified) break;
+          for (const build of [
+            { label: `mrz-crop-upscaled@${angle}`, build: () => cropMrzBand(rotPath, tmpDir, `crop-upscaled-${angle}`, { scale: 4, mode: "contrast" }) },
+            { label: `mrz-crop-binarized@${angle}`, build: () => cropMrzBand(rotPath, tmpDir, `crop-binarized-${angle}`, { scale: 4, mode: "binarize" }) },
+          ]) {
+            if (Date.now() > deadline) break;
+            const outcome = await tryStrategy(build);
+            if (!outcome) continue;
+            if (!best || (outcome.allVerified && !best.allVerified)) best = outcome;
+            if (outcome.allVerified) break;
+          }
+        } catch {
+          continue; // this angle failed outright (e.g. temp file issue) — move to the next one
         }
         if (best?.allVerified) break;
       }
@@ -555,7 +785,7 @@ async function extractPassport(path) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function pdfToText(path) {
-  return execFileSync("pdftotext", ["-layout", path, "-"], { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
+  return execFileSync("pdftotext", ["-layout", path, "-"], { encoding: "utf8", maxBuffer: 32 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"], timeout: 20000 });
 }
 
 function extractTicketOrVoucher(path) {
@@ -719,6 +949,19 @@ function checkAgainstExistingRecord(extracted, candidate) {
 function log(msg) { console.log(msg); }
 
 async function main() {
+  log("── Loading candidates (existing leads/travelers to match against) ─");
+  const { candidates: CANDIDATES, unresolved, source, tableNotes } = await loadCandidates();
+  log(`  Source: ${source}`);
+  log(`  Candidates loaded: ${CANDIDATES.length}`);
+  for (const note of tableNotes ?? []) log(`  ${note}`);
+  if (unresolved > 0) {
+    log(`  ⚠  ${unresolved} row(s) total had no usable name in any discovered name column and were excluded.`);
+    log(`     If this count looks high, check your schema/data yourself (not via this script's output) —`);
+    log(`     it usually means either the wrong column was found, or a lot of underlying rows are genuinely`);
+    log(`     empty (e.g. leftover test/synthetic data that was never cleaned up).`);
+  }
+  log("");
+
   log("── Scanning documents folder (local filesystem only) ────────────");
   const docs = collectDocs(ROOT_DIR);
   if (!docs.length) die(`No documents found under ${ROOT_DIR}`);
@@ -727,22 +970,36 @@ async function main() {
   const state = loadState();
   const results = [];
   let skippedDup = 0, failedQuality = 0, failedMrz = 0, checksumIssues = 0, ok = 0;
+  let processedSoFar = 0;
+  const batchStart = Date.now();
 
   for (const path of docs) {
     const hash = fileHash(path);
     if (state.processed[hash]) { skippedDup++; continue; }
+
+    processedSoFar++;
+    const elapsedMin = ((Date.now() - batchStart) / 60000).toFixed(1);
+    process.stdout.write(`\r  Processing ${processedSoFar}/${docs.length}... (${elapsedMin} min elapsed)   `);
 
     const ext = extname(path).toLowerCase();
     const isImage = [".png", ".jpg", ".jpeg", ".tif", ".tiff"].includes(ext);
     const docId = createHash("sha256").update(path).digest("hex").slice(0, 12); // opaque local id, no PII
 
     let record;
-    if (isImage) {
-      const extracted = await extractPassport(path);
-      record = { docId, docType: "passport", ...extracted };
-    } else {
-      const extracted = extractTicketOrVoucher(path);
-      record = { docId, docType: "ticket_or_voucher", ...extracted };
+    try {
+      if (isImage) {
+        const extracted = await extractPassport(path);
+        record = { docId, docType: "passport", ...extracted };
+      } else {
+        const extracted = extractTicketOrVoucher(path);
+        record = { docId, docType: "ticket_or_voucher", ...extracted };
+      }
+    } catch {
+      // A single corrupt/unreadable file must never crash the whole batch,
+      // and the underlying error message may contain the file path (some
+      // pdftotext/tesseract failures embed it) — so it's deliberately not
+      // surfaced here, only a generic flag.
+      record = { docId, docType: isImage ? "passport" : "ticket_or_voucher", ok: false, name: null, flags: [{ type: "unreadable-file", reason: "document could not be processed (corrupt or unsupported format)" }] };
     }
 
     if (record.flags?.some((f) => f.type === "quality")) failedQuality++;
@@ -777,6 +1034,7 @@ async function main() {
   const matchStatusCounts = { confident: 0, "low-confidence": 0, ambiguous: 0, "no-match": 0 };
   for (const r of results) if (r.match) matchStatusCounts[r.match.status]++;
 
+  log("\n  Done processing.\n");
   log("── Summary (counts only — no names, no document contents) ───────");
   log(`  Documents scanned        : ${docs.length}`);
   log(`  Already processed (skip) : ${skippedDup}`);

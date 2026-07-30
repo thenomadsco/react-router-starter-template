@@ -12,6 +12,7 @@ declare namespace Cloudflare {
 		GROQ_API_KEY: string;
 		RESEND_API_KEY: string;
 		TURNSTILE_SECRET_KEY: string;
+		ADMIN_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}
